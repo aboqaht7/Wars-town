@@ -5,20 +5,20 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('events')
         .setDescription('عرض الرحلات'),
-    execute(message, args, db) {
+    async execute(message, args, db) {
         const embed = new EmbedBuilder()
             .setTitle('الرحلات')
             .setDescription('فتح الرحلات، اعصار، التنبيهات')
             .setColor('Red')
-            .setImage(db.get('events_image') || '');
+            .setImage(await db.getImage('events') || '');
         message.channel.send({ embeds: [embed] });
     },
-    slashExecute(interaction, db) {
+    async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
             .setTitle('الرحلات')
             .setDescription('فتح رحلة، اعصار، التنبيهات')
             .setColor('Red')
-            .setImage(db.get('events_image') || '');
+            .setImage(await db.getImage('events') || '');
         interaction.reply({ embeds: [embed] });
     }
 };

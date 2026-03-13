@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('الوظائف الحرة')
             .setDescription('صيد السمك، تكسي، صيد الحيوانات، منجم')
             .setColor('Red')
-            .setImage(await db.get('jobs_image') || '');
+            .setImage(await db.getImage('jobs') || '');
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('الوظائف الحرة')
             .setDescription('صيد السمك، تكسي، صيد الحيوانات، منجم')
             .setColor('Red')
-            .setImage(await db.get('jobs_image') || '');
+            .setImage(await db.getImage('jobs') || '');
         interaction.reply({ embeds: [embed] });
     }
 };

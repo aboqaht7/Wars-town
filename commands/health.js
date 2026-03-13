@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('وزارة الصحة')
             .setDescription('اختر الخدمة الطبية')
             .setColor('Red')
-            .setImage(await db.get('health_image') || '');
+            .setImage(await db.getImage('health') || '');
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
@@ -30,7 +30,7 @@ module.exports = {
             .setTitle('وزارة الصحة')
             .setDescription('اختر الخدمة الطبية')
             .setColor('Red')
-            .setImage(await db.get('health_image') || '');
+            .setImage(await db.getImage('health') || '');
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()

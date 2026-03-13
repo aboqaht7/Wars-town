@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('السوق المركزي / Tools Market')
             .setDescription('سنارة، فأس، أدوات، مزاد سيارات وعقارات')
             .setColor('Red')
-            .setImage(await db.get('market_image') || '');
+            .setImage(await db.getImage('market') || '');
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('السوق المركزي / Tools Market')
             .setDescription('سنارة، فأس، أدوات، مزاد سيارات وعقارات')
             .setColor('Red')
-            .setImage(await db.get('market_image') || '');
+            .setImage(await db.getImage('market') || '');
         interaction.reply({ embeds: [embed] });
     }
 };

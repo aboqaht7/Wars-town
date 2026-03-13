@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('الجوال')
             .setDescription('هاتفك المحمول')
             .setColor('Red')
-            .setImage(await db.get('phone_image') || '');
+            .setImage(await db.getImage('phone') || '');
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('الجوال')
             .setDescription('هاتفك المحمول')
             .setColor('Red')
-            .setImage(await db.get('phone_image') || '');
+            .setImage(await db.getImage('phone') || '');
         interaction.reply({ embeds: [embed] });
     }
 };

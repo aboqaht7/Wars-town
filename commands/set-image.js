@@ -10,13 +10,13 @@ module.exports = {
     async execute(message, args, db) {
         const system = args[0];
         const url = args[1];
-        await db.set(`${system}_image`, url);
+        await db.setImage(system, url);
         message.channel.send(`تم تعيين الصورة للنظام: ${system}`);
     },
     async slashExecute(interaction, db) {
         const system = interaction.options.getString('system');
         const url = interaction.options.getString('url');
-        await db.set(`${system}_image`, url);
+        await db.setImage(system, url);
         interaction.reply(`تم تعيين الصورة للنظام: ${system}`);
     }
 };

@@ -38,18 +38,28 @@ commands/             # All bot command modules
 - `CLIENT_ID` - Discord application client ID (for slash command deployment)
 - `GUILD_ID` - Discord server ID (for slash command deployment)
 - `PREFIX` - Command prefix (default: `-`)
+- `DATABASE_URL` - PostgreSQL connection string (auto-set by Replit)
 
 ## Commands
 - All commands support both prefix (`-commandname`) and slash (`/commandname`) formats
 - Use `npm run deploy` after adding new commands to register slash commands
 
 ## Database
-- SQLite database via quick.db v9 + better-sqlite3
-- Used to store per-system images (set via `/set-image` command)
-- Data persists in `json.sqlite` file
+- PostgreSQL via Replit's built-in database + `pg` package
+- Database module: `database.js` — exports helper functions used by all commands
+- Tables:
+  - `users` — Discord user profiles
+  - `bank_accounts` — per-user balances
+  - `inventory` — per-user bag items
+  - `identities` — character slots (up to 4 per user)
+  - `system_images` — images set per system via `/set-image`
+  - `tickets` — support ticket records
+  - `crimes` — crime event records
+  - `vehicles` — owned vehicles per user
+  - `properties` — owned properties per user
 
 ## Setup Notes
 - The `commands/` directory was restructured from the original GitHub import (files were in root)
-- quick.db upgraded from v10 (non-existent) to v9 (latest stable)
-- All db operations updated to use async/await for quick.db v9 compatibility
+- Migrated from quick.db (SQLite) to PostgreSQL for persistent, structured data storage
 - Flight.js had a corrupted first line that was fixed
+- `clientReady` event used instead of deprecated `ready`
