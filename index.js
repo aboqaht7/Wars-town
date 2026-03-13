@@ -1,8 +1,9 @@
 const fs = require('fs');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const db = require('quick.db');
+const { QuickDB } = require('quick.db');
 require('dotenv').config();
 
+const db = new QuickDB();
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 client.commands = new Collection();
