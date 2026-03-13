@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 
 module.exports = {
     name: 'police',
@@ -8,17 +8,39 @@ module.exports = {
     async execute(message, args, db) {
         const embed = new EmbedBuilder()
             .setTitle('الشرطة')
-            .setDescription('أوامر: كلبشة، تلويت، باند، تشهير')
+            .setDescription('اختر أمر شرطة')
             .setColor('Red')
             .setImage(await db.getImage('police') || null);
-        message.channel.send({ embeds: [embed] });
+        const menu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('police_menu')
+                .setPlaceholder('اختر خيار')
+                .addOptions([
+                    { label: 'كلبشة', value: 'handcuff' },
+                    { label: 'تلويت', value: 'wanted' },
+                    { label: 'باند', value: 'ban' },
+                    { label: 'تشهير', value: 'defame' },
+                ])
+        );
+        message.channel.send({ embeds: [embed], components: [menu] });
     },
     async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
             .setTitle('الشرطة')
-            .setDescription('أوامر: كلبشة، تلويت، باند، تشهير')
+            .setDescription('اختر أمر شرطة')
             .setColor('Red')
             .setImage(await db.getImage('police') || null);
-        interaction.reply({ embeds: [embed] });
+        const menu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('police_menu')
+                .setPlaceholder('اختر خيار')
+                .addOptions([
+                    { label: 'كلبشة', value: 'handcuff' },
+                    { label: 'تلويت', value: 'wanted' },
+                    { label: 'باند', value: 'ban' },
+                    { label: 'تشهير', value: 'defame' },
+                ])
+        );
+        interaction.reply({ embeds: [embed], components: [menu] });
     }
 };

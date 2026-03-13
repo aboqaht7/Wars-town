@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 
 module.exports = {
     name: 'market',
@@ -8,17 +8,39 @@ module.exports = {
     async execute(message, args, db) {
         const embed = new EmbedBuilder()
             .setTitle('السوق المركزي / Tools Market')
-            .setDescription('سنارة، فأس، أدوات، مزاد سيارات وعقارات')
+            .setDescription('اختر ما تريد شراءه')
             .setColor('Red')
             .setImage(await db.getImage('market') || null);
-        message.channel.send({ embeds: [embed] });
+        const menu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('market_menu')
+                .setPlaceholder('اختر خيار')
+                .addOptions([
+                    { label: 'سنارة صيد', value: 'fishing_rod' },
+                    { label: 'فأس', value: 'axe' },
+                    { label: 'أدوات منجم', value: 'mining_tools' },
+                    { label: 'مزاد السيارات والعقارات', value: 'auction' },
+                ])
+        );
+        message.channel.send({ embeds: [embed], components: [menu] });
     },
     async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
             .setTitle('السوق المركزي / Tools Market')
-            .setDescription('سنارة، فأس، أدوات، مزاد سيارات وعقارات')
+            .setDescription('اختر ما تريد شراءه')
             .setColor('Red')
             .setImage(await db.getImage('market') || null);
-        interaction.reply({ embeds: [embed] });
+        const menu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('market_menu')
+                .setPlaceholder('اختر خيار')
+                .addOptions([
+                    { label: 'سنارة صيد', value: 'fishing_rod' },
+                    { label: 'فأس', value: 'axe' },
+                    { label: 'أدوات منجم', value: 'mining_tools' },
+                    { label: 'مزاد السيارات والعقارات', value: 'auction' },
+                ])
+        );
+        interaction.reply({ embeds: [embed], components: [menu] });
     }
 };

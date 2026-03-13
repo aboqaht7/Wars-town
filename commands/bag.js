@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 
 module.exports = {
     name: 'bag',
@@ -13,7 +13,18 @@ module.exports = {
             .setDescription(items.length ? items.map(i => `• ${i.item_name} (${i.quantity})`).join('\n') : 'حقيبتك فارغة')
             .setColor('Red')
             .setImage(await db.getImage('bag') || null);
-        message.channel.send({ embeds: [embed] });
+        const menu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('bag_menu')
+                .setPlaceholder('اختر خيار')
+                .addOptions([
+                    { label: 'عرض الأغراض', value: 'view' },
+                    { label: 'استخدام غرض', value: 'use' },
+                    { label: 'إلقاء غرض', value: 'drop' },
+                    { label: 'نقل غرض', value: 'transfer' },
+                ])
+        );
+        message.channel.send({ embeds: [embed], components: [menu] });
     },
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
@@ -23,6 +34,17 @@ module.exports = {
             .setDescription(items.length ? items.map(i => `• ${i.item_name} (${i.quantity})`).join('\n') : 'حقيبتك فارغة')
             .setColor('Red')
             .setImage(await db.getImage('bag') || null);
-        interaction.reply({ embeds: [embed] });
+        const menu = new ActionRowBuilder().addComponents(
+            new StringSelectMenuBuilder()
+                .setCustomId('bag_menu')
+                .setPlaceholder('اختر خيار')
+                .addOptions([
+                    { label: 'عرض الأغراض', value: 'view' },
+                    { label: 'استخدام غرض', value: 'use' },
+                    { label: 'إلقاء غرض', value: 'drop' },
+                    { label: 'نقل غرض', value: 'transfer' },
+                ])
+        );
+        interaction.reply({ embeds: [embed], components: [menu] });
     }
 };
