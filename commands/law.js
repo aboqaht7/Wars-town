@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('نظام المحاماة')
             .setDescription('إدارة القضايا والمحاماة')
             .setColor('Red')
-            .setImage(await db.getImage('law') || '');
+            .setImage(await db.getImage('law') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('نظام المحاماة')
             .setDescription('إدارة القضايا والمحاماة')
             .setColor('Red')
-            .setImage(await db.getImage('law') || '');
+            .setImage(await db.getImage('law') || null);
         interaction.reply({ embeds: [embed] });
     }
 };

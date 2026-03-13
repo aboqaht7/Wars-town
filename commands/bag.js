@@ -12,7 +12,7 @@ module.exports = {
             .setTitle('الحقيبة')
             .setDescription(items.length ? items.map(i => `• ${i.item_name} (${i.quantity})`).join('\n') : 'حقيبتك فارغة')
             .setColor('Red')
-            .setImage(await db.getImage('bag') || '');
+            .setImage(await db.getImage('bag') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -22,7 +22,7 @@ module.exports = {
             .setTitle('الحقيبة')
             .setDescription(items.length ? items.map(i => `• ${i.item_name} (${i.quantity})`).join('\n') : 'حقيبتك فارغة')
             .setColor('Red')
-            .setImage(await db.getImage('bag') || '');
+            .setImage(await db.getImage('bag') || null);
         interaction.reply({ embeds: [embed] });
     }
 };

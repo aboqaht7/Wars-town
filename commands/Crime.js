@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('الجرائم')
             .setDescription('عرض الجرائم، سرقات وخطف')
             .setColor('Red')
-            .setImage(await db.getImage('crime') || '');
+            .setImage(await db.getImage('crime') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('الجرائم')
             .setDescription('عرض الجرائم، سرقات وخطف')
             .setColor('Red')
-            .setImage(await db.getImage('crime') || '');
+            .setImage(await db.getImage('crime') || null);
         interaction.reply({ embeds: [embed] });
     }
 };

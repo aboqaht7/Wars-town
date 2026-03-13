@@ -12,7 +12,7 @@ module.exports = {
             .setTitle('البنك')
             .setDescription(`رصيدك الحالي: **${balance.toLocaleString()}** ريال`)
             .setColor('Red')
-            .setImage(await db.getImage('bank') || '');
+            .setImage(await db.getImage('bank') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -22,7 +22,7 @@ module.exports = {
             .setTitle('البنك')
             .setDescription(`رصيدك الحالي: **${balance.toLocaleString()}** ريال`)
             .setColor('Red')
-            .setImage(await db.getImage('bank') || '');
+            .setImage(await db.getImage('bank') || null);
         interaction.reply({ embeds: [embed] });
     }
 };

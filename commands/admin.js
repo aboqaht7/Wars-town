@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('الإدارة')
             .setDescription('عرض الرتب ونقاط الإدارة')
             .setColor('Red')
-            .setImage(await db.getImage('admin') || '');
+            .setImage(await db.getImage('admin') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('الإدارة')
             .setDescription('عرض الرتب ونقاط الإدارة')
             .setColor('Red')
-            .setImage(await db.getImage('admin') || '');
+            .setImage(await db.getImage('admin') || null);
         interaction.reply({ embeds: [embed] });
     }
 };

@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('معرض السيارات')
             .setDescription('كل السيارات المتاحة للبيع والمزاد')
             .setColor('Red')
-            .setImage(await db.getImage('cars') || '');
+            .setImage(await db.getImage('cars') || null);
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
@@ -32,7 +32,7 @@ module.exports = {
             .setTitle('معرض السيارات')
             .setDescription('كل السيارات المتاحة للبيع والمزاد')
             .setColor('Red')
-            .setImage(await db.getImage('cars') || '');
+            .setImage(await db.getImage('cars') || null);
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()

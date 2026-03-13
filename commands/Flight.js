@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('الرحلات')
             .setDescription('فتح الرحلات، اعصار، التنبيهات')
             .setColor('Red')
-            .setImage(await db.getImage('events') || '');
+            .setImage(await db.getImage('events') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('الرحلات')
             .setDescription('فتح رحلة، اعصار، التنبيهات')
             .setColor('Red')
-            .setImage(await db.getImage('events') || '');
+            .setImage(await db.getImage('events') || null);
         interaction.reply({ embeds: [embed] });
     }
 };

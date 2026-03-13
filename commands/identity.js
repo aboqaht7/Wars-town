@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('الهوية')
             .setDescription('شخصيتك الحالية')
             .setColor('Red')
-            .setImage(await db.getImage('identity') || '');
+            .setImage(await db.getImage('identity') || null);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle('الهوية')
             .setDescription('شخصيتك الحالية')
             .setColor('Red')
-            .setImage(await db.getImage('identity') || '');
+            .setImage(await db.getImage('identity') || null);
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()

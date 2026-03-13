@@ -24,7 +24,7 @@ client.on('interactionCreate', async interaction => {
         await command.slashExecute(interaction, db);
     } catch (error) {
         console.error(error);
-        interaction.reply({ content: 'حدث خطأ أثناء تنفيذ الأمر!', ephemeral: true });
+        interaction.reply({ content: 'حدث خطأ أثناء تنفيذ الأمر!', flags: 64 });
     }
 });
 

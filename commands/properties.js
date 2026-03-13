@@ -10,7 +10,7 @@ module.exports = {
             .setTitle('معرض العقارات')
             .setDescription('جميع العقارات المتاحة للبيع أو الإيجار')
             .setColor('Red')
-            .setImage(await db.getImage('properties') || '');
+            .setImage(await db.getImage('properties') || null);
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
@@ -31,7 +31,7 @@ module.exports = {
             .setTitle('معرض العقارات')
             .setDescription('جميع العقارات المتاحة للبيع أو الإيجار')
             .setColor('Red')
-            .setImage(await db.getImage('properties') || '');
+            .setImage(await db.getImage('properties') || null);
 
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
