@@ -520,6 +520,35 @@ async function removeVehicle(discordId, plate) {
     return res.rows.length > 0;
 }
 
+async function addToCash(discordId, slot, amount) {
+    await query(
+        'UPDATE identities SET cash = cash + $1 WHERE discord_id = $2 AND slot = $3',
+        [amount, discordId, slot]
+    );
+}
+
+async function addRobbery(name, tools, minMoney, maxMoney) {
+    const res = await query(
+        'INSERT INTO robberies (name, tools, min_money, max_money) VALUES ($1, $2, $3, $4) RETURNING id',
+        [name, tools, minMoney, maxMoney]
+    );
+    return res.rows[0];
+}
+
+async function getRobberies() {
+    const res = await query('SELECT * FROM robberies ORDER BY created_at ASC');
+    return res.rows;
+}
+
+async function getRobberyById(id) {
+    const res = await query('SELECT * FROM robberies WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function deleteRobbery(id) {
+    await query('DELETE FROM robberies WHERE id=$1', [id]);
+}
+
 async function checkLoginAndIdentity(discordId) {
     const status = await getLoginStatus(discordId);
     if (!status.is_logged_in) return '❌ لازم تسجّل دخول أولاً. استخدم `/identity` لتسجيل الدخول.';
@@ -660,6 +689,8 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    addToCash,
+    addRobbery, getRobberies, getRobberyById, deleteRobbery,
     checkLoginAndIdentity,
     createSnapAccount, getSnapAccount, getSnapAccountByUsername,
     addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,

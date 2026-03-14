@@ -51,12 +51,6 @@ const menuHandlers = {
         ban: '🚫 **باند** — الأمر: `-باند @اللاعب السبب`',
         defame: '📢 **تشهير** — الأمر: `-تشهير @اللاعب السبب`',
     },
-    crime_menu: {
-        robbery: '💰 **سرقة** — تواصل مع الإدارة لتنفيذ عملية السرقة.',
-        kidnap: '🪢 **خطف** — تواصل مع الإدارة لتنفيذ عملية الخطف.',
-        fraud: '🎭 **نصب واحتيال** — تواصل مع الإدارة لتنفيذ عملية الاحتيال.',
-        armed_robbery: '🔫 **سطو مسلح** — تواصل مع الإدارة لتنفيذ السطو المسلح.',
-    },
     events_menu: {
         open_flight: '✈️ **فتح رحلة** — تواصل مع الإدارة لفتح رحلة جديدة.',
         hurricane: '🌀 **إعصار** — تواصل مع الإدارة لتفعيل حدث الإعصار.',
@@ -709,6 +703,74 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ أثناء تسجيل الدخول.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'robbery_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const robberyId = parseInt(value);
+                const rob = await db.getRobberyById(robberyId);
+                if (!rob) return interaction.reply({ content: '❌ هذه السرقة لم تعد متاحة.', flags: 64 });
+
+                const toolsList = rob.tools.trim().toLowerCase() === 'لا يوجد' || !rob.tools.trim()
+                    ? null
+                    : rob.tools.split(',').map(t => t.trim()).filter(Boolean);
+
+                // check inventory
+                const inventory = await db.getInventory(interaction.user.id);
+                const missing = [];
+                if (toolsList) {
+                    for (const tool of toolsList) {
+                        const has = inventory.find(i => i.item_name.trim().toLowerCase() === tool.toLowerCase() && i.quantity > 0);
+                        if (!has) missing.push(tool);
+                    }
+                }
+
+                if (missing.length) {
+                    const embed = new EmbedBuilder()
+                        .setTitle('❌ أدوات ناقصة')
+                        .setColor(0xB71C1C)
+                        .setDescription(`لا تملك الأدوات اللازمة لتنفيذ **${rob.name}**:`)
+                        .addFields({ name: '🛠️ الأدوات الناقصة', value: missing.map(t => `• \`${t}\``).join('\n'), inline: false })
+                        .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                // execute robbery
+                const amount = Math.floor(Math.random() * (rob.max_money - rob.min_money + 1)) + rob.min_money;
+
+                // consume tools
+                if (toolsList) {
+                    for (const tool of toolsList) {
+                        await db.useItem(interaction.user.id, tool).catch(() => {});
+                    }
+                }
+
+                // add money to cash
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (identity) {
+                    await db.addToCash(interaction.user.id, identity.slot, amount);
+                }
+
+                const embed = new EmbedBuilder()
+                    .setTitle('💰 تمت السرقة بنجاح!')
+                    .setColor(0x2E7D32)
+                    .addFields(
+                        { name: '🔫 نوع السرقة', value: rob.name, inline: true },
+                        { name: '💵 المبلغ المسروق', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                        { name: '🛠️ الأدوات المستخدمة', value: toolsList ? toolsList.map(t => `\`${t}\``).join(', ') : '`لا يوجد`', inline: false },
+                    )
+                    .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ أثناء تنفيذ السرقة.', flags: 64 });
             }
         }
 

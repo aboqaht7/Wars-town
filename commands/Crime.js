@@ -3,36 +3,49 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'crime',
-    data: new SlashCommandBuilder().setName('crime').setDescription('نظام الجرائم: سرقات وخطف'),
+    data: new SlashCommandBuilder().setName('crime').setDescription('نظام السرقات'),
     async execute(message, args, db) {
-        const { embed, menu } = await build(db);
-        message.channel.send({ embeds: [embed], components: [menu, resetRow('crime')] });
+        await db.ensureUser(message.author.id, message.author.username);
+        const err = await db.checkLoginAndIdentity(message.author.id);
+        if (err) return message.reply(err);
+        const payload = await build(db);
+        message.channel.send(payload);
     },
     async slashExecute(interaction, db) {
-        const { embed, menu } = await build(db);
-        interaction.reply({ embeds: [embed], components: [menu, resetRow('crime')] });
+        await db.ensureUser(interaction.user.id, interaction.user.username);
+        const err = await db.checkLoginAndIdentity(interaction.user.id);
+        if (err) return interaction.reply({ content: err, flags: 64 });
+        const payload = await build(db);
+        interaction.reply(payload);
     }
 };
 
 async function build(db) {
+    const robberies = await db.getRobberies();
     const embed = new EmbedBuilder()
-        .setTitle('🔫 نظام الجرائم')
+        .setTitle('🔫 نظام السرقات')
         .setColor(0xB71C1C)
-        .setDescription('اختر نوع الجريمة التي تريد تنفيذها.')
-        .setFooter({ text: 'نظام الجرائم • بوت FANTASY' })
+        .setDescription(robberies.length
+            ? 'اختر السرقة التي تريد تنفيذها من القائمة.'
+            : '> لا توجد سرقات متاحة حالياً. انتظر الإدارة.')
+        .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
         .setTimestamp();
     const img = await db.getImage('crime');
     if (img) embed.setImage(img);
+
+    if (!robberies.length) return { embeds: [embed], components: [resetRow('crime')] };
+
+    const options = robberies.slice(0, 25).map(r => ({
+        label: r.name,
+        value: String(r.id),
+        description: `💵 ${Number(r.min_money).toLocaleString()} — ${Number(r.max_money).toLocaleString()} ريال`,
+    }));
+
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
-            .setCustomId('crime_menu')
-            .setPlaceholder('اختر نوع الجريمة')
-            .addOptions([
-                { label: '💰 سرقة', value: 'robbery' },
-                { label: '🪢 خطف', value: 'kidnap' },
-                { label: '🎭 نصب واحتيال', value: 'fraud' },
-                { label: '🔫 سطو مسلح', value: 'armed_robbery' },
-            ])
+            .setCustomId('robbery_menu')
+            .setPlaceholder('💰 اختر السرقة')
+            .addOptions(options)
     );
-    return { embed, menu };
+    return { embeds: [embed], components: [menu, resetRow('crime')] };
 }
