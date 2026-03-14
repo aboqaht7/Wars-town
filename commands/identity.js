@@ -66,7 +66,7 @@ async function buildMain(userId, db) {
             .setCustomId('identity_menu')
             .setPlaceholder('اختر خيار')
             .addOptions([
-                { label: '✏️ إنشاء / تعديل هوية', value: 'create_identity', description: 'أنشئ شخصية جديدة أو عدّل موجودة' },
+                { label: '✏️ إنشاء هوية', value: 'create_identity', description: 'أنشئ شخصية جديدة في إحدى الخانات الفارغة' },
                 { label: '✅ تسجيل دخول', value: 'login_identity', description: 'سجّل دخول بشخصية موجودة' },
                 { label: '🚪 تسجيل خروج', value: 'logout_identity', description: 'سجّل خروج من الشخصية الحالية' },
             ])

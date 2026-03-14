@@ -233,15 +233,14 @@ client.on('interactionCreate', async interaction => {
                 if (value === 'create_identity') {
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
-                    const emptySlots = [1, 2, 3].filter(s => !identities.find(i => i.slot === s && i.character_name));
-                    if (!emptySlots.length) {
-                        return interaction.reply({ content: '❌ شخصياتك الثلاث مكتملة. لا يمكن إنشاء هوية جديدة.', flags: 64 });
-                    }
-                    const slotOptions = emptySlots.map(s => ({
-                        label: slotNames[s],
-                        value: `create_slot_${s}`,
-                        description: 'إنشاء هوية جديدة',
-                    }));
+                    const slotOptions = [1, 2, 3].map(s => {
+                        const taken = identities.find(i => i.slot === s && i.character_name);
+                        return {
+                            label: slotNames[s],
+                            value: `create_slot_${s}`,
+                            description: taken ? '🔒 مكتملة بالفعل' : '🟢 متاحة للإنشاء',
+                        };
+                    });
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_create_slot')
@@ -297,6 +296,11 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'identity_create_slot') {
             const slot = parseInt(value.replace('create_slot_', ''));
+            const identities = await db.getUserIdentities(interaction.user.id);
+            const taken = identities.find(i => i.slot === slot && i.character_name);
+            if (taken) {
+                return interaction.reply({ content: `❌ **${['', 'الشخصية الأولى', 'الشخصية الثانية', 'الشخصية الثالثة'][slot]}** مكتملة بالفعل ولا يمكن إنشاء هوية جديدة فيها.`, flags: 64 });
+            }
             const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
             const modal = new ModalBuilder()
                 .setCustomId(`create_char_${slot}`)

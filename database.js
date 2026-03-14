@@ -226,6 +226,14 @@ async function updatePendingStatus(id, status) {
     await query('UPDATE pending_identities SET status=$2 WHERE id=$1', [id, status]);
 }
 
+async function getPendingIdentities(limit = 25) {
+    const res = await query(
+        `SELECT * FROM pending_identities WHERE status='pending' ORDER BY created_at ASC LIMIT $1`,
+        [limit]
+    );
+    return res.rows;
+}
+
 async function createIdentityFull(discordId, slot, data) {
     const existing = await query('SELECT iban FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
     if (existing.rows[0]) {
@@ -413,7 +421,7 @@ async function createTicket(discordId, ticketType, subject) {
 module.exports = {
     query, ensureUser, generateIban,
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
-    createPendingIdentity, getPendingIdentity, updatePendingStatus,
+    createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     postTweet, getXTimeline, likePost, deletePost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
