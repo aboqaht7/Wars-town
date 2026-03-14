@@ -520,6 +520,113 @@ async function removeVehicle(discordId, plate) {
     return res.rows.length > 0;
 }
 
+async function createSnapAccount(discordId, snapUsername) {
+    const existing = await query('SELECT 1 FROM snap_accounts WHERE discord_id = $1', [discordId]);
+    if (existing.rows[0]) return { success: false, error: 'لديك حساب سناب بالفعل.' };
+    const taken = await query('SELECT 1 FROM snap_accounts WHERE LOWER(snap_username) = LOWER($1)', [snapUsername]);
+    if (taken.rows[0]) return { success: false, error: `اسم الحساب **${snapUsername}** مأخوذ.` };
+    await query('INSERT INTO snap_accounts (discord_id, snap_username) VALUES ($1, $2)', [discordId, snapUsername]);
+    return { success: true };
+}
+
+async function getSnapAccount(discordId) {
+    const res = await query('SELECT * FROM snap_accounts WHERE discord_id = $1', [discordId]);
+    return res.rows[0] || null;
+}
+
+async function getSnapAccountByUsername(snapUsername) {
+    const res = await query('SELECT * FROM snap_accounts WHERE LOWER(snap_username) = LOWER($1)', [snapUsername]);
+    return res.rows[0] || null;
+}
+
+async function addSnapFriend(userId, friendId) {
+    const exists = await query(
+        'SELECT * FROM snap_friends WHERE (user_a=$1 AND user_b=$2) OR (user_a=$2 AND user_b=$1)',
+        [userId, friendId]
+    );
+    if (exists.rows[0]) return { success: false, error: 'طلب الصداقة موجود بالفعل أو أنتما أصدقاء.' };
+    await query('INSERT INTO snap_friends (user_a, user_b, status) VALUES ($1, $2, $3)', [userId, friendId, 'pending']);
+    return { success: true };
+}
+
+async function acceptSnapFriend(userId, requesterId) {
+    const res = await query(
+        'UPDATE snap_friends SET status=$1 WHERE user_a=$2 AND user_b=$3 AND status=$4 RETURNING *',
+        ['accepted', requesterId, userId, 'pending']
+    );
+    return res.rows.length > 0;
+}
+
+async function getSnapFriends(userId) {
+    const res = await query(
+        `SELECT sf.*, 
+            CASE WHEN sf.user_a=$1 THEN sa_b.snap_username ELSE sa_a.snap_username END AS friend_username,
+            CASE WHEN sf.user_a=$1 THEN sf.user_b ELSE sf.user_a END AS friend_id,
+            CASE WHEN sf.user_a=$1 THEN sf.last_snap_a ELSE sf.last_snap_b END AS my_last_snap,
+            CASE WHEN sf.user_a=$1 THEN sf.last_snap_b ELSE sf.last_snap_a END AS their_last_snap
+         FROM snap_friends sf
+         LEFT JOIN snap_accounts sa_a ON sa_a.discord_id = sf.user_a
+         LEFT JOIN snap_accounts sa_b ON sa_b.discord_id = sf.user_b
+         WHERE (sf.user_a=$1 OR sf.user_b=$1) AND sf.status='accepted'
+         ORDER BY sf.streak DESC`,
+        [userId]
+    );
+    return res.rows;
+}
+
+async function getPendingSnapRequests(userId) {
+    const res = await query(
+        `SELECT sf.*, sa.snap_username AS requester_username, sa.discord_id AS requester_id
+         FROM snap_friends sf
+         JOIN snap_accounts sa ON sa.discord_id = sf.user_a
+         WHERE sf.user_b=$1 AND sf.status='pending'`,
+        [userId]
+    );
+    return res.rows;
+}
+
+async function sendSnap(senderId, receiverId, content) {
+    await query(
+        'INSERT INTO snap_messages (sender_id, receiver_id, content) VALUES ($1, $2, $3)',
+        [senderId, receiverId, content]
+    );
+    await query('UPDATE snap_accounts SET score = score + 1 WHERE discord_id = $1', [senderId]);
+    // update last_snap and check streak
+    const now = new Date();
+    const friendship = await query(
+        'SELECT * FROM snap_friends WHERE (user_a=$1 AND user_b=$2) OR (user_a=$2 AND user_b=$1)',
+        [senderId, receiverId]
+    );
+    if (!friendship.rows[0]) return;
+    const f = friendship.rows[0];
+    const isA = f.user_a === senderId;
+    const col = isA ? 'last_snap_a' : 'last_snap_b';
+    const otherCol = isA ? 'last_snap_b' : 'last_snap_a';
+    await query(`UPDATE snap_friends SET ${col}=$1 WHERE id=$2`, [now, f.id]);
+    const otherLast = f[otherCol];
+    const hoursDiff = otherLast ? (now - new Date(otherLast)) / 3600000 : Infinity;
+    if (hoursDiff <= 48) {
+        await query('UPDATE snap_friends SET streak = streak + 1, last_snap_a=NULL, last_snap_b=NULL WHERE id=$1', [f.id]);
+    }
+}
+
+async function getSnapInbox(userId) {
+    const res = await query(
+        `SELECT sm.*, sa.snap_username AS sender_username
+         FROM snap_messages sm
+         JOIN snap_accounts sa ON sa.discord_id = sm.sender_id
+         WHERE sm.receiver_id=$1
+         ORDER BY sm.seen ASC, sm.created_at DESC
+         LIMIT 20`,
+        [userId]
+    );
+    return res.rows;
+}
+
+async function markSnapSeen(snapId, userId) {
+    await query('UPDATE snap_messages SET seen=TRUE WHERE id=$1 AND receiver_id=$2', [snapId, userId]);
+}
+
 async function getTickets(discordId) {
     const res = await query(
         'SELECT id, ticket_type, subject, status, created_at FROM tickets WHERE discord_id = $1 ORDER BY created_at DESC',
@@ -542,6 +649,9 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    createSnapAccount, getSnapAccount, getSnapAccountByUsername,
+    addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,
+    sendSnap, getSnapInbox, markSnapSeen,
     createXAccount, getXAccount, deleteXAccount,
     postTweet, getXTimeline, likePost, deletePost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,

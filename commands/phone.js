@@ -42,6 +42,7 @@ function build(username, unread, image) {
             .addOptions([
                 { label: '📩 الرسائل', value: 'messages', description: 'عرض صندوق رسائلك' },
                 { label: '📒 جهات الاتصال', value: 'contacts', description: 'عرض جهات اتصالك' },
+                { label: '👻 سناب شات', value: 'snap', description: 'الرسائل والأصدقاء والستريك' },
                 { label: '𝕏 منصة X', value: 'x_platform', description: 'عرض آخر منشورات منصة X' },
             ])
     );
