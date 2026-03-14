@@ -1,6 +1,6 @@
 const {
     SlashCommandBuilder, EmbedBuilder,
-    ActionRowBuilder, ButtonBuilder, ButtonStyle,
+    ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder,
 } = require('discord.js');
 const { resetRow } = require('../utils');
 
@@ -31,17 +31,25 @@ function buildSnap(account, image) {
         .setTimestamp();
     if (image) embed.setImage(image);
 
-    const row = account
-        ? new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('snap_send').setLabel('📸 إرسال سناب').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId('snap_inbox').setLabel('📬 الوارد').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('snap_friends').setLabel('👥 أصدقائي').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('snap_add').setLabel('➕ إضافة صديق').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('snap_requests').setLabel('🔔 الطلبات').setStyle(ButtonStyle.Danger),
-        )
-        : new ActionRowBuilder().addComponents(
+    if (!account) {
+        const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('snap_create').setLabel('✨ إنشاء حساب').setStyle(ButtonStyle.Primary),
         );
+        return { embeds: [embed], components: [row, resetRow('سناب')] };
+    }
 
-    return { embeds: [embed], components: [row, resetRow('سناب')] };
+    const menu = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
+            .setCustomId('snap_menu')
+            .setPlaceholder('👻 اختر من القائمة')
+            .addOptions([
+                { label: '📸 إرسال سناب',    value: 'snap_send',     description: 'أرسل سناب لصديق' },
+                { label: '📬 الوارد',          value: 'snap_inbox',    description: 'شوف السنابات اللي وصلتك' },
+                { label: '👥 أصدقائي',        value: 'snap_friends',  description: 'قائمة أصدقائك والستريك' },
+                { label: '➕ إضافة صديق',     value: 'snap_add',      description: 'أضف صديق باسم حساب سناب' },
+                { label: '🔔 طلبات الصداقة',  value: 'snap_requests', description: 'اقبل طلبات الصداقة' },
+            ])
+    );
+
+    return { embeds: [embed], components: [menu, resetRow('سناب')] };
 }

@@ -699,6 +699,109 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        if (interaction.customId === 'snap_menu') {
+            try {
+                const { ModalBuilder: MN, TextInputBuilder: TIN, TextInputStyle: TSN, ActionRowBuilder: ARN, StringSelectMenuBuilder: SSN } = require('discord.js');
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const acc = await db.getSnapAccount(interaction.user.id);
+                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
+
+                if (value === 'snap_send') {
+                    const friends = await db.getSnapFriends(interaction.user.id);
+                    if (!friends.length) return interaction.reply({ content: '❌ ليس لديك أصدقاء بعد. أضف صديقاً أولاً.', flags: 64 });
+                    const options = friends.slice(0, 25).map(f => ({
+                        label: f.friend_username,
+                        value: f.friend_id,
+                        description: `🔥 ستريك: ${f.streak}`,
+                    }));
+                    const row = new ARN().addComponents(
+                        new SSN().setCustomId('snap_friend_select').setPlaceholder('👻 اختر صديق لإرسال سناب').addOptions(options)
+                    );
+                    return interaction.reply({ content: '📸 **اختر الصديق الذي تريد إرسال سناب له:**', components: [row], flags: 64 });
+                }
+
+                if (value === 'snap_inbox') {
+                    const msgs = await db.getSnapInbox(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('📬 صندوق السنابات الواردة')
+                        .setColor(0xFFFC00)
+                        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                        .setTimestamp();
+                    if (!msgs.length) {
+                        embed.setDescription('> 📭 لا توجد سنابات واردة');
+                    } else {
+                        const unseen = msgs.filter(m => !m.seen);
+                        embed.setDescription(`📩 **${unseen.length}** سناب جديد غير مقروء`);
+                        msgs.slice(0, 10).forEach(m => embed.addFields({
+                            name: `${m.seen ? '📖' : '🔴'} من: **${m.sender_username}**`,
+                            value: `> ${m.content}\n⏰ ${new Date(m.created_at).toLocaleString('ar-SA')}`,
+                            inline: false,
+                        }));
+                        for (const m of msgs.filter(m => !m.seen)) await db.markSnapSeen(m.id, interaction.user.id);
+                    }
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                if (value === 'snap_friends') {
+                    const friends = await db.getSnapFriends(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('👥 أصدقائي على سناب')
+                        .setColor(0xFFFC00)
+                        .setFooter({ text: `${friends.length} صديق • سناب شات • بوت FANTASY` })
+                        .setTimestamp();
+                    if (!friends.length) {
+                        embed.setDescription('> لا يوجد أصدقاء بعد. اختر **➕ إضافة صديق**');
+                    } else {
+                        const SPACER = { name: '\u200b', value: '\u200b', inline: true };
+                        const fields = friends.map(f => {
+                            const s = f.streak;
+                            const badge = s >= 100 ? '💯' : s >= 50 ? '🏆' : s >= 10 ? '⚡' : '🔥';
+                            return { name: `👻 ${f.friend_username}`, value: `${badge} **${s}** ستريك`, inline: true };
+                        });
+                        while (fields.length % 3 !== 0) fields.push(SPACER);
+                        embed.addFields(fields);
+                    }
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                if (value === 'snap_add') {
+                    const modal = new MN().setCustomId('snap_add_modal').setTitle('➕ إضافة صديق')
+                        .addComponents(new ARN().addComponents(
+                            new TIN().setCustomId('friend_snap_name').setLabel('اسم حساب سناب الصديق')
+                                .setStyle(TSN.Short).setRequired(true).setMaxLength(20)
+                                .setPlaceholder('مثال: Sultan2025')
+                        ));
+                    return interaction.showModal(modal);
+                }
+
+                if (value === 'snap_requests') {
+                    const requests = await db.getPendingSnapRequests(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('🔔 طلبات الصداقة الواردة')
+                        .setColor(0xFFFC00)
+                        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                        .setTimestamp();
+                    if (!requests.length) {
+                        embed.setDescription('> لا توجد طلبات صداقة معلّقة.');
+                        return interaction.reply({ embeds: [embed], flags: 64 });
+                    }
+                    embed.setDescription(`📩 **${requests.length}** طلب صداقة`);
+                    const options = requests.slice(0, 25).map(r => ({
+                        label: r.requester_username,
+                        value: r.requester_id,
+                        description: 'اضغط للقبول',
+                    }));
+                    const row = new ARN().addComponents(
+                        new SSN().setCustomId('snap_accept_select').setPlaceholder('✅ اختر طلباً لقبوله').addOptions(options)
+                    );
+                    return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+                }
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
+
         if (interaction.customId === 'snap_friend_select') {
             try {
                 const { ModalBuilder: MSN2, TextInputBuilder: TISN2, TextInputStyle: TSSN2, ActionRowBuilder: ARSN2 } = require('discord.js');
