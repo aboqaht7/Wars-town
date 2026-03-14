@@ -949,13 +949,10 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const result = await db.createSnapAccount(interaction.user.id, snapUsername);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
-                const embed = new EmbedBuilder()
-                    .setTitle('👻 مرحباً بك في سناب شات!')
-                    .setColor(0xFFFC00)
-                    .setDescription(`تم إنشاء حسابك **@${snapUsername}** بنجاح!\nأضف أصدقاء وابدأ إرسال السنابات 🎉`)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
-                    .setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                const { buildSnap } = require('./commands/snap');
+                const account = await db.getSnapAccount(interaction.user.id);
+                const img = await db.getImage('snap');
+                return interaction.reply(buildSnap(account, img));
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
