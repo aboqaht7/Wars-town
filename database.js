@@ -45,8 +45,8 @@ async function ensureIdentity(discordId, slot) {
     const iban = await generateIban();
     const res = await query(
         `INSERT INTO identities (discord_id, slot, character_name, iban, balance)
-         VALUES ($1, $2, $3, $4, 0) RETURNING *`,
-        [discordId, slot, `شخصية ${slot}`, iban]
+         VALUES ($1, $2, NULL, $3, 0) RETURNING *`,
+        [discordId, slot, iban]
     );
     return res.rows[0];
 }
@@ -202,7 +202,8 @@ async function transferItem(fromDiscordId, toDiscordId, itemName) {
 }
 
 async function getImage(systemKey) {
-    const res = await query('SELECT image_url FROM system_images WHERE system_key = $1', [systemKey]);
+    const key = systemKey.trim().toLowerCase();
+    const res = await query('SELECT image_url FROM system_images WHERE LOWER(system_key) = $1', [key]);
     const url = res.rows[0]?.image_url;
     if (!url) return null;
     if (/^https?:\/\//i.test(url) || url.startsWith('attachment://')) return url;
@@ -210,10 +211,11 @@ async function getImage(systemKey) {
 }
 
 async function setImage(systemKey, imageUrl) {
+    const key = systemKey.trim().toLowerCase();
     await query(
         `INSERT INTO system_images (system_key, image_url, updated_at) VALUES ($1, $2, NOW())
          ON CONFLICT (system_key) DO UPDATE SET image_url = EXCLUDED.image_url, updated_at = NOW()`,
-        [systemKey, imageUrl]
+        [key, imageUrl]
     );
 }
 
