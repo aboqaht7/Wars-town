@@ -520,6 +520,48 @@ async function removeVehicle(discordId, plate) {
     return res.rows.length > 0;
 }
 
+async function initPropertiesTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS properties (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            price BIGINT NOT NULL,
+            image_url TEXT
+        )
+    `);
+}
+initPropertiesTable().catch(console.error);
+
+async function addProperty(name, price, imageUrl) {
+    const res = await query(
+        'INSERT INTO properties (name, price, image_url) VALUES ($1, $2, $3) RETURNING *',
+        [name, price, imageUrl || null]
+    );
+    return res.rows[0];
+}
+
+async function getProperties() {
+    const res = await query('SELECT * FROM properties ORDER BY id ASC');
+    return res.rows;
+}
+
+async function getPropertyById(id) {
+    const res = await query('SELECT * FROM properties WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function deleteProperty(id) {
+    await query('DELETE FROM properties WHERE id=$1', [id]);
+}
+
+async function deleteAllProperties() {
+    await query('DELETE FROM properties');
+}
+
+async function updatePropertyImage(id, imageUrl) {
+    await query('UPDATE properties SET image_url=$1 WHERE id=$2', [imageUrl, id]);
+}
+
 async function deleteIdentity(discordId, slot) {
     await query('DELETE FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
     // if they were logged in with this slot, log them out
@@ -706,6 +748,7 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    addProperty, getProperties, getPropertyById, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,
     addToCash,
     addRobbery, getRobberies, getRobberyById, deleteRobbery,

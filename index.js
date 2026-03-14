@@ -80,12 +80,6 @@ const menuHandlers = {
         decay: '💀 **تحلل** — شخصيتك في وضع التحلل، تواصل مع الإدارة.',
         witch_resuscitation: '🧙 **إنعاش ساحرة** — تواصل مع الساحرة للحصول على الإنعاش.',
     },
-    properties_menu: {
-        villa: '🏡 **فيلا** — تواصل مع الإدارة لاستفسارات شراء الفيلا.',
-        apartment: '🏢 **شقة** — تواصل مع الإدارة لاستفسارات شراء الشقة.',
-        land: '🌍 **أرض** — تواصل مع الإدارة لاستفسارات شراء الأرض.',
-        office: '🏬 **مكتب تجاري** — تواصل مع الإدارة لاستفسارات الشراء.',
-    },
     ticket_menu: {
         complaint: '📋 **شكوى** — اكتب تفاصيل شكواك وأرسلها للإدارة.',
         suggestion: '💡 **اقتراح** — اكتب اقتراحك وسيتم مراجعته.',
@@ -110,7 +104,7 @@ const resetCommandMap = {
     phone: 'phone', events: 'events', jobs: 'jobs', market: 'market',
     law: 'law', admin: 'admin', crime: 'crime', health: 'health',
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
-    x_platform: 'منصة-x', help: 'help',
+    x_platform: 'منصة-x', help: 'help', properties: 'properties',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -130,6 +124,67 @@ client.on('interactionCreate', async interaction => {
                         if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
                     } catch {}
                 }
+            }
+        }
+
+        if (interaction.customId.startsWith('buy_property_')) {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const propId = parseInt(interaction.customId.replace('buy_property_', ''));
+                const prop   = await db.getPropertyById(propId);
+                if (!prop) return interaction.reply({ content: '❌ هذا العقار لم يعد متاحاً.', flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: '❌ لم يتم العثور على هويتك النشطة.', flags: 64 });
+
+                const price = Number(prop.price);
+                if (Number(identity.cash) < price) {
+                    return interaction.reply({
+                        content: `❌ كاشك غير كافٍ. لديك \`${Number(identity.cash).toLocaleString()} ريال\` وسعر العقار \`${price.toLocaleString()} ريال\`.`,
+                        flags: 64
+                    });
+                }
+
+                // deduct from cash
+                await db.addToCash(interaction.user.id, identity.slot, -price);
+
+                // DM the buyer with property details
+                const dmEmbed = new EmbedBuilder()
+                    .setTitle(`🏠 تم شراء عقار — ${prop.name}`)
+                    .setColor(0x2E7D32)
+                    .addFields(
+                        { name: '🏠 اسم العقار', value: prop.name, inline: true },
+                        { name: '💰 السعر المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
+                    )
+                    .setDescription('> تهانينا! تم شراء عقارك بنجاح. احتفظ بهذه الرسالة كوثيقة ملكية.')
+                    .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                    .setTimestamp();
+                if (prop.image_url) dmEmbed.setImage(prop.image_url);
+
+                try {
+                    const user = await client.users.fetch(interaction.user.id);
+                    await user.send({ embeds: [dmEmbed] });
+                } catch {
+                    // DMs disabled — ignore
+                }
+
+                const successEmbed = new EmbedBuilder()
+                    .setTitle('✅ تمت عملية الشراء')
+                    .setColor(0x2E7D32)
+                    .addFields(
+                        { name: '🏠 العقار', value: prop.name, inline: true },
+                        { name: '💰 المبلغ المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
+                    )
+                    .setDescription('> تم خصم المبلغ من كاشك وإرسال وثيقة الملكية في خاصك.')
+                    .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.update({ embeds: [successEmbed], components: [] });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء عملية الشراء.', flags: 64 });
             }
         }
 
@@ -725,6 +780,40 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ أثناء تسجيل الدخول.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'properties_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const propId = parseInt(value);
+                const prop = await db.getPropertyById(propId);
+                if (!prop) return interaction.reply({ content: '❌ هذا العقار لم يعد متاحاً.', flags: 64 });
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`🏠 ${prop.name}`)
+                    .setColor(0xB71C1C)
+                    .addFields(
+                        { name: '💰 السعر', value: `\`${Number(prop.price).toLocaleString()} ريال\``, inline: true },
+                    )
+                    .setDescription('هل تريد شراء هذا العقار؟ اضغط على زر الشراء أدناه.\n> سيتم خصم المبلغ من كاشك وإرسال تفاصيل العقار في خاصك.')
+                    .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                    .setTimestamp();
+                if (prop.image_url) embed.setImage(prop.image_url);
+
+                const row = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`buy_property_${prop.id}`)
+                        .setLabel(`شراء ${prop.name}`)
+                        .setStyle(ButtonStyle.Danger),
+                );
+                return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
         }
 
