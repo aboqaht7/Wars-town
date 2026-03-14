@@ -1,4 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const {
+    SlashCommandBuilder, EmbedBuilder,
+    ActionRowBuilder, ButtonBuilder, ButtonStyle,
+} = require('discord.js');
 const { resetRow } = require('../utils');
 
 module.exports = {
@@ -18,18 +21,16 @@ function build(image) {
     const embed = new EmbedBuilder()
         .setTitle('🎒 الحقيبة')
         .setColor(0xE65100)
-        .setDescription('اكتشف محتويات حقيبتك واختر ما تريد.')
+        .setDescription('اختر ما تريد فعله بحقيبتك.')
         .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
         .setTimestamp();
     if (image) embed.setImage(image);
-    const menu = new ActionRowBuilder().addComponents(
-        new StringSelectMenuBuilder()
-            .setCustomId('bag_menu')
-            .setPlaceholder('اختر خيار')
-            .addOptions([
-                { label: '👀 عرض الأغراض', value: 'view' },
-                { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
-            ])
+
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('bag_view').setLabel('👀 عرض الحقيبة').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('bag_use').setLabel('✅ استخدام غرض').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('bag_transfer').setLabel('📤 تحويل غرض').setStyle(ButtonStyle.Secondary),
     );
-    return { embeds: [embed], components: [menu, resetRow('bag')] };
+
+    return { embeds: [embed], components: [row, resetRow('bag')] };
 }

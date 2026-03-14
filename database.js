@@ -168,6 +168,21 @@ async function getIdentitiesByDiscordId(discordId) {
     return res.rows;
 }
 
+async function useItem(discordId, itemName) {
+    const item = await query(
+        'SELECT * FROM inventory WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
+        [discordId, itemName]
+    );
+    if (!item.rows[0]) return { success: false, error: `لا يوجد في حقيبتك غرض باسم **${itemName}**` };
+    const row = item.rows[0];
+    if (row.quantity > 1) {
+        await query('UPDATE inventory SET quantity = quantity - 1 WHERE id = $1', [row.id]);
+    } else {
+        await query('DELETE FROM inventory WHERE id = $1', [row.id]);
+    }
+    return { success: true, remainingQty: row.quantity - 1 };
+}
+
 async function transferItem(fromDiscordId, toDiscordId, itemName) {
     const item = await query(
         'SELECT * FROM inventory WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
@@ -511,7 +526,7 @@ module.exports = {
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
-    transferMoney, transferItem, getTransactions, depositCash, withdrawCash,
+    transferMoney, transferItem, useItem, getTransactions, depositCash, withdrawCash,
     adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,
     getImage, setImage,
     getInventory, addItem,

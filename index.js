@@ -45,10 +45,6 @@ const menuHandlers = {
         manage: '👥 **إدارة اللاعبين** — صلاحية خاصة بالإدارة فقط.',
         logs: '📋 **سجل الإجراءات** — سجل جميع الإجراءات الإدارية.',
     },
-    bag_menu: {
-        view: null,
-        transfer_help: '📤 **نقل غرض** — استخدم: `-نقل [اسم الغرض] @المستخدم`\nمثال: `-نقل سنارة @اللاعب`',
-    },
     police_menu: {
         handcuff: '🔗 **كلبشة** — الأمر: `-كلبشة @اللاعب`',
         wanted: '🚨 **تلويت** — الأمر: `-تلويت @اللاعب`',
@@ -297,6 +293,55 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        if (['bag_view', 'bag_use', 'bag_transfer'].includes(interaction.customId)) {
+            const { ModalBuilder: MB2, TextInputBuilder: TIB2, TextInputStyle: TIS2, ActionRowBuilder: ARB2, StringSelectMenuBuilder: SSM2 } = require('discord.js');
+            await db.ensureUser(interaction.user.id, interaction.user.username);
+
+            if (interaction.customId === 'bag_view') {
+                const items = await db.getInventory(interaction.user.id);
+                const embed = new EmbedBuilder()
+                    .setTitle('🎒 محتويات حقيبتك')
+                    .setColor(0xE65100)
+                    .setDescription(items.length
+                        ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
+                        : '> حقيبتك فارغة حالياً')
+                    .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            }
+
+            if (interaction.customId === 'bag_use') {
+                const items = await db.getInventory(interaction.user.id);
+                if (!items.length) return interaction.reply({ content: '❌ حقيبتك فارغة لا يوجد ما تستخدمه.', flags: 64 });
+                const options = items.slice(0, 25).map(i => ({
+                    label: i.item_name,
+                    value: `use_${i.item_name}`,
+                    description: `الكمية: ${i.quantity}`,
+                }));
+                const row = new ARB2().addComponents(
+                    new SSM2().setCustomId('bag_use_select').setPlaceholder('اختر الغرض للاستخدام').addOptions(options)
+                );
+                return interaction.reply({ content: '✅ **اختر الغرض الذي تريد استخدامه:**', components: [row], flags: 64 });
+            }
+
+            if (interaction.customId === 'bag_transfer') {
+                const modal = new MB2()
+                    .setCustomId('bag_transfer_modal')
+                    .setTitle('📤 تحويل غرض')
+                    .addComponents(
+                        new ARB2().addComponents(
+                            new TIB2().setCustomId('transfer_item_name').setLabel('اسم الغرض')
+                                .setStyle(TIS2.Short).setRequired(true).setMaxLength(50)
+                        ),
+                        new ARB2().addComponents(
+                            new TIB2().setCustomId('transfer_iban').setLabel('إيبان المستلِم')
+                                .setStyle(TIS2.Short).setRequired(true).setMaxLength(20)
+                        ),
+                    );
+                return interaction.showModal(modal);
+            }
+        }
+
         return;
     }
 
@@ -475,24 +520,25 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
-        if (interaction.customId === 'bag_menu') {
-            if (value === 'view') {
-                try {
-                    await db.ensureUser(interaction.user.id, interaction.user.username);
-                    const items = await db.getInventory(interaction.user.id);
-                    const embed = new EmbedBuilder()
-                        .setTitle('🎒 محتويات حقيبتك')
-                        .setColor(0xE65100)
-                        .setDescription(items.length
-                            ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
-                            : '> حقيبتك فارغة حالياً')
-                        .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
-                        .setTimestamp();
-                    return interaction.reply({ embeds: [embed], flags: 64 });
-                } catch (e) {
-                    console.error(e);
-                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
-                }
+        if (interaction.customId === 'bag_use_select') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const itemName = value.replace(/^use_/, '');
+                const result = await db.useItem(interaction.user.id, itemName);
+                if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+                const embed = new EmbedBuilder()
+                    .setTitle('✅ تم استخدام الغرض')
+                    .setColor(0x2E7D32)
+                    .addFields(
+                        { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
+                        { name: '📦 الكمية المتبقية', value: `\`${result.remainingQty}\``, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -712,6 +758,33 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'نظام البنك • بوت FANTASY' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'bag_transfer_modal') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const itemName = interaction.fields.getTextInputValue('transfer_item_name').trim();
+                const toIban   = interaction.fields.getTextInputValue('transfer_iban').trim();
+                const receiver = await db.getIdentityByIban(toIban);
+                if (!receiver) return interaction.reply({ content: '❌ لم يُعثر على مستخدم بهذا الإيبان.', flags: 64 });
+                if (receiver.discord_id === interaction.user.id) return interaction.reply({ content: '❌ لا يمكنك تحويل غرض لنفسك.', flags: 64 });
+                const result = await db.transferItem(interaction.user.id, receiver.discord_id, itemName);
+                if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'الغرض غير موجود في حقيبتك أو الكمية صفر.'}`, flags: 64 });
+                const embed = new EmbedBuilder()
+                    .setTitle('📤 تم تحويل الغرض بنجاح')
+                    .setColor(0x6A1B9A)
+                    .addFields(
+                        { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
+                        { name: '📨 المستلِم', value: `${receiver.character_name} ${receiver.family_name || ''}`, inline: true },
+                        { name: '🏦 إيبان المستلِم', value: `\`${toIban}\``, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
