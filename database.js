@@ -172,6 +172,60 @@ async function addItem(discordId, itemName, quantity = 1) {
     }
 }
 
+async function getConfig(key) {
+    const res = await query('SELECT value FROM server_config WHERE key=$1', [key]);
+    return res.rows[0]?.value || null;
+}
+async function setConfig(key, value) {
+    await query(
+        `INSERT INTO server_config (key, value) VALUES ($1, $2)
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
+        [key, value]
+    );
+}
+
+async function logoutAllUsers() {
+    await query('UPDATE users SET is_logged_in=FALSE');
+}
+
+async function addCharacterLog(discordId, username, action, characterName, slot, details = null) {
+    await query(
+        `INSERT INTO character_log (discord_id, username, action, character_name, slot, details)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [discordId, username, action, characterName, slot, details]
+    );
+}
+
+async function getCharacterLogs(limit = 15, discordId = null) {
+    if (discordId) {
+        const res = await query(
+            'SELECT * FROM character_log WHERE discord_id=$1 ORDER BY created_at DESC LIMIT $2',
+            [discordId, limit]
+        );
+        return res.rows;
+    }
+    const res = await query('SELECT * FROM character_log ORDER BY created_at DESC LIMIT $1', [limit]);
+    return res.rows;
+}
+
+async function createPendingIdentity(data) {
+    const res = await query(
+        `INSERT INTO pending_identities (discord_id, username, slot, char_name, family_name, birth_place, birth_date, gender)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [data.discordId, data.username, data.slot, data.charName, data.familyName, data.birthPlace, data.birthDate, data.gender]
+    );
+    return res.rows[0];
+}
+
+async function getPendingIdentity(id) {
+    const res = await query('SELECT * FROM pending_identities WHERE id=$1 AND status=$2', [id, 'pending']);
+    return res.rows[0] || null;
+}
+
+async function updatePendingStatus(id, status) {
+    await query('UPDATE pending_identities SET status=$2 WHERE id=$1', [id, status]);
+}
+
 async function createIdentityFull(discordId, slot, data) {
     const existing = await query('SELECT iban FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
     if (existing.rows[0]) {
@@ -358,6 +412,8 @@ async function createTicket(discordId, ticketType, subject) {
 
 module.exports = {
     query, ensureUser, generateIban,
+    getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
+    createPendingIdentity, getPendingIdentity, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     postTweet, getXTimeline, likePost, deletePost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,

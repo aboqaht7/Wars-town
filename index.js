@@ -2,7 +2,8 @@ const fs = require('fs');
 const {
     Client, Collection, GatewayIntentBits, EmbedBuilder,
     ModalBuilder, TextInputBuilder, TextInputStyle,
-    ActionRowBuilder, StringSelectMenuBuilder
+    ActionRowBuilder, StringSelectMenuBuilder,
+    ButtonBuilder, ButtonStyle
 } = require('discord.js');
 const db = require('./database');
 require('dotenv').config();
@@ -132,6 +133,69 @@ client.on('interactionCreate', async interaction => {
                 }
             }
         }
+
+        if (interaction.customId.startsWith('approve_identity_') || interaction.customId.startsWith('reject_identity_')) {
+            const isApprove = interaction.customId.startsWith('approve_identity_');
+            const pendingId  = parseInt(interaction.customId.replace(isApprove ? 'approve_identity_' : 'reject_identity_', ''));
+            try {
+                const adminRole = await db.getConfig('identity_admin_role');
+                if (adminRole && !interaction.member.roles.cache.has(adminRole)) {
+                    return interaction.reply({ content: '❌ ليس لديك صلاحية على هويات اللاعبين.', flags: 64 });
+                }
+                const pending = await db.getPendingIdentity(pendingId);
+                if (!pending) return interaction.reply({ content: '❌ الطلب غير موجود أو تمت معالجته بالفعل.', flags: 64 });
+
+                if (isApprove) {
+                    const char = await db.createIdentityFull(pending.discord_id, pending.slot, {
+                        charName: pending.char_name, familyName: pending.family_name,
+                        birthPlace: pending.birth_place, birthDate: pending.birth_date, gender: pending.gender
+                    });
+                    await db.updatePendingStatus(pendingId, 'approved');
+                    await db.addCharacterLog(pending.discord_id, pending.username, 'approved', pending.char_name, pending.slot, `قبله: ${interaction.user.username}`);
+
+                    const resultEmbed = new EmbedBuilder()
+                        .setTitle('✅ تم قبول طلب الهوية')
+                        .setColor(0x2E7D32)
+                        .addFields(
+                            { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '📋 الشخصية', value: `شخصية ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
+                            { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '🏦 الإيبان', value: `\`${char.iban}\``, inline: true },
+                        )
+                        .setFooter({ text: 'نظام الهوية • بوت FANTASY' }).setTimestamp();
+                    await interaction.update({ embeds: [resultEmbed], components: [] });
+
+                    try {
+                        const user = await client.users.fetch(pending.discord_id);
+                        await user.send(`✅ **تم قبول طلب هويتك!**\n**شخصية ${pending.slot}:** ${pending.char_name} ${pending.family_name}\n🏦 الإيبان: \`${char.iban}\``);
+                    } catch {}
+                } else {
+                    await db.updatePendingStatus(pendingId, 'rejected');
+                    await db.addCharacterLog(pending.discord_id, pending.username, 'rejected', pending.char_name, pending.slot, `رفضه: ${interaction.user.username}`);
+
+                    const resultEmbed = new EmbedBuilder()
+                        .setTitle('❌ تم رفض طلب الهوية')
+                        .setColor(0xB71C1C)
+                        .addFields(
+                            { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '📋 الشخصية', value: `شخصية ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
+                            { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
+                        )
+                        .setFooter({ text: 'نظام الهوية • بوت FANTASY' }).setTimestamp();
+                    await interaction.update({ embeds: [resultEmbed], components: [] });
+
+                    try {
+                        const user = await client.users.fetch(pending.discord_id);
+                        await user.send(`❌ **تم رفض طلب هويتك للشخصية ${pending.slot}.**\nتواصل مع الإدارة للمزيد من التفاصيل.`);
+                    } catch {}
+                }
+            } catch (e) {
+                console.error(e);
+                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         return;
     }
 
@@ -168,29 +232,32 @@ client.on('interactionCreate', async interaction => {
             try {
                 if (value === 'create_identity') {
                     const identities = await db.getUserIdentities(interaction.user.id);
-                    const slotOptions = [1, 2, 3].map(s => {
-                        const existing = identities.find(i => i.slot === s);
-                        return {
-                            label: existing?.character_name
-                                ? `شخصية ${s}: ${existing.character_name} ${existing.family_name || ''}`
-                                : `شخصية ${s}: فارغة`,
-                            value: `create_slot_${s}`,
-                            description: existing ? 'تعديل الهوية الموجودة' : 'إنشاء هوية جديدة',
-                        };
-                    });
+                    const emptySlots = [1, 2, 3].filter(s => !identities.find(i => i.slot === s && i.character_name));
+                    if (!emptySlots.length) {
+                        return interaction.reply({ content: '❌ جميع خاناتك الثلاث ممتلئة. لا يمكن إنشاء هوية جديدة.', flags: 64 });
+                    }
+                    const slotOptions = emptySlots.map(s => ({
+                        label: `خانة ${s} — فارغة`,
+                        value: `create_slot_${s}`,
+                        description: 'إنشاء هوية جديدة في هذه الخانة',
+                    }));
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_create_slot')
-                            .setPlaceholder('اختر خانة الشخصية')
+                            .setPlaceholder('اختر خانة الشخصية الفارغة')
                             .addOptions(slotOptions)
                     );
-                    return interaction.reply({ content: '📋 **اختر خانة الشخصية التي تريد إنشاء/تعديل هويتها:**', components: [slotRow], flags: 64 });
+                    return interaction.reply({ content: '📋 **اختر الخانة الفارغة التي تريد إنشاء هويتك فيها:**', components: [slotRow], flags: 64 });
                 }
 
                 if (value === 'login_identity') {
+                    const tripOpen = await db.getConfig('trip_open');
+                    if (tripOpen !== 'true') {
+                        return interaction.reply({ content: '❌ **تسجيل الدخول متوقف حالياً.**\nلا يمكن تسجيل الدخول إلا عند فتح رحلة. انتظر إعلان المسؤولين.', flags: 64 });
+                    }
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const created = identities.filter(i => i.character_name);
-                    if (!created.length) return interaction.reply({ content: '❌ لا توجد شخصيات مُنشأة بعد. استخدم **إنشاء هوية** أولاً.', flags: 64 });
+                    if (!created.length) return interaction.reply({ content: '❌ لا توجد شخصيات مُنشأة ومقبولة بعد. قدّم طلب هوية أولاً.', flags: 64 });
                     const slotOptions = created.map(i => ({
                         label: `شخصية ${i.slot}: ${i.character_name} ${i.family_name || ''}`,
                         value: `login_slot_${i.slot}`,
@@ -211,10 +278,11 @@ client.on('interactionCreate', async interaction => {
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const activeChar = identities.find(i => i.slot === status.active_slot);
                     await db.logoutIdentity(interaction.user.id);
+                    await db.addCharacterLog(interaction.user.id, interaction.user.username, 'logout', activeChar?.character_name || null, status.active_slot);
                     const embed = new EmbedBuilder()
                         .setTitle('🚪 تسجيل الخروج')
                         .setColor(0x757575)
-                        .setDescription(`تم تسجيل الخروج من شخصية **${activeChar?.character_name || `شخصية ${status.active_slot}`}**`)
+                        .setDescription(`تم تسجيل الخروج من شخصية **${activeChar?.character_name || `شخصية ${status.active_slot}`} ${activeChar?.family_name || ''}**`)
                         .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed] });
@@ -261,6 +329,7 @@ client.on('interactionCreate', async interaction => {
                 await db.loginIdentity(interaction.user.id, slot);
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const char = identities.find(i => i.slot === slot);
+                await db.addCharacterLog(interaction.user.id, interaction.user.username, 'login', char.character_name, slot);
                 const embed = new EmbedBuilder()
                     .setTitle(`✅ تسجيل الدخول — شخصية ${slot}`)
                     .setColor(0x2E7D32)
@@ -396,6 +465,38 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        if (interaction.customId === 'events_menu') {
+            try {
+                if (value === 'hurricane') {
+                    await db.setConfig('hurricane_active', 'true');
+                    await db.setConfig('trip_open', 'false');
+                    await db.logoutAllUsers();
+                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
+                    const embed = new EmbedBuilder()
+                        .setTitle('🌀 تحذير — إعصار!')
+                        .setColor(0xB71C1C)
+                        .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
+                        .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed] });
+                }
+                if (value === 'open_flight') {
+                    await db.setConfig('trip_open', 'true');
+                    await db.setConfig('hurricane_active', 'false');
+                    const embed = new EmbedBuilder()
+                        .setTitle('✈️ تم فتح الرحلة!')
+                        .setColor(0x2E7D32)
+                        .setDescription('✅ **الرحلة مفتوحة الآن!**\n\n🎉 يمكن لجميع اللاعبين **تسجيل الدخول** بشخصياتهم.')
+                        .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed] });
+                }
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
+
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;
         const response = handler[value];
@@ -406,33 +507,61 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isModalSubmit()) {
         if (interaction.customId.startsWith('create_char_')) {
             const slot = parseInt(interaction.customId.replace('create_char_', ''));
-            const charName  = interaction.fields.getTextInputValue('char_name').trim();
+            const charName   = interaction.fields.getTextInputValue('char_name').trim();
             const familyName = interaction.fields.getTextInputValue('family_name').trim();
             const birthPlace = interaction.fields.getTextInputValue('birth_place').trim();
             const birthDate  = interaction.fields.getTextInputValue('birth_date').trim();
             const gender     = interaction.fields.getTextInputValue('gender').trim();
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
-                const char = await db.createIdentityFull(interaction.user.id, slot, {
-                    charName, familyName, birthPlace, birthDate, gender
+                const identities = await db.getUserIdentities(interaction.user.id);
+                const slotTaken = identities.find(i => i.slot === slot && i.character_name);
+                if (slotTaken) return interaction.reply({ content: '❌ هذه الخانة ممتلئة بالفعل. اختر خانة أخرى.', flags: 64 });
+
+                const pending = await db.createPendingIdentity({
+                    discordId: interaction.user.id,
+                    username: interaction.user.username,
+                    slot, charName, familyName, birthPlace, birthDate, gender
                 });
-                const embed = new EmbedBuilder()
-                    .setTitle(`🪪 تم إنشاء الهوية — شخصية ${slot}`)
-                    .setColor(0x4A148C)
-                    .addFields(
-                        { name: '👤 الاسم الأول', value: charName, inline: true },
-                        { name: '👥 العائلة',      value: familyName, inline: true },
-                        { name: '⚧ الجنس',         value: gender, inline: true },
-                        { name: '📅 تاريخ الميلاد', value: birthDate, inline: true },
-                        { name: '📍 مكان الولادة',  value: birthPlace, inline: true },
-                        { name: '🏦 الإيبان',       value: `\`${char.iban}\``, inline: true },
-                    )
-                    .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
-                    .setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                await db.addCharacterLog(interaction.user.id, interaction.user.username, 'pending', charName, slot);
+
+                const logChannelId = await db.getConfig('identity_log_channel');
+                if (logChannelId) {
+                    try {
+                        const logChannel = await client.channels.fetch(logChannelId);
+                        if (logChannel) {
+                            const logEmbed = new EmbedBuilder()
+                                .setTitle('📋 طلب هوية جديد — بانتظار المراجعة')
+                                .setColor(0xF57F17)
+                                .setThumbnail(interaction.user.displayAvatarURL())
+                                .addFields(
+                                    { name: '👤 المستخدم',        value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
+                                    { name: '📌 الخانة',           value: `شخصية ${slot}`, inline: true },
+                                    { name: '👤 الاسم الأول',     value: charName, inline: true },
+                                    { name: '👥 اسم العائلة',     value: familyName, inline: true },
+                                    { name: '⚧ الجنس',             value: gender, inline: true },
+                                    { name: '📅 تاريخ الميلاد',   value: birthDate, inline: true },
+                                    { name: '📍 مكان الولادة',    value: birthPlace, inline: true },
+                                    { name: '🆔 رقم الطلب',       value: `\`#${pending.id}\``, inline: true },
+                                )
+                                .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                                .setTimestamp();
+                            const btnRow = new ActionRowBuilder().addComponents(
+                                new ButtonBuilder().setCustomId(`approve_identity_${pending.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
+                                new ButtonBuilder().setCustomId(`reject_identity_${pending.id}`).setLabel('❌ رفض').setStyle(ButtonStyle.Danger)
+                            );
+                            await logChannel.send({ embeds: [logEmbed], components: [btnRow] });
+                        }
+                    } catch (e) { console.error('log channel error:', e); }
+                }
+
+                return interaction.reply({
+                    content: `⏳ **تم إرسال طلب هويتك رقم \`#${pending.id}\` للمراجعة.**\nسيصلك رد عند قبول أو رفض الطلب.`,
+                    flags: 64
+                });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء حفظ الهوية.', flags: 64 });
+                return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
         }
         return;
