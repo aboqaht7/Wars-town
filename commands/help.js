@@ -3,6 +3,8 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBui
 const OPTIONS = [
     { label: '🪪 الهوية', value: 'identity' },
     { label: '📱 الجوال', value: 'phone' },
+    { label: '💬 الرسائل', value: 'sms' },
+    { label: '𝕏 منصة X', value: 'x_platform' },
     { label: '🎒 الحقيبة', value: 'bag' },
     { label: '🏦 البنك', value: 'bank' },
     { label: '👮 الشرطة', value: 'police' },
@@ -13,8 +15,7 @@ const OPTIONS = [
     { label: '🛡️ الإدارة', value: 'admin' },
     { label: '🔫 الجرائم', value: 'crime' },
     { label: '🎫 التكتات', value: 'tickets' },
-    { label: '🚗 السيارات', value: 'vehicles' },
-    { label: '🏎️ معرض السيارات', value: 'showroom' },
+    { label: '🚗 السيارات والمعرض', value: 'vehicles' },
 ];
 
 function buildEmbed() {
@@ -25,6 +26,8 @@ function buildEmbed() {
         .addFields(
             { name: '🪪 الهوية', value: '`/identity`', inline: true },
             { name: '📱 الجوال', value: '`/phone`', inline: true },
+            { name: '💬 الرسائل', value: '`-رسالة` `−صندوق`', inline: true },
+            { name: '𝕏 منصة X', value: '`-تغريد` `/منصة-x`', inline: true },
             { name: '🎒 الحقيبة', value: '`/bag`', inline: true },
             { name: '🏦 البنك', value: '`/bank`', inline: true },
             { name: '👮 الشرطة', value: '`/police`', inline: true },
@@ -35,8 +38,8 @@ function buildEmbed() {
             { name: '🛡️ الإدارة', value: '`/admin`', inline: true },
             { name: '🔫 الجرائم', value: '`/crime`', inline: true },
             { name: '🎫 التكتات', value: '`/tickets`', inline: true },
-            { name: '🚗 السيارات', value: '`/سيارات`', inline: true },
             { name: '🏎️ المعرض', value: '`/معارض`', inline: true },
+            { name: '🚗 سياراتي', value: '`/سيارات`', inline: true },
         )
         .setFooter({ text: 'بوت FANTASY • نظام RP متكامل' })
         .setTimestamp();

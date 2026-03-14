@@ -132,7 +132,10 @@ async function transferItem(fromDiscordId, toDiscordId, itemName) {
 
 async function getImage(systemKey) {
     const res = await query('SELECT image_url FROM system_images WHERE system_key = $1', [systemKey]);
-    return res.rows[0]?.image_url || null;
+    const url = res.rows[0]?.image_url;
+    if (!url) return null;
+    if (/^https?:\/\//i.test(url) || url.startsWith('attachment://')) return url;
+    return null;
 }
 
 async function setImage(systemKey, imageUrl) {
