@@ -257,7 +257,7 @@ client.on('interactionCreate', async interaction => {
                         )
                         .setFooter({ text: 'نظام البنك • بوت FANTASY' })
                         .setTimestamp();
-                    return interaction.reply({ embeds: [embed] });
+                    return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
                 if (interaction.customId === 'bank_deposit') {
