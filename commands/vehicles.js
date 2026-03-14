@@ -1,34 +1,34 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'سيارات',
-    data: new SlashCommandBuilder()
-        .setName('سيارات')
-        .setDescription('عرض سياراتك المسجلة'),
+    data: new SlashCommandBuilder().setName('سيارات').setDescription('عرض سياراتك المسجلة'),
     async execute(message, args, db) {
-        await db.ensureUser(message.author.id, message.author.username);
-        const cars = await db.getVehicles(message.author.id);
-        const embed = build(cars, message.author.username, await db.getImage('vehicles'));
-        message.channel.send({ embeds: [embed], components: [resetRow('vehicles')] });
+        const img = await db.getImage('vehicles');
+        message.channel.send(build(img));
     },
     async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
-        const cars = await db.getVehicles(interaction.user.id);
-        const embed = build(cars, interaction.user.username, await db.getImage('vehicles'));
-        interaction.reply({ embeds: [embed], components: [resetRow('vehicles')] });
+        const img = await db.getImage('vehicles');
+        interaction.reply(build(img));
     }
 };
 
-function build(cars, username, image) {
-    return new EmbedBuilder()
+function build(image) {
+    const embed = new EmbedBuilder()
         .setTitle('🚗 سياراتي المسجلة')
         .setColor(0x37474F)
-        .setDescription(cars.length
-            ? cars.map(c => `🚗 **${c.car_name}** — لوحة: \`${c.plate}\``).join('\n')
-            : '> لا توجد سيارات مسجلة بعد')
-        .addFields({ name: '🔢 عدد السيارات', value: `\`${cars.length}\``, inline: true })
-        .setImage(image || null)
+        .setDescription('اعرض سياراتك المسجلة في نظام FANTASY.')
         .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
         .setTimestamp();
+    if (image) embed.setImage(image);
+    const menu = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
+            .setCustomId('vehicles_menu')
+            .setPlaceholder('اختر خيار')
+            .addOptions([
+                { label: '🚗 عرض سياراتي', value: 'view' },
+            ])
+    );
+    return { embeds: [embed], components: [menu, resetRow('vehicles')] };
 }

@@ -3,9 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'crime',
-    data: new SlashCommandBuilder()
-        .setName('crime')
-        .setDescription('نظام الجرائم: سرقات وخطف'),
+    data: new SlashCommandBuilder().setName('crime').setDescription('نظام الجرائم: سرقات وخطف'),
     async execute(message, args, db) {
         const { embed, menu } = await build(db);
         message.channel.send({ embeds: [embed], components: [menu, resetRow('crime')] });
@@ -20,13 +18,11 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('🔫 نظام الجرائم')
         .setColor(0xB71C1C)
-        .setDescription('اختر نوع الجريمة التي تريد تنفيذها')
-        .addFields(
-            { name: '⚠️ تحذير', value: 'الجرائم تخضع لمراقبة الإدارة وقد تترتب عليها عواقب', inline: false },
-        )
-        .setImage(await db.getImage('crime') || null)
+        .setDescription('اختر نوع الجريمة التي تريد تنفيذها.')
         .setFooter({ text: 'نظام الجرائم • بوت FANTASY' })
         .setTimestamp();
+    const img = await db.getImage('crime');
+    if (img) embed.setImage(img);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('crime_menu')

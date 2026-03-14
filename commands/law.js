@@ -3,9 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'law',
-    data: new SlashCommandBuilder()
-        .setName('law')
-        .setDescription('نظام المحاماة والقضايا'),
+    data: new SlashCommandBuilder().setName('law').setDescription('نظام المحاماة والقضايا'),
     async execute(message, args, db) {
         const { embed, menu } = await build(db);
         message.channel.send({ embeds: [embed], components: [menu, resetRow('law')] });
@@ -20,14 +18,11 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('⚖️ نظام المحاماة')
         .setColor(0x0D47A1)
-        .setDescription('مكتب المحاماة — اختر خدمتك القانونية')
-        .addFields(
-            { name: '📁 القضايا', value: 'يمكن فتح قضية جديدة أو متابعة قضية قائمة', inline: false },
-            { name: '👨‍⚖️ التواصل', value: 'تواصل مع الإدارة لتوكيل محامٍ', inline: false },
-        )
-        .setImage(await db.getImage('law') || null)
+        .setDescription('مكتب المحاماة — اختر خدمتك القانونية.')
         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
         .setTimestamp();
+    const img = await db.getImage('law');
+    if (img) embed.setImage(img);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('law_menu')

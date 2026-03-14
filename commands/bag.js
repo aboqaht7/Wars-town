@@ -3,37 +3,25 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'bag',
-    data: new SlashCommandBuilder()
-        .setName('bag')
-        .setDescription('عرض الحقيبة والأغراض'),
+    data: new SlashCommandBuilder().setName('bag').setDescription('عرض الحقيبة والأغراض'),
     async execute(message, args, db) {
-        await db.ensureUser(message.author.id, message.author.username);
-        const items = await db.getInventory(message.author.id);
-        const { embed, menu } = build(items, await db.getImage('bag'));
-        message.channel.send({ embeds: [embed], components: [menu, resetRow('bag')] });
+        const img = await db.getImage('bag');
+        message.channel.send(build(img));
     },
     async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
-        const items = await db.getInventory(interaction.user.id);
-        const { embed, menu } = build(items, await db.getImage('bag'));
-        interaction.reply({ embeds: [embed], components: [menu, resetRow('bag')] });
+        const img = await db.getImage('bag');
+        interaction.reply(build(img));
     }
 };
 
-function build(items, image) {
+function build(image) {
     const embed = new EmbedBuilder()
         .setTitle('🎒 الحقيبة')
         .setColor(0xE65100)
-        .setDescription(items.length
-            ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
-            : '> حقيبتك فارغة حالياً')
-        .addFields(
-            { name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true },
-            { name: '📤 نقل غرض', value: '`-نقل [اسم الغرض] @المستخدم`', inline: false },
-        )
-        .setImage(image || null)
+        .setDescription('اكتشف محتويات حقيبتك واختر ما تريد.')
         .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
         .setTimestamp();
+    if (image) embed.setImage(image);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('bag_menu')
@@ -43,5 +31,5 @@ function build(items, image) {
                 { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
             ])
     );
-    return { embed, menu };
+    return { embeds: [embed], components: [menu, resetRow('bag')] };
 }

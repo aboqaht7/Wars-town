@@ -501,6 +501,28 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        if (interaction.customId === 'vehicles_menu') {
+            if (value === 'view') {
+                try {
+                    await db.ensureUser(interaction.user.id, interaction.user.username);
+                    const cars = await db.getVehicles(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('🚗 سياراتي المسجلة')
+                        .setColor(0x37474F)
+                        .setDescription(cars.length
+                            ? cars.map(c => `🚗 **${c.car_name}** — لوحة: \`${c.plate}\``).join('\n')
+                            : '> لا توجد سيارات مسجلة بعد')
+                        .addFields({ name: '🔢 عدد السيارات', value: `\`${cars.length}\``, inline: true })
+                        .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                } catch (e) {
+                    console.error(e);
+                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                }
+            }
+        }
+
         if (interaction.customId === 'phone_menu') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);

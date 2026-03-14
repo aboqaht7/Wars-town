@@ -3,9 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'jobs',
-    data: new SlashCommandBuilder()
-        .setName('jobs')
-        .setDescription('عرض الوظائف الحرة'),
+    data: new SlashCommandBuilder().setName('jobs').setDescription('عرض الوظائف الحرة'),
     async execute(message, args, db) {
         const { embed, menu } = await build(db);
         message.channel.send({ embeds: [embed], components: [menu, resetRow('jobs')] });
@@ -20,16 +18,11 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('💼 الوظائف الحرة')
         .setColor(0xF57F17)
-        .setDescription('اختر وظيفتك وابدأ الكسب')
-        .addFields(
-            { name: '🎣 صيد السمك', value: 'توجه لمنطقة الصيد', inline: true },
-            { name: '🚕 تكسي', value: 'توجه لمحطة التكسي', inline: true },
-            { name: '🦌 صيد الحيوانات', value: 'توجه للغابة', inline: true },
-            { name: '⛏️ منجم', value: 'توجه للمنجم', inline: true },
-        )
-        .setImage(await db.getImage('jobs') || null)
+        .setDescription('اختر وظيفتك وابدأ الكسب.')
         .setFooter({ text: 'نظام الوظائف • بوت FANTASY' })
         .setTimestamp();
+    const img = await db.getImage('jobs');
+    if (img) embed.setImage(img);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('jobs_menu')
