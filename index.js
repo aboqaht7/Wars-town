@@ -231,9 +231,13 @@ client.on('interactionCreate', async interaction => {
             await db.ensureUser(interaction.user.id, interaction.user.username);
             try {
                 if (value === 'create_identity') {
-                    const identities = await db.getUserIdentities(interaction.user.id);
+                    const [identities, slot3Open] = await Promise.all([
+                        db.getUserIdentities(interaction.user.id),
+                        db.isSlot3Unlocked(interaction.user.id),
+                    ]);
                     const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
-                    const slotOptions = [1, 2, 3].map(s => {
+                    const visibleSlots = slot3Open ? [1, 2, 3] : [1, 2];
+                    const slotOptions = visibleSlots.map(s => {
                         const taken = identities.find(i => i.slot === s && i.character_name);
                         return {
                             label: slotNames[s],
@@ -296,10 +300,15 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'identity_create_slot') {
             const slot = parseInt(value.replace('create_slot_', ''));
+            const NAMES = ['', 'الشخصية الأولى', 'الشخصية الثانية', 'الشخصية الثالثة'];
+            if (slot === 3) {
+                const unlocked = await db.isSlot3Unlocked(interaction.user.id);
+                if (!unlocked) return interaction.reply({ content: '🔒 **الشخصية الثالثة** غير مفتوحة. تواصل مع المسؤولين لفتحها.', flags: 64 });
+            }
             const identities = await db.getUserIdentities(interaction.user.id);
             const taken = identities.find(i => i.slot === slot && i.character_name);
             if (taken) {
-                return interaction.reply({ content: `❌ **${['', 'الشخصية الأولى', 'الشخصية الثانية', 'الشخصية الثالثة'][slot]}** مكتملة بالفعل ولا يمكن إنشاء هوية جديدة فيها.`, flags: 64 });
+                return interaction.reply({ content: `❌ **${NAMES[slot]}** مكتملة بالفعل ولا يمكن إنشاء هوية جديدة فيها.`, flags: 64 });
             }
             const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
             const modal = new ModalBuilder()

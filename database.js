@@ -172,6 +172,15 @@ async function addItem(discordId, itemName, quantity = 1) {
     }
 }
 
+async function unlockSlot3(discordId) {
+    await query('UPDATE users SET unlocked_slot3=TRUE WHERE discord_id=$1', [discordId]);
+}
+
+async function isSlot3Unlocked(discordId) {
+    const res = await query('SELECT unlocked_slot3 FROM users WHERE discord_id=$1', [discordId]);
+    return res.rows[0]?.unlocked_slot3 === true;
+}
+
 async function getConfig(key) {
     const res = await query('SELECT value FROM server_config WHERE key=$1', [key]);
     return res.rows[0]?.value || null;
@@ -420,6 +429,7 @@ async function createTicket(discordId, ticketType, subject) {
 
 module.exports = {
     query, ensureUser, generateIban,
+    unlockSlot3, isSlot3Unlocked,
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
