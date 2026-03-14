@@ -4,17 +4,18 @@ module.exports = {
     name: 'bank',
     data: new SlashCommandBuilder()
         .setName('bank')
-        .setDescription('عرض البنك والتحويلات'),
+        .setDescription('عرض البنك ورصيد الهوية النشطة'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
-        const balance = await db.getBalance(message.author.id);
+        const identity = await db.getActiveIdentity(message.author.id);
         const embed = new EmbedBuilder()
             .setTitle('🏦 البنك الوطني')
             .setColor(0x2E7D32)
-            .setDescription(`مرحباً **${message.author.username}** في بنكك الشخصي`)
+            .setDescription(`مرحباً **${message.author.username}** — شخصية ${identity.slot}`)
             .addFields(
-                { name: '💰 الرصيد الحالي', value: `\`${Number(balance).toLocaleString()} ريال\``, inline: true },
-                { name: '📊 الحالة', value: '`نشط`', inline: true },
+                { name: '🏦 رقم الإيبان', value: `\`${identity.iban}\``, inline: true },
+                { name: '💰 الرصيد الحالي', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
+                { name: '💸 تحويل الأموال', value: '`-تحويل [إيبان] [مبلغ]`', inline: false },
             )
             .setImage(await db.getImage('bank') || null)
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
@@ -25,23 +26,23 @@ module.exports = {
                 .setPlaceholder('اختر خيار')
                 .addOptions([
                     { label: '💰 عرض الرصيد', value: 'balance' },
-                    { label: '💸 تحويل مبلغ', value: 'transfer' },
-                    { label: '📥 إيداع', value: 'deposit' },
-                    { label: '📤 سحب', value: 'withdraw' },
+                    { label: '💸 كيفية التحويل', value: 'transfer_help' },
+                    { label: '🏦 رقم الإيبان', value: 'iban' },
                 ])
         );
         message.channel.send({ embeds: [embed], components: [menu] });
     },
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
-        const balance = await db.getBalance(interaction.user.id);
+        const identity = await db.getActiveIdentity(interaction.user.id);
         const embed = new EmbedBuilder()
             .setTitle('🏦 البنك الوطني')
             .setColor(0x2E7D32)
-            .setDescription(`مرحباً **${interaction.user.username}** في بنكك الشخصي`)
+            .setDescription(`مرحباً **${interaction.user.username}** — شخصية ${identity.slot}`)
             .addFields(
-                { name: '💰 الرصيد الحالي', value: `\`${Number(balance).toLocaleString()} ريال\``, inline: true },
-                { name: '📊 الحالة', value: '`نشط`', inline: true },
+                { name: '🏦 رقم الإيبان', value: `\`${identity.iban}\``, inline: true },
+                { name: '💰 الرصيد الحالي', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
+                { name: '💸 تحويل الأموال', value: '`-تحويل [إيبان] [مبلغ]`', inline: false },
             )
             .setImage(await db.getImage('bank') || null)
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
@@ -52,9 +53,8 @@ module.exports = {
                 .setPlaceholder('اختر خيار')
                 .addOptions([
                     { label: '💰 عرض الرصيد', value: 'balance' },
-                    { label: '💸 تحويل مبلغ', value: 'transfer' },
-                    { label: '📥 إيداع', value: 'deposit' },
-                    { label: '📤 سحب', value: 'withdraw' },
+                    { label: '💸 كيفية التحويل', value: 'transfer_help' },
+                    { label: '🏦 رقم الإيبان', value: 'iban' },
                 ])
         );
         interaction.reply({ embeds: [embed], components: [menu] });

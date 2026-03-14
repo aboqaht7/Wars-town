@@ -17,7 +17,7 @@ async function query(text, params) {
 
 async function ensureUser(discordId, username) {
     await query(
-        `INSERT INTO users (discord_id, username) VALUES ($1, $2)
+        `INSERT INTO users (discord_id, username, active_slot) VALUES ($1, $2, 1)
          ON CONFLICT (discord_id) DO UPDATE SET username = EXCLUDED.username`,
         [discordId, username]
     );
@@ -26,6 +26,108 @@ async function ensureUser(discordId, username) {
          ON CONFLICT (discord_id) DO NOTHING`,
         [discordId]
     );
+}
+
+async function generateIban() {
+    while (true) {
+        const iban = String(Math.floor(1000000 + Math.random() * 9000000));
+        const res = await query('SELECT 1 FROM identities WHERE iban = $1', [iban]);
+        if (res.rows.length === 0) return iban;
+    }
+}
+
+async function ensureIdentity(discordId, slot) {
+    const existing = await query(
+        'SELECT * FROM identities WHERE discord_id = $1 AND slot = $2',
+        [discordId, slot]
+    );
+    if (existing.rows.length > 0) return existing.rows[0];
+    const iban = await generateIban();
+    const res = await query(
+        `INSERT INTO identities (discord_id, slot, character_name, iban, balance)
+         VALUES ($1, $2, $3, $4, 0) RETURNING *`,
+        [discordId, slot, `شخصية ${slot}`, iban]
+    );
+    return res.rows[0];
+}
+
+async function setActiveSlot(discordId, slot) {
+    await query(
+        'UPDATE users SET active_slot = $2 WHERE discord_id = $1',
+        [discordId, slot]
+    );
+}
+
+async function getActiveSlot(discordId) {
+    const res = await query('SELECT active_slot FROM users WHERE discord_id = $1', [discordId]);
+    return res.rows[0]?.active_slot ?? 1;
+}
+
+async function getActiveIdentity(discordId) {
+    const slot = await getActiveSlot(discordId);
+    return ensureIdentity(discordId, slot);
+}
+
+async function getIdentityByIban(iban) {
+    const res = await query(
+        `SELECT i.*, u.username FROM identities i
+         JOIN users u ON u.discord_id = i.discord_id
+         WHERE i.iban = $1`,
+        [iban]
+    );
+    return res.rows[0] || null;
+}
+
+async function transferMoney(fromDiscordId, toIban, amount) {
+    const sender = await getActiveIdentity(fromDiscordId);
+    if (!sender) return { success: false, error: 'لم يتم العثور على هويتك النشطة.' };
+    if (Number(sender.balance) < amount) return { success: false, error: `رصيدك غير كافٍ. رصيدك الحالي: \`${Number(sender.balance).toLocaleString()} ريال\`` };
+    const receiver = await getIdentityByIban(toIban);
+    if (!receiver) return { success: false, error: `لا يوجد حساب بالإيبان \`${toIban}\`` };
+    if (receiver.discord_id === fromDiscordId && receiver.slot === sender.slot)
+        return { success: false, error: 'لا يمكنك التحويل لنفس حسابك.' };
+    await query(
+        'UPDATE identities SET balance = balance - $1 WHERE discord_id = $2 AND slot = $3',
+        [amount, fromDiscordId, sender.slot]
+    );
+    await query(
+        'UPDATE identities SET balance = balance + $1 WHERE iban = $2',
+        [amount, toIban]
+    );
+    return { success: true, sender, receiver, amount };
+}
+
+async function transferItem(fromDiscordId, toDiscordId, itemName) {
+    const item = await query(
+        'SELECT * FROM inventory WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
+        [fromDiscordId, itemName]
+    );
+    if (!item.rows[0]) return { success: false, error: `لا يوجد في حقيبتك غرض باسم **${itemName}**` };
+    const row = item.rows[0];
+    if (row.quantity > 1) {
+        await query(
+            'UPDATE inventory SET quantity = quantity - 1 WHERE id = $1',
+            [row.id]
+        );
+    } else {
+        await query('DELETE FROM inventory WHERE id = $1', [row.id]);
+    }
+    const existing = await query(
+        'SELECT * FROM inventory WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
+        [toDiscordId, itemName]
+    );
+    if (existing.rows[0]) {
+        await query(
+            'UPDATE inventory SET quantity = quantity + 1 WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
+            [toDiscordId, itemName]
+        );
+    } else {
+        await query(
+            'INSERT INTO inventory (discord_id, item_name, quantity) VALUES ($1, $2, 1)',
+            [toDiscordId, itemName]
+        );
+    }
+    return { success: true };
 }
 
 async function getImage(systemKey) {
@@ -41,26 +143,6 @@ async function setImage(systemKey, imageUrl) {
     );
 }
 
-async function getBalance(discordId) {
-    const res = await query('SELECT balance FROM bank_accounts WHERE discord_id = $1', [discordId]);
-    return res.rows[0]?.balance ?? 0;
-}
-
-async function setBalance(discordId, amount) {
-    await query(
-        `INSERT INTO bank_accounts (discord_id, balance) VALUES ($1, $2)
-         ON CONFLICT (discord_id) DO UPDATE SET balance = $2, updated_at = NOW()`,
-        [discordId, amount]
-    );
-}
-
-async function addBalance(discordId, amount) {
-    await query(
-        `UPDATE bank_accounts SET balance = balance + $2, updated_at = NOW() WHERE discord_id = $1`,
-        [discordId, amount]
-    );
-}
-
 async function getInventory(discordId) {
     const res = await query(
         'SELECT item_name, quantity FROM inventory WHERE discord_id = $1 ORDER BY added_at',
@@ -70,11 +152,21 @@ async function getInventory(discordId) {
 }
 
 async function addItem(discordId, itemName, quantity = 1) {
-    await query(
-        `INSERT INTO inventory (discord_id, item_name, quantity) VALUES ($1, $2, $3)
-         ON CONFLICT DO NOTHING`,
-        [discordId, itemName, quantity]
+    const existing = await query(
+        'SELECT * FROM inventory WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
+        [discordId, itemName]
     );
+    if (existing.rows[0]) {
+        await query(
+            'UPDATE inventory SET quantity = quantity + $3 WHERE discord_id = $1 AND LOWER(item_name) = LOWER($2)',
+            [discordId, itemName, quantity]
+        );
+    } else {
+        await query(
+            'INSERT INTO inventory (discord_id, item_name, quantity) VALUES ($1, $2, $3)',
+            [discordId, itemName, quantity]
+        );
+    }
 }
 
 async function getTickets(discordId) {
@@ -93,4 +185,11 @@ async function createTicket(discordId, ticketType, subject) {
     return res.rows[0].id;
 }
 
-module.exports = { query, ensureUser, getImage, setImage, getBalance, setBalance, addBalance, getInventory, addItem, getTickets, createTicket };
+module.exports = {
+    query, ensureUser, generateIban,
+    ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
+    transferMoney, transferItem,
+    getImage, setImage,
+    getInventory, addItem,
+    getTickets, createTicket
+};

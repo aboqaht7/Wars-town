@@ -11,8 +11,13 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('🎒 الحقيبة')
             .setColor(0xE65100)
-            .setDescription(items.length ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n') : '> حقيبتك فارغة حالياً')
-            .addFields({ name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true })
+            .setDescription(items.length
+                ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
+                : '> حقيبتك فارغة حالياً')
+            .addFields(
+                { name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true },
+                { name: '📤 نقل غرض', value: '`-نقل [اسم الغرض] @المستخدم`', inline: false },
+            )
             .setImage(await db.getImage('bag') || null)
             .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
             .setTimestamp();
@@ -22,9 +27,7 @@ module.exports = {
                 .setPlaceholder('اختر خيار')
                 .addOptions([
                     { label: '👀 عرض الأغراض', value: 'view' },
-                    { label: '✅ استخدام غرض', value: 'use' },
-                    { label: '🗑️ إلقاء غرض', value: 'drop' },
-                    { label: '📦 نقل غرض', value: 'transfer' },
+                    { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
                 ])
         );
         message.channel.send({ embeds: [embed], components: [menu] });
@@ -35,8 +38,13 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('🎒 الحقيبة')
             .setColor(0xE65100)
-            .setDescription(items.length ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n') : '> حقيبتك فارغة حالياً')
-            .addFields({ name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true })
+            .setDescription(items.length
+                ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
+                : '> حقيبتك فارغة حالياً')
+            .addFields(
+                { name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true },
+                { name: '📤 نقل غرض', value: '`-نقل [اسم الغرض] @المستخدم`', inline: false },
+            )
             .setImage(await db.getImage('bag') || null)
             .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
             .setTimestamp();
@@ -46,9 +54,7 @@ module.exports = {
                 .setPlaceholder('اختر خيار')
                 .addOptions([
                     { label: '👀 عرض الأغراض', value: 'view' },
-                    { label: '✅ استخدام غرض', value: 'use' },
-                    { label: '🗑️ إلقاء غرض', value: 'drop' },
-                    { label: '📦 نقل غرض', value: 'transfer' },
+                    { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
                 ])
         );
         interaction.reply({ embeds: [embed], components: [menu] });

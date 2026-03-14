@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const db = require('./database');
 require('dotenv').config();
 
@@ -18,18 +18,18 @@ client.once('clientReady', () => {
 
 const menuHandlers = {
     help_menu: {
-        identity: '🪪 **الهوية** — عرض شخصيتك الحالية واختيار بين 4 شخصيات.',
-        phone: '📱 **الجوال** — عرض هاتفك المحمول وإدارة اتصالاتك.',
-        bag: '🎒 **الحقيبة** — عرض أغراضك وعناصرك المحفوظة.',
-        bank: '🏦 **البنك** — عرض رصيدك وإجراء التحويلات.',
-        police: '👮 **الشرطة** — أوامر الشرطة (كلبشة، تلويت، باند، تشهير).',
-        events: '✈️ **الرحلات والأحداث** — فتح رحلة، إعصار، تنبيهات.',
-        jobs: '💼 **الوظائف** — صيد السمك، تكسي، صيد الحيوانات، منجم.',
-        market: '🛒 **سوق الأدوات** — سنارة، فأس، أدوات، مزاد سيارات وعقارات.',
-        law: '⚖️ **المحاماة** — إدارة القضايا والمحاماة.',
-        admin: '🛡️ **الإدارة** — عرض الرتب ونقاط الإدارة.',
-        crime: '🔫 **الجرائم** — سرقات وعمليات الخطف.',
-        tickets: '🎫 **التكتات** — فتح تكت جديد (شكوى، اقتراح، بلاغ، استفسار).',
+        identity: '🪪 **الهوية** — اكتب `/identity` لعرض شخصيتك والإيبان الخاص بها.',
+        phone: '📱 **الجوال** — اكتب `/phone` لعرض هاتفك وإدارة اتصالاتك.',
+        bag: '🎒 **الحقيبة** — اكتب `/bag` لعرض أغراضك. لنقل غرض: `-نقل [غرض] @مستخدم`',
+        bank: '🏦 **البنك** — اكتب `/bank` لعرض رصيدك وإيبانك. لتحويل مال: `-تحويل [إيبان] [مبلغ]`',
+        police: '👮 **الشرطة** — أوامر: `-كلبشة @مستخدم` | `-تلويت @مستخدم` | `-باند @مستخدم` | `-تشهير @مستخدم`',
+        events: '✈️ **الرحلات والأحداث** — اكتب `/events` لفتح رحلة أو تفعيل حدث.',
+        jobs: '💼 **الوظائف** — اكتب `/jobs` لاختيار وظيفتك (صيد، تكسي، صيد حيوانات، منجم).',
+        market: '🛒 **سوق الأدوات** — اكتب `/market` لشراء السنارة والفأس وأدوات المنجم.',
+        law: '⚖️ **المحاماة** — اكتب `/law` لفتح قضية أو إدارة القضايا.',
+        admin: '🛡️ **الإدارة** — اكتب `/admin` لعرض لوحة الإدارة.',
+        crime: '🔫 **الجرائم** — اكتب `/crime` لتنفيذ جريمة.',
+        tickets: '🎫 **التكتات** — اكتب `/tickets` لفتح تكت (شكوى، اقتراح، بلاغ).',
     },
     admin_menu: {
         ranks: '🏅 **عرض الرتب** — تواصل مع الإدارة لعرض رتبتك الحالية.',
@@ -38,22 +38,19 @@ const menuHandlers = {
         logs: '📋 **سجل الإجراءات** — سجل جميع الإجراءات الإدارية.',
     },
     bag_menu: {
-        view: '👀 **عرض الأغراض** — عرض كل ما في حقيبتك حالياً.',
-        use: '✅ **استخدام غرض** — تواصل مع الإدارة لاستخدام غرض.',
-        drop: '🗑️ **إلقاء غرض** — تواصل مع الإدارة لإلقاء غرض من حقيبتك.',
-        transfer: '📦 **نقل غرض** — تواصل مع الإدارة لنقل غرض لشخص آخر.',
+        view: null,
+        transfer_help: '📤 **نقل غرض** — استخدم: `-نقل [اسم الغرض] @المستخدم`\nمثال: `-نقل سنارة @اللاعب`',
     },
     bank_menu: {
-        balance: '💰 **عرض الرصيد** — رصيدك الحالي في البنك.',
-        transfer: '💸 **تحويل مبلغ** — تواصل مع الإدارة لإجراء تحويل.',
-        deposit: '📥 **إيداع** — تواصل مع الإدارة لإيداع مبلغ.',
-        withdraw: '📤 **سحب** — تواصل مع الإدارة لسحب مبلغ.',
+        balance: null,
+        transfer_help: '💸 **تحويل مال** — استخدم: `-تحويل [إيبان] [مبلغ]`\nمثال: `-تحويل 1234567 500`',
+        iban: null,
     },
     police_menu: {
-        handcuff: '🔗 **كلبشة** — تواصل مع ضابط الشرطة لتنفيذ الكلبشة.',
-        wanted: '🚨 **تلويت** — تواصل مع الشرطة لوضع اللاعب في قائمة المطلوبين.',
-        ban: '🚫 **باند** — تواصل مع الإدارة لتنفيذ الباند.',
-        defame: '📢 **تشهير** — تواصل مع الشرطة لتنفيذ التشهير.',
+        handcuff: '🔗 **كلبشة** — الأمر: `-كلبشة @اللاعب`',
+        wanted: '🚨 **تلويت** — الأمر: `-تلويت @اللاعب`',
+        ban: '🚫 **باند** — الأمر: `-باند @اللاعب السبب`',
+        defame: '📢 **تشهير** — الأمر: `-تشهير @اللاعب السبب`',
     },
     crime_menu: {
         robbery: '💰 **سرقة** — تواصل مع الإدارة لتنفيذ عملية السرقة.',
@@ -91,44 +88,100 @@ const menuHandlers = {
         contacts: '📒 **جهات الاتصال** — تواصل مع الإدارة لعرض جهات الاتصال.',
         settings: '⚙️ **الإعدادات** — تواصل مع الإدارة لتعديل إعدادات الجوال.',
     },
-    cars_menu: {
-        toyota: '🚗 **تويوتا** — سيارات موثوقة وعملية بأسعار معقولة.',
-        mercedes: '🚘 **مرسيدس** — فخامة وأناقة لا مثيل لها.',
-        bmw: '🏎️ **بي إم دبليو** — أداء رياضي وتصميم راقٍ.',
-        lexus: '🚙 **لكزس** — رفاهية يابانية بجودة عالية.',
-        auction: '🔨 **مزاد السيارات** — تواصل مع الإدارة لحضور المزاد.',
-    },
     health_menu: {
         hospital_resuscitation: '🏥 **إنعاش مستشفى** — تواصل مع طاقم المستشفى لإنعاشك.',
         decay: '💀 **تحلل** — شخصيتك في وضع التحلل، تواصل مع الإدارة.',
         witch_resuscitation: '🧙 **إنعاش ساحرة** — تواصل مع الساحرة للحصول على الإنعاش.',
     },
-    identity_menu: {
-        char1: '👤 **شخصية 1** — شخصيتك الأولى النشطة.',
-        char2: '👤 **شخصية 2** — شخصيتك الثانية النشطة.',
-        char3: '🔒 **شخصية 3** — هذه الشخصية مقفلة، تواصل مع الإدارة.',
-        char4: '🔒 **شخصية 4** — هذه الشخصية مقفلة، تواصل مع الإدارة.',
-    },
     properties_menu: {
-        villa: '🏡 **فيلا** — فيلا فاخرة، تواصل مع الإدارة لاستفسارات الشراء.',
-        apartment: '🏢 **شقة** — شقة سكنية، تواصل مع الإدارة لاستفسارات الشراء.',
-        land: '🌍 **أرض** — أرض للبناء، تواصل مع الإدارة لاستفسارات الشراء.',
-        office: '🏬 **مكتب تجاري** — مكتب للأعمال، تواصل مع الإدارة لاستفسارات الشراء.',
+        villa: '🏡 **فيلا** — تواصل مع الإدارة لاستفسارات شراء الفيلا.',
+        apartment: '🏢 **شقة** — تواصل مع الإدارة لاستفسارات شراء الشقة.',
+        land: '🌍 **أرض** — تواصل مع الإدارة لاستفسارات شراء الأرض.',
+        office: '🏬 **مكتب تجاري** — تواصل مع الإدارة لاستفسارات الشراء.',
     },
     ticket_menu: {
-        complaint: '📋 **شكوى** — لتقديم شكواك اكتب تفاصيلها وأرسلها للإدارة.',
-        suggestion: '💡 **اقتراح** — اكتب اقتراحك وسيتم مراجعته من قِبل الإدارة.',
+        complaint: '📋 **شكوى** — اكتب تفاصيل شكواك وأرسلها للإدارة.',
+        suggestion: '💡 **اقتراح** — اكتب اقتراحك وسيتم مراجعته.',
         report: '🚨 **بلاغ** — اكتب تفاصيل البلاغ مع الأدلة وأرسله للإدارة.',
-        inquiry: '❓ **استفسار** — اكتب استفسارك وستحصل على رد من الإدارة.',
+        inquiry: '❓ **استفسار** — اكتب استفسارك وستحصل على رد.',
     },
 };
 
 client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu()) {
+        const value = interaction.values[0];
+
+        if (interaction.customId === 'identity_menu') {
+            const slotNum = parseInt(value.replace('char_', ''));
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                await db.setActiveSlot(interaction.user.id, slotNum);
+                const identity = await db.ensureIdentity(interaction.user.id, slotNum);
+                const embed = new EmbedBuilder()
+                    .setTitle(`🪪 تم التبديل للشخصية ${slotNum}`)
+                    .setColor(0x4A148C)
+                    .addFields(
+                        { name: '👤 الشخصية', value: `**شخصية ${slotNum}**`, inline: true },
+                        { name: '🏦 رقم الإيبان', value: `\`${identity.iban}\``, inline: true },
+                        { name: '💰 الرصيد', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ أثناء تبديل الشخصية.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'bank_menu') {
+            if (value === 'balance' || value === 'iban') {
+                try {
+                    await db.ensureUser(interaction.user.id, interaction.user.username);
+                    const identity = await db.getActiveIdentity(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('🏦 معلومات حسابك')
+                        .setColor(0x2E7D32)
+                        .addFields(
+                            { name: '🏦 رقم الإيبان', value: `\`${identity.iban}\``, inline: true },
+                            { name: '💰 الرصيد', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
+                            { name: '👤 الشخصية', value: `شخصية ${identity.slot}`, inline: true },
+                        )
+                        .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                } catch (e) {
+                    console.error(e);
+                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                }
+            }
+        }
+
+        if (interaction.customId === 'bag_menu') {
+            if (value === 'view') {
+                try {
+                    await db.ensureUser(interaction.user.id, interaction.user.username);
+                    const items = await db.getInventory(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('🎒 محتويات حقيبتك')
+                        .setColor(0xE65100)
+                        .setDescription(items.length
+                            ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
+                            : '> حقيبتك فارغة حالياً')
+                        .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                } catch (e) {
+                    console.error(e);
+                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                }
+            }
+        }
+
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;
-        const value = interaction.values[0];
-        const response = handler[value] || 'لا توجد معلومات لهذا الخيار.';
+        const response = handler[value];
+        if (!response) return interaction.reply({ content: 'لا توجد معلومات لهذا الخيار.', flags: 64 });
         return interaction.reply({ content: response, flags: 64 });
     }
 
@@ -149,7 +202,7 @@ client.on('messageCreate', async message => {
     if (!message.content.startsWith(prefix)) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
-    const commandName = args.shift().toLowerCase();
+    const commandName = args.shift();
     const command = client.commands.get(commandName);
     if (!command) return;
 
