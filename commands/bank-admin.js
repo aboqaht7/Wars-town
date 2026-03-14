@@ -1,7 +1,7 @@
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 async function getAdminRole(db) {
-    return db.getConfig('identity_admin_role');
+    return db.getConfig('bank_admin_role');
 }
 
 async function hasAdminRole(member, db) {
