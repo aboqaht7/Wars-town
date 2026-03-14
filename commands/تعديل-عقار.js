@@ -6,25 +6,25 @@ module.exports = {
         .setName('تعديل-عقار')
         .setDescription('تعديل عقار موجود (أدمن فقط)')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .addIntegerOption(o => o.setName('رقم').setDescription('رقم العقار').setRequired(true))
-        .addStringOption(o => o.setName('اسم').setDescription('الاسم الجديد للعقار').setRequired(false))
+        .addStringOption(o => o.setName('اسم-العقار').setDescription('اسم العقار المراد تعديله').setRequired(true))
+        .addStringOption(o => o.setName('اسم-جديد').setDescription('الاسم الجديد للعقار').setRequired(false))
         .addIntegerOption(o => o.setName('سعر').setDescription('السعر الجديد (ريال)').setRequired(false).setMinValue(1))
         .addStringOption(o => o.setName('صورة').setDescription('رابط الصورة الجديد (URL)').setRequired(false)),
 
     async slashExecute(interaction, db) {
-        const id       = interaction.options.getInteger('رقم');
-        const name     = interaction.options.getString('اسم')    ?? undefined;
-        const price    = interaction.options.getInteger('سعر')   ?? undefined;
-        const imageUrl = interaction.options.getString('صورة')   ?? undefined;
+        const searchName = interaction.options.getString('اسم-العقار').trim();
+        const newName    = interaction.options.getString('اسم-جديد') ?? undefined;
+        const price      = interaction.options.getInteger('سعر')      ?? undefined;
+        const imageUrl   = interaction.options.getString('صورة')      ?? undefined;
 
-        if ([name, price, imageUrl].every(v => v === undefined)) {
+        if ([newName, price, imageUrl].every(v => v === undefined)) {
             return interaction.reply({ content: '❌ يجب تعديل حقل واحد على الأقل.', flags: 64 });
         }
 
-        const existing = await db.getPropertyById(id);
-        if (!existing) return interaction.reply({ content: `❌ لا يوجد عقار برقم \`${id}\`.`, flags: 64 });
+        const existing = await db.getPropertyByName(searchName);
+        if (!existing) return interaction.reply({ content: `❌ لا يوجد عقار باسم **${searchName}**.`, flags: 64 });
 
-        const updated = await db.updateProperty(id, { name, price, imageUrl });
+        const updated = await db.updateProperty(existing.id, { name: newName, price, imageUrl });
 
         const embed = new EmbedBuilder()
             .setTitle('✅ تم تعديل العقار')

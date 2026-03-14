@@ -617,6 +617,16 @@ async function getRobberyById(id) {
     return res.rows[0] || null;
 }
 
+async function getRobberyByName(name) {
+    const res = await query('SELECT * FROM robberies WHERE LOWER(name)=LOWER($1)', [name]);
+    return res.rows[0] || null;
+}
+
+async function getPropertyByName(name) {
+    const res = await query('SELECT * FROM properties WHERE LOWER(name)=LOWER($1)', [name]);
+    return res.rows[0] || null;
+}
+
 async function updateRobbery(id, { name, tools, minMoney, maxMoney }) {
     const fields = [];
     const vals   = [];
@@ -775,10 +785,10 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
-    addProperty, getProperties, getPropertyById, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
+    addProperty, getProperties, getPropertyById, getPropertyByName, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,
     addToCash,
-    addRobbery, getRobberies, getRobberyById, updateRobbery, deleteRobbery,
+    addRobbery, getRobberies, getRobberyById, getRobberyByName, updateRobbery, deleteRobbery,
     checkLoginAndIdentity,
     createSnapAccount, getSnapAccount, getSnapAccountByUsername,
     addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,
