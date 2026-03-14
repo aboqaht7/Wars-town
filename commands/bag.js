@@ -9,19 +9,22 @@ module.exports = {
         await db.ensureUser(message.author.id, message.author.username);
         const items = await db.getInventory(message.author.id);
         const embed = new EmbedBuilder()
-            .setTitle('الحقيبة')
-            .setDescription(items.length ? items.map(i => `• ${i.item_name} (${i.quantity})`).join('\n') : 'حقيبتك فارغة')
-            .setColor('Red')
-            .setImage(await db.getImage('bag') || null);
+            .setTitle('🎒 الحقيبة')
+            .setColor(0xE65100)
+            .setDescription(items.length ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n') : '> حقيبتك فارغة حالياً')
+            .addFields({ name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true })
+            .setImage(await db.getImage('bag') || null)
+            .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+            .setTimestamp();
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('bag_menu')
                 .setPlaceholder('اختر خيار')
                 .addOptions([
-                    { label: 'عرض الأغراض', value: 'view' },
-                    { label: 'استخدام غرض', value: 'use' },
-                    { label: 'إلقاء غرض', value: 'drop' },
-                    { label: 'نقل غرض', value: 'transfer' },
+                    { label: '👀 عرض الأغراض', value: 'view' },
+                    { label: '✅ استخدام غرض', value: 'use' },
+                    { label: '🗑️ إلقاء غرض', value: 'drop' },
+                    { label: '📦 نقل غرض', value: 'transfer' },
                 ])
         );
         message.channel.send({ embeds: [embed], components: [menu] });
@@ -30,19 +33,22 @@ module.exports = {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const items = await db.getInventory(interaction.user.id);
         const embed = new EmbedBuilder()
-            .setTitle('الحقيبة')
-            .setDescription(items.length ? items.map(i => `• ${i.item_name} (${i.quantity})`).join('\n') : 'حقيبتك فارغة')
-            .setColor('Red')
-            .setImage(await db.getImage('bag') || null);
+            .setTitle('🎒 الحقيبة')
+            .setColor(0xE65100)
+            .setDescription(items.length ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n') : '> حقيبتك فارغة حالياً')
+            .addFields({ name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true })
+            .setImage(await db.getImage('bag') || null)
+            .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+            .setTimestamp();
         const menu = new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('bag_menu')
                 .setPlaceholder('اختر خيار')
                 .addOptions([
-                    { label: 'عرض الأغراض', value: 'view' },
-                    { label: 'استخدام غرض', value: 'use' },
-                    { label: 'إلقاء غرض', value: 'drop' },
-                    { label: 'نقل غرض', value: 'transfer' },
+                    { label: '👀 عرض الأغراض', value: 'view' },
+                    { label: '✅ استخدام غرض', value: 'use' },
+                    { label: '🗑️ إلقاء غرض', value: 'drop' },
+                    { label: '📦 نقل غرض', value: 'transfer' },
                 ])
         );
         interaction.reply({ embeds: [embed], components: [menu] });
