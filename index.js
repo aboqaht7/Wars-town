@@ -415,25 +415,87 @@ client.on('interactionCreate', async interaction => {
         }
 
         if (interaction.customId === 'bank_menu') {
-            if (value === 'balance' || value === 'iban') {
-                try {
-                    await db.ensureUser(interaction.user.id, interaction.user.username);
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+
+                if (value === 'balance') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('🏦 معلومات حسابك')
-                        .setColor(0x2E7D32)
+                        .setTitle('💰 رصيدك البنكي')
+                        .setColor(0x1565C0)
                         .addFields(
-                            { name: '🏦 رقم الإيبان', value: `\`${identity.iban}\``, inline: true },
+                            { name: '👤 الشخصية', value: SLOT_NAMES[identity.slot] || `شخصية ${identity.slot}`, inline: true },
+                            { name: '🪪 الاسم', value: `${identity.character_name} ${identity.family_name || ''}`, inline: true },
+                            { name: '\u200b', value: '\u200b', inline: true },
+                            { name: '🏦 الإيبان', value: `\`${identity.iban}\``, inline: true },
                             { name: '💰 الرصيد', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
-                            { name: '👤 الشخصية', value: `شخصية ${identity.slot}`, inline: true },
+                            { name: '🔒 الحالة', value: identity.frozen ? '❄️ مجمّد' : '✅ نشط', inline: true },
                         )
                         .setFooter({ text: 'نظام البنك • بوت FANTASY' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
-                } catch (e) {
-                    console.error(e);
-                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
                 }
+
+                if (value === 'transfer') {
+                    const identity = await db.getActiveIdentity(interaction.user.id);
+                    if (identity.frozen)
+                        return interaction.reply({ content: '❄️ حسابك مجمّد. لا يمكنك إجراء تحويلات.', flags: 64 });
+                    const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');
+                    const modal = new ModalBuilder()
+                        .setCustomId('bank_transfer_modal')
+                        .setTitle('💸 تحويل بنكي');
+                    const ibanInput = new TextInputBuilder()
+                        .setCustomId('transfer_iban')
+                        .setLabel('إيبان المستلم (7 أرقام)')
+                        .setStyle(TextInputStyle.Short)
+                        .setMinLength(7).setMaxLength(7)
+                        .setRequired(true);
+                    const amountInput = new TextInputBuilder()
+                        .setCustomId('transfer_amount')
+                        .setLabel('المبلغ (ريال)')
+                        .setStyle(TextInputStyle.Short)
+                        .setRequired(true);
+                    const noteInput = new TextInputBuilder()
+                        .setCustomId('transfer_note')
+                        .setLabel('ملاحظة (اختياري)')
+                        .setStyle(TextInputStyle.Short)
+                        .setRequired(false);
+                    modal.addComponents(
+                        new ARB().addComponents(ibanInput),
+                        new ARB().addComponents(amountInput),
+                        new ARB().addComponents(noteInput),
+                    );
+                    return interaction.showModal(modal);
+                }
+
+                if (value === 'history') {
+                    const identity = await db.getActiveIdentity(interaction.user.id);
+                    const txs = await db.getTransactions(identity.iban, 15);
+                    const TYPE_LABELS = { transfer: '💸 تحويل', deposit: '📥 إيداع', withdraw: '📤 سحب' };
+                    const embed = new EmbedBuilder()
+                        .setTitle('📋 سجل المعاملات')
+                        .setColor(0x37474F)
+                        .setFooter({ text: `إيبانك: ${identity.iban} • بوت FANTASY` })
+                        .setTimestamp();
+                    if (!txs.length) {
+                        embed.setDescription('> لا توجد معاملات بعد.');
+                    } else {
+                        const lines = txs.map(t => {
+                            const isOut = t.from_iban === identity.iban;
+                            const dir = isOut ? '🔴 خارج' : '🟢 داخل';
+                            const other = isOut ? t.to_iban : t.from_iban;
+                            const time = new Date(t.created_at).toLocaleDateString('ar-SA');
+                            const label = TYPE_LABELS[t.type] || t.type;
+                            return `${dir} | ${label} | \`${Number(t.amount).toLocaleString()} ريال\` | ${other === 'ADMIN' ? 'الإدارة' : `\`${other}\``} | ${time}`;
+                        });
+                        embed.setDescription(lines.join('\n'));
+                    }
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -573,6 +635,43 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (interaction.isModalSubmit()) {
+        if (interaction.customId === 'bank_transfer_modal') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const toIban  = interaction.fields.getTextInputValue('transfer_iban').trim();
+                const rawAmt  = interaction.fields.getTextInputValue('transfer_amount').trim().replace(/,/g, '');
+                const note    = interaction.fields.getTextInputValue('transfer_note').trim() || null;
+                const amount  = parseInt(rawAmt);
+                if (isNaN(amount) || amount <= 0)
+                    return interaction.reply({ content: '❌ المبلغ غير صحيح. أدخل رقماً موجباً.', flags: 64 });
+
+                const result = await db.transferMoney(interaction.user.id, toIban, amount, note);
+                if (!result.success)
+                    return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+
+                const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                const embed = new EmbedBuilder()
+                    .setTitle('✅ تم التحويل بنجاح')
+                    .setColor(0x1565C0)
+                    .addFields(
+                        { name: '👤 المرسِل', value: `${result.sender.character_name} ${result.sender.family_name || ''} (${SLOT_NAMES[result.sender.slot] || `شخصية ${result.sender.slot}`})`, inline: false },
+                        { name: '🏦 إيبانك', value: `\`${result.sender.iban}\``, inline: true },
+                        { name: '💰 رصيدك بعد التحويل', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
+                        { name: '\u200b', value: '\u200b', inline: true },
+                        { name: '📨 المستلِم', value: `${result.receiver.character_name} ${result.receiver.family_name || ''}`, inline: true },
+                        { name: '🏦 إيبان المستلِم', value: `\`${toIban}\``, inline: true },
+                        { name: '💸 المبلغ المحوَّل', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                        { name: '📝 ملاحظة', value: note || '—', inline: false },
+                    )
+                    .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
+            }
+        }
+
         if (interaction.customId.startsWith('create_char_')) {
             const slot = parseInt(interaction.customId.replace('create_char_', ''));
             const charName   = interaction.fields.getTextInputValue('char_name').trim();

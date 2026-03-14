@@ -78,23 +78,70 @@ async function getIdentityByIban(iban) {
     return res.rows[0] || null;
 }
 
-async function transferMoney(fromDiscordId, toIban, amount) {
+async function transferMoney(fromDiscordId, toIban, amount, note = null) {
     const sender = await getActiveIdentity(fromDiscordId);
     if (!sender) return { success: false, error: 'لم يتم العثور على هويتك النشطة.' };
+    if (sender.frozen) return { success: false, error: '❄️ حسابك مجمّد. تواصل مع الإدارة.' };
     if (Number(sender.balance) < amount) return { success: false, error: `رصيدك غير كافٍ. رصيدك الحالي: \`${Number(sender.balance).toLocaleString()} ريال\`` };
     const receiver = await getIdentityByIban(toIban);
     if (!receiver) return { success: false, error: `لا يوجد حساب بالإيبان \`${toIban}\`` };
+    if (receiver.frozen) return { success: false, error: '❄️ الحساب المستلم مجمّد. لا يمكن إتمام التحويل.' };
     if (receiver.discord_id === fromDiscordId && receiver.slot === sender.slot)
         return { success: false, error: 'لا يمكنك التحويل لنفس حسابك.' };
-    await query(
-        'UPDATE identities SET balance = balance - $1 WHERE discord_id = $2 AND slot = $3',
-        [amount, fromDiscordId, sender.slot]
-    );
-    await query(
-        'UPDATE identities SET balance = balance + $1 WHERE iban = $2',
-        [amount, toIban]
-    );
+    await query('UPDATE identities SET balance = balance - $1 WHERE discord_id = $2 AND slot = $3',
+        [amount, fromDiscordId, sender.slot]);
+    await query('UPDATE identities SET balance = balance + $1 WHERE iban = $2', [amount, toIban]);
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ($1,$2,$3,'transfer',$4)`,
+        [sender.iban, toIban, amount, note]);
     return { success: true, sender, receiver, amount };
+}
+
+async function getTransactions(iban, limit = 15) {
+    const res = await query(
+        `SELECT * FROM transactions WHERE from_iban = $1 OR to_iban = $1 ORDER BY created_at DESC LIMIT $2`,
+        [iban, limit]
+    );
+    return res.rows;
+}
+
+async function adminAddMoney(iban, amount, note = null) {
+    const char = await getIdentityByIban(iban);
+    if (!char) return { success: false, error: `لا يوجد حساب بالإيبان \`${iban}\`` };
+    const res = await query(
+        'UPDATE identities SET balance = balance + $1 WHERE iban = $2 RETURNING *',
+        [amount, iban]
+    );
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ('ADMIN',$1,$2,'deposit',$3)`,
+        [iban, amount, note]);
+    return { success: true, char, newBalance: res.rows[0].balance };
+}
+
+async function adminRemoveMoney(iban, amount, note = null) {
+    const char = await getIdentityByIban(iban);
+    if (!char) return { success: false, error: `لا يوجد حساب بالإيبان \`${iban}\`` };
+    if (Number(char.balance) < amount) return { success: false, error: `الرصيد غير كافٍ. الرصيد الحالي: \`${Number(char.balance).toLocaleString()} ريال\`` };
+    const res = await query(
+        'UPDATE identities SET balance = balance - $1 WHERE iban = $2 RETURNING *',
+        [amount, iban]
+    );
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ($1,'ADMIN',$2,'withdraw',$3)`,
+        [iban, amount, note]);
+    return { success: true, char, newBalance: res.rows[0].balance };
+}
+
+async function freezeAccount(iban) {
+    const res = await query('UPDATE identities SET frozen = TRUE WHERE iban = $1 RETURNING *', [iban]);
+    return res.rows[0] || null;
+}
+
+async function unfreezeAccount(iban) {
+    const res = await query('UPDATE identities SET frozen = FALSE WHERE iban = $1 RETURNING *', [iban]);
+    return res.rows[0] || null;
+}
+
+async function getIdentitiesByDiscordId(discordId) {
+    const res = await query('SELECT * FROM identities WHERE discord_id = $1 ORDER BY slot', [discordId]);
+    return res.rows;
 }
 
 async function transferItem(fromDiscordId, toDiscordId, itemName) {
@@ -438,7 +485,8 @@ module.exports = {
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
-    transferMoney, transferItem,
+    transferMoney, transferItem, getTransactions,
+    adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,
     getImage, setImage,
     getInventory, addItem,
     getTickets, createTicket
