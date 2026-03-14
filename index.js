@@ -84,12 +84,7 @@ const menuHandlers = {
         mining_tools: '⛏️ **أدوات منجم** — تواصل مع الإدارة لشراء أدوات المنجم.',
         auction: '🔨 **مزاد** — تواصل مع الإدارة لحضور مزاد السيارات والعقارات.',
     },
-    phone_menu: {
-        call: '📞 **اتصال** — تواصل مع الإدارة لإجراء مكالمة.',
-        messages: '💬 **رسائل** — تواصل مع الإدارة لعرض رسائلك.',
-        contacts: '📒 **جهات الاتصال** — تواصل مع الإدارة لعرض جهات الاتصال.',
-        settings: '⚙️ **الإعدادات** — تواصل مع الإدارة لتعديل إعدادات الجوال.',
-    },
+    phone_menu: {},
     health_menu: {
         hospital_resuscitation: '🏥 **إنعاش مستشفى** — تواصل مع طاقم المستشفى لإنعاشك.',
         decay: '💀 **تحلل** — شخصيتك في وضع التحلل، تواصل مع الإدارة.',
@@ -202,6 +197,77 @@ client.on('interactionCreate', async interaction => {
                     console.error(e);
                     return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
                 }
+            }
+        }
+
+        if (interaction.customId === 'phone_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                if (value === 'messages') {
+                    const msgs = await db.getMessages(interaction.user.id, 8);
+                    await db.markMessagesRead(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('📬 صندوق الرسائل')
+                        .setColor(0x00838F)
+                        .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+                        .setTimestamp();
+                    if (!msgs.length) {
+                        embed.setDescription('> لا توجد رسائل. استخدم `-رسالة @مستخدم [نص]` للإرسال');
+                    } else {
+                        for (const m of msgs) {
+                            const dir = m.sender_id === interaction.user.id ? '📤' : '📥';
+                            const name = m.sender_id === interaction.user.id ? m.receiver_name : m.sender_name;
+                            embed.addFields({ name: `${dir} @${name || 'مجهول'}`, value: `> ${m.content}`, inline: false });
+                        }
+                    }
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+                if (value === 'contacts') {
+                    const contacts = await db.getContacts(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('📒 جهات الاتصال')
+                        .setColor(0x00838F)
+                        .setDescription(contacts.length
+                            ? contacts.map(c => `• **${c.nickname || c.username}** — <@${c.contact_id}>`).join('\n')
+                            : '> لا توجد جهات اتصال. استخدم `-جهات @مستخدم [الاسم]`')
+                        .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+                if (value === 'x_platform') {
+                    const posts = await db.getXTimeline(6);
+                    const embed = new EmbedBuilder()
+                        .setTitle('𝕏 منصة X — آخر المنشورات')
+                        .setColor(0x000000)
+                        .setFooter({ text: 'منصة X • بوت FANTASY' })
+                        .setTimestamp();
+                    if (!posts.length) {
+                        embed.setDescription('> لا توجد منشورات بعد. استخدم `-تغريد [نص]`');
+                    } else {
+                        for (const p of posts) {
+                            embed.addFields({
+                                name: `@${p.username}`,
+                                value: `${p.content}\n❤️ \`${p.likes}\` إعجاب`,
+                                inline: false,
+                            });
+                        }
+                    }
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'x_menu') {
+            const postId = parseInt(value.replace('like_', ''));
+            try {
+                await db.likePost(postId);
+                return interaction.reply({ content: `❤️ أعجبك المنشور **#${postId}**`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 

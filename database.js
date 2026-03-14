@@ -169,6 +169,87 @@ async function addItem(discordId, itemName, quantity = 1) {
     }
 }
 
+async function postTweet(discordId, username, content) {
+    const res = await query(
+        'INSERT INTO x_posts (discord_id, username, content) VALUES ($1, $2, $3) RETURNING *',
+        [discordId, username, content]
+    );
+    return res.rows[0];
+}
+
+async function getXTimeline(limit = 10) {
+    const res = await query(
+        'SELECT * FROM x_posts ORDER BY created_at DESC LIMIT $1',
+        [limit]
+    );
+    return res.rows;
+}
+
+async function likePost(postId) {
+    await query('UPDATE x_posts SET likes = likes + 1 WHERE id = $1', [postId]);
+}
+
+async function deletePost(postId, discordId) {
+    const res = await query(
+        'DELETE FROM x_posts WHERE id = $1 AND discord_id = $2 RETURNING *',
+        [postId, discordId]
+    );
+    return res.rows.length > 0;
+}
+
+async function sendMessage(senderId, receiverId, content) {
+    await query(
+        'INSERT INTO phone_messages (sender_id, receiver_id, content) VALUES ($1, $2, $3)',
+        [senderId, receiverId, content]
+    );
+}
+
+async function getMessages(discordId, limit = 10) {
+    const res = await query(
+        `SELECT pm.*, 
+            us.username AS sender_name, 
+            ur.username AS receiver_name
+         FROM phone_messages pm
+         LEFT JOIN users us ON us.discord_id = pm.sender_id
+         LEFT JOIN users ur ON ur.discord_id = pm.receiver_id
+         WHERE pm.receiver_id = $1 OR pm.sender_id = $1
+         ORDER BY pm.created_at DESC LIMIT $2`,
+        [discordId, limit]
+    );
+    return res.rows;
+}
+
+async function markMessagesRead(discordId) {
+    await query('UPDATE phone_messages SET read = TRUE WHERE receiver_id = $1', [discordId]);
+}
+
+async function getUnreadCount(discordId) {
+    const res = await query(
+        'SELECT COUNT(*) AS cnt FROM phone_messages WHERE receiver_id = $1 AND read = FALSE',
+        [discordId]
+    );
+    return parseInt(res.rows[0]?.cnt ?? 0);
+}
+
+async function addContact(ownerId, contactId, nickname) {
+    await query(
+        `INSERT INTO phone_contacts (owner_id, contact_id, nickname)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (owner_id, contact_id) DO UPDATE SET nickname = EXCLUDED.nickname`,
+        [ownerId, contactId, nickname || null]
+    );
+}
+
+async function getContacts(ownerId) {
+    const res = await query(
+        `SELECT pc.*, u.username FROM phone_contacts pc
+         JOIN users u ON u.discord_id = pc.contact_id
+         WHERE pc.owner_id = $1 ORDER BY pc.added_at`,
+        [ownerId]
+    );
+    return res.rows;
+}
+
 async function getShowroom() {
     const res = await query(
         'SELECT id, car_name, car_type, price, color FROM showroom WHERE available = TRUE ORDER BY added_at DESC',
@@ -233,6 +314,8 @@ async function createTicket(discordId, ticketType, subject) {
 
 module.exports = {
     query, ensureUser, generateIban,
+    postTweet, getXTimeline, likePost, deletePost,
+    sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
