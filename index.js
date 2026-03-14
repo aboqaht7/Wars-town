@@ -802,8 +802,6 @@ client.on('interactionCreate', async interaction => {
                     .setDescription('هل تريد شراء هذا العقار؟ اضغط على زر الشراء أدناه.\n> سيتم خصم المبلغ من كاشك وإرسال تفاصيل العقار في خاصك.')
                     .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                     .setTimestamp();
-                if (prop.image_url) embed.setImage(prop.image_url);
-
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`buy_property_${prop.id}`)
