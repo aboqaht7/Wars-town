@@ -171,6 +171,15 @@ client.on('interactionCreate', async interaction => {
                     sendToCharLog(resultEmbed);
                     await interaction.update({ embeds: [resultEmbed], components: [] });
 
+                    // منح رتبة الهوية تلقائياً
+                    try {
+                        const identityRoleId = await db.getConfig('identity_role');
+                        if (identityRoleId) {
+                            const member = await interaction.guild.members.fetch(pending.discord_id);
+                            await member.roles.add(identityRoleId);
+                        }
+                    } catch {}
+
                     try {
                         const user = await client.users.fetch(pending.discord_id);
                         const slotNamesApprove = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
