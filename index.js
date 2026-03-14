@@ -686,9 +686,10 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'identity_login_slot') {
             const slot = parseInt(value.replace('login_slot_', ''));
             try {
-                await db.loginIdentity(interaction.user.id, slot);
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const char = identities.find(i => i.slot === slot);
+                if (!char || !char.character_name) return interaction.reply({ content: '❌ هذه الشخصية غير مقبولة أو غير مكتملة. لا يمكن تسجيل الدخول بها.', flags: 64 });
+                await db.loginIdentity(interaction.user.id, slot);
                 await db.addCharacterLog(interaction.user.id, interaction.user.username, 'login', char.character_name, slot);
                 const slotNamesLogin = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                 const embed = new EmbedBuilder()
