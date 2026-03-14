@@ -45,7 +45,7 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         const img = await db.getImage('bank');
-        interaction.reply({ ...bankMenu(img), flags: 64 });
+        interaction.reply(bankMenu(img));
     },
 
     bankMenu,

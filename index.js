@@ -137,10 +137,16 @@ client.on('interactionCreate', async interaction => {
             const command = commandName ? client.commands.get(commandName) : null;
             if (command?.slashExecute) {
                 try {
+                    await interaction.deferReply();
+                    const origReply = interaction.reply.bind(interaction);
+                    interaction.reply = (data) => interaction.editReply(data);
                     await command.slashExecute(interaction, db);
                 } catch (e) {
                     console.error(e);
-                    if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                    try {
+                        if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
+                        else if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                    } catch {}
                 }
             }
         }
@@ -434,7 +440,7 @@ client.on('interactionCreate', async interaction => {
                         )
                         .setFooter({ text: 'نظام البنك • بوت FANTASY' })
                         .setTimestamp();
-                    return interaction.reply({ embeds: [embed], flags: 64 });
+                    return interaction.reply({ embeds: [embed] });
                 }
 
                 if (value === 'transfer') {
@@ -491,7 +497,7 @@ client.on('interactionCreate', async interaction => {
                         });
                         embed.setDescription(lines.join('\n'));
                     }
-                    return interaction.reply({ embeds: [embed], flags: 64 });
+                    return interaction.reply({ embeds: [embed] });
                 }
             } catch (e) {
                 console.error(e);
@@ -665,7 +671,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'نظام البنك • بوت FANTASY' })
                     .setTimestamp();
-                return interaction.reply({ embeds: [embed], flags: 64 });
+                return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
