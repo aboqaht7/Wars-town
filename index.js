@@ -179,7 +179,22 @@ client.on('interactionCreate', async interaction => {
 
                     try {
                         const user = await client.users.fetch(pending.discord_id);
-                        await user.send(`✅ **تم قبول طلب هويتك!**\n**شخصية ${pending.slot}:** ${pending.char_name} ${pending.family_name}\n🏦 الإيبان: \`${char.iban}\``);
+                        const slotNamesApprove = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                        const approveDmEmbed = new EmbedBuilder()
+                            .setTitle('✅ تم قبول طلب هويتك!')
+                            .setColor(0x2E7D32)
+                            .setDescription('مبروك! تم قبول هويتك بنجاح. يمكنك الآن تسجيل الدخول.')
+                            .addFields(
+                                { name: '📌 الشخصية', value: slotNamesApprove[pending.slot] || `شخصية ${pending.slot}`, inline: true },
+                                { name: '👤 الاسم الكامل', value: `${pending.char_name} ${pending.family_name}`, inline: true },
+                                { name: '⚧ الجنس', value: pending.gender || '—', inline: true },
+                                { name: '📅 تاريخ الميلاد', value: pending.birth_date || '—', inline: true },
+                                { name: '📍 مكان الولادة', value: pending.birth_place || '—', inline: true },
+                                { name: '🏦 الإيبان الخاص بك', value: `\`${char.iban}\``, inline: true },
+                            )
+                            .setFooter({ text: 'بوت FANTASY • نظام الهوية' })
+                            .setTimestamp();
+                        await user.send({ embeds: [approveDmEmbed] });
                     } catch {}
                 } else {
                     await db.updatePendingStatus(pendingId, 'rejected');
