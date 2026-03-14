@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'منصة-x',
@@ -9,14 +10,14 @@ module.exports = {
         const posts = await db.getXTimeline(8);
         const embed = buildEmbed(posts);
         const menu = buildMenu(posts);
-        const components = menu ? [menu] : [];
+        const components = menu ? [menu, resetRow('x_platform')] : [resetRow('x_platform')];
         message.channel.send({ embeds: [embed], components });
     },
     async slashExecute(interaction, db) {
         const posts = await db.getXTimeline(8);
         const embed = buildEmbed(posts);
         const menu = buildMenu(posts);
-        const components = menu ? [menu] : [];
+        const components = menu ? [menu, resetRow('x_platform')] : [resetRow('x_platform')];
         interaction.reply({ embeds: [embed], components });
     }
 };
@@ -27,12 +28,10 @@ function buildEmbed(posts) {
         .setColor(0x000000)
         .setFooter({ text: 'منصة X • بوت FANTASY' })
         .setTimestamp();
-
     if (!posts.length) {
         embed.setDescription('> لا توجد منشورات بعد. استخدم `-تغريد [نص]` لنشر أول تغريدة!');
         return embed;
     }
-
     for (const p of posts) {
         const time = new Date(p.created_at).toLocaleDateString('ar-SA');
         embed.addFields({

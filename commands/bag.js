@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'bag',
@@ -8,55 +9,39 @@ module.exports = {
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const items = await db.getInventory(message.author.id);
-        const embed = new EmbedBuilder()
-            .setTitle('🎒 الحقيبة')
-            .setColor(0xE65100)
-            .setDescription(items.length
-                ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
-                : '> حقيبتك فارغة حالياً')
-            .addFields(
-                { name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true },
-                { name: '📤 نقل غرض', value: '`-نقل [اسم الغرض] @المستخدم`', inline: false },
-            )
-            .setImage(await db.getImage('bag') || null)
-            .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
-            .setTimestamp();
-        const menu = new ActionRowBuilder().addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('bag_menu')
-                .setPlaceholder('اختر خيار')
-                .addOptions([
-                    { label: '👀 عرض الأغراض', value: 'view' },
-                    { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
-                ])
-        );
-        message.channel.send({ embeds: [embed], components: [menu] });
+        const { embed, menu } = build(items, await db.getImage('bag'));
+        message.channel.send({ embeds: [embed], components: [menu, resetRow('bag')] });
     },
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const items = await db.getInventory(interaction.user.id);
-        const embed = new EmbedBuilder()
-            .setTitle('🎒 الحقيبة')
-            .setColor(0xE65100)
-            .setDescription(items.length
-                ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
-                : '> حقيبتك فارغة حالياً')
-            .addFields(
-                { name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true },
-                { name: '📤 نقل غرض', value: '`-نقل [اسم الغرض] @المستخدم`', inline: false },
-            )
-            .setImage(await db.getImage('bag') || null)
-            .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
-            .setTimestamp();
-        const menu = new ActionRowBuilder().addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('bag_menu')
-                .setPlaceholder('اختر خيار')
-                .addOptions([
-                    { label: '👀 عرض الأغراض', value: 'view' },
-                    { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
-                ])
-        );
-        interaction.reply({ embeds: [embed], components: [menu] });
+        const { embed, menu } = build(items, await db.getImage('bag'));
+        interaction.reply({ embeds: [embed], components: [menu, resetRow('bag')] });
     }
 };
+
+function build(items, image) {
+    const embed = new EmbedBuilder()
+        .setTitle('🎒 الحقيبة')
+        .setColor(0xE65100)
+        .setDescription(items.length
+            ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
+            : '> حقيبتك فارغة حالياً')
+        .addFields(
+            { name: '📦 عدد العناصر', value: `\`${items.length}\``, inline: true },
+            { name: '📤 نقل غرض', value: '`-نقل [اسم الغرض] @المستخدم`', inline: false },
+        )
+        .setImage(image || null)
+        .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+        .setTimestamp();
+    const menu = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
+            .setCustomId('bag_menu')
+            .setPlaceholder('اختر خيار')
+            .addOptions([
+                { label: '👀 عرض الأغراض', value: 'view' },
+                { label: '📤 كيفية نقل الأغراض', value: 'transfer_help' },
+            ])
+    );
+    return { embed, menu };
+}

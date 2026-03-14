@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'معارض',
@@ -9,14 +10,14 @@ module.exports = {
         const cars = await db.getShowroom();
         const embed = buildEmbed(cars, await db.getImage('showroom'));
         const menu = buildMenu(cars);
-        const components = menu ? [menu] : [];
+        const components = menu ? [menu, resetRow('showroom')] : [resetRow('showroom')];
         message.channel.send({ embeds: [embed], components });
     },
     async slashExecute(interaction, db) {
         const cars = await db.getShowroom();
         const embed = buildEmbed(cars, await db.getImage('showroom'));
         const menu = buildMenu(cars);
-        const components = menu ? [menu] : [];
+        const components = menu ? [menu, resetRow('showroom')] : [resetRow('showroom')];
         interaction.reply({ embeds: [embed], components });
     }
 };
@@ -28,14 +29,11 @@ function buildEmbed(cars, image) {
         .setImage(image || null)
         .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
         .setTimestamp();
-
     if (!cars.length) {
         embed.setDescription('> لا توجد سيارات متاحة في المعرض حالياً');
         return embed;
     }
-
     embed.setDescription(`**${cars.length}** سيارة متوفرة في المعرض`);
-
     for (const car of cars) {
         const details = [
             car.car_type ? `النوع: ${car.car_type}` : null,
@@ -44,7 +42,6 @@ function buildEmbed(cars, image) {
         ].filter(Boolean).join(' • ');
         embed.addFields({ name: `🚗 ${car.car_name}`, value: details || 'لا توجد تفاصيل', inline: false });
     }
-
     return embed;
 }
 

@@ -105,7 +105,32 @@ const menuHandlers = {
     },
 };
 
+const resetCommandMap = {
+    police: 'police', bank: 'bank', bag: 'bag', identity: 'identity',
+    phone: 'phone', events: 'events', jobs: 'jobs', market: 'market',
+    law: 'law', admin: 'admin', crime: 'crime', health: 'health',
+    tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
+    x_platform: 'منصة-x', help: 'help',
+};
+
 client.on('interactionCreate', async interaction => {
+    if (interaction.isButton()) {
+        if (interaction.customId.startsWith('reset_')) {
+            const key = interaction.customId.replace('reset_', '');
+            const commandName = resetCommandMap[key];
+            const command = commandName ? client.commands.get(commandName) : null;
+            if (command?.slashExecute) {
+                try {
+                    await command.slashExecute(interaction, db);
+                } catch (e) {
+                    console.error(e);
+                    if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                }
+            }
+        }
+        return;
+    }
+
     if (interaction.isStringSelectMenu()) {
         const value = interaction.values[0];
 

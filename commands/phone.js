@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'phone',
@@ -8,19 +9,19 @@ module.exports = {
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const unread = await db.getUnreadCount(message.author.id);
-        const embed = buildEmbed(message.author.username, unread, await db.getImage('phone'));
-        message.channel.send({ embeds: [embed], components: [buildMenu()] });
+        const { embed, menu } = build(message.author.username, unread, await db.getImage('phone'));
+        message.channel.send({ embeds: [embed], components: [menu, resetRow('phone')] });
     },
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const unread = await db.getUnreadCount(interaction.user.id);
-        const embed = buildEmbed(interaction.user.username, unread, await db.getImage('phone'));
-        interaction.reply({ embeds: [embed], components: [buildMenu()] });
+        const { embed, menu } = build(interaction.user.username, unread, await db.getImage('phone'));
+        interaction.reply({ embeds: [embed], components: [menu, resetRow('phone')] });
     }
 };
 
-function buildEmbed(username, unread, image) {
-    return new EmbedBuilder()
+function build(username, unread, image) {
+    const embed = new EmbedBuilder()
         .setTitle('📱 الجوال')
         .setColor(0x00838F)
         .setDescription(`هاتف **${username}** الشخصي`)
@@ -34,10 +35,7 @@ function buildEmbed(username, unread, image) {
         .setImage(image || null)
         .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
         .setTimestamp();
-}
-
-function buildMenu() {
-    return new ActionRowBuilder().addComponents(
+    const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('phone_menu')
             .setPlaceholder('اختر تطبيق')
@@ -47,4 +45,5 @@ function buildMenu() {
                 { label: '𝕏 منصة X', value: 'x_platform', description: 'عرض آخر منشورات منصة X' },
             ])
     );
+    return { embed, menu };
 }

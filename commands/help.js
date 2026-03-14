@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { resetRow } = require('../utils');
 
 const OPTIONS = [
     { label: '🪪 الهوية', value: 'identity' },
@@ -26,7 +27,7 @@ function buildEmbed() {
         .addFields(
             { name: '🪪 الهوية', value: '`/identity`', inline: true },
             { name: '📱 الجوال', value: '`/phone`', inline: true },
-            { name: '💬 الرسائل', value: '`-رسالة` `−صندوق`', inline: true },
+            { name: '💬 الرسائل', value: '`-رسالة` `-صندوق`', inline: true },
             { name: '𝕏 منصة X', value: '`-تغريد` `/منصة-x`', inline: true },
             { name: '🎒 الحقيبة', value: '`/bag`', inline: true },
             { name: '🏦 البنك', value: '`/bank`', inline: true },
@@ -60,9 +61,9 @@ module.exports = {
         .setName('help')
         .setDescription('عرض قائمة أنظمة البوت'),
     execute(message, args, db) {
-        message.channel.send({ embeds: [buildEmbed()], components: [buildMenu()] });
+        message.channel.send({ embeds: [buildEmbed()], components: [buildMenu(), resetRow('help')] });
     },
     slashExecute(interaction, db) {
-        interaction.reply({ embeds: [buildEmbed()], components: [buildMenu()] });
+        interaction.reply({ embeds: [buildEmbed()], components: [buildMenu(), resetRow('help')] });
     }
 };
