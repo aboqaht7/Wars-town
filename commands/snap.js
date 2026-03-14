@@ -26,9 +26,7 @@ function buildSnap(account, image) {
     const embed = new EmbedBuilder()
         .setTitle('👻 سناب شات')
         .setColor(0xFFFC00)
-        .setDescription(account
-            ? `مرحباً **@${account.snap_username}** — اختر ما تريد فعله.`
-            : 'أنشئ حسابك على سناب شات وابدأ التواصل مع أصدقائك!')
+        .setDescription('أرسل سنابات وتواصل مع أصدقائك.')
         .setFooter({ text: 'سناب شات • بوت FANTASY' })
         .setTimestamp();
     if (image) embed.setImage(image);
