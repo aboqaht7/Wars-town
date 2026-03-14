@@ -247,10 +247,14 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'bank_balance') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
+                    const SLOT_NAMES_B = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                     const embed = new EmbedBuilder()
                         .setTitle('💰 عرض الأموال')
                         .setColor(0x1565C0)
                         .addFields(
+                            { name: '👤 الاسم', value: `${identity.character_name || '—'} ${identity.family_name || ''}`, inline: true },
+                            { name: '📌 الشخصية', value: SLOT_NAMES_B[identity.slot] || `شخصية ${identity.slot}`, inline: true },
+                            { name: '\u200b', value: '\u200b', inline: true },
                             { name: '🏦 رصيد البنك', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
                             { name: '💵 الكاش', value: `\`${Number(identity.cash || 0).toLocaleString()} ريال\``, inline: true },
                             { name: '🏦 الإيبان', value: `\`${identity.iban}\``, inline: true },

@@ -24,42 +24,14 @@ module.exports = {
 const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
 
 async function buildMain(userId, db) {
-    const status = await db.getLoginStatus(userId);
-    const identities = await db.getUserIdentities(userId);
-    const activeChar = status.is_logged_in && status.active_slot
-        ? identities.find(i => i.slot === status.active_slot)
-        : null;
-
+    const img = await db.getImage('identity');
     const embed = new EmbedBuilder()
         .setTitle('🪪 نظام الهوية')
         .setColor(0x4A148C)
-        .setImage(await db.getImage('identity') || null)
+        .setDescription('أنشئ هويتك وسجّل دخولك لبدء رحلتك في عالم FANTASY.')
         .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
         .setTimestamp();
-
-    if (activeChar) {
-        embed.setDescription(`✅ **مسجّل دخول** — ${SLOT_NAMES[activeChar.slot]}`)
-            .addFields(
-                { name: '👤 الاسم', value: `${activeChar.character_name || '—'} ${activeChar.family_name || ''}`, inline: true },
-                { name: '⚧ الجنس', value: activeChar.gender || '—', inline: true },
-                { name: '📅 تاريخ الميلاد', value: activeChar.birth_date || '—', inline: true },
-                { name: '📍 مكان الولادة', value: activeChar.birth_place || '—', inline: true },
-                { name: '🏦 الإيبان', value: `\`${activeChar.iban}\``, inline: true },
-                { name: '💰 الرصيد', value: `\`${Number(activeChar.balance).toLocaleString()} ريال\``, inline: true },
-            );
-    } else {
-        embed.setDescription('❌ **غير مسجّل دخول**\nاختر خياراً من القائمة أدناه');
-        const created = identities.filter(i => i.character_name);
-        if (created.length) {
-            embed.addFields({
-                name: '📋 شخصياتك',
-                value: created.map(i => `• **${SLOT_NAMES[i.slot]}:** ${i.character_name} ${i.family_name || ''}`).join('\n'),
-                inline: false,
-            });
-        } else {
-            embed.addFields({ name: '📋 شخصياتك', value: 'لا توجد شخصيات بعد — اختر **إنشاء هوية** للبدء', inline: false });
-        }
-    }
+    if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
