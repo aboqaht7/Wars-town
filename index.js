@@ -839,26 +839,8 @@ client.on('interactionCreate', async interaction => {
                 if (value === 'snap') {
                     const account = await db.getSnapAccount(interaction.user.id);
                     const img = await db.getImage('snap');
-                    const { EmbedBuilder: SE, ActionRowBuilder: SAR, ButtonBuilder: SBB, ButtonStyle: SBS } = require('discord.js');
-                    const { resetRow: srr } = require('./utils');
-                    const se = new SE().setColor(0xFFFC00).setFooter({ text: 'سناب شات • بوت FANTASY' }).setTimestamp();
-                    if (img) se.setImage(img);
-                    if (!account) {
-                        se.setTitle('👻 سناب شات').setDescription('أنشئ حسابك على سناب شات!');
-                        const sr = new SAR().addComponents(
-                            new SBB().setCustomId('snap_create').setLabel('✨ إنشاء حساب').setStyle(SBS.Primary),
-                        );
-                        return interaction.reply({ embeds: [se], components: [sr, srr('سناب')], flags: 64 });
-                    }
-                    se.setTitle(`👻 ${account.snap_username}`).setDescription(`**⭐ سناب سكور:** \`${account.score}\``);
-                    const sr = new SAR().addComponents(
-                        new SBB().setCustomId('snap_send').setLabel('📸 إرسال سناب').setStyle(SBS.Success),
-                        new SBB().setCustomId('snap_inbox').setLabel('📬 الوارد').setStyle(SBS.Primary),
-                        new SBB().setCustomId('snap_friends').setLabel('👥 أصدقائي').setStyle(SBS.Secondary),
-                        new SBB().setCustomId('snap_add').setLabel('➕ إضافة صديق').setStyle(SBS.Secondary),
-                        new SBB().setCustomId('snap_requests').setLabel('🔔 الطلبات').setStyle(SBS.Danger),
-                    );
-                    return interaction.reply({ embeds: [se], components: [sr, srr('سناب')], flags: 64 });
+                    const { buildSnap } = require('./commands/snap');
+                    return interaction.reply({ ...buildSnap(account, img), flags: 64 });
                 }
             } catch (e) {
                 console.error(e);
