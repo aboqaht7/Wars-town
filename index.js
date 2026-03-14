@@ -302,11 +302,23 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('🎒 محتويات حقيبتك')
                     .setColor(0xE65100)
-                    .setDescription(items.length
-                        ? items.map(i => `• **${i.item_name}** — الكمية: \`${i.quantity}\``).join('\n')
-                        : '> حقيبتك فارغة حالياً')
-                    .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                    .setFooter({ text: `إجمالي الأغراض: ${items.length} • نظام الحقيبة • بوت FANTASY` })
                     .setTimestamp();
+
+                if (!items.length) {
+                    embed.setDescription('> 🪹 حقيبتك فارغة حالياً');
+                } else {
+                    embed.setDescription(`📦 **${items.length}** غرض في حقيبتك`);
+                    const SPACER = { name: '\u200b', value: '\u200b', inline: true };
+                    const fields = items.map(i => ({
+                        name: `┌─ ${i.item_name} ─┐`,
+                        value: `📦 الكمية: \`${i.quantity}\``,
+                        inline: true,
+                    }));
+                    // pad to multiple of 3 so rows are uniform
+                    while (fields.length % 3 !== 0) fields.push(SPACER);
+                    embed.addFields(fields);
+                }
                 return interaction.reply({ embeds: [embed], flags: 64 });
             }
 
