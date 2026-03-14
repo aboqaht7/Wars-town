@@ -8,7 +8,7 @@ module.exports = {
             return message.reply('❌ هذا الأمر للمسؤولين فقط.');
         }
 
-        const confirmEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
             .setTitle('⚠️ تأكيد الحذف الكامل')
             .setColor(0xB71C1C)
             .setDescription(
@@ -24,33 +24,6 @@ module.exports = {
             new ButtonBuilder().setCustomId('cancel_delete_all_identities').setLabel('إلغاء').setStyle(ButtonStyle.Secondary),
         );
 
-        const msg = await message.channel.send({ embeds: [confirmEmbed], components: [row] });
-
-        const collector = msg.createMessageComponentCollector({
-            filter: i => i.user.id === message.author.id,
-            time: 30_000,
-            max: 1,
-        });
-
-        collector.on('collect', async i => {
-            if (i.customId === 'confirm_delete_all_identities') {
-                await db.deleteAllIdentities();
-                const doneEmbed = new EmbedBuilder()
-                    .setTitle('🗑️ تم حذف جميع الهويات')
-                    .setColor(0x757575)
-                    .setDescription('> تم حذف جميع الهويات والطلبات المعلقة بنجاح، وتم تسجيل الخروج من جميع الحسابات.')
-                    .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
-                    .setTimestamp();
-                await i.update({ embeds: [doneEmbed], components: [] });
-            } else {
-                await i.update({ content: '❌ تم إلغاء العملية.', embeds: [], components: [] });
-            }
-        });
-
-        collector.on('end', collected => {
-            if (!collected.size) {
-                msg.edit({ content: '⏰ انتهى وقت التأكيد.', embeds: [], components: [] }).catch(() => {});
-            }
-        });
+        message.channel.send({ embeds: [embed], components: [row] });
     }
 };

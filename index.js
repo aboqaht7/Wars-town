@@ -3,7 +3,7 @@ const {
     Client, Collection, GatewayIntentBits, EmbedBuilder,
     ModalBuilder, TextInputBuilder, TextInputStyle,
     ActionRowBuilder, StringSelectMenuBuilder,
-    ButtonBuilder, ButtonStyle
+    ButtonBuilder, ButtonStyle, PermissionFlagsBits
 } = require('discord.js');
 const db = require('./database');
 require('dotenv').config();
@@ -130,6 +130,28 @@ client.on('interactionCreate', async interaction => {
                         if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
                     } catch {}
                 }
+            }
+        }
+
+        if (interaction.customId === 'confirm_delete_all_identities' || interaction.customId === 'cancel_delete_all_identities') {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.reply({ content: '❌ هذا الأمر للمسؤولين فقط.', flags: 64 });
+            }
+            if (interaction.customId === 'cancel_delete_all_identities') {
+                return interaction.update({ content: '❌ تم إلغاء العملية.', embeds: [], components: [] });
+            }
+            try {
+                await db.deleteAllIdentities();
+                const doneEmbed = new EmbedBuilder()
+                    .setTitle('🗑️ تم حذف جميع الهويات')
+                    .setColor(0x757575)
+                    .setDescription('> تم حذف جميع الهويات والطلبات المعلقة بنجاح، وتم تسجيل الخروج من جميع الحسابات.')
+                    .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
+                    .setTimestamp();
+                return interaction.update({ embeds: [doneEmbed], components: [] });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء حذف الهويات.', flags: 64 });
             }
         }
 
