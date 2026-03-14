@@ -96,6 +96,30 @@ async function transferMoney(fromDiscordId, toIban, amount, note = null) {
     return { success: true, sender, receiver, amount };
 }
 
+async function depositCash(discordId, amount) {
+    const sender = await getActiveIdentity(discordId);
+    if (!sender) return { success: false, error: 'لم يتم العثور على هويتك النشطة.' };
+    if (sender.frozen) return { success: false, error: '❄️ حسابك مجمّد. تواصل مع الإدارة.' };
+    if (Number(sender.cash) < amount) return { success: false, error: `كاشك غير كافٍ. لديك: \`${Number(sender.cash).toLocaleString()} ريال\`` };
+    await query('UPDATE identities SET cash = cash - $1, balance = balance + $1 WHERE discord_id = $2 AND slot = $3',
+        [amount, discordId, sender.slot]);
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ('CASH',$1,$2,'deposit','إيداع كاش')`,
+        [sender.iban, amount]);
+    return { success: true, sender, amount };
+}
+
+async function withdrawCash(discordId, amount) {
+    const sender = await getActiveIdentity(discordId);
+    if (!sender) return { success: false, error: 'لم يتم العثور على هويتك النشطة.' };
+    if (sender.frozen) return { success: false, error: '❄️ حسابك مجمّد. تواصل مع الإدارة.' };
+    if (Number(sender.balance) < amount) return { success: false, error: `رصيدك البنكي غير كافٍ. رصيدك: \`${Number(sender.balance).toLocaleString()} ريال\`` };
+    await query('UPDATE identities SET balance = balance - $1, cash = cash + $1 WHERE discord_id = $2 AND slot = $3',
+        [amount, discordId, sender.slot]);
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ($1,'CASH',$2,'withdraw','صرف كاش')`,
+        [sender.iban, amount]);
+    return { success: true, sender, amount };
+}
+
 async function getTransactions(iban, limit = 15) {
     const res = await query(
         `SELECT * FROM transactions WHERE from_iban = $1 OR to_iban = $1 ORDER BY created_at DESC LIMIT $2`,
@@ -485,7 +509,7 @@ module.exports = {
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
-    transferMoney, transferItem, getTransactions,
+    transferMoney, transferItem, getTransactions, depositCash, withdrawCash,
     adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,
     getImage, setImage,
     getInventory, addItem,
