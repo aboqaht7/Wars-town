@@ -110,6 +110,17 @@ const menuHandlers = {
     },
 };
 
+async function sendToCharLog(embed) {
+    try {
+        const channelId = await db.getConfig('character_log_channel');
+        if (!channelId) return;
+        const ch = await client.channels.fetch(channelId);
+        if (ch) await ch.send({ embeds: [embed] });
+    } catch (e) {
+        console.error('char log channel error:', e);
+    }
+}
+
 const resetCommandMap = {
     police: 'police', bank: 'bank', bag: 'bag', identity: 'identity',
     phone: 'phone', events: 'events', jobs: 'jobs', market: 'market',
@@ -163,6 +174,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '🏦 الإيبان', value: `\`${char.iban}\``, inline: true },
                         )
                         .setFooter({ text: 'نظام الهوية • بوت FANTASY' }).setTimestamp();
+                    sendToCharLog(resultEmbed);
                     await interaction.update({ embeds: [resultEmbed], components: [] });
 
                     try {
@@ -182,6 +194,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
                         )
                         .setFooter({ text: 'نظام الهوية • بوت FANTASY' }).setTimestamp();
+                    sendToCharLog(resultEmbed);
                     await interaction.update({ embeds: [resultEmbed], components: [] });
 
                     try {
@@ -284,15 +297,20 @@ client.on('interactionCreate', async interaction => {
                     if (!status.is_logged_in) return interaction.reply({ content: '❌ أنت لست مسجّل دخول بأي شخصية حالياً.', flags: 64 });
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const activeChar = identities.find(i => i.slot === status.active_slot);
+                    const slotNamesOut = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                     await db.logoutIdentity(interaction.user.id);
                     await db.addCharacterLog(interaction.user.id, interaction.user.username, 'logout', activeChar?.character_name || null, status.active_slot);
-                    const embed = new EmbedBuilder()
+                    const embedOut = new EmbedBuilder()
                         .setTitle('🚪 تسجيل الخروج')
                         .setColor(0x757575)
-                        .setDescription(`تم تسجيل الخروج من شخصية **${activeChar?.character_name || `شخصية ${status.active_slot}`} ${activeChar?.family_name || ''}**`)
+                        .addFields(
+                            { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '🪪 الشخصية', value: `${slotNamesOut[status.active_slot] || `شخصية ${status.active_slot}`}: **${activeChar?.character_name || '—'} ${activeChar?.family_name || ''}**`, inline: true },
+                        )
                         .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
                         .setTimestamp();
-                    return interaction.reply({ embeds: [embed] });
+                    sendToCharLog(embedOut);
+                    return interaction.reply({ embeds: [embedOut] });
                 }
             } catch (e) {
                 console.error(e);
@@ -348,19 +366,20 @@ client.on('interactionCreate', async interaction => {
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const char = identities.find(i => i.slot === slot);
                 await db.addCharacterLog(interaction.user.id, interaction.user.username, 'login', char.character_name, slot);
+                const slotNamesLogin = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                 const embed = new EmbedBuilder()
-                    .setTitle(`✅ تسجيل الدخول — شخصية ${slot}`)
+                    .setTitle(`✅ تسجيل الدخول — ${slotNamesLogin[slot]}`)
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '👤 الاسم', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
                         { name: '⚧ الجنس', value: char.gender || '—', inline: true },
                         { name: '📅 تاريخ الميلاد', value: char.birth_date || '—', inline: true },
                         { name: '📍 مكان الولادة', value: char.birth_place || '—', inline: true },
-                        { name: '🏦 الإيبان', value: `\`${char.iban}\``, inline: true },
-                        { name: '💰 الرصيد', value: `\`${Number(char.balance).toLocaleString()} ريال\``, inline: true },
+                        { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
                     )
                     .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
                     .setTimestamp();
+                sendToCharLog(embed);
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
@@ -490,24 +509,28 @@ client.on('interactionCreate', async interaction => {
                     await db.setConfig('trip_open', 'false');
                     await db.logoutAllUsers();
                     await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
-                    const embed = new EmbedBuilder()
+                    const hurricaneEmbed = new EmbedBuilder()
                         .setTitle('🌀 تحذير — إعصار!')
                         .setColor(0xB71C1C)
                         .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
+                        .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
                         .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
                         .setTimestamp();
-                    return interaction.reply({ embeds: [embed] });
+                    sendToCharLog(hurricaneEmbed);
+                    return interaction.reply({ embeds: [hurricaneEmbed] });
                 }
                 if (value === 'open_flight') {
                     await db.setConfig('trip_open', 'true');
                     await db.setConfig('hurricane_active', 'false');
-                    const embed = new EmbedBuilder()
+                    const flightEmbed = new EmbedBuilder()
                         .setTitle('✈️ تم فتح الرحلة!')
                         .setColor(0x2E7D32)
                         .setDescription('✅ **الرحلة مفتوحة الآن!**\n\n🎉 يمكن لجميع اللاعبين **تسجيل الدخول** بشخصياتهم.')
+                        .addFields({ name: '🔧 فتحها', value: `<@${interaction.user.id}>`, inline: true })
                         .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
                         .setTimestamp();
-                    return interaction.reply({ embeds: [embed] });
+                    sendToCharLog(flightEmbed);
+                    return interaction.reply({ embeds: [flightEmbed] });
                 }
             } catch (e) {
                 console.error(e);
@@ -573,6 +596,20 @@ client.on('interactionCreate', async interaction => {
                         }
                     } catch (e) { console.error('log channel error:', e); }
                 }
+
+                const pendingNamesLog = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                const pendingLogEmbed = new EmbedBuilder()
+                    .setTitle('⏳ طلب هوية جديد')
+                    .setColor(0xF57F17)
+                    .addFields(
+                        { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '📌 الشخصية', value: pendingNamesLog[slot], inline: true },
+                        { name: '🪪 الاسم', value: `${charName} ${familyName}`, inline: true },
+                        { name: '🆔 رقم الطلب', value: `\`#${pending.id}\``, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                    .setTimestamp();
+                sendToCharLog(pendingLogEmbed);
 
                 return interaction.reply({
                     content: `⏳ **تم إرسال طلب هويتك رقم \`#${pending.id}\` للمراجعة.**\nسيصلك رد عند قبول أو رفض الطلب.`,
