@@ -8,10 +8,16 @@ module.exports = {
     name: 'bag',
     data: new SlashCommandBuilder().setName('bag').setDescription('عرض الحقيبة والأغراض'),
     async execute(message, args, db) {
+        await db.ensureUser(message.author.id, message.author.username);
+        const err = await db.checkLoginAndIdentity(message.author.id);
+        if (err) return message.reply(err);
         const img = await db.getImage('bag');
         message.channel.send(build(img));
     },
     async slashExecute(interaction, db) {
+        await db.ensureUser(interaction.user.id, interaction.user.username);
+        const err = await db.checkLoginAndIdentity(interaction.user.id);
+        if (err) return interaction.reply({ content: err, flags: 64 });
         const img = await db.getImage('bag');
         interaction.reply(build(img));
     }

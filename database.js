@@ -520,6 +520,17 @@ async function removeVehicle(discordId, plate) {
     return res.rows.length > 0;
 }
 
+async function checkLoginAndIdentity(discordId) {
+    const status = await getLoginStatus(discordId);
+    if (!status.is_logged_in) return '❌ لازم تسجّل دخول أولاً. استخدم `/identity` لتسجيل الدخول.';
+    const res = await query(
+        'SELECT character_name FROM identities WHERE discord_id=$1 AND slot=$2',
+        [discordId, status.active_slot]
+    );
+    if (!res.rows[0]?.character_name) return '❌ لازم تنشئ هوية أولاً. استخدم `/identity` لإنشاء شخصيتك.';
+    return null;
+}
+
 async function createSnapAccount(discordId, snapUsername) {
     const existing = await query('SELECT 1 FROM snap_accounts WHERE discord_id = $1', [discordId]);
     if (existing.rows[0]) return { success: false, error: 'لديك حساب سناب بالفعل.' };
@@ -649,6 +660,7 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    checkLoginAndIdentity,
     createSnapAccount, getSnapAccount, getSnapAccountByUsername,
     addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,
     sendSnap, getSnapInbox, markSnapSeen,

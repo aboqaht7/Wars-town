@@ -295,6 +295,7 @@ client.on('interactionCreate', async interaction => {
         if (['snap_create','snap_send','snap_inbox','snap_friends','snap_add','snap_requests'].includes(interaction.customId)) {
             const { ModalBuilder: MSN, TextInputBuilder: TISN, TextInputStyle: TSSN, ActionRowBuilder: ARSN, StringSelectMenuBuilder: SSSN } = require('discord.js');
             await db.ensureUser(interaction.user.id, interaction.user.username);
+            { const _e = await db.checkLoginAndIdentity(interaction.user.id); if (_e) return interaction.reply({ content: _e, flags: 64 }); }
 
             if (interaction.customId === 'snap_create') {
                 const acc = await db.getSnapAccount(interaction.user.id);
@@ -421,6 +422,7 @@ client.on('interactionCreate', async interaction => {
         if (['x_create_account', 'x_send_tweet', 'x_delete_account'].includes(interaction.customId)) {
             const { ModalBuilder: MBX, TextInputBuilder: TIBX, TextInputStyle: TISX, ActionRowBuilder: ARBX } = require('discord.js');
             await db.ensureUser(interaction.user.id, interaction.user.username);
+            { const _e = await db.checkLoginAndIdentity(interaction.user.id); if (_e) return interaction.reply({ content: _e, flags: 64 }); }
 
             if (interaction.customId === 'x_create_account') {
                 const existing = await db.getXAccount(interaction.user.id);
@@ -463,6 +465,7 @@ client.on('interactionCreate', async interaction => {
         if (['bag_view', 'bag_use', 'bag_transfer'].includes(interaction.customId)) {
             const { ModalBuilder: MB2, TextInputBuilder: TIB2, TextInputStyle: TIS2, ActionRowBuilder: ARB2, StringSelectMenuBuilder: SSM2 } = require('discord.js');
             await db.ensureUser(interaction.user.id, interaction.user.username);
+            { const _e = await db.checkLoginAndIdentity(interaction.user.id); if (_e) return interaction.reply({ content: _e, flags: 64 }); }
 
             if (interaction.customId === 'bag_view') {
                 const items = await db.getInventory(interaction.user.id);
@@ -703,6 +706,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const { ModalBuilder: MN, TextInputBuilder: TIN, TextInputStyle: TSN, ActionRowBuilder: ARN, StringSelectMenuBuilder: SSN } = require('discord.js');
                 await db.ensureUser(interaction.user.id, interaction.user.username);
+                { const _e = await db.checkLoginAndIdentity(interaction.user.id); if (_e) return interaction.reply({ content: _e, flags: 64 }); }
                 const acc = await db.getSnapAccount(interaction.user.id);
                 if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
 
