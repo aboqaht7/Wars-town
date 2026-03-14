@@ -199,7 +199,19 @@ client.on('interactionCreate', async interaction => {
 
                     try {
                         const user = await client.users.fetch(pending.discord_id);
-                        await user.send(`❌ **تم رفض طلب هويتك للشخصية ${pending.slot}.**\nتواصل مع الإدارة للمزيد من التفاصيل.`);
+                        const slotNamesReject = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                        const dmEmbed = new EmbedBuilder()
+                            .setTitle('❌ تم رفض طلب الهوية')
+                            .setColor(0xB71C1C)
+                            .setDescription('للأسف، تم رفض طلب إنشاء هويتك. يمكنك إعادة المحاولة أو التواصل مع الإدارة.')
+                            .addFields(
+                                { name: '📌 الشخصية', value: slotNamesReject[pending.slot] || `شخصية ${pending.slot}`, inline: true },
+                                { name: '🪪 الاسم المقدّم', value: `${pending.char_name} ${pending.family_name}`, inline: true },
+                                { name: '❌ رفضه', value: interaction.user.username, inline: true },
+                            )
+                            .setFooter({ text: 'بوت FANTASY • نظام الهوية' })
+                            .setTimestamp();
+                        await user.send({ embeds: [dmEmbed] });
                     } catch {}
                 }
             } catch (e) {
