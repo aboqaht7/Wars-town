@@ -372,10 +372,31 @@ async function getUserIdentities(discordId) {
     return res.rows;
 }
 
-async function postTweet(discordId, username, content) {
+async function createXAccount(discordId, xUsername) {
+    const existing = await query('SELECT * FROM x_accounts WHERE discord_id = $1', [discordId]);
+    if (existing.rows[0]) return { success: false, error: 'لديك حساب X بالفعل.' };
+    const taken = await query('SELECT 1 FROM x_accounts WHERE LOWER(x_username) = LOWER($1)', [xUsername]);
+    if (taken.rows[0]) return { success: false, error: `اسم الحساب **@${xUsername}** مأخوذ، اختر اسماً آخر.` };
+    await query('INSERT INTO x_accounts (discord_id, x_username) VALUES ($1, $2)', [discordId, xUsername]);
+    return { success: true, xUsername };
+}
+
+async function getXAccount(discordId) {
+    const res = await query('SELECT * FROM x_accounts WHERE discord_id = $1', [discordId]);
+    return res.rows[0] || null;
+}
+
+async function deleteXAccount(discordId) {
+    await query('DELETE FROM x_posts WHERE discord_id = $1', [discordId]);
+    await query('DELETE FROM x_accounts WHERE discord_id = $1', [discordId]);
+}
+
+async function postTweet(discordId, content) {
+    const acc = await query('SELECT x_username FROM x_accounts WHERE discord_id = $1', [discordId]);
+    const xUsername = acc.rows[0]?.x_username || null;
     const res = await query(
-        'INSERT INTO x_posts (discord_id, username, content) VALUES ($1, $2, $3) RETURNING *',
-        [discordId, username, content]
+        'INSERT INTO x_posts (discord_id, username, x_username, content) VALUES ($1, $2, $3, $4) RETURNING *',
+        [discordId, xUsername || discordId, xUsername, content]
     );
     return res.rows[0];
 }
@@ -521,6 +542,7 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    createXAccount, getXAccount, deleteXAccount,
     postTweet, getXTimeline, likePost, deletePost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,

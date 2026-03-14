@@ -1,43 +1,40 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const {
+    SlashCommandBuilder, EmbedBuilder,
+    ActionRowBuilder, ButtonBuilder, ButtonStyle,
+} = require('discord.js');
 const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'منصة-x',
-    data: new SlashCommandBuilder().setName('منصة-x').setDescription('منصة 𝕏 — عرض آخر المنشورات'),
+    data: new SlashCommandBuilder().setName('منصة-x').setDescription('منصة 𝕏'),
     async execute(message, args, db) {
-        const posts = await db.getXTimeline(8);
-        const { embed, components } = build(posts);
-        message.channel.send({ embeds: [embed], components });
+        const img = await db.getImage('x_platform');
+        const account = await db.getXAccount(message.author.id);
+        message.channel.send(build(img, account));
     },
     async slashExecute(interaction, db) {
-        const posts = await db.getXTimeline(8);
-        const { embed, components } = build(posts);
-        interaction.reply({ embeds: [embed], components });
+        const img = await db.getImage('x_platform');
+        const account = await db.getXAccount(interaction.user.id);
+        interaction.reply(build(img, account));
     }
 };
 
-function build(posts) {
+function build(image, account) {
     const embed = new EmbedBuilder()
         .setTitle('𝕏 منصة X')
         .setColor(0x000000)
-        .setDescription('استعرض آخر المنشورات وتفاعل معها.')
+        .setDescription(account
+            ? `مرحباً **@${account.x_username}** — اختر ما تريد فعله.`
+            : 'أنشئ حسابك على منصة X وابدأ التغريد.')
         .setFooter({ text: 'منصة X • بوت FANTASY' })
         .setTimestamp();
+    if (image) embed.setImage(image);
 
-    const components = [resetRow('x_platform')];
-    if (posts.length) {
-        const options = posts.slice(0, 25).map(p => ({
-            label: `@${p.username.slice(0, 20)}`,
-            value: `like_${p.id}`,
-            description: p.content.slice(0, 50),
-        }));
-        const menu = new ActionRowBuilder().addComponents(
-            new StringSelectMenuBuilder()
-                .setCustomId('x_menu')
-                .setPlaceholder('❤️ اضغط للإعجاب بمنشور')
-                .addOptions(options)
-        );
-        components.unshift(menu);
-    }
-    return { embed, components };
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('x_create_account').setLabel('✨ إنشاء حساب').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('x_send_tweet').setLabel('🐦 إرسال تغريدة').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('x_delete_account').setLabel('🗑️ حذف الحساب').setStyle(ButtonStyle.Danger),
+    );
+
+    return { embeds: [embed], components: [row, resetRow('x_platform')] };
 }

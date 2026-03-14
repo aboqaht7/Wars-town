@@ -293,6 +293,48 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        if (['x_create_account', 'x_send_tweet', 'x_delete_account'].includes(interaction.customId)) {
+            const { ModalBuilder: MBX, TextInputBuilder: TIBX, TextInputStyle: TISX, ActionRowBuilder: ARBX } = require('discord.js');
+            await db.ensureUser(interaction.user.id, interaction.user.username);
+
+            if (interaction.customId === 'x_create_account') {
+                const existing = await db.getXAccount(interaction.user.id);
+                if (existing) return interaction.reply({ content: `❌ لديك حساب بالفعل: **@${existing.x_username}**`, flags: 64 });
+                const modal = new MBX().setCustomId('x_create_modal').setTitle('✨ إنشاء حساب X')
+                    .addComponents(new ARBX().addComponents(
+                        new TIBX().setCustomId('x_username').setLabel('اسم الحساب (بدون @)')
+                            .setStyle(TISX.Short).setRequired(true).setMinLength(3).setMaxLength(20)
+                    ));
+                return interaction.showModal(modal);
+            }
+
+            if (interaction.customId === 'x_send_tweet') {
+                const xChannel = await db.getConfig('x_channel');
+                if (!xChannel) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات بعد. تواصل مع المسؤولين.', flags: 64 });
+                const account = await db.getXAccount(interaction.user.id);
+                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X. أنشئ حساباً أولاً.', flags: 64 });
+                const modal = new MBX().setCustomId('x_tweet_modal').setTitle('🐦 إرسال تغريدة')
+                    .addComponents(new ARBX().addComponents(
+                        new TIBX().setCustomId('tweet_content').setLabel('نص التغريدة')
+                            .setStyle(TISX.Paragraph).setRequired(true).setMaxLength(280)
+                    ));
+                return interaction.showModal(modal);
+            }
+
+            if (interaction.customId === 'x_delete_account') {
+                const account = await db.getXAccount(interaction.user.id);
+                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                await db.deleteXAccount(interaction.user.id);
+                const embed = new EmbedBuilder()
+                    .setTitle('🗑️ تم حذف حسابك')
+                    .setColor(0xB71C1C)
+                    .setDescription(`تم حذف حساب **@${account.x_username}** وجميع تغريداته نهائياً.`)
+                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            }
+        }
+
         if (['bag_view', 'bag_use', 'bag_transfer'].includes(interaction.customId)) {
             const { ModalBuilder: MB2, TextInputBuilder: TIB2, TextInputStyle: TIS2, ActionRowBuilder: ARB2, StringSelectMenuBuilder: SSM2 } = require('discord.js');
             await db.ensureUser(interaction.user.id, interaction.user.username);
@@ -773,6 +815,54 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'x_create_modal') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const xUsername = interaction.fields.getTextInputValue('x_username').trim().replace(/\s+/g, '_');
+                const result = await db.createXAccount(interaction.user.id, xUsername);
+                if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+                const embed = new EmbedBuilder()
+                    .setTitle('✅ تم إنشاء حسابك على منصة X')
+                    .setColor(0x000000)
+                    .addFields({ name: '👤 اسم الحساب', value: `**@${xUsername}**`, inline: true })
+                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء إنشاء الحساب.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'x_tweet_modal') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const content = interaction.fields.getTextInputValue('tweet_content').trim();
+                const account = await db.getXAccount(interaction.user.id);
+                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                const xChannelId = await db.getConfig('x_channel');
+                if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات. تواصل مع المسؤولين.', flags: 64 });
+                const post = await db.postTweet(interaction.user.id, content);
+                const embed = new EmbedBuilder()
+                    .setTitle('𝕏 تغريدة جديدة')
+                    .setColor(0x000000)
+                    .setDescription(`> ${content}`)
+                    .addFields(
+                        { name: '👤 الحساب', value: `**@${account.x_username}**`, inline: true },
+                        { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
+                        { name: '❤️ الإعجابات', value: '`0`', inline: true },
+                    )
+                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setTimestamp();
+                const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
+                if (xChannel) await xChannel.send({ embeds: [embed] });
+                return interaction.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء نشر التغريدة.', flags: 64 });
             }
         }
 
