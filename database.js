@@ -550,6 +550,19 @@ async function getPropertyById(id) {
     return res.rows[0] || null;
 }
 
+async function updateProperty(id, { name, price, imageUrl }) {
+    const fields = [];
+    const vals   = [];
+    let i = 1;
+    if (name      !== undefined) { fields.push(`name=$${i++}`);      vals.push(name); }
+    if (price     !== undefined) { fields.push(`price=$${i++}`);     vals.push(price); }
+    if (imageUrl  !== undefined) { fields.push(`image_url=$${i++}`); vals.push(imageUrl); }
+    if (!fields.length) return null;
+    vals.push(id);
+    const res = await query(`UPDATE properties SET ${fields.join(', ')} WHERE id=$${i} RETURNING *`, vals);
+    return res.rows[0] || null;
+}
+
 async function deleteProperty(id) {
     await query('DELETE FROM properties WHERE id=$1', [id]);
 }
@@ -601,6 +614,20 @@ async function getRobberies() {
 
 async function getRobberyById(id) {
     const res = await query('SELECT * FROM robberies WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function updateRobbery(id, { name, tools, minMoney, maxMoney }) {
+    const fields = [];
+    const vals   = [];
+    let i = 1;
+    if (name     !== undefined) { fields.push(`name=$${i++}`);      vals.push(name); }
+    if (tools    !== undefined) { fields.push(`tools=$${i++}`);     vals.push(tools); }
+    if (minMoney !== undefined) { fields.push(`min_money=$${i++}`); vals.push(minMoney); }
+    if (maxMoney !== undefined) { fields.push(`max_money=$${i++}`); vals.push(maxMoney); }
+    if (!fields.length) return null;
+    vals.push(id);
+    const res = await query(`UPDATE robberies SET ${fields.join(', ')} WHERE id=$${i} RETURNING *`, vals);
     return res.rows[0] || null;
 }
 
@@ -748,10 +775,10 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
-    addProperty, getProperties, getPropertyById, deleteProperty, deleteAllProperties, updatePropertyImage,
+    addProperty, getProperties, getPropertyById, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,
     addToCash,
-    addRobbery, getRobberies, getRobberyById, deleteRobbery,
+    addRobbery, getRobberies, getRobberyById, updateRobbery, deleteRobbery,
     checkLoginAndIdentity,
     createSnapAccount, getSnapAccount, getSnapAccountByUsername,
     addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,
