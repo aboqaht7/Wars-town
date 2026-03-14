@@ -520,6 +520,23 @@ async function removeVehicle(discordId, plate) {
     return res.rows.length > 0;
 }
 
+async function deleteIdentity(discordId, slot) {
+    await query('DELETE FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
+    // if they were logged in with this slot, log them out
+    await query(
+        'UPDATE users SET is_logged_in=FALSE, active_slot=NULL WHERE discord_id=$1 AND active_slot=$2',
+        [discordId, slot]
+    );
+    // remove pending identities for this slot
+    await query('DELETE FROM pending_identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
+}
+
+async function deleteAllIdentities() {
+    await query('DELETE FROM identities');
+    await query('UPDATE users SET is_logged_in=FALSE, active_slot=NULL');
+    await query('DELETE FROM pending_identities');
+}
+
 async function addToCash(discordId, slot, amount) {
     await query(
         'UPDATE identities SET cash = cash + $1 WHERE discord_id = $2 AND slot = $3',
@@ -689,6 +706,7 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    deleteIdentity, deleteAllIdentities,
     addToCash,
     addRobbery, getRobberies, getRobberyById, deleteRobbery,
     checkLoginAndIdentity,
