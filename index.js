@@ -1,5 +1,9 @@
 const fs = require('fs');
-const { Client, Collection, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const {
+    Client, Collection, GatewayIntentBits, EmbedBuilder,
+    ModalBuilder, TextInputBuilder, TextInputStyle,
+    ActionRowBuilder, StringSelectMenuBuilder
+} = require('discord.js');
 const db = require('./database');
 require('dotenv').config();
 
@@ -160,25 +164,120 @@ client.on('interactionCreate', async interaction => {
         }
 
         if (interaction.customId === 'identity_menu') {
-            const slotNum = parseInt(value.replace('char_', ''));
+            await db.ensureUser(interaction.user.id, interaction.user.username);
             try {
-                await db.ensureUser(interaction.user.id, interaction.user.username);
-                await db.setActiveSlot(interaction.user.id, slotNum);
-                const identity = await db.ensureIdentity(interaction.user.id, slotNum);
+                if (value === 'create_identity') {
+                    const identities = await db.getUserIdentities(interaction.user.id);
+                    const slotOptions = [1, 2, 3].map(s => {
+                        const existing = identities.find(i => i.slot === s);
+                        return {
+                            label: existing?.character_name
+                                ? `شخصية ${s}: ${existing.character_name} ${existing.family_name || ''}`
+                                : `شخصية ${s}: فارغة`,
+                            value: `create_slot_${s}`,
+                            description: existing ? 'تعديل الهوية الموجودة' : 'إنشاء هوية جديدة',
+                        };
+                    });
+                    const slotRow = new ActionRowBuilder().addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId('identity_create_slot')
+                            .setPlaceholder('اختر خانة الشخصية')
+                            .addOptions(slotOptions)
+                    );
+                    return interaction.reply({ content: '📋 **اختر خانة الشخصية التي تريد إنشاء/تعديل هويتها:**', components: [slotRow], flags: 64 });
+                }
+
+                if (value === 'login_identity') {
+                    const identities = await db.getUserIdentities(interaction.user.id);
+                    const created = identities.filter(i => i.character_name);
+                    if (!created.length) return interaction.reply({ content: '❌ لا توجد شخصيات مُنشأة بعد. استخدم **إنشاء هوية** أولاً.', flags: 64 });
+                    const slotOptions = created.map(i => ({
+                        label: `شخصية ${i.slot}: ${i.character_name} ${i.family_name || ''}`,
+                        value: `login_slot_${i.slot}`,
+                        description: `${i.gender || '—'} • ${i.birth_date || '—'}`,
+                    }));
+                    const slotRow = new ActionRowBuilder().addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId('identity_login_slot')
+                            .setPlaceholder('اختر الشخصية للدخول')
+                            .addOptions(slotOptions)
+                    );
+                    return interaction.reply({ content: '✅ **اختر الشخصية التي تريد تسجيل الدخول بها:**', components: [slotRow], flags: 64 });
+                }
+
+                if (value === 'logout_identity') {
+                    const status = await db.getLoginStatus(interaction.user.id);
+                    if (!status.is_logged_in) return interaction.reply({ content: '❌ أنت لست مسجّل دخول بأي شخصية حالياً.', flags: 64 });
+                    const identities = await db.getUserIdentities(interaction.user.id);
+                    const activeChar = identities.find(i => i.slot === status.active_slot);
+                    await db.logoutIdentity(interaction.user.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('🚪 تسجيل الخروج')
+                        .setColor(0x757575)
+                        .setDescription(`تم تسجيل الخروج من شخصية **${activeChar?.character_name || `شخصية ${status.active_slot}`}**`)
+                        .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed] });
+                }
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'identity_create_slot') {
+            const slot = parseInt(value.replace('create_slot_', ''));
+            const modal = new ModalBuilder()
+                .setCustomId(`create_char_${slot}`)
+                .setTitle(`✏️ إنشاء هوية — خانة ${slot}`)
+                .addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('char_name').setLabel('اسم الشخصية')
+                            .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(50)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('family_name').setLabel('اسم العائلة')
+                            .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(50)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('birth_place').setLabel('اسم ومكان الولادة')
+                            .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(100)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('birth_date').setLabel('تاريخ الميلاد (مثال: 1990/06/15)')
+                            .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(20)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('gender').setLabel('الجنس (ذكر / أنثى)')
+                            .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(10)
+                    )
+                );
+            return interaction.showModal(modal);
+        }
+
+        if (interaction.customId === 'identity_login_slot') {
+            const slot = parseInt(value.replace('login_slot_', ''));
+            try {
+                await db.loginIdentity(interaction.user.id, slot);
+                const identities = await db.getUserIdentities(interaction.user.id);
+                const char = identities.find(i => i.slot === slot);
                 const embed = new EmbedBuilder()
-                    .setTitle(`🪪 تم التبديل للشخصية ${slotNum}`)
-                    .setColor(0x4A148C)
+                    .setTitle(`✅ تسجيل الدخول — شخصية ${slot}`)
+                    .setColor(0x2E7D32)
                     .addFields(
-                        { name: '👤 الشخصية', value: `**شخصية ${slotNum}**`, inline: true },
-                        { name: '🏦 رقم الإيبان', value: `\`${identity.iban}\``, inline: true },
-                        { name: '💰 الرصيد', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
+                        { name: '👤 الاسم', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
+                        { name: '⚧ الجنس', value: char.gender || '—', inline: true },
+                        { name: '📅 تاريخ الميلاد', value: char.birth_date || '—', inline: true },
+                        { name: '📍 مكان الولادة', value: char.birth_place || '—', inline: true },
+                        { name: '🏦 الإيبان', value: `\`${char.iban}\``, inline: true },
+                        { name: '💰 الرصيد', value: `\`${Number(char.balance).toLocaleString()} ريال\``, inline: true },
                     )
                     .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
                     .setTimestamp();
-                return interaction.reply({ embeds: [embed], flags: 64 });
+                return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ أثناء تبديل الشخصية.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء تسجيل الدخول.', flags: 64 });
             }
         }
 
@@ -302,6 +401,41 @@ client.on('interactionCreate', async interaction => {
         const response = handler[value];
         if (!response) return interaction.reply({ content: 'لا توجد معلومات لهذا الخيار.', flags: 64 });
         return interaction.reply({ content: response, flags: 64 });
+    }
+
+    if (interaction.isModalSubmit()) {
+        if (interaction.customId.startsWith('create_char_')) {
+            const slot = parseInt(interaction.customId.replace('create_char_', ''));
+            const charName  = interaction.fields.getTextInputValue('char_name').trim();
+            const familyName = interaction.fields.getTextInputValue('family_name').trim();
+            const birthPlace = interaction.fields.getTextInputValue('birth_place').trim();
+            const birthDate  = interaction.fields.getTextInputValue('birth_date').trim();
+            const gender     = interaction.fields.getTextInputValue('gender').trim();
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const char = await db.createIdentityFull(interaction.user.id, slot, {
+                    charName, familyName, birthPlace, birthDate, gender
+                });
+                const embed = new EmbedBuilder()
+                    .setTitle(`🪪 تم إنشاء الهوية — شخصية ${slot}`)
+                    .setColor(0x4A148C)
+                    .addFields(
+                        { name: '👤 الاسم الأول', value: charName, inline: true },
+                        { name: '👥 العائلة',      value: familyName, inline: true },
+                        { name: '⚧ الجنس',         value: gender, inline: true },
+                        { name: '📅 تاريخ الميلاد', value: birthDate, inline: true },
+                        { name: '📍 مكان الولادة',  value: birthPlace, inline: true },
+                        { name: '🏦 الإيبان',       value: `\`${char.iban}\``, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء حفظ الهوية.', flags: 64 });
+            }
+        }
+        return;
     }
 
     if (!interaction.isCommand()) return;

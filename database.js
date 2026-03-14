@@ -172,6 +172,47 @@ async function addItem(discordId, itemName, quantity = 1) {
     }
 }
 
+async function createIdentityFull(discordId, slot, data) {
+    const existing = await query('SELECT iban FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
+    if (existing.rows[0]) {
+        const iban = existing.rows[0].iban;
+        await query(
+            `UPDATE identities SET character_name=$3, family_name=$4, birth_place=$5, birth_date=$6, gender=$7
+             WHERE discord_id=$1 AND slot=$2`,
+            [discordId, slot, data.charName, data.familyName, data.birthPlace, data.birthDate, data.gender]
+        );
+        return (await query('SELECT * FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot])).rows[0];
+    }
+    const iban = await generateIban();
+    await query(
+        `INSERT INTO identities (discord_id, slot, character_name, family_name, birth_place, birth_date, gender, iban, balance)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0)`,
+        [discordId, slot, data.charName, data.familyName, data.birthPlace, data.birthDate, data.gender, iban]
+    );
+    return (await query('SELECT * FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot])).rows[0];
+}
+
+async function loginIdentity(discordId, slot) {
+    await query('UPDATE users SET active_slot=$2, is_logged_in=TRUE WHERE discord_id=$1', [discordId, slot]);
+}
+
+async function logoutIdentity(discordId) {
+    await query('UPDATE users SET is_logged_in=FALSE WHERE discord_id=$1', [discordId]);
+}
+
+async function getLoginStatus(discordId) {
+    const res = await query('SELECT active_slot, is_logged_in FROM users WHERE discord_id=$1', [discordId]);
+    return res.rows[0] || { active_slot: null, is_logged_in: false };
+}
+
+async function getUserIdentities(discordId) {
+    const res = await query(
+        'SELECT * FROM identities WHERE discord_id=$1 ORDER BY slot',
+        [discordId]
+    );
+    return res.rows;
+}
+
 async function postTweet(discordId, username, content) {
     const res = await query(
         'INSERT INTO x_posts (discord_id, username, content) VALUES ($1, $2, $3) RETURNING *',
@@ -317,6 +358,7 @@ async function createTicket(discordId, ticketType, subject) {
 
 module.exports = {
     query, ensureUser, generateIban,
+    createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     postTweet, getXTimeline, likePost, deletePost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,
