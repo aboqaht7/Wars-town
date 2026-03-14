@@ -232,22 +232,23 @@ client.on('interactionCreate', async interaction => {
             try {
                 if (value === 'create_identity') {
                     const identities = await db.getUserIdentities(interaction.user.id);
+                    const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                     const emptySlots = [1, 2, 3].filter(s => !identities.find(i => i.slot === s && i.character_name));
                     if (!emptySlots.length) {
-                        return interaction.reply({ content: '❌ جميع خاناتك الثلاث ممتلئة. لا يمكن إنشاء هوية جديدة.', flags: 64 });
+                        return interaction.reply({ content: '❌ شخصياتك الثلاث مكتملة. لا يمكن إنشاء هوية جديدة.', flags: 64 });
                     }
                     const slotOptions = emptySlots.map(s => ({
-                        label: `خانة ${s} — فارغة`,
+                        label: slotNames[s],
                         value: `create_slot_${s}`,
-                        description: 'إنشاء هوية جديدة في هذه الخانة',
+                        description: 'إنشاء هوية جديدة',
                     }));
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_create_slot')
-                            .setPlaceholder('اختر خانة الشخصية الفارغة')
+                            .setPlaceholder('اختر الشخصية')
                             .addOptions(slotOptions)
                     );
-                    return interaction.reply({ content: '📋 **اختر الخانة الفارغة التي تريد إنشاء هويتك فيها:**', components: [slotRow], flags: 64 });
+                    return interaction.reply({ content: '📋 **اختر الشخصية التي تريد إنشاء هويتها:**', components: [slotRow], flags: 64 });
                 }
 
                 if (value === 'login_identity') {
@@ -258,8 +259,9 @@ client.on('interactionCreate', async interaction => {
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const created = identities.filter(i => i.character_name);
                     if (!created.length) return interaction.reply({ content: '❌ لا توجد شخصيات مُنشأة ومقبولة بعد. قدّم طلب هوية أولاً.', flags: 64 });
+                    const loginSlotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                     const slotOptions = created.map(i => ({
-                        label: `شخصية ${i.slot}: ${i.character_name} ${i.family_name || ''}`,
+                        label: `${loginSlotNames[i.slot]}: ${i.character_name} ${i.family_name || ''}`,
                         value: `login_slot_${i.slot}`,
                         description: `${i.gender || '—'} • ${i.birth_date || '—'}`,
                     }));
@@ -295,9 +297,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'identity_create_slot') {
             const slot = parseInt(value.replace('create_slot_', ''));
+            const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
             const modal = new ModalBuilder()
                 .setCustomId(`create_char_${slot}`)
-                .setTitle(`✏️ إنشاء هوية — خانة ${slot}`)
+                .setTitle(`✏️ إنشاء هوية — ${slotNames[slot]}`)
                 .addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('char_name').setLabel('اسم الشخصية')
@@ -525,6 +528,7 @@ client.on('interactionCreate', async interaction => {
                 });
                 await db.addCharacterLog(interaction.user.id, interaction.user.username, 'pending', charName, slot);
 
+                const pendingSlotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                 const logChannelId = await db.getConfig('identity_log_channel');
                 if (logChannelId) {
                     try {
@@ -536,7 +540,7 @@ client.on('interactionCreate', async interaction => {
                                 .setThumbnail(interaction.user.displayAvatarURL())
                                 .addFields(
                                     { name: '👤 المستخدم',        value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
-                                    { name: '📌 الخانة',           value: `شخصية ${slot}`, inline: true },
+                                    { name: '📌 الشخصية',          value: pendingSlotNames[slot], inline: true },
                                     { name: '👤 الاسم الأول',     value: charName, inline: true },
                                     { name: '👥 اسم العائلة',     value: familyName, inline: true },
                                     { name: '⚧ الجنس',             value: gender, inline: true },

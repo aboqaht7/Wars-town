@@ -21,6 +21,8 @@ module.exports = {
     }
 };
 
+const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+
 async function buildMain(userId, db) {
     const status = await db.getLoginStatus(userId);
     const identities = await db.getUserIdentities(userId);
@@ -36,7 +38,7 @@ async function buildMain(userId, db) {
         .setTimestamp();
 
     if (activeChar) {
-        embed.setDescription(`✅ **مسجّل دخول** بشخصية ${activeChar.slot}`)
+        embed.setDescription(`✅ **مسجّل دخول** — ${SLOT_NAMES[activeChar.slot]}`)
             .addFields(
                 { name: '👤 الاسم', value: `${activeChar.character_name || '—'} ${activeChar.family_name || ''}`, inline: true },
                 { name: '⚧ الجنس', value: activeChar.gender || '—', inline: true },
@@ -47,12 +49,15 @@ async function buildMain(userId, db) {
             );
     } else {
         embed.setDescription('❌ **غير مسجّل دخول**\nاختر خياراً من القائمة أدناه');
-        if (identities.length) {
+        const created = identities.filter(i => i.character_name);
+        if (created.length) {
             embed.addFields({
-                name: '📋 الشخصيات المتاحة',
-                value: identities.map(i => `• شخصية ${i.slot}: **${i.character_name || 'لم تُكتمل'} ${i.family_name || ''}**`).join('\n'),
+                name: '📋 شخصياتك',
+                value: created.map(i => `• **${SLOT_NAMES[i.slot]}:** ${i.character_name} ${i.family_name || ''}`).join('\n'),
                 inline: false,
             });
+        } else {
+            embed.addFields({ name: '📋 شخصياتك', value: 'لا توجد شخصيات بعد — اختر **إنشاء هوية** للبدء', inline: false });
         }
     }
 
