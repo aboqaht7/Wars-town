@@ -169,6 +169,26 @@ async function addItem(discordId, itemName, quantity = 1) {
     }
 }
 
+async function getShowroom() {
+    const res = await query(
+        'SELECT id, car_name, car_type, price, color FROM showroom WHERE available = TRUE ORDER BY added_at DESC',
+        []
+    );
+    return res.rows;
+}
+
+async function addShowroomCar(carName, carType, price, color, addedBy) {
+    await query(
+        'INSERT INTO showroom (car_name, car_type, price, color, added_by) VALUES ($1, $2, $3, $4, $5)',
+        [carName, carType || null, price || 0, color || null, addedBy]
+    );
+}
+
+async function removeShowroomCar(id) {
+    const res = await query('DELETE FROM showroom WHERE id = $1 RETURNING *', [id]);
+    return res.rows.length > 0;
+}
+
 async function getVehicles(discordId) {
     const res = await query(
         'SELECT car_name, plate, added_at FROM vehicles WHERE discord_id = $1 ORDER BY added_at',
@@ -213,6 +233,7 @@ async function createTicket(discordId, ticketType, subject) {
 
 module.exports = {
     query, ensureUser, generateIban,
+    getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
     transferMoney, transferItem,

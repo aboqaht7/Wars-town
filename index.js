@@ -31,6 +31,7 @@ const menuHandlers = {
         crime: '🔫 **الجرائم** — اكتب `/crime` لتنفيذ جريمة.',
         tickets: '🎫 **التكتات** — اكتب `/tickets` لفتح تكت (شكوى، اقتراح، بلاغ).',
         vehicles: '🚗 **السيارات** — اكتب `/سيارات` لعرض سياراتك. لإضافة سيارة: `/اضافة-سيارة`',
+        showroom: '🏎️ **معرض السيارات** — اكتب `/معارض` لعرض السيارات. لإضافة: `/اضافة-معرض`. للحذف: `/حذف-معرض`',
     },
     admin_menu: {
         ranks: '🏅 **عرض الرتب** — تواصل مع الإدارة لعرض رتبتك الحالية.',
@@ -111,6 +112,31 @@ const menuHandlers = {
 client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu()) {
         const value = interaction.values[0];
+
+        if (interaction.customId === 'showroom_menu') {
+            const carId = parseInt(value.replace('car_', ''));
+            try {
+                const cars = await db.getShowroom();
+                const car = cars.find(c => c.id === carId);
+                if (!car) return interaction.reply({ content: '❌ السيارة غير موجودة أو تم بيعها.', flags: 64 });
+                const embed = new EmbedBuilder()
+                    .setTitle(`🚗 ${car.car_name}`)
+                    .setColor(0xB71C1C)
+                    .addFields(
+                        { name: '🏷️ النوع', value: car.car_type ? `\`${car.car_type}\`` : '`غير محدد`', inline: true },
+                        { name: '🎨 اللون', value: car.color ? `\`${car.color}\`` : '`غير محدد`', inline: true },
+                        { name: '💰 السعر', value: `\`${Number(car.price).toLocaleString()} ريال\``, inline: true },
+                        { name: '📋 الحالة', value: '`متاحة للبيع`', inline: true },
+                        { name: '📩 للشراء', value: 'تواصل مع الإدارة لإتمام عملية الشراء', inline: false },
+                    )
+                    .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
 
         if (interaction.customId === 'identity_menu') {
             const slotNum = parseInt(value.replace('char_', ''));
