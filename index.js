@@ -751,17 +751,26 @@ client.on('interactionCreate', async interaction => {
                         .setTimestamp();
                     if (!friends.length) {
                         embed.setDescription('> لا يوجد أصدقاء بعد. اختر **➕ إضافة صديق**');
-                    } else {
-                        const SPACER = { name: '\u200b', value: '\u200b', inline: true };
-                        const fields = friends.map(f => {
-                            const s = f.streak;
-                            const badge = s >= 100 ? '💯' : s >= 50 ? '🏆' : s >= 10 ? '⚡' : '🔥';
-                            return { name: `👻 ${f.friend_username}`, value: `${badge} **${s}** ستريك`, inline: true };
-                        });
-                        while (fields.length % 3 !== 0) fields.push(SPACER);
-                        embed.addFields(fields);
+                        return interaction.reply({ embeds: [embed], flags: 64 });
                     }
-                    return interaction.reply({ embeds: [embed], flags: 64 });
+                    const SPACER = { name: '\u200b', value: '\u200b', inline: true };
+                    const fields = friends.map(f => {
+                        const s = f.streak;
+                        const badge = s >= 100 ? '💯' : s >= 50 ? '🏆' : s >= 10 ? '⚡' : '🔥';
+                        return { name: `👻 ${f.friend_username}`, value: `${badge} **${s}** ستريك`, inline: true };
+                    });
+                    while (fields.length % 3 !== 0) fields.push(SPACER);
+                    embed.addFields(fields);
+                    const msgRow = new ARN().addComponents(
+                        new SSN().setCustomId('snap_friend_select')
+                            .setPlaceholder('💬 اختر صديق لمراسلته')
+                            .addOptions(friends.slice(0, 25).map(f => ({
+                                label: f.friend_username,
+                                value: f.friend_id,
+                                description: `🔥 ستريك: ${f.streak}`,
+                            })))
+                    );
+                    return interaction.reply({ embeds: [embed], components: [msgRow], flags: 64 });
                 }
 
                 if (value === 'snap_add') {
