@@ -236,8 +236,10 @@ client.on('interactionCreate', async interaction => {
                         db.isSlot3Unlocked(interaction.user.id),
                     ]);
                     const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
-                    const visibleSlots = slot3Open ? [1, 2, 3] : [1, 2];
-                    const slotOptions = visibleSlots.map(s => {
+                    const slotOptions = [1, 2, 3].map(s => {
+                        if (s === 3 && !slot3Open) {
+                            return { label: '🔒 الشخصية الثالثة', value: `create_slot_${s}`, description: 'مقفلة — تواصل مع المسؤولين لفتحها' };
+                        }
                         const taken = identities.find(i => i.slot === s && i.character_name);
                         return {
                             label: slotNames[s],
