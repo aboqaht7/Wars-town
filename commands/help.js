@@ -23,6 +23,8 @@ module.exports = {
                 { name: '🛡️ الإدارة', value: '`/admin`', inline: true },
                 { name: '🔫 الجرائم', value: '`/crime`', inline: true },
                 { name: '🎫 التكتات', value: '`/tickets`', inline: true },
+                { name: '🚗 السيارات', value: '`/سيارات`', inline: true },
+                { name: '➕ إضافة سيارة', value: '`/اضافة-سيارة`', inline: true },
             )
             .setFooter({ text: 'بوت FANTASY • نظام RP متكامل' })
             .setTimestamp();
@@ -43,6 +45,7 @@ module.exports = {
                     { label: '🛡️ الإدارة', value: 'admin' },
                     { label: '🔫 الجرائم', value: 'crime' },
                     { label: '🎫 التكتات', value: 'tickets' },
+                    { label: '🚗 السيارات', value: 'vehicles' },
                 ])
         );
         message.channel.send({ embeds: [embed], components: [menu] });
@@ -65,6 +68,8 @@ module.exports = {
                 { name: '🛡️ الإدارة', value: '`/admin`', inline: true },
                 { name: '🔫 الجرائم', value: '`/crime`', inline: true },
                 { name: '🎫 التكتات', value: '`/tickets`', inline: true },
+                { name: '🚗 السيارات', value: '`/سيارات`', inline: true },
+                { name: '➕ إضافة سيارة', value: '`/اضافة-سيارة`', inline: true },
             )
             .setFooter({ text: 'بوت FANTASY • نظام RP متكامل' })
             .setTimestamp();
@@ -85,6 +90,7 @@ module.exports = {
                     { label: '🛡️ الإدارة', value: 'admin' },
                     { label: '🔫 الجرائم', value: 'crime' },
                     { label: '🎫 التكتات', value: 'tickets' },
+                    { label: '🚗 السيارات', value: 'vehicles' },
                 ])
         );
         interaction.reply({ embeds: [embed], components: [menu] });

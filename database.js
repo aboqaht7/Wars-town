@@ -169,6 +169,32 @@ async function addItem(discordId, itemName, quantity = 1) {
     }
 }
 
+async function getVehicles(discordId) {
+    const res = await query(
+        'SELECT car_name, plate, added_at FROM vehicles WHERE discord_id = $1 ORDER BY added_at',
+        [discordId]
+    );
+    return res.rows;
+}
+
+async function addVehicle(discordId, carName, plate) {
+    const existing = await query('SELECT 1 FROM vehicles WHERE plate = $1', [plate]);
+    if (existing.rows.length > 0) return { success: false, error: `رقم اللوحة \`${plate}\` مسجل مسبقاً.` };
+    await query(
+        'INSERT INTO vehicles (discord_id, car_name, plate) VALUES ($1, $2, $3)',
+        [discordId, carName, plate]
+    );
+    return { success: true };
+}
+
+async function removeVehicle(discordId, plate) {
+    const res = await query(
+        'DELETE FROM vehicles WHERE discord_id = $1 AND plate = $2 RETURNING *',
+        [discordId, plate]
+    );
+    return res.rows.length > 0;
+}
+
 async function getTickets(discordId) {
     const res = await query(
         'SELECT id, ticket_type, subject, status, created_at FROM tickets WHERE discord_id = $1 ORDER BY created_at DESC',
@@ -187,6 +213,7 @@ async function createTicket(discordId, ticketType, subject) {
 
 module.exports = {
     query, ensureUser, generateIban,
+    getVehicles, addVehicle, removeVehicle,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
     transferMoney, transferItem,
     getImage, setImage,
