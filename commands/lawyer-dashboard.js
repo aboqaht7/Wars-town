@@ -14,9 +14,6 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
-        const lawyerRoleId = await db.getConfig('lawyer_role_id');
-        if (lawyerRoleId && !interaction.member.roles.cache.has(lawyerRoleId))
-            return interaction.reply({ content: '❌ هذا الأمر للمحامين المعتمدين فقط.', flags: 64 });
         const allLawyers = await db.getLawyers();
         const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
         if (!lawyer) return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
