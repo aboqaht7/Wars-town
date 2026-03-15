@@ -11,8 +11,6 @@ module.exports = {
     },
 
     async slashExecute(interaction, db) {
-        if (!(await isAdmin(interaction.member, db)))
-            return interaction.reply({ content: '❌ هذا الأمر للإدارة فقط.', flags: 64 });
         interaction.reply(await build(db));
     },
 };
