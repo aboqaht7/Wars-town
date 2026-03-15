@@ -99,7 +99,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const items = await db.getBlackMarketItems();
             const embed = new EmbedBuilder()
-                .setTitle('🖤 قائمة البلاك ماركت')
+                .setTitle('🔫 قائمة البلاك ماركت')
                 .setColor(0x1a1a2e)
                 .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
                 .setTimestamp();

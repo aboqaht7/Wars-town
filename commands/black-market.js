@@ -5,7 +5,7 @@ const { resetRow } = require('../utils');
 async function build() {
     const items = await db.getBlackMarketItems();
     const embed = new EmbedBuilder()
-        .setTitle('🖤 البلاك ماركت')
+        .setTitle('🔫 البلاك ماركت')
         .setColor(0xB71C1C)
         .setDescription(items.length
             ? 'اختر الغرض الذي تريد شراؤه من القائمة.'
@@ -27,7 +27,7 @@ async function build() {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('black_market_menu')
-            .setPlaceholder('🖤 اختر الغرض')
+            .setPlaceholder('🔫 اختر الغرض')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu, resetRow('بلاك-ماركت')] };
