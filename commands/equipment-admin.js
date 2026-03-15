@@ -42,6 +42,84 @@ module.exports = {
             .setDescription('أرسل إمبيد متجر المعدات في الروم الحالي')
         ),
 
+    async execute(message, args) {
+        if (!message.member.permissions.has(PermissionFlagsBits.Administrator))
+            return message.reply('❌ ليس لديك صلاحية.');
+
+        const sub = args[0];
+        const row = new ActionRowBuilder().addComponents(resetButton);
+
+        if (sub === 'اضافة') {
+            const rest = args.slice(1).join(' ');
+            const parts = rest.split('|').map(p => p.trim());
+            const name  = parts[0];
+            const price = parseInt(parts[1]);
+            const desc  = parts[2] || null;
+            if (!name || isNaN(price) || price < 1)
+                return message.reply('❌ الاستخدام الصحيح:\n`-إدارة-معدات اضافة اسم المعدة | السعر | الوصف (اختياري)`');
+            const item = await db.addEquipmentItem(name, price, desc);
+            const embed = new EmbedBuilder()
+                .setTitle('✅ تمت إضافة المعدة')
+                .setColor(0x4527A0)
+                .addFields(
+                    { name: 'ID',    value: String(item.id),                               inline: true },
+                    { name: 'الاسم', value: item.name,                                     inline: true },
+                    { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
+                    { name: 'الوصف', value: item.description || '—',                       inline: false },
+                )
+                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            return message.channel.send({ embeds: [embed], components: [row] });
+        }
+
+        if (sub === 'حذف') {
+            const id   = parseInt(args[1]);
+            if (isNaN(id)) return message.reply('❌ الاستخدام: `-إدارة-معدات حذف [ID]`');
+            const item = await db.getEquipmentItemById(id);
+            if (!item) return message.reply(`❌ لا توجد معدة بـ ID: ${id}`);
+            await db.deleteEquipmentItem(id);
+            return message.reply(`✅ تم حذف **${item.name}** بنجاح.`);
+        }
+
+        if (sub === 'حذف-الكل') {
+            await db.deleteAllEquipmentItems();
+            return message.reply('✅ تم حذف جميع المعدات.');
+        }
+
+        if (sub === 'قائمة') {
+            const items = await db.getEquipmentItems();
+            const embed = new EmbedBuilder()
+                .setTitle('🔨 قائمة المعدات')
+                .setColor(0x4527A0)
+                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            if (!items.length) {
+                embed.setDescription('لا توجد معدات مضافة.');
+            } else {
+                embed.setDescription(
+                    items.map(it =>
+                        `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString()} ريال**` +
+                        (it.description ? `\n> ${it.description}` : '')
+                    ).join('\n')
+                );
+            }
+            return message.channel.send({ embeds: [embed], components: [row] });
+        }
+
+        if (sub === 'عرض') {
+            const eq = require('./equipment');
+            const payload = await eq.buildEquipment(db);
+            return message.channel.send(payload);
+        }
+
+        return message.reply(
+            '**أوامر إدارة المعدات:**\n' +
+            '`-إدارة-معدات اضافة الاسم | السعر | الوصف`\n' +
+            '`-إدارة-معدات حذف [ID]`\n' +
+            '`-إدارة-معدات حذف-الكل`\n' +
+            '`-إدارة-معدات قائمة`\n' +
+            '`-إدارة-معدات عرض`'
+        );
+    },
+
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
             return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
