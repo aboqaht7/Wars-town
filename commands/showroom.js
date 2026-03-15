@@ -5,12 +5,18 @@ module.exports = {
     name: 'معارض',
     data: new SlashCommandBuilder().setName('معارض').setDescription('عرض المعرض — السيارات المتاحة للبيع'),
     async execute(message, args, db) {
+        await db.ensureUser(message.author.id, message.author.username);
+        const err = await db.checkLoginAndIdentity(message.author.id);
+        if (err) return message.reply(err);
         const cars = await db.getShowroom();
         const img = await db.getImage('showroom');
         const { embed, components } = build(cars, img);
         message.channel.send({ embeds: [embed], components });
     },
     async slashExecute(interaction, db) {
+        await db.ensureUser(interaction.user.id, interaction.user.username);
+        const err = await db.checkLoginAndIdentity(interaction.user.id);
+        if (err) return interaction.reply({ content: err, flags: 64 });
         const cars = await db.getShowroom();
         const img = await db.getImage('showroom');
         const { embed, components } = build(cars, img);
