@@ -20,6 +20,7 @@ const SYSTEMS = [
     { name: 'الإدارة',       value: 'admin'       },
     { name: 'السوق',         value: 'market'      },
     { name: 'المعدات',       value: 'معدات'       },
+    { name: 'السوق المركزي', value: 'سوق-مركزي'  },
     { name: 'المعرض',        value: 'showroom'    },
     { name: 'السيارات',      value: 'vehicles'    },
     { name: 'منصة X',        value: 'x_platform'  },

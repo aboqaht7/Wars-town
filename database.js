@@ -1146,6 +1146,26 @@ async function removeItem(discordId, itemName, qty = 1) {
     }
 }
 
+async function sellJobItemsByCategory(discordId, category) {
+    const catItems = JOB_ITEMS[category] || [];
+    if (!catItems.length) return { totalValue: 0, sold: [] };
+    const inv    = await query('SELECT item_name, quantity FROM inventory WHERE discord_id=$1', [discordId]);
+    const prices = await getJobPrices();
+    let totalValue = 0;
+    const sold = [];
+    for (const row of inv.rows) {
+        const match = catItems.find(ji => ji.toLowerCase() === row.item_name.toLowerCase());
+        if (!match) continue;
+        const price = prices[match] || 0;
+        const qty   = Number(row.quantity);
+        const value = price * qty;
+        totalValue += value;
+        sold.push({ name: row.item_name, qty, price, value });
+        await query('DELETE FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)', [discordId, row.item_name]);
+    }
+    return { totalValue, sold };
+}
+
 async function sellJobItems(discordId) {
     const allJobItems = [
         ...JOB_ITEMS.fishing, ...JOB_ITEMS.woodcutting, ...JOB_ITEMS.mining
@@ -1199,6 +1219,6 @@ module.exports = {
     getInventory, addItem,
     getTickets, createTicket,
     getJobPrices, updateAllJobPrices, getJobCooldown, setJobCooldown,
-    hasItem, removeItem, sellJobItems,
+    hasItem, removeItem, sellJobItems, sellJobItemsByCategory,
     JOB_ITEMS,
 };

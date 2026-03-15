@@ -108,6 +108,7 @@ const resetCommandMap = {
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
     x_platform: 'منصة-x', help: 'help', properties: 'properties',
     معدات: 'معدات',
+    'سوق-مركزي': 'سوق-مركزي',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -1518,6 +1519,50 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+
+        if (interaction.customId === 'central_market_sell') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+
+                let result;
+                if (value === 'all') {
+                    result = await db.sellJobItems(interaction.user.id);
+                } else {
+                    result = await db.sellJobItemsByCategory(interaction.user.id, value);
+                }
+
+                const { totalValue, sold } = result;
+                if (!sold.length) return interaction.reply({ content: '❌ ليس لديك أي مكاسب من هذه الفئة في حقيبتك.', flags: 64 });
+
+                await db.addToCash(interaction.user.id, identity.slot, totalValue);
+
+                const catLabel = { fishing: '🎣 الأسماك', woodcutting: '🪓 الأخشاب', mining: '⛏️ المعادن', all: '💰 الكل' };
+                const lines = sold.map(s =>
+                    `• **${s.name}** × ${s.qty} — ${s.price.toLocaleString()} ريال/وحدة = **${s.value.toLocaleString()} ريال**`
+                ).join('\n');
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`✅ تمت عملية البيع — ${catLabel[value] || ''}`)
+                    .setColor(0x00796B)
+                    .setDescription(lines)
+                    .addFields(
+                        { name: '💵 الإجمالي المُحصَّل', value: `**${totalValue.toLocaleString()} ريال**`, inline: false },
+                    )
+                    .setFooter({ text: 'السوق المركزي • بوت FANTASY' })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
 
         if (interaction.customId === 'jobs_menu') {
             try {
