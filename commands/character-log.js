@@ -6,7 +6,7 @@ const {
 const ACTION_LABELS = {
     login:            '✅ تسجيل دخول',
     logout:           '🚪 تسجيل خروج',
-    hurricane_logout: '🌀 خروج تلقائي (إعصار)',
+    hurricane_logout: '🌪️ خروج تلقائي (إعصار)',
     trip_logout:      '✈️ خروج (إغلاق رحلة)',
     approved:         '🟢 هوية مقبولة',
     rejected:         '🔴 هوية مرفوضة',

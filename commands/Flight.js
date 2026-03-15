@@ -34,7 +34,7 @@ async function build(db) {
             .setPlaceholder('اختر نوع الحدث')
             .addOptions([
                 { label: '✈️ فتح رحلة', value: 'open_flight' },
-                { label: '🌀 إعصار', value: 'hurricane' },
+                { label: '🌪️ إعصار', value: 'hurricane' },
                 { label: '📣 تنبيه عام', value: 'alert' },
                 { label: '🎉 حدث خاص', value: 'special_event' },
             ])

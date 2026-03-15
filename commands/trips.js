@@ -27,7 +27,7 @@ async function build(db) {
         .setDescription(
             '> اختر الإجراء المطلوب من الأزرار أدناه.\n\n' +
             '✈️ **بدء رحلة** — فتح رحلة جديدة وإرسال الإشعار\n' +
-            '🌀 **إعصار** — إنهاء الرحلة وإرسال تحذير الإعصار\n' +
+            '🌪️ **إعصار** — إنهاء الرحلة وإرسال تحذير الإعصار\n' +
             '🔄 **تجديد** — تجديد رحلة بمعرف الهوست\n' +
             '📣 **تنبيه** — إرسال تنبيه مخصص لروم التنبيهات'
         )
@@ -39,7 +39,7 @@ async function build(db) {
 
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('trip_start').setLabel('بدء رحلة').setStyle(ButtonStyle.Success).setEmoji('✈️'),
-        new ButtonBuilder().setCustomId('trip_hurricane').setLabel('إعصار').setStyle(ButtonStyle.Danger).setEmoji('🌀'),
+        new ButtonBuilder().setCustomId('trip_hurricane').setLabel('إعصار').setStyle(ButtonStyle.Danger).setEmoji('🌪️'),
         new ButtonBuilder().setCustomId('trip_renewal').setLabel('تجديد').setStyle(ButtonStyle.Primary).setEmoji('🔄'),
         new ButtonBuilder().setCustomId('trip_alert').setLabel('تنبيه').setStyle(ButtonStyle.Secondary).setEmoji('📣'),
     );

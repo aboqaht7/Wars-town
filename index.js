@@ -139,7 +139,7 @@ client.on('interactionCreate', async interaction => {
                 await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
 
                 const hurricaneEmbed = new EmbedBuilder()
-                    .setTitle('🌀 تحذير — إعصار!')
+                    .setTitle('🌪️ تحذير — إعصار!')
                     .setColor(0xB71C1C)
                     .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
                     .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
