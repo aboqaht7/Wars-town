@@ -554,8 +554,35 @@ async function initAdminRanksTable() {
             assigned_at TIMESTAMP DEFAULT NOW()
         )
     `);
+    await query(`
+        CREATE TABLE IF NOT EXISTS rank_types (
+            id       SERIAL PRIMARY KEY,
+            name     TEXT NOT NULL UNIQUE,
+            emoji    TEXT DEFAULT '⭐',
+            position INT DEFAULT 99
+        )
+    `);
 }
 initAdminRanksTable().catch(console.error);
+
+async function getRankTypes() {
+    const res = await query('SELECT * FROM rank_types ORDER BY position ASC, id ASC');
+    return res.rows;
+}
+
+async function addRankType(name, emoji, position) {
+    const res = await query(
+        `INSERT INTO rank_types (name, emoji, position) VALUES ($1,$2,$3)
+         ON CONFLICT (name) DO UPDATE SET emoji=$2, position=$3 RETURNING *`,
+        [name, emoji || '⭐', position ?? 99]
+    );
+    return res.rows[0];
+}
+
+async function deleteRankType(name) {
+    const res = await query('DELETE FROM rank_types WHERE name=$1 RETURNING *', [name]);
+    return res.rows[0] || null;
+}
 
 async function setAdminRank(discordId, username, rankName, assignedBy) {
     await query(
@@ -915,6 +942,7 @@ module.exports = {
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     setAdminRank, getAdminRank, removeAdminRank, getAllAdminRanks, updateAdminPoints,
+    getRankTypes, addRankType, deleteRankType,
     addBlackMarketItem, getBlackMarketItems, getBlackMarketItemById, deleteBlackMarketItem, deleteAllBlackMarketItems, updateBlackMarketItem,
     addProperty, getProperties, getPropertyById, getPropertyByName, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,

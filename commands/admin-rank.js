@@ -1,32 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 
-const RANKS = [
-    'مدير عام',
-    'مدير',
-    'مشرف',
-    'مشرف مساعد',
-    'عضو إداري',
-];
-
-const RANK_COLORS = {
-    'مدير عام':     0xFF0000,
-    'مدير':         0xFF6600,
-    'مشرف':         0xFFCC00,
-    'مشرف مساعد':  0x00CCFF,
-    'عضو إداري':   0x99AAFF,
-};
-
 const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
 
-function rankEmoji(rank) {
-    const map = {
-        'مدير عام': '👑',
-        'مدير': '🔴',
-        'مشرف': '🟠',
-        'مشرف مساعد': '🔵',
-        'عضو إداري': '🟣',
-    };
-    return map[rank] || '⭐';
+function rankColor(emoji) {
+    const map = { '👑': 0xFF0000, '🔴': 0xFF4444, '🟠': 0xFF9900, '🟡': 0xFFCC00, '🟢': 0x00CC44, '🔵': 0x00AAFF, '🟣': 0x9966FF, '⚫': 0x333333, '⭐': 0xFFD700 };
+    return map[emoji] || 0x5865F2;
 }
 
 module.exports = {
@@ -38,177 +16,233 @@ module.exports = {
         .addSubcommand(s => s
             .setName('تعيين')
             .setDescription('تعيين أو تغيير رتبة إداري')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو المراد تعيينه').setRequired(true))
-            .addStringOption(o => o
-                .setName('الرتبة')
-                .setDescription('الرتبة الإدارية')
-                .setRequired(true)
-                .addChoices(
-                    { name: '👑 مدير عام',      value: 'مدير عام' },
-                    { name: '🔴 مدير',           value: 'مدير' },
-                    { name: '🟠 مشرف',           value: 'مشرف' },
-                    { name: '🔵 مشرف مساعد',    value: 'مشرف مساعد' },
-                    { name: '🟣 عضو إداري',      value: 'عضو إداري' },
-                )
-            )
+            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .addStringOption(o => o.setName('الرتبة').setDescription('اختر الرتبة').setRequired(true).setAutocomplete(true))
         )
         .addSubcommand(s => s
             .setName('إزالة')
-            .setDescription('إزالة الرتبة الإدارية من عضو')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو المراد إزالة رتبته').setRequired(true))
+            .setDescription('إزالة الرتبة من إداري')
+            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('نقاط')
             .setDescription('إضافة أو خصم نقاط من إداري')
             .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
-            .addIntegerOption(o => o.setName('القيمة').setDescription('نقاط موجبة للإضافة، سالبة للخصم').setRequired(true))
+            .addIntegerOption(o => o.setName('القيمة').setDescription('موجبة للإضافة، سالبة للخصم').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('عرض')
-            .setDescription('عرض رتبة عضو معين')
+            .setDescription('عرض بطاقة إداري')
             .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('قائمة')
-            .setDescription('عرض جميع الإداريين وترتيبهم')
+            .setDescription('عرض جميع الإداريين مرتبين')
+        )
+        .addSubcommand(s => s
+            .setName('إضافة-رتبة')
+            .setDescription('أضف نوع رتبة جديدة')
+            .addStringOption(o => o.setName('الاسم').setDescription('اسم الرتبة').setRequired(true))
+            .addStringOption(o => o.setName('الإيموجي').setDescription('إيموجي الرتبة مثل 👑 🔴 🟠').setRequired(false))
+            .addIntegerOption(o => o.setName('الترتيب').setDescription('رقم الترتيب (كلما قل كان أعلى)').setRequired(false))
+        )
+        .addSubcommand(s => s
+            .setName('حذف-رتبة')
+            .setDescription('احذف نوع رتبة')
+            .addStringOption(o => o.setName('الاسم').setDescription('اسم الرتبة').setRequired(true).setAutocomplete(true))
+        )
+        .addSubcommand(s => s
+            .setName('الرتب')
+            .setDescription('عرض جميع أنواع الرتب المتاحة')
         ),
 
+    async autocomplete(interaction, db) {
+        const sub     = interaction.options.getSubcommand();
+        const focused = interaction.options.getFocused().toLowerCase();
+        const ranks   = await db.getRankTypes();
+        const choices = ranks
+            .filter(r => r.name.toLowerCase().includes(focused))
+            .slice(0, 25)
+            .map(r => ({ name: `${r.emoji} ${r.name}`, value: r.name }));
+        return interaction.respond(choices);
+    },
+
     async slashExecute(interaction, db) {
-        const sub = interaction.options.getSubcommand();
+        const sub  = interaction.options.getSubcommand();
+        const row2 = new ActionRowBuilder().addComponents(resetButton);
+
+        if (sub === 'إضافة-رتبة') {
+            const name     = interaction.options.getString('الاسم');
+            const emoji    = interaction.options.getString('الإيموجي') || '⭐';
+            const position = interaction.options.getInteger('الترتيب') ?? 99;
+            await db.addRankType(name, emoji, position);
+
+            const embed = new EmbedBuilder()
+                .setTitle('✅ تم إضافة الرتبة')
+                .setColor(rankColor(emoji))
+                .addFields(
+                    { name: '🏷️ الاسم',     value: name,         inline: true },
+                    { name: '🔣 الإيموجي',  value: emoji,        inline: true },
+                    { name: '📶 الترتيب',   value: `${position}`, inline: true },
+                )
+                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setTimestamp();
+            return interaction.reply({ embeds: [embed], components: [row2] });
+        }
+
+        if (sub === 'حذف-رتبة') {
+            const name    = interaction.options.getString('الاسم');
+            const deleted = await db.deleteRankType(name);
+            if (!deleted) return interaction.reply({ content: `❌ الرتبة **${name}** غير موجودة.`, flags: 64 });
+
+            const embed = new EmbedBuilder()
+                .setTitle('🗑️ تم حذف الرتبة')
+                .setColor(0x888888)
+                .setDescription(`تم حذف رتبة **${deleted.emoji} ${deleted.name}** من القائمة.`)
+                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setTimestamp();
+            return interaction.reply({ embeds: [embed], components: [row2] });
+        }
+
+        if (sub === 'الرتب') {
+            const ranks = await db.getRankTypes();
+            if (!ranks.length) return interaction.reply({ content: '📋 لا توجد رتب مضافة. استخدم `/تعيين-رتبة-ادارة إضافة-رتبة` لإضافة رتبة.', flags: 64 });
+
+            const embed = new EmbedBuilder()
+                .setTitle('📋 أنواع الرتب المتاحة')
+                .setColor(0x5865F2)
+                .setDescription(ranks.map((r, i) => `\`${i + 1}\` ${r.emoji} **${r.name}**`).join('\n'))
+                .addFields({ name: '📊 العدد الكلي', value: `${ranks.length} رتبة`, inline: true })
+                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setTimestamp();
+            return interaction.reply({ embeds: [embed], components: [row2] });
+        }
 
         if (sub === 'تعيين') {
             const target   = interaction.options.getUser('العضو');
             const rankName = interaction.options.getString('الرتبة');
+            const ranks    = await db.getRankTypes();
+            const rankData = ranks.find(r => r.name === rankName);
+            const emoji    = rankData?.emoji || '⭐';
             const prev     = await db.getAdminRank(target.id);
 
             await db.setAdminRank(target.id, target.username, rankName, interaction.user.id);
 
             const embed = new EmbedBuilder()
                 .setTitle('📋 تعيين رتبة إدارية')
-                .setColor(RANK_COLORS[rankName] || 0x5865F2)
+                .setColor(rankColor(emoji))
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: '👤 العضو',     value: `<@${target.id}>`, inline: true },
-                    { name: `${rankEmoji(rankName)} الرتبة الجديدة`, value: `**${rankName}**`, inline: true },
-                    { name: '🔧 تم بواسطة', value: `<@${interaction.user.id}>`, inline: true },
+                    { name: '👤 العضو',              value: `<@${target.id}>`,         inline: true },
+                    { name: `${emoji} الرتبة الجديدة`, value: `**${rankName}**`,         inline: true },
+                    { name: '🔧 تم بواسطة',          value: `<@${interaction.user.id}>`, inline: true },
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
 
-            if (prev) {
-                embed.addFields({ name: '📌 الرتبة السابقة', value: `${rankEmoji(prev.rank_name)} ${prev.rank_name}`, inline: true });
-            }
+            if (prev) embed.addFields({ name: '📌 الرتبة السابقة', value: `${prev.rank_name}`, inline: true });
 
-            const row = new ActionRowBuilder().addComponents(resetButton);
-            return interaction.reply({ embeds: [embed], components: [row] });
+            return interaction.reply({ embeds: [embed], components: [row2] });
         }
 
         if (sub === 'إزالة') {
-            const target = interaction.options.getUser('العضو');
+            const target  = interaction.options.getUser('العضو');
             const removed = await db.removeAdminRank(target.id);
-
-            if (!removed) {
-                return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
-            }
+            if (!removed) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
 
             const embed = new EmbedBuilder()
                 .setTitle('🗑️ إزالة رتبة إدارية')
                 .setColor(0x888888)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: '👤 العضو',       value: `<@${target.id}>`, inline: true },
-                    { name: '❌ الرتبة المُزالة', value: `${rankEmoji(removed.rank_name)} ${removed.rank_name}`, inline: true },
-                    { name: '🔧 تم بواسطة',   value: `<@${interaction.user.id}>`, inline: true },
+                    { name: '👤 العضو',         value: `<@${target.id}>`,          inline: true },
+                    { name: '❌ الرتبة المُزالة', value: `${removed.rank_name}`,    inline: true },
+                    { name: '🔧 تم بواسطة',      value: `<@${interaction.user.id}>`, inline: true },
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-
-            const row = new ActionRowBuilder().addComponents(resetButton);
-            return interaction.reply({ embeds: [embed], components: [row] });
+            return interaction.reply({ embeds: [embed], components: [row2] });
         }
 
         if (sub === 'نقاط') {
             const target = interaction.options.getUser('العضو');
             const delta  = interaction.options.getInteger('القيمة');
-            const row2   = new ActionRowBuilder().addComponents(resetButton);
-
-            const rankData = await db.getAdminRank(target.id);
-            if (!rankData) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية. عيّن له رتبة أولاً بـ \`/تعيين-رتبة-ادارة تعيين\`.`, flags: 64 });
+            const exists = await db.getAdminRank(target.id);
+            if (!exists) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة. عيّن له رتبة أولاً.`, flags: 64 });
 
             const updated = await db.updateAdminPoints(target.id, delta);
+            const ranks   = await db.getRankTypes();
+            const rd      = ranks.find(r => r.name === updated.rank_name);
+            const emoji   = rd?.emoji || '⭐';
 
             const embed = new EmbedBuilder()
-                .setTitle(delta >= 0 ? '⬆️ إضافة نقاط إدارية' : '⬇️ خصم نقاط إدارية')
+                .setTitle(delta >= 0 ? '⬆️ إضافة نقاط' : '⬇️ خصم نقاط')
                 .setColor(delta >= 0 ? 0x00CC66 : 0xFF4444)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: '👤 العضو',     value: `<@${target.id}>`, inline: true },
-                    { name: `${rankEmoji(updated.rank_name)} الرتبة`, value: updated.rank_name, inline: true },
-                    { name: delta >= 0 ? '➕ نقاط أضيفت' : '➖ نقاط خُصمت', value: `${Math.abs(delta)} نقطة`, inline: true },
-                    { name: '📊 المجموع الكلي', value: `**${updated.points} نقطة**`, inline: true },
-                    { name: '🔧 تم بواسطة', value: `<@${interaction.user.id}>`, inline: true },
+                    { name: '👤 العضو',      value: `<@${target.id}>`,           inline: true },
+                    { name: `${emoji} الرتبة`, value: updated.rank_name,          inline: true },
+                    { name: delta >= 0 ? '➕ أضيف' : '➖ خُصم', value: `${Math.abs(delta)} نقطة`, inline: true },
+                    { name: '📊 المجموع',    value: `**${updated.points} نقطة**`, inline: true },
+                    { name: '🔧 تم بواسطة', value: `<@${interaction.user.id}>`,  inline: true },
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-
             return interaction.reply({ embeds: [embed], components: [row2] });
         }
 
         if (sub === 'عرض') {
             const target   = interaction.options.getUser('العضو');
             const rankData = await db.getAdminRank(target.id);
-            const row2     = new ActionRowBuilder().addComponents(resetButton);
+            if (!rankData) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
 
-            if (!rankData) {
-                return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
-            }
-
-            const assignedDate = new Date(rankData.assigned_at).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
+            const ranks = await db.getRankTypes();
+            const rd    = ranks.find(r => r.name === rankData.rank_name);
+            const emoji = rd?.emoji || '⭐';
+            const date  = new Date(rankData.assigned_at).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
 
             const embed = new EmbedBuilder()
-                .setTitle(`${rankEmoji(rankData.rank_name)} بطاقة الإداري`)
-                .setColor(RANK_COLORS[rankData.rank_name] || 0x5865F2)
+                .setTitle(`${emoji} بطاقة الإداري`)
+                .setColor(rankColor(emoji))
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: '👤 العضو',          value: `<@${target.id}>`, inline: true },
-                    { name: '🏷️ الرتبة',          value: `**${rankData.rank_name}**`, inline: true },
-                    { name: '📊 النقاط',          value: `**${rankData.points}** نقطة`, inline: true },
-                    { name: '🔧 عيّنه',           value: rankData.assigned_by ? `<@${rankData.assigned_by}>` : 'غير معروف', inline: true },
-                    { name: '📅 تاريخ التعيين',  value: assignedDate, inline: true },
+                    { name: '👤 العضو',         value: `<@${target.id}>`,                                              inline: true },
+                    { name: '🏷️ الرتبة',         value: `**${rankData.rank_name}**`,                                   inline: true },
+                    { name: '📊 النقاط',         value: `**${rankData.points}** نقطة`,                                 inline: true },
+                    { name: '🔧 عيّنه',          value: rankData.assigned_by ? `<@${rankData.assigned_by}>` : 'غير معروف', inline: true },
+                    { name: '📅 تاريخ التعيين', value: date,                                                           inline: true },
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-
             return interaction.reply({ embeds: [embed], components: [row2] });
         }
 
         if (sub === 'قائمة') {
-            const all  = await db.getAllAdminRanks();
-            const row2 = new ActionRowBuilder().addComponents(resetButton);
+            const all = await db.getAllAdminRanks();
+            if (!all.length) return interaction.reply({ content: '📋 لا يوجد إداريون مسجلون حالياً.', flags: 64 });
 
-            if (!all.length) {
-                return interaction.reply({ content: '📋 لا يوجد إداريون مسجلون حالياً.', flags: 64 });
-            }
+            const ranks = await db.getRankTypes();
+            const rankMap = {};
+            ranks.forEach(r => { rankMap[r.name] = r; });
 
-            const RANK_ORDER = ['مدير عام', 'مدير', 'مشرف', 'مشرف مساعد', 'عضو إداري'];
             all.sort((a, b) => {
-                const ai = RANK_ORDER.indexOf(a.rank_name);
-                const bi = RANK_ORDER.indexOf(b.rank_name);
-                return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+                const ai = ranks.findIndex(r => r.name === a.rank_name);
+                const bi = ranks.findIndex(r => r.name === b.rank_name);
+                return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
             });
 
-            const lines = all.map(r =>
-                `${rankEmoji(r.rank_name)} **${r.rank_name}** — <@${r.discord_id}> · ${r.points} نقطة`
-            );
+            const lines = all.map(r => {
+                const emoji = rankMap[r.rank_name]?.emoji || '⭐';
+                return `${emoji} **${r.rank_name}** — <@${r.discord_id}> · ${r.points} نقطة`;
+            });
 
             const embed = new EmbedBuilder()
                 .setTitle('📋 قائمة الإداريين')
                 .setColor(0x5865F2)
                 .setDescription(lines.join('\n'))
-                .addFields({ name: '👥 إجمالي الإداريين', value: `${all.length} إداري`, inline: true })
+                .addFields({ name: '👥 الإجمالي', value: `${all.length} إداري`, inline: true })
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-
             return interaction.reply({ embeds: [embed], components: [row2] });
         }
     },

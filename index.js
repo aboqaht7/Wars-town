@@ -1737,6 +1737,14 @@ client.on('interactionCreate', async interaction => {
         return;
     }
 
+    if (interaction.isAutocomplete()) {
+        const command = client.commands.get(interaction.commandName);
+        if (command?.autocomplete) {
+            try { await command.autocomplete(interaction, db); } catch (e) { console.error(e); }
+        }
+        return;
+    }
+
     if (!interaction.isCommand()) return;
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
