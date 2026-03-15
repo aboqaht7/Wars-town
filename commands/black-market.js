@@ -45,7 +45,8 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const payload = await build();
-        return interaction.reply(payload);
+        await interaction.channel.send(payload);
+        return interaction.reply({ content: '​', flags: 64 });
     },
 
     async execute(message, args, db) {

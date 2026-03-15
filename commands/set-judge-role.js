@@ -29,6 +29,7 @@ module.exports = {
             .setFooter({ text: 'نظام العدل • بوت FANTASY' })
             .setTimestamp();
 
-        return interaction.reply({ embeds: [embed], components: [row2] });
+        await interaction.channel.send({ embeds: [embed], components: [row2] });
+        return interaction.reply({ content: '​', flags: 64 });
     },
 };

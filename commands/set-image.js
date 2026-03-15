@@ -17,6 +17,6 @@ module.exports = {
         const system = interaction.options.getString('system');
         const url = interaction.options.getString('url');
         await db.setImage(system, url);
-        interaction.reply(`تم تعيين الصورة للنظام: ${system}`);
+        interaction.reply({ content: `تم تعيين الصورة للنظام: ${system}`, flags: 64 });
     }
 };

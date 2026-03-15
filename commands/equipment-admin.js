@@ -141,7 +141,8 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row] });
+            await interaction.channel.send({ embeds: [embed], components: [row] });
+            return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'حذف') {
@@ -180,7 +181,8 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row] });
+            await interaction.channel.send({ embeds: [embed], components: [row] });
+            return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
@@ -199,7 +201,8 @@ module.exports = {
                     ).join('\n')
                 );
             }
-            return interaction.reply({ embeds: [embed], components: [row] });
+            await interaction.channel.send({ embeds: [embed], components: [row] });
+            return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'عرض') {

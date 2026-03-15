@@ -43,7 +43,8 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const img = await db.getImage('bank');
-        interaction.reply(bankMenu(img));
+        await interaction.channel.send(bankMenu(img));
+        await interaction.reply({ content: '​', flags: 64 });
     },
 
     bankMenu,

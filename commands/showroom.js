@@ -20,7 +20,8 @@ module.exports = {
         const cars = await db.getShowroom();
         const img = await db.getImage('showroom');
         const { embed, components } = build(cars, img);
-        interaction.reply({ embeds: [embed], components });
+        await interaction.channel.send({ embeds: [embed], components });
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };
 

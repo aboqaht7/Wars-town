@@ -19,7 +19,8 @@ module.exports = {
             return interaction.reply({ content: '❌ هذا الأمر للقضاة المعتمدين فقط.', flags: 64 });
         const judge = await db.getJudgeById(interaction.user.id);
         if (!judge) return interaction.reply({ content: '❌ أنت لست مسجلاً كقاضٍ معتمد.', flags: 64 });
-        interaction.reply(await build(db, interaction.user.id, judge.judge_name));
+        await interaction.channel.send(await build(db, interaction.user.id, judge.judge_name));
+        await interaction.reply({ content: '​', flags: 64 });
     },
 };
 

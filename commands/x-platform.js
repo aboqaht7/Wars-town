@@ -21,7 +21,8 @@ module.exports = {
         if (err) return interaction.reply({ content: err, flags: 64 });
         const img = await db.getImage('x_platform');
         const account = await db.getXAccount(interaction.user.id);
-        interaction.reply(build(img, account));
+        await interaction.channel.send(build(img, account));
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };
 

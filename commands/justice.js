@@ -11,7 +11,8 @@ module.exports = {
     },
 
     async slashExecute(interaction, db) {
-        interaction.reply(await build(db));
+        await interaction.channel.send(await build(db));
+        await interaction.reply({ content: '​', flags: 64 });
     },
 };
 

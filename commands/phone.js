@@ -53,6 +53,7 @@ module.exports = {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
-        interaction.reply(await build());
+        await interaction.channel.send(await build());
+        await interaction.reply({ content: '​', flags: 64 });
     },
 };

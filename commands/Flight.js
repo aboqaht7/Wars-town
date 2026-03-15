@@ -12,7 +12,8 @@ module.exports = {
     },
     async slashExecute(interaction, db) {
         const { embed, menu } = await build(db);
-        interaction.reply({ embeds: [embed], components: [menu, resetRow('events')] });
+        await interaction.channel.send({ embeds: [embed], components: [menu, resetRow('events')] });
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };
 

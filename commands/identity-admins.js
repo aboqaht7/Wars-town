@@ -26,6 +26,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
             .setTimestamp();
-        return interaction.reply({ embeds: [embed] });
+        await interaction.channel.send({ embeds: [embed] });
+        return interaction.reply({ content: '​', flags: 64 });
     }
 };

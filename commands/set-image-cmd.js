@@ -66,6 +66,7 @@ module.exports = {
             .setFooter({ text: 'إدارة الصور • بوت FANTASY' })
             .setTimestamp();
 
-        return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
+        await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
+        return interaction.reply({ content: '​', flags: 64 });
     },
 };

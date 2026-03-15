@@ -21,7 +21,8 @@ module.exports = {
         if (err) return interaction.reply({ content: err, flags: 64 });
         const account = await db.getSnapAccount(interaction.user.id);
         const img = await db.getImage('سناب شات');
-        interaction.reply(buildSnap(account, img));
+        await interaction.channel.send(buildSnap(account, img));
+        await interaction.reply({ content: '​', flags: 64 });
     },
     buildSnap,
 };

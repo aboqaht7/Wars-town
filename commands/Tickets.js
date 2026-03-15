@@ -12,7 +12,7 @@ module.exports = {
             .setColor('Red');
         message.channel.send({ embeds: [embed] });
     },
-    slashExecute(interaction, db) {
+    async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
             .setTitle('نظام التكتات')
             .setDescription('اختر نوع التكت والغرض')
@@ -30,6 +30,7 @@ module.exports = {
                 ])
         );
 
-        interaction.reply({ embeds: [embed], components: [menu] });
+        await interaction.channel.send({ embeds: [embed], components: [menu] });
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };

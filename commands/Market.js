@@ -20,7 +20,8 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const payload = await buildMarket(db);
-        interaction.reply(payload);
+        await interaction.channel.send(payload);
+        await interaction.reply({ content: '​', flags: 64 });
     },
 
     buildMarket,

@@ -18,6 +18,7 @@ module.exports = {
             .setDescription(`سيحصل كل من تُقبل هويته على رتبة ${role} تلقائياً.`)
             .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
             .setTimestamp();
-        return interaction.reply({ embeds: [embed] });
+        await interaction.channel.send({ embeds: [embed] });
+        return interaction.reply({ content: '​', flags: 64 });
     }
 };

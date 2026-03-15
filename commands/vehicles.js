@@ -10,7 +10,8 @@ module.exports = {
     },
     async slashExecute(interaction, db) {
         const img = await db.getImage('vehicles');
-        interaction.reply(build(img));
+        await interaction.channel.send(build(img));
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };
 

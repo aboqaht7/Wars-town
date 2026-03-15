@@ -25,8 +25,9 @@ module.exports = {
     execute(message, args, db) {
         message.channel.send(build());
     },
-    slashExecute(interaction, db) {
-        interaction.reply(build());
+    async slashExecute(interaction, db) {
+        await interaction.channel.send(build());
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };
 

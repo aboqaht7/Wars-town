@@ -44,7 +44,8 @@ module.exports = {
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
             .setTimestamp();
 
-        return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
+        await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
+        return interaction.reply({ content: '​', flags: 64 });
     },
 
     async execute(message, args) {

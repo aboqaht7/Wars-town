@@ -17,7 +17,8 @@ module.exports = {
         const allLawyers = await db.getLawyers();
         const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
         if (!lawyer) return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
-        interaction.reply(await build(db, interaction.user.id, lawyer.lawyer_name));
+        await interaction.channel.send(await build(db, interaction.user.id, lawyer.lawyer_name));
+        await interaction.reply({ content: '​', flags: 64 });
     },
 };
 

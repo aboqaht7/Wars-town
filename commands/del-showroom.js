@@ -35,6 +35,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
             .setTimestamp();
-        interaction.reply({ embeds: [embed] });
+        await interaction.channel.send({ embeds: [embed] });
+        await interaction.reply({ content: '​', flags: 64 });
     }
 };

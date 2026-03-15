@@ -46,7 +46,8 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            await interaction.channel.send({ embeds: [embed] });
+            return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'حذف') {
@@ -60,7 +61,8 @@ module.exports = {
                 .setDescription(`تم حذف سرقة **${rob.name}** بنجاح.`)
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            await interaction.channel.send({ embeds: [embed] });
+            return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
@@ -77,7 +79,8 @@ module.exports = {
                     `**\`#${r.id}\` ${r.name}**\n🛠️ \`${r.tools}\`\n💵 \`${Number(r.min_money).toLocaleString()}\` — \`${Number(r.max_money).toLocaleString()}\` ريال`
                 ).join('\n\n'));
             }
-            return interaction.reply({ embeds: [embed] });
+            await interaction.channel.send({ embeds: [embed] });
+            return interaction.reply({ content: '​', flags: 64 });
         }
     }
 };
