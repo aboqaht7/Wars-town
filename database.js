@@ -68,6 +68,17 @@ async function getActiveIdentity(discordId) {
     return ensureIdentity(discordId, slot);
 }
 
+async function updateIban(discordId, slot, newIban) {
+    const taken = await query('SELECT 1 FROM identities WHERE iban=$1 AND NOT (discord_id=$2 AND slot=$3)', [newIban, discordId, slot]);
+    if (taken.rows.length) return { success: false, error: 'هذا الإيبان مستخدم من قِبل حساب آخر.' };
+    const res = await query(
+        'UPDATE identities SET iban=$1 WHERE discord_id=$2 AND slot=$3 RETURNING *',
+        [newIban, discordId, slot]
+    );
+    if (!res.rows.length) return { success: false, error: 'لم يتم العثور على الهوية المحددة.' };
+    return { success: true, identity: res.rows[0] };
+}
+
 async function getIdentityByIban(iban) {
     const res = await query(
         `SELECT i.*, u.username FROM identities i
@@ -831,6 +842,7 @@ async function createTicket(discordId, ticketType, subject) {
 module.exports = {
     query, ensureUser, generateIban,
     unlockSlot3, isSlot3Unlocked,
+    updateIban,
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
