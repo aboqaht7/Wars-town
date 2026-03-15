@@ -24,7 +24,7 @@ client.once('clientReady', () => {
 const menuHandlers = {
     help_menu: {
         identity: '🪪 **الهوية** — اكتب `/identity` لعرض شخصيتك والإيبان الخاص بها.',
-        phone: '📱 **الجوال** — اكتب `/phone` لعرض هاتفك وإدارة اتصالاتك.',
+        phone: '📱 **الجوال** — اكتب `/phone` لإرسال بلاغ شرطة 🚨 أو بلاغ إسعاف 🚑.',
         bag: '🎒 **الحقيبة** — اكتب `/bag` لعرض أغراضك. لنقل غرض: `-نقل [غرض] @مستخدم`',
         bank: '🏦 **البنك** — اكتب `/bank` لعرض رصيدك وإيبانك. لتحويل مال: `-تحويل [إيبان] [مبلغ]`',
         police: '👮 **الشرطة** — أوامر: `-كلبشة @مستخدم` | `-تلويت @مستخدم` | `-باند @مستخدم` | `-تشهير @مستخدم`',
@@ -176,6 +176,31 @@ client.on('interactionCreate', async interaction => {
                     new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص التنبيه').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                 );
                 return interaction.showModal(modal);
+            }
+        }
+
+        if (interaction.customId === 'report_police' || interaction.customId === 'report_ambulance') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const isPolice = interaction.customId === 'report_police';
+                const modal = new ModalBuilder()
+                    .setCustomId(isPolice ? 'report_police_modal' : 'report_ambulance_modal')
+                    .setTitle(isPolice ? '🚨 بلاغ شرطة' : '🚑 بلاغ إسعاف');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('report_location').setLabel('الموقع').setStyle(TextInputStyle.Short).setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('report_details').setLabel('تفاصيل البلاغ').setStyle(TextInputStyle.Paragraph).setRequired(true)
+                    ),
+                );
+                return interaction.showModal(modal);
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
         }
 
@@ -1222,6 +1247,41 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (interaction.isModalSubmit()) {
+        if (interaction.customId === 'report_police_modal' || interaction.customId === 'report_ambulance_modal') {
+            try {
+                const isPolice   = interaction.customId === 'report_police_modal';
+                const location   = interaction.fields.getTextInputValue('report_location').trim();
+                const details    = interaction.fields.getTextInputValue('report_details').trim();
+                const configKey  = isPolice ? 'police_reports_channel' : 'ambulance_reports_channel';
+                const channelId  = await db.getConfig(configKey);
+                if (!channelId) return interaction.reply({ content: `❌ لم يتم تحديد روم البلاغات. تواصل مع الإدارة.`, flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                const charName = identity ? (identity.character_name || interaction.user.username) : interaction.user.username;
+
+                const embed = new EmbedBuilder()
+                    .setTitle(isPolice ? '🚨 بلاغ شرطة' : '🚑 بلاغ إسعاف')
+                    .setColor(isPolice ? 0xB71C1C : 0x1565C0)
+                    .addFields(
+                        { name: '👤 المُبلِّغ',        value: `<@${interaction.user.id}> — \`${charName}\``, inline: false },
+                        { name: '📍 الموقع',            value: location,  inline: true },
+                        { name: '📋 تفاصيل البلاغ',    value: details,   inline: false },
+                    )
+                    .setFooter({ text: `نظام البلاغات • بوت FANTASY` })
+                    .setTimestamp();
+
+                try {
+                    const ch = await client.channels.fetch(channelId);
+                    if (ch) await ch.send({ embeds: [embed] });
+                } catch {}
+
+                return interaction.reply({ content: `✅ تم إرسال ${isPolice ? 'بلاغ الشرطة' : 'بلاغ الإسعاف'} بنجاح.`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
         if (interaction.customId === 'bank_deposit_modal') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
