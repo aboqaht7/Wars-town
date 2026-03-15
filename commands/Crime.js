@@ -16,7 +16,7 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const payload = await build(db);
-        interaction.reply({ ...payload, flags: 64 });
+        interaction.reply(payload);
     }
 };
 
