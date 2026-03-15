@@ -53,7 +53,7 @@ module.exports = {
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
             if (imageUrl) embed.setThumbnail(imageUrl);
-            return interaction.reply({ embeds: [embed] , flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
 
         if (sub === 'تعديل-صورة') {
@@ -72,7 +72,7 @@ module.exports = {
                 .setImage(imageUrl)
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] , flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
 
         if (sub === 'حذف') {
@@ -86,7 +86,7 @@ module.exports = {
                 .setDescription(`تم حذف عقار **${prop.name}** بنجاح.`)
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] , flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
 
         if (sub === 'حذف-الكل') {
@@ -97,7 +97,7 @@ module.exports = {
                 .setDescription('> تم مسح جميع العقارات من القائمة.')
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] , flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
 
         if (sub === 'قائمة') {
@@ -114,7 +114,7 @@ module.exports = {
                     `**\`#${p.id}\` ${p.name}**\n💰 \`${Number(p.price).toLocaleString()} ريال\`\n🖼️ ${p.image_url ? `[صورة](${p.image_url})` : '`لا توجد صورة`'}`
                 ).join('\n\n'));
             }
-            return interaction.reply({ embeds: [embed], flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
     }
 };

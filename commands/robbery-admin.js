@@ -46,7 +46,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] , flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
 
         if (sub === 'حذف') {
@@ -60,7 +60,7 @@ module.exports = {
                 .setDescription(`تم حذف سرقة **${rob.name}** بنجاح.`)
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] , flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
 
         if (sub === 'قائمة') {
@@ -77,7 +77,7 @@ module.exports = {
                     `**\`#${r.id}\` ${r.name}**\n🛠️ \`${r.tools}\`\n💵 \`${Number(r.min_money).toLocaleString()}\` — \`${Number(r.max_money).toLocaleString()}\` ريال`
                 ).join('\n\n'));
             }
-            return interaction.reply({ embeds: [embed], flags: 64 });
+            return interaction.reply({ embeds: [embed] });
         }
     }
 };

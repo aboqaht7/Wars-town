@@ -29,6 +29,6 @@ module.exports = {
             .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
             .setTimestamp();
 
-        return interaction.reply({ embeds: [embed], components: [row2], flags: 64 });
+        return interaction.reply({ embeds: [embed], components: [row2] });
     },
 };

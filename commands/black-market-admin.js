@@ -59,7 +59,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
         }
 
         if (sub === 'حذف') {
@@ -92,7 +92,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
         }
 
         if (sub === 'قائمة') {
@@ -109,7 +109,7 @@ module.exports = {
                     items.map(it => `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString('en-US')}$**`).join('\n')
                 );
             }
-            return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
         }
 
         if (sub === 'عرض') {

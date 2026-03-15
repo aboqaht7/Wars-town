@@ -66,6 +66,6 @@ module.exports = {
             .setFooter({ text: 'إدارة الصور • بوت FANTASY' })
             .setTimestamp();
 
-        return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)], flags: 64 });
+        return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
     },
 };

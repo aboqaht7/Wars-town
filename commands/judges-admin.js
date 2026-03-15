@@ -62,7 +62,7 @@ module.exports = {
                     { name: '📛 الاسم', value: name,              inline: true },
                 )
                 .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [resetRow], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [resetRow] });
         }
 
         if (sub === 'حذف') {
@@ -91,7 +91,7 @@ module.exports = {
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
                 .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [resetRow], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [resetRow] });
         }
 
         if (sub === 'قائمة') {
@@ -104,7 +104,7 @@ module.exports = {
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${judges.length} قاضٍ`, inline: true })
                 .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [resetRow], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [resetRow] });
         }
     },
 };

@@ -64,7 +64,7 @@ module.exports = {
                 components.push(row);
             }
 
-            await interaction.reply({ embeds: [pendingEmbed], components, flags: 64 });
+            await interaction.reply({ embeds: [pendingEmbed], components });
         }
 
         const logEmbed = new EmbedBuilder()
@@ -88,9 +88,9 @@ module.exports = {
         }
 
         if (pending.length > 0) {
-            await interaction.followUp({ embeds: [logEmbed], flags: 64 });
+            await interaction.followUp({ embeds: [logEmbed] });
         } else {
-            await interaction.reply({ embeds: [logEmbed], flags: 64 });
+            await interaction.reply({ embeds: [logEmbed] });
         }
     }
 };

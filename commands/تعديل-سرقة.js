@@ -44,6 +44,6 @@ module.exports = {
             )
             .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
             .setTimestamp();
-        return interaction.reply({ embeds: [embed] , flags: 64 });
+        return interaction.reply({ embeds: [embed] });
     }
 };

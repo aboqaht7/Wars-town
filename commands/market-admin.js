@@ -63,7 +63,7 @@ module.exports = {
                     { name: 'الوصف',    value: item.description || '—',                        inline: false },
                 )
                 .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [row] });
         }
 
         if (sub === 'حذف') {
@@ -102,7 +102,7 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [row] });
         }
 
         if (sub === 'قائمة') {
@@ -121,7 +121,7 @@ module.exports = {
                     ).join('\n')
                 );
             }
-            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [row] });
         }
 
         if (sub === 'عرض') {

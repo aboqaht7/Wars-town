@@ -63,7 +63,7 @@ module.exports = {
                 .setFooter({ text: `بواسطة ${interaction.user.username} • بوت FANTASY` })
                 .setTimestamp();
 
-            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [row] });
         }
 
         if (sub === 'غرض') {
@@ -86,7 +86,7 @@ module.exports = {
                 .setFooter({ text: `بواسطة ${interaction.user.username} • بوت FANTASY` })
                 .setTimestamp();
 
-            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            return interaction.reply({ embeds: [embed], components: [row] });
         }
     },
 };

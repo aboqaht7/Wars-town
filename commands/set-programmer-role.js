@@ -19,6 +19,6 @@ module.exports = {
             .setColor(0x6A1B9A)
             .setDescription(`أصحاب رتبة <@&${role.id}> يمتلكون الآن صلاحية الوصول لجميع الأوامر الإدارية.`)
             .setFooter({ text: 'إعدادات البوت • FANTASY' }).setTimestamp();
-        return interaction.reply({ embeds: [embed], components: [resetRow], flags: 64 });
+        return interaction.reply({ embeds: [embed], components: [resetRow] });
     },
 };

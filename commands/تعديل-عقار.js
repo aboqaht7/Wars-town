@@ -37,6 +37,6 @@ module.exports = {
             .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
             .setTimestamp();
         if (updated.image_url) embed.setThumbnail(updated.image_url);
-        return interaction.reply({ embeds: [embed] , flags: 64 });
+        return interaction.reply({ embeds: [embed] });
     }
 };
