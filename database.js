@@ -617,6 +617,58 @@ async function updateAdminPoints(discordId, delta) {
     return res.rows[0] || null;
 }
 
+async function initEquipmentTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS equipment_items (
+            id          SERIAL PRIMARY KEY,
+            name        TEXT NOT NULL,
+            description TEXT,
+            price       INTEGER NOT NULL,
+            created_at  TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initEquipmentTable().catch(console.error);
+
+async function addEquipmentItem(name, price, description) {
+    const res = await query(
+        'INSERT INTO equipment_items (name, price, description) VALUES ($1,$2,$3) RETURNING *',
+        [name, price, description || null]
+    );
+    return res.rows[0];
+}
+
+async function getEquipmentItems() {
+    const res = await query('SELECT * FROM equipment_items ORDER BY id ASC');
+    return res.rows;
+}
+
+async function getEquipmentItemById(id) {
+    const res = await query('SELECT * FROM equipment_items WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function deleteEquipmentItem(id) {
+    await query('DELETE FROM equipment_items WHERE id=$1', [id]);
+}
+
+async function deleteAllEquipmentItems() {
+    await query('DELETE FROM equipment_items');
+}
+
+async function updateEquipmentItem(id, fields) {
+    const allowed = ['name', 'price', 'description'];
+    const vals = [], sets = [];
+    let i = 1;
+    for (const key of allowed) {
+        if (fields[key] !== undefined) { sets.push(`${key}=$${i++}`); vals.push(fields[key]); }
+    }
+    if (!sets.length) return null;
+    vals.push(id);
+    const res = await query(`UPDATE equipment_items SET ${sets.join(',')} WHERE id=$${i} RETURNING *`, vals);
+    return res.rows[0] || null;
+}
+
 async function initMarketTable() {
     await query(`
         CREATE TABLE IF NOT EXISTS market_items (
@@ -996,6 +1048,7 @@ module.exports = {
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     setAdminRank, getAdminRank, removeAdminRank, getAllAdminRanks, updateAdminPoints,
     getRankTypes, addRankType, deleteRankType,
+    addEquipmentItem, getEquipmentItems, getEquipmentItemById, deleteEquipmentItem, deleteAllEquipmentItems, updateEquipmentItem,
     addMarketItem, getMarketItems, getMarketItemById, deleteMarketItem, deleteAllMarketItems, updateMarketItem,
     addBlackMarketItem, getBlackMarketItems, getBlackMarketItemById, deleteBlackMarketItem, deleteAllBlackMarketItems, updateBlackMarketItem,
     addProperty, getProperties, getPropertyById, getPropertyByName, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,

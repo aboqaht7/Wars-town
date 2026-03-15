@@ -1,0 +1,135 @@
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
+const db = require('../database');
+
+const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+
+module.exports = {
+    name: 'إدارة-معدات',
+    data: new SlashCommandBuilder()
+        .setName('إدارة-معدات')
+        .setDescription('إدارة أغراض متجر المعدات')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .addSubcommand(s => s
+            .setName('اضافة')
+            .setDescription('أضف معدة للمتجر')
+            .addStringOption(o => o.setName('الاسم').setDescription('اسم المعدة').setRequired(true))
+            .addIntegerOption(o => o.setName('السعر').setDescription('السعر بالريال').setRequired(true).setMinValue(1))
+            .addStringOption(o => o.setName('الوصف').setDescription('وصف المعدة (اختياري)').setRequired(false))
+        )
+        .addSubcommand(s => s
+            .setName('حذف')
+            .setDescription('احذف معدة بالـ ID')
+            .addIntegerOption(o => o.setName('id').setDescription('ID المعدة').setRequired(true))
+        )
+        .addSubcommand(s => s
+            .setName('حذف-الكل')
+            .setDescription('احذف جميع المعدات')
+        )
+        .addSubcommand(s => s
+            .setName('تعديل')
+            .setDescription('عدّل معدة بالـ ID')
+            .addIntegerOption(o => o.setName('id').setDescription('ID المعدة').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('الاسم الجديد').setRequired(false))
+            .addIntegerOption(o => o.setName('السعر').setDescription('السعر الجديد').setRequired(false).setMinValue(1))
+            .addStringOption(o => o.setName('الوصف').setDescription('الوصف الجديد').setRequired(false))
+        )
+        .addSubcommand(s => s
+            .setName('قائمة')
+            .setDescription('عرض جميع المعدات')
+        )
+        .addSubcommand(s => s
+            .setName('عرض')
+            .setDescription('أرسل إمبيد متجر المعدات في الروم الحالي')
+        ),
+
+    async slashExecute(interaction) {
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
+            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+
+        const sub = interaction.options.getSubcommand();
+        const row = new ActionRowBuilder().addComponents(resetButton);
+
+        if (sub === 'اضافة') {
+            const name  = interaction.options.getString('الاسم').trim();
+            const price = interaction.options.getInteger('السعر');
+            const desc  = interaction.options.getString('الوصف')?.trim() || null;
+            const item  = await db.addEquipmentItem(name, price, desc);
+            const embed = new EmbedBuilder()
+                .setTitle('✅ تمت إضافة المعدة')
+                .setColor(0x4527A0)
+                .addFields(
+                    { name: 'ID',    value: String(item.id),                               inline: true },
+                    { name: 'الاسم', value: item.name,                                     inline: true },
+                    { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
+                    { name: 'الوصف', value: item.description || '—',                       inline: false },
+                )
+                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+        }
+
+        if (sub === 'حذف') {
+            const id   = interaction.options.getInteger('id');
+            const item = await db.getEquipmentItemById(id);
+            if (!item) return interaction.reply({ content: `❌ لا توجد معدة بـ ID: ${id}`, flags: 64 });
+            await db.deleteEquipmentItem(id);
+            return interaction.reply({ content: `✅ تم حذف **${item.name}** بنجاح.`, flags: 64 });
+        }
+
+        if (sub === 'حذف-الكل') {
+            await db.deleteAllEquipmentItems();
+            return interaction.reply({ content: '✅ تم حذف جميع المعدات.', flags: 64 });
+        }
+
+        if (sub === 'تعديل') {
+            const id    = interaction.options.getInteger('id');
+            const name  = interaction.options.getString('الاسم')?.trim();
+            const price = interaction.options.getInteger('السعر') || undefined;
+            const desc  = interaction.options.getString('الوصف')?.trim();
+            if (!name && !price && desc === undefined)
+                return interaction.reply({ content: '❌ يجب تحديد حقل واحد على الأقل للتعديل.', flags: 64 });
+            const item = await db.updateEquipmentItem(id, {
+                ...(name  ? { name }  : {}),
+                ...(price ? { price } : {}),
+                ...(desc !== undefined ? { description: desc || null } : {}),
+            });
+            if (!item) return interaction.reply({ content: `❌ لا توجد معدة بـ ID: ${id}`, flags: 64 });
+            const embed = new EmbedBuilder()
+                .setTitle('✅ تم التعديل')
+                .setColor(0x4527A0)
+                .addFields(
+                    { name: 'ID',    value: String(item.id),                               inline: true },
+                    { name: 'الاسم', value: item.name,                                     inline: true },
+                    { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
+                    { name: 'الوصف', value: item.description || '—',                       inline: false },
+                )
+                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+        }
+
+        if (sub === 'قائمة') {
+            const items = await db.getEquipmentItems();
+            const embed = new EmbedBuilder()
+                .setTitle('🎒 قائمة المعدات')
+                .setColor(0x4527A0)
+                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            if (!items.length) {
+                embed.setDescription('لا توجد معدات مضافة.');
+            } else {
+                embed.setDescription(
+                    items.map(it =>
+                        `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString()} ريال**` +
+                        (it.description ? `\n> ${it.description}` : '')
+                    ).join('\n')
+                );
+            }
+            return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+        }
+
+        if (sub === 'عرض') {
+            const eq = require('./equipment');
+            const payload = await eq.buildEquipment(db);
+            await interaction.reply({ content: '✅ تم إرسال إمبيد متجر المعدات.', flags: 64 });
+            return interaction.channel.send(payload);
+        }
+    },
+};

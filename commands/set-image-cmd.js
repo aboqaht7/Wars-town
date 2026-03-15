@@ -19,6 +19,7 @@ const SYSTEMS = [
     { name: 'المحاماة',      value: 'law'         },
     { name: 'الإدارة',       value: 'admin'       },
     { name: 'السوق',         value: 'market'      },
+    { name: 'المعدات',       value: 'معدات'       },
     { name: 'المعرض',        value: 'showroom'    },
     { name: 'السيارات',      value: 'vehicles'    },
     { name: 'منصة X',        value: 'x_platform'  },

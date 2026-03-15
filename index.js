@@ -99,6 +99,7 @@ const resetCommandMap = {
     law: 'law', admin: 'admin', crime: 'crime', health: 'health',
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
     x_platform: 'منصة-x', help: 'help', properties: 'properties',
+    معدات: 'معدات',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -276,6 +277,46 @@ client.on('interactionCreate', async interaction => {
                         { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
                     )
                     .setFooter({ text: 'نظام المتجر • بوت FANTASY' })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId.startsWith('buy_equipment_')) {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const itemId   = parseInt(interaction.customId.replace('buy_equipment_', ''));
+                const item     = await db.getEquipmentItemById(itemId);
+                if (!item) return interaction.reply({ content: '❌ هذه المعدة لم تعد متاحة.', flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+
+                const cash = Number(identity.cash);
+                if (cash < item.price)
+                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** ولديك **${cash.toLocaleString()} ريال**.`, flags: 64 });
+
+                await db.addToCash(interaction.user.id, identity.slot, -item.price);
+                await db.addItem(interaction.user.id, item.name, 1);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('✅ تمت عملية الشراء')
+                    .setColor(0x4527A0)
+                    .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
+                    .addFields(
+                        { name: '🎒 المعدة',          value: item.name,                                         inline: true },
+                        { name: '💸 المبلغ المدفوع',  value: `${Number(item.price).toLocaleString()} ريال`,    inline: true },
+                        { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
+                    )
+                    .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
                     .setTimestamp();
 
                 const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
@@ -860,6 +901,45 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const buyBtn   = new ButtonBuilder().setCustomId(`buy_market_${item.id}`).setLabel(`✅ تأكيد الشراء`).setStyle(ButtonStyle.Success);
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn, resetBtn)], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'equipment_item_select') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const itemId   = parseInt(value);
+                const item     = await db.getEquipmentItemById(itemId);
+                if (!item) return interaction.reply({ content: '❌ هذه المعدة لم تعد متاحة.', flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                const cash     = Number(identity?.cash || 0);
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`🎒 ${item.name}`)
+                    .setColor(0x4527A0)
+                    .addFields(
+                        { name: '💰 السعر',       value: `**${Number(item.price).toLocaleString()} ريال**`, inline: true },
+                        { name: '💵 كاشك الحالي', value: `${cash.toLocaleString()} ريال`,                  inline: true },
+                    )
+                    .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
+                    .setTimestamp();
+
+                if (item.description) embed.setDescription(`> ${item.description}`);
+
+                if (cash < item.price) {
+                    embed.addFields({ name: '❌ رصيد غير كافٍ', value: `تحتاج ${(item.price - cash).toLocaleString()} ريال إضافية`, inline: false });
+                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary))], flags: 64 });
+                }
+
+                const buyBtn   = new ButtonBuilder().setCustomId(`buy_equipment_${item.id}`).setLabel('✅ تأكيد الشراء').setStyle(ButtonStyle.Success);
                 const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn, resetBtn)], flags: 64 });
             } catch (e) {
