@@ -109,6 +109,8 @@ const resetCommandMap = {
     x_platform: 'منصة-x', help: 'help', properties: 'properties',
     معدات: 'معدات',
     'سوق-مركزي': 'سوق-مركزي',
+    محاماة: 'محاماة',
+    عدل: 'عدل',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -1496,6 +1498,126 @@ client.on('interactionCreate', async interaction => {
         }
 
 
+        // ── المحاماة ──────────────────────────────────────────────────────────
+        if (interaction.customId === 'law_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                if (value === 'new_case') {
+                    const modal = new ModalBuilder().setCustomId('new_case_modal').setTitle('📁 رفع قضية جديدة');
+                    modal.addComponents(
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_title').setLabel('عنوان القضية').setStyle(TextInputStyle.Short).setRequired(true)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_defendant').setLabel('المدعى عليه').setStyle(TextInputStyle.Short).setRequired(true)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_desc').setLabel('وصف القضية').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_evidence').setLabel('الأدلة (اختياري)').setStyle(TextInputStyle.Paragraph).setRequired(false)),
+                    );
+                    return interaction.showModal(modal);
+                }
+
+                if (value === 'my_cases') {
+                    const cases = await db.getCasesByPlaintiff(interaction.user.id);
+                    if (!cases.length) return interaction.reply({ content: '📋 لا توجد قضايا مرفوعة باسمك.', flags: 64 });
+                    const lines = cases.map(c =>
+                        `**[${c.case_number}]** ${c.title}\n> ضد: ${c.defendant} • الحالة: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • المحامي: ${c.lawyer_name}` : ''}${c.judge_name ? ` • القاضي: ${c.judge_name}` : ''}`
+                    ).join('\n\n');
+                    const embed = new EmbedBuilder()
+                        .setTitle('📋 قضاياي')
+                        .setColor(0x0D47A1)
+                        .setDescription(lines.slice(0, 4000))
+                        .setFooter({ text: `إجمالي القضايا: ${cases.length} • بوت FANTASY` })
+                        .setTimestamp();
+                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                }
+
+                if (value === 'hire_lawyer') {
+                    const cases = await db.getCasesByPlaintiff(interaction.user.id);
+                    const eligible = cases.filter(c => ['pending','accepted','in_progress'].includes(c.status));
+                    if (!eligible.length) return interaction.reply({ content: '❌ لا توجد قضايا تستحق توكيل محامٍ.', flags: 64 });
+                    const sel = new ActionRowBuilder().addComponents(
+                        new StringSelectMenuBuilder().setCustomId('case_sel_lawyer').setPlaceholder('اختر القضية')
+                            .addOptions(eligible.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `الحالة: ${db.CASE_STATUS[c.status]}` })))
+                    );
+                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                    return interaction.reply({ content: '👨‍⚖️ اختر القضية التي تريد توكيل محامٍ لها:', components: [sel, new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── العدل ─────────────────────────────────────────────────────────────
+        if (interaction.customId === 'justice_menu') {
+            try {
+                if (!interaction.member.permissions.has('Administrator'))
+                    return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+
+                const actionMap = {
+                    accept_case:   { statuses: ['pending'],     label: '✅ اختر القضية للقبول',   customId: 'case_sel_accept' },
+                    reject_case:   { statuses: ['pending'],     label: '❌ اختر القضية للرفض',    customId: 'case_sel_reject' },
+                    assign_judge:  { statuses: ['accepted'],    label: '👨‍⚖️ اختر القضية لتعيين قاضٍ', customId: 'case_sel_judge' },
+                    issue_verdict: { statuses: ['in_progress'], label: '📜 اختر القضية لإصدار الحكم', customId: 'case_sel_verdict' },
+                };
+                const cfg = actionMap[value];
+                if (!cfg) return;
+
+                let cases = [];
+                for (const st of cfg.statuses) cases.push(...await db.getCasesByStatus(st));
+                if (!cases.length) return interaction.reply({ content: '📋 لا توجد قضايا في هذه الحالة.', flags: 64 });
+
+                const sel = new ActionRowBuilder().addComponents(
+                    new StringSelectMenuBuilder().setCustomId(cfg.customId).setPlaceholder('اختر القضية')
+                        .addOptions(cases.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `ضد: ${c.defendant} • ${db.CASE_STATUS[c.status]}` })))
+                );
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ content: cfg.label + ':', components: [sel, new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── قبول قضية مباشرة ─────────────────────────────────────────────────
+        if (interaction.customId === 'case_sel_accept') {
+            try {
+                const c = await db.getCaseById(Number(value));
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                await db.acceptCase(c.id);
+                const embed = new EmbedBuilder()
+                    .setTitle('✅ تم قبول القضية')
+                    .setColor(0x2E7D32)
+                    .addFields(
+                        { name: '📁 رقم القضية', value: c.case_number, inline: true },
+                        { name: '📌 العنوان',    value: c.title,       inline: true },
+                        { name: '👤 المدعي',     value: `<@${c.plaintiff_id}>`, inline: true },
+                        { name: '⚔️ المدعى عليه', value: c.defendant,  inline: true },
+                    )
+                    .setFooter({ text: `قُبلت بواسطة: ${interaction.user.username} • بوت FANTASY` })
+                    .setTimestamp();
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── رفض / توكيل قاضي / حكم / محامي — فتح موودال ──────────────────────
+        if (['case_sel_reject','case_sel_judge','case_sel_verdict','case_sel_lawyer'].includes(interaction.customId)) {
+            try {
+                const caseId = value;
+                const modals = {
+                    case_sel_reject:  { id: `case_reject_modal_${caseId}`,  title: '❌ سبب الرفض',           fields: [{ id: 'reason',  label: 'سبب رفض القضية', long: true }] },
+                    case_sel_judge:   { id: `case_judge_modal_${caseId}`,   title: '👨‍⚖️ تعيين قاضٍ',       fields: [{ id: 'judge_mention', label: 'اسم القاضي (أو منشن)', long: false }] },
+                    case_sel_verdict: { id: `case_verdict_modal_${caseId}`, title: '📜 إصدار الحكم',         fields: [{ id: 'verdict', label: 'نص الحكم',           long: true  }] },
+                    case_sel_lawyer:  { id: `case_lawyer_modal_${caseId}`,  title: '👨‍⚖️ طلب توكيل محامٍ',  fields: [{ id: 'lawyer_name', label: 'اسم المحامي المطلوب', long: false }, { id: 'lawyer_reason', label: 'سبب الطلب', long: true }] },
+                };
+                const cfg = modals[interaction.customId];
+                const modal = new ModalBuilder().setCustomId(cfg.id).setTitle(cfg.title);
+                modal.addComponents(...cfg.fields.map(f =>
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId(f.id).setLabel(f.label)
+                            .setStyle(f.long ? TextInputStyle.Paragraph : TextInputStyle.Short).setRequired(true)
+                    )
+                ));
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
         if (interaction.customId === 'phone_menu') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
@@ -1627,6 +1749,183 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (interaction.isModalSubmit()) {
+
+        // ── رفع قضية جديدة ────────────────────────────────────────────────────
+        if (interaction.customId === 'new_case_modal') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+
+                const title     = interaction.fields.getTextInputValue('case_title').trim();
+                const defendant = interaction.fields.getTextInputValue('case_defendant').trim();
+                const desc      = interaction.fields.getTextInputValue('case_desc').trim();
+                const evidence  = interaction.fields.getTextInputValue('case_evidence')?.trim() || '';
+
+                const newCase = await db.createCase(interaction.user.id, identity.full_name || interaction.user.username, defendant, title, desc, evidence);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('📁 تم رفع القضية')
+                    .setColor(0x0D47A1)
+                    .addFields(
+                        { name: '🔢 رقم القضية',   value: newCase.case_number,          inline: true },
+                        { name: '📌 العنوان',       value: title,                        inline: true },
+                        { name: '⚔️ المدعى عليه',  value: defendant,                    inline: true },
+                        { name: '📝 الوصف',         value: desc.slice(0,300),            inline: false },
+                        { name: '🔍 الأدلة',        value: evidence || 'لا توجد أدلة',  inline: false },
+                        { name: '⏳ الحالة',         value: '⏳ معلقة — بانتظار الإدارة', inline: true },
+                    )
+                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+
+                // إشعار روم القضايا إن وُجد
+                const casesChannelId = await db.getConfig('cases_channel');
+                if (casesChannelId) {
+                    const ch = interaction.guild?.channels?.cache?.get(casesChannelId);
+                    if (ch) ch.send({ embeds: [embed] }).catch(() => {});
+                }
+
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ أثناء رفع القضية.', flags: 64 }); }
+        }
+
+        // ── رفض قضية ─────────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('case_reject_modal_')) {
+            try {
+                const caseId = Number(interaction.customId.replace('case_reject_modal_', ''));
+                const reason = interaction.fields.getTextInputValue('reason').trim();
+                const c      = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+
+                await db.rejectCase(caseId, reason, interaction.user.id);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('❌ تم رفض القضية')
+                    .setColor(0xB71C1C)
+                    .addFields(
+                        { name: '🔢 رقم القضية',  value: c.case_number,                inline: true },
+                        { name: '📌 العنوان',      value: c.title,                     inline: true },
+                        { name: '👤 المدعي',       value: `<@${c.plaintiff_id}>`,      inline: true },
+                        { name: '❌ سبب الرفض',   value: reason,                       inline: false },
+                    )
+                    .setFooter({ text: `رُفضت بواسطة: ${interaction.user.username} • بوت FANTASY` })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── توكيل قاضي ───────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('case_judge_modal_')) {
+            try {
+                const caseId    = Number(interaction.customId.replace('case_judge_modal_', ''));
+                const judgeText = interaction.fields.getTextInputValue('judge_mention').trim();
+                const c         = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+
+                // محاولة استخراج ID من المنشن
+                const mentionMatch = judgeText.match(/^<@!?(\d+)>$/);
+                const judgeId   = mentionMatch ? mentionMatch[1] : null;
+                const judgeName = judgeText;
+
+                await db.assignJudge(caseId, judgeId, judgeName);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('👨‍⚖️ تم تعيين القاضي')
+                    .setColor(0x4A148C)
+                    .addFields(
+                        { name: '🔢 رقم القضية',   value: c.case_number,           inline: true },
+                        { name: '📌 العنوان',       value: c.title,                 inline: true },
+                        { name: '👤 المدعي',        value: `<@${c.plaintiff_id}>`,  inline: true },
+                        { name: '👨‍⚖️ القاضي',     value: judgeId ? `<@${judgeId}>` : judgeName, inline: true },
+                        { name: '⚖️ الحالة',        value: '⚖️ جارية',             inline: true },
+                    )
+                    .setFooter({ text: `عُيِّن بواسطة: ${interaction.user.username} • بوت FANTASY` })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── إصدار حكم ────────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('case_verdict_modal_')) {
+            try {
+                const caseId  = Number(interaction.customId.replace('case_verdict_modal_', ''));
+                const verdict = interaction.fields.getTextInputValue('verdict').trim();
+                const c       = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+
+                await db.issueVerdict(caseId, verdict, interaction.user.id);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('📜 صدر الحكم')
+                    .setColor(0x1B5E20)
+                    .addFields(
+                        { name: '🔢 رقم القضية',   value: c.case_number,          inline: true },
+                        { name: '📌 العنوان',       value: c.title,                inline: true },
+                        { name: '👤 المدعي',        value: `<@${c.plaintiff_id}>`, inline: true },
+                        { name: '⚔️ المدعى عليه',  value: c.defendant,            inline: true },
+                        { name: '👨‍⚖️ القاضي',     value: c.judge_name || 'غير محدد', inline: true },
+                        { name: '📜 الحكم',         value: verdict,                inline: false },
+                        { name: '🔒 الحالة',        value: '🔒 مغلقة',             inline: true },
+                    )
+                    .setFooter({ text: `أصدره: ${interaction.user.username} • بوت FANTASY` })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+
+                // إشعار روم الأحكام إن وُجد
+                const verdictsChannelId = await db.getConfig('verdicts_channel');
+                if (verdictsChannelId) {
+                    const ch = interaction.guild?.channels?.cache?.get(verdictsChannelId);
+                    if (ch) ch.send({ embeds: [embed] }).catch(() => {});
+                }
+
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── توكيل محامي (طلب) ────────────────────────────────────────────────
+        if (interaction.customId.startsWith('case_lawyer_modal_')) {
+            try {
+                const caseId     = Number(interaction.customId.replace('case_lawyer_modal_', ''));
+                const lawyerName = interaction.fields.getTextInputValue('lawyer_name').trim();
+                const reason     = interaction.fields.getTextInputValue('lawyer_reason').trim();
+                const c          = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+
+                await db.assignLawyer(caseId, null, lawyerName);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('👨‍⚖️ طلب توكيل محامٍ')
+                    .setColor(0xE65100)
+                    .addFields(
+                        { name: '🔢 رقم القضية',    value: c.case_number,           inline: true },
+                        { name: '📌 العنوان',        value: c.title,                 inline: true },
+                        { name: '👤 المدعي',         value: `<@${c.plaintiff_id}>`,  inline: true },
+                        { name: '👨‍⚖️ المحامي المطلوب', value: lawyerName,           inline: true },
+                        { name: '📝 سبب الطلب',      value: reason,                  inline: false },
+                    )
+                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+
+                // إشعار روم القضايا إن وُجد
+                const casesChannelId = await db.getConfig('cases_channel');
+                if (casesChannelId) {
+                    const ch = interaction.guild?.channels?.cache?.get(casesChannelId);
+                    if (ch) ch.send({ embeds: [embed] }).catch(() => {});
+                }
+
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
         if (interaction.customId === 'report_police_modal' || interaction.customId === 'report_ambulance_modal') {
             try {
                 const isPolice   = interaction.customId === 'report_police_modal';

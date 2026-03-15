@@ -21,6 +21,8 @@ const SYSTEMS = [
     { name: 'السوق',         value: 'market'      },
     { name: 'المعدات',       value: 'معدات'       },
     { name: 'السوق المركزي', value: 'سوق-مركزي'  },
+    { name: 'المحاماة',      value: 'محاماة'      },
+    { name: 'العدل',         value: 'عدل'         },
     { name: 'المعرض',        value: 'showroom'    },
     { name: 'السيارات',      value: 'vehicles'    },
     { name: 'منصة X',        value: 'x_platform'  },

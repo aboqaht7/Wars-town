@@ -1091,6 +1091,93 @@ async function initJobTables() {
 }
 initJobTables().catch(console.error);
 
+// ─── CASES SYSTEM ────────────────────────────────────────────────────────────
+
+const CASE_STATUS = {
+    pending:     '⏳ معلقة',
+    accepted:    '✅ مقبولة',
+    rejected:    '❌ مرفوضة',
+    in_progress: '⚖️ جارية',
+    closed:      '🔒 مغلقة',
+};
+
+async function initCasesTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS cases (
+            id             SERIAL PRIMARY KEY,
+            case_number    TEXT UNIQUE NOT NULL,
+            plaintiff_id   TEXT NOT NULL,
+            plaintiff_name TEXT NOT NULL,
+            defendant      TEXT NOT NULL DEFAULT '',
+            title          TEXT NOT NULL,
+            description    TEXT NOT NULL,
+            evidence       TEXT DEFAULT '',
+            status         TEXT DEFAULT 'pending',
+            lawyer_id      TEXT,
+            lawyer_name    TEXT,
+            judge_id       TEXT,
+            judge_name     TEXT,
+            verdict        TEXT,
+            verdict_by     TEXT,
+            reject_reason  TEXT,
+            created_at     TIMESTAMP DEFAULT NOW(),
+            updated_at     TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initCasesTable().catch(console.error);
+
+async function createCase(plaintiffId, plaintiffName, defendant, title, description, evidence) {
+    const count  = await query('SELECT COUNT(*) FROM cases');
+    const num    = String(Number(count.rows[0].count) + 1).padStart(4, '0');
+    const caseNo = `CASE-${num}`;
+    const res    = await query(
+        `INSERT INTO cases (case_number, plaintiff_id, plaintiff_name, defendant, title, description, evidence)
+         VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+        [caseNo, plaintiffId, plaintiffName, defendant, title, description, evidence]
+    );
+    return res.rows[0];
+}
+
+async function getCasesByPlaintiff(discordId) {
+    const res = await query('SELECT * FROM cases WHERE plaintiff_id=$1 ORDER BY created_at DESC', [discordId]);
+    return res.rows;
+}
+
+async function getCasesByStatus(status) {
+    const res = await query('SELECT * FROM cases WHERE status=$1 ORDER BY created_at ASC', [status]);
+    return res.rows;
+}
+
+async function getCaseById(id) {
+    const res = await query('SELECT * FROM cases WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function acceptCase(id) {
+    await query(`UPDATE cases SET status='accepted', updated_at=NOW() WHERE id=$1`, [id]);
+}
+
+async function rejectCase(id, reason, rejectedBy) {
+    await query(`UPDATE cases SET status='rejected', reject_reason=$2, verdict_by=$3, updated_at=NOW() WHERE id=$1`,
+        [id, reason, rejectedBy]);
+}
+
+async function assignJudge(id, judgeId, judgeName) {
+    await query(`UPDATE cases SET status='in_progress', judge_id=$2, judge_name=$3, updated_at=NOW() WHERE id=$1`,
+        [id, judgeId, judgeName]);
+}
+
+async function issueVerdict(id, verdict, verdictBy) {
+    await query(`UPDATE cases SET status='closed', verdict=$2, verdict_by=$3, updated_at=NOW() WHERE id=$1`,
+        [id, verdict, verdictBy]);
+}
+
+async function assignLawyer(id, lawyerId, lawyerName) {
+    await query(`UPDATE cases SET lawyer_id=$2, lawyer_name=$3, updated_at=NOW() WHERE id=$1`,
+        [id, lawyerId, lawyerName]);
+}
+
 async function getJobPrices() {
     const res = await query('SELECT item_name, price FROM job_prices ORDER BY item_name');
     const map = {};
@@ -1221,4 +1308,7 @@ module.exports = {
     getJobPrices, updateAllJobPrices, getJobCooldown, setJobCooldown,
     hasItem, removeItem, sellJobItems, sellJobItemsByCategory,
     JOB_ITEMS,
+    CASE_STATUS,
+    createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById,
+    acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
 };

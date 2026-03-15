@@ -2,37 +2,43 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBui
 const { resetRow } = require('../utils');
 
 module.exports = {
-    name: 'law',
-    data: new SlashCommandBuilder().setName('law').setDescription('نظام المحاماة والقضايا'),
+    name: 'محاماة',
+    data: new SlashCommandBuilder().setName('محاماة').setDescription('⚖️ مكتب المحاماة'),
+
     async execute(message, args, db) {
-        const { embed, menu } = await build(db);
-        message.channel.send({ embeds: [embed], components: [menu, resetRow('law')] });
+        await db.ensureUser(message.author.id, message.author.username);
+        const err = await db.checkLoginAndIdentity(message.author.id);
+        if (err) return message.reply(err);
+        message.channel.send(await build(db));
     },
+
     async slashExecute(interaction, db) {
-        const { embed, menu } = await build(db);
-        interaction.reply({ embeds: [embed], components: [menu, resetRow('law')] });
-    }
+        await db.ensureUser(interaction.user.id, interaction.user.username);
+        const err = await db.checkLoginAndIdentity(interaction.user.id);
+        if (err) return interaction.reply({ content: err, flags: 64 });
+        interaction.reply(await build(db));
+    },
 };
 
 async function build(db) {
+    const img = await db.getImage('محاماة');
     const embed = new EmbedBuilder()
-        .setTitle('⚖️ نظام المحاماة')
+        .setTitle('⚖️ مكتب المحاماة')
         .setColor(0x0D47A1)
-        .setDescription('مكتب المحاماة — اختر خدمتك القانونية.')
+        .setDescription('> اختر الخدمة القانونية من القائمة أدناه')
         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
         .setTimestamp();
-    const img = await db.getImage('law');
     if (img) embed.setImage(img);
+
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('law_menu')
-            .setPlaceholder('اختر خدمة قانونية')
+            .setPlaceholder('⚖️ اختر خدمة قانونية')
             .addOptions([
-                { label: '📁 فتح قضية', value: 'new_case' },
-                { label: '📋 عرض القضايا', value: 'view_cases' },
-                { label: '👨‍⚖️ توكيل محامٍ', value: 'hire_lawyer' },
-                { label: '⚖️ الإجراءات القانونية', value: 'legal_process' },
+                { label: '📁 رفع قضية',        value: 'new_case',    description: 'تقديم قضية جديدة إلى المحكمة' },
+                { label: '📋 قضاياي',           value: 'my_cases',   description: 'عرض جميع القضايا المرفوعة منك' },
+                { label: '👨‍⚖️ توكيل محامي',    value: 'hire_lawyer', description: 'طلب توكيل محامٍ لقضيتك' },
             ])
     );
-    return { embed, menu };
+    return { embeds: [embed], components: [menu, resetRow('محاماة')] };
 }
