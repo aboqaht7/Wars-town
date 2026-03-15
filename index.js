@@ -155,7 +155,6 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'trip_start') {
                 const modal = new ModalBuilder().setCustomId('trip_start_modal').setTitle('بدء رحلة جديدة');
                 modal.addComponents(
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_name').setLabel('اسم الرحلة').setStyle(TextInputStyle.Short).setRequired(true)),
                     new ARB().addComponents(new TextInputBuilder().setCustomId('trip_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
                     new ARB().addComponents(new TextInputBuilder().setCustomId('trip_deputy').setLabel('نائب الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
                     new ARB().addComponents(new TextInputBuilder().setCustomId('trip_supervisor').setLabel('الرقابي').setStyle(TextInputStyle.Short).setRequired(true)),
@@ -1403,7 +1402,6 @@ client.on('interactionCreate', async interaction => {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
                 if (!startChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم بدء الرحلة. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
 
-                const tripName   = interaction.fields.getTextInputValue('trip_name').trim();
                 const hostId     = interaction.fields.getTextInputValue('trip_host_id').trim();
                 const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim();
                 const supervisor = interaction.fields.getTextInputValue('trip_supervisor').trim();
@@ -1417,12 +1415,11 @@ client.on('interactionCreate', async interaction => {
                     .setColor(0x2E7D32)
                     .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
                     .addFields(
-                        { name: '🏷️ اسم الرحلة',   value: tripName,   inline: true },
-                        { name: '🎤 الهوست',         value: `\`${hostId}\``, inline: true },
-                        { name: '🎤 نائب الهوست',   value: deputy,     inline: true },
-                        { name: '👁️ الرقابي',        value: supervisor, inline: true },
-                        { name: '🕐 وقت الرحلة',    value: tripTime,   inline: true },
-                        { name: '🔧 بدأها',           value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '🎤 الهوست',       value: `\`${hostId}\``, inline: true },
+                        { name: '🎤 نائب الهوست', value: deputy,           inline: true },
+                        { name: '👁️ الرقابي',      value: supervisor,      inline: true },
+                        { name: '🕐 وقت الرحلة',  value: tripTime,         inline: true },
+                        { name: '🔧 بدأها',         value: `<@${interaction.user.id}>`, inline: true },
                     )
                     .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
                     .setTimestamp();
@@ -1438,7 +1435,7 @@ client.on('interactionCreate', async interaction => {
                     } catch {}
                 }
                 sendToCharLog(embed);
-                return interaction.reply({ content: `✅ تم إرسال إشعار بدء الرحلة **${tripName}**.`, flags: 64 });
+                return interaction.reply({ content: '✅ تم إرسال إشعار بدء الرحلة.', flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
