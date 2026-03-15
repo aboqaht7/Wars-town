@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
 const row2 = new ActionRowBuilder().addComponents(resetButton);
+const { buildDashboard } = require('./lawyer-dashboard');
 
 module.exports = {
     name: 'إدارة-محامين',
@@ -62,6 +63,8 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
+            // أرسل لوحة المحامي المحدّثة تلقائياً
+            await interaction.channel.send(await buildDashboard(db, user.id, name));
             return interaction.reply({ content: '​', flags: 64 });
         }
 
