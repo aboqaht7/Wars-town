@@ -51,12 +51,6 @@ const menuHandlers = {
         ban: '🚫 **باند** — الأمر: `-باند @اللاعب السبب`',
         defame: '📢 **تشهير** — الأمر: `-تشهير @اللاعب السبب`',
     },
-    events_menu: {
-        open_flight: '✈️ **فتح رحلة** — تواصل مع الإدارة لفتح رحلة جديدة.',
-        hurricane: '🌀 **إعصار** — تواصل مع الإدارة لتفعيل حدث الإعصار.',
-        alert: '📣 **تنبيه عام** — تواصل مع الإدارة لإرسال تنبيه للجميع.',
-        special_event: '🎉 **حدث خاص** — تواصل مع الإدارة لتفعيل حدث خاص.',
-    },
     jobs_menu: {
         fishing: '🎣 **صيد السمك** — توجه لمنطقة الصيد وابدأ رحلة الصيد.',
         taxi: '🚕 **تكسي** — توجه لمحطة التكسي وابدأ العمل.',
@@ -101,7 +95,7 @@ async function sendToCharLog(embed) {
 
 const resetCommandMap = {
     police: 'police', bank: 'bank', bag: 'bag', identity: 'identity',
-    phone: 'phone', events: 'events', jobs: 'jobs', market: 'market',
+    phone: 'phone', trips: 'trips', jobs: 'jobs', market: 'market',
     law: 'law', admin: 'admin', crime: 'crime', health: 'health',
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
     x_platform: 'منصة-x', help: 'help', properties: 'properties',
@@ -124,6 +118,66 @@ client.on('interactionCreate', async interaction => {
                         if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
                     } catch {}
                 }
+            }
+        }
+
+        if (['trip_start', 'trip_hurricane', 'trip_renewal', 'trip_alert'].includes(interaction.customId)) {
+            if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+                return interaction.reply({ content: '❌ هذا الزر للمسؤولين فقط.', flags: 64 });
+            }
+
+            if (interaction.customId === 'trip_hurricane') {
+                const alertsChannelId = await db.getConfig('trips_alerts_channel');
+                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+
+                await db.setConfig('hurricane_active', 'true');
+                await db.setConfig('trip_open', 'false');
+                await db.logoutAllUsers();
+                await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
+
+                const hurricaneEmbed = new EmbedBuilder()
+                    .setTitle('🌀 تحذير — إعصار!')
+                    .setColor(0xB71C1C)
+                    .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
+                    .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
+                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                    .setTimestamp();
+                try {
+                    const ch = await client.channels.fetch(alertsChannelId);
+                    if (ch) await ch.send({ embeds: [hurricaneEmbed] });
+                } catch {}
+                sendToCharLog(hurricaneEmbed);
+                return interaction.reply({ content: '✅ تم إرسال تحذير الإعصار.', flags: 64 });
+            }
+
+            const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');
+
+            if (interaction.customId === 'trip_start') {
+                const modal = new ModalBuilder().setCustomId('trip_start_modal').setTitle('بدء رحلة جديدة');
+                modal.addComponents(
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_name').setLabel('اسم الرحلة').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_deputy').setLabel('نائب الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_supervisor').setLabel('الرقابي').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_time').setLabel('وقت الرحلة').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 9:00 مساءً')),
+                );
+                return interaction.showModal(modal);
+            }
+
+            if (interaction.customId === 'trip_renewal') {
+                const modal = new ModalBuilder().setCustomId('trip_renewal_modal').setTitle('تجديد الرحلة');
+                modal.addComponents(
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('renewal_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
+                );
+                return interaction.showModal(modal);
+            }
+
+            if (interaction.customId === 'trip_alert') {
+                const modal = new ModalBuilder().setCustomId('trip_alert_modal').setTitle('إرسال تنبيه');
+                modal.addComponents(
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص التنبيه').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                );
+                return interaction.showModal(modal);
             }
         }
 
@@ -1090,41 +1144,6 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
-        if (interaction.customId === 'events_menu') {
-            try {
-                if (value === 'hurricane') {
-                    await db.setConfig('hurricane_active', 'true');
-                    await db.setConfig('trip_open', 'false');
-                    await db.logoutAllUsers();
-                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
-                    const hurricaneEmbed = new EmbedBuilder()
-                        .setTitle('🌀 تحذير — إعصار!')
-                        .setColor(0xB71C1C)
-                        .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
-                        .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
-                        .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
-                        .setTimestamp();
-                    sendToCharLog(hurricaneEmbed);
-                    return interaction.reply({ embeds: [hurricaneEmbed] });
-                }
-                if (value === 'open_flight') {
-                    await db.setConfig('trip_open', 'true');
-                    await db.setConfig('hurricane_active', 'false');
-                    const flightEmbed = new EmbedBuilder()
-                        .setTitle('✈️ تم فتح الرحلة!')
-                        .setColor(0x2E7D32)
-                        .setDescription('✅ **الرحلة مفتوحة الآن!**\n\n🎉 يمكن لجميع اللاعبين **تسجيل الدخول** بشخصياتهم.')
-                        .addFields({ name: '🔧 فتحها', value: `<@${interaction.user.id}>`, inline: true })
-                        .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
-                        .setTimestamp();
-                    sendToCharLog(flightEmbed);
-                    return interaction.reply({ embeds: [flightEmbed] });
-                }
-            } catch (e) {
-                console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
-            }
-        }
 
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;
@@ -1375,6 +1394,109 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'trip_start_modal') {
+            try {
+                const startChannelId  = await db.getConfig('trips_start_channel');
+                const alertsChannelId = await db.getConfig('trips_alerts_channel');
+                if (!startChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم بدء الرحلة. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+
+                const tripName   = interaction.fields.getTextInputValue('trip_name').trim();
+                const hostId     = interaction.fields.getTextInputValue('trip_host_id').trim();
+                const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim();
+                const supervisor = interaction.fields.getTextInputValue('trip_supervisor').trim();
+                const tripTime   = interaction.fields.getTextInputValue('trip_time').trim();
+
+                await db.setConfig('trip_open', 'true');
+                await db.setConfig('hurricane_active', 'false');
+
+                const embed = new EmbedBuilder()
+                    .setTitle('✈️ بدء رحلة جديدة!')
+                    .setColor(0x2E7D32)
+                    .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
+                    .addFields(
+                        { name: '🏷️ اسم الرحلة',   value: tripName,   inline: true },
+                        { name: '🎤 الهوست',         value: `\`${hostId}\``, inline: true },
+                        { name: '🎤 نائب الهوست',   value: deputy,     inline: true },
+                        { name: '👁️ الرقابي',        value: supervisor, inline: true },
+                        { name: '🕐 وقت الرحلة',    value: tripTime,   inline: true },
+                        { name: '🔧 بدأها',           value: `<@${interaction.user.id}>`, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                    .setTimestamp();
+
+                try {
+                    const ch = await client.channels.fetch(startChannelId);
+                    if (ch) await ch.send({ embeds: [embed] });
+                } catch {}
+                if (alertsChannelId && alertsChannelId !== startChannelId) {
+                    try {
+                        const ach = await client.channels.fetch(alertsChannelId);
+                        if (ach) await ach.send({ embeds: [embed] });
+                    } catch {}
+                }
+                sendToCharLog(embed);
+                return interaction.reply({ content: `✅ تم إرسال إشعار بدء الرحلة **${tripName}**.`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'trip_renewal_modal') {
+            try {
+                const alertsChannelId = await db.getConfig('trips_alerts_channel');
+                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+
+                const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim();
+
+                const embed = new EmbedBuilder()
+                    .setTitle('🔄 تجديد الرحلة')
+                    .setColor(0x1565C0)
+                    .setDescription('🔄 **تم تجديد الرحلة!**')
+                    .addFields(
+                        { name: '🎤 ID الهوست',  value: `\`${hostId}\``, inline: true },
+                        { name: '🔧 جدّدها',      value: `<@${interaction.user.id}>`, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                    .setTimestamp();
+
+                try {
+                    const ch = await client.channels.fetch(alertsChannelId);
+                    if (ch) await ch.send({ embeds: [embed] });
+                } catch {}
+                return interaction.reply({ content: '✅ تم إرسال إشعار التجديد.', flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'trip_alert_modal') {
+            try {
+                const alertsChannelId = await db.getConfig('trips_alerts_channel');
+                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+
+                const alertText = interaction.fields.getTextInputValue('alert_text').trim();
+
+                const embed = new EmbedBuilder()
+                    .setTitle('📣 تنبيه')
+                    .setColor(0xF57F17)
+                    .setDescription(alertText)
+                    .addFields({ name: '🔧 أرسله', value: `<@${interaction.user.id}>`, inline: true })
+                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                    .setTimestamp();
+
+                try {
+                    const ch = await client.channels.fetch(alertsChannelId);
+                    if (ch) await ch.send({ embeds: [embed] });
+                } catch {}
+                return interaction.reply({ content: '✅ تم إرسال التنبيه.', flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
         }
 
