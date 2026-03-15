@@ -617,6 +617,59 @@ async function updateAdminPoints(discordId, delta) {
     return res.rows[0] || null;
 }
 
+async function initMarketTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS market_items (
+            id          SERIAL PRIMARY KEY,
+            name        TEXT NOT NULL,
+            description TEXT,
+            price       INTEGER NOT NULL,
+            created_at  TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initMarketTable().catch(console.error);
+
+async function addMarketItem(name, price, description) {
+    const res = await query(
+        'INSERT INTO market_items (name, price, description) VALUES ($1,$2,$3) RETURNING *',
+        [name, price, description || null]
+    );
+    return res.rows[0];
+}
+
+async function getMarketItems() {
+    const res = await query('SELECT * FROM market_items ORDER BY id ASC');
+    return res.rows;
+}
+
+async function getMarketItemById(id) {
+    const res = await query('SELECT * FROM market_items WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function deleteMarketItem(id) {
+    await query('DELETE FROM market_items WHERE id=$1', [id]);
+}
+
+async function deleteAllMarketItems() {
+    await query('DELETE FROM market_items');
+}
+
+async function updateMarketItem(id, fields) {
+    const allowed = ['name', 'price', 'description'];
+    const vals = [];
+    const sets = [];
+    let i = 1;
+    for (const key of allowed) {
+        if (fields[key] !== undefined) { sets.push(`${key}=$${i++}`); vals.push(fields[key]); }
+    }
+    if (!sets.length) return null;
+    vals.push(id);
+    const res = await query(`UPDATE market_items SET ${sets.join(',')} WHERE id=$${i} RETURNING *`, vals);
+    return res.rows[0] || null;
+}
+
 async function initBlackMarketTable() {
     await query(`
         CREATE TABLE IF NOT EXISTS black_market (
@@ -943,6 +996,7 @@ module.exports = {
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     setAdminRank, getAdminRank, removeAdminRank, getAllAdminRanks, updateAdminPoints,
     getRankTypes, addRankType, deleteRankType,
+    addMarketItem, getMarketItems, getMarketItemById, deleteMarketItem, deleteAllMarketItems, updateMarketItem,
     addBlackMarketItem, getBlackMarketItems, getBlackMarketItemById, deleteBlackMarketItem, deleteAllBlackMarketItems, updateBlackMarketItem,
     addProperty, getProperties, getPropertyById, getPropertyByName, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,

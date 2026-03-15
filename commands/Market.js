@@ -1,45 +1,59 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'market',
     data: new SlashCommandBuilder()
         .setName('market')
-        .setDescription('سوق الأدوات والمزاد'),
+        .setDescription('🛒 المتجر — اشترِ ما تحتاجه'),
+
     async execute(message, args, db) {
-        const { embed, menu } = await build(db);
-        message.channel.send({ embeds: [embed], components: [menu, resetRow('market')] });
+        await db.ensureUser(message.author.id, message.author.username);
+        const err = await db.checkLoginAndIdentity(message.author.id);
+        if (err) return message.reply(err);
+        const payload = await buildMarket(db);
+        message.channel.send(payload);
     },
+
     async slashExecute(interaction, db) {
-        const { embed, menu } = await build(db);
-        interaction.reply({ embeds: [embed], components: [menu, resetRow('market')] });
-    }
+        await db.ensureUser(interaction.user.id, interaction.user.username);
+        const err = await db.checkLoginAndIdentity(interaction.user.id);
+        if (err) return interaction.reply({ content: err, flags: 64 });
+        const payload = await buildMarket(db);
+        interaction.reply(payload);
+    },
+
+    buildMarket,
 };
 
-async function build(db) {
+async function buildMarket(db) {
+    const items = await db.getMarketItems();
+    const img   = await db.getImage('market');
+
     const embed = new EmbedBuilder()
-        .setTitle('🛒 السوق المركزي')
+        .setTitle('🛒 المتجر')
         .setColor(0xBF360C)
-        .setDescription('مرحباً بك في السوق — اختر ما تريد شراءه')
-        .addFields(
-            { name: '🎣 أدوات الصيد', value: 'سنارة صيد متوفرة', inline: true },
-            { name: '🪓 أدوات الحطب', value: 'فأس متوفر', inline: true },
-            { name: '⛏️ أدوات المنجم', value: 'معاول متوفرة', inline: true },
-            { name: '🔨 المزاد', value: 'سيارات وعقارات', inline: true },
-        )
-        .setImage(await db.getImage('market') || null)
-        .setFooter({ text: 'نظام السوق • بوت FANTASY' })
+        .setDescription(items.length
+            ? 'اختر الغرض الذي تريد شراءه من القائمة.'
+            : '> لا توجد أغراض متاحة حالياً. انتظر الإدارة.')
+        .setFooter({ text: 'نظام المتجر • بوت FANTASY' })
         .setTimestamp();
+    if (img) embed.setImage(img);
+
+    if (!items.length) return { embeds: [embed], components: [resetRow('market')] };
+
+    const options = items.slice(0, 25).map(it => ({
+        label: it.name,
+        value: String(it.id),
+        description: `💰 ${Number(it.price).toLocaleString()} ريال` + (it.description ? ` — ${it.description.slice(0, 50)}` : ''),
+    }));
+
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
-            .setCustomId('market_menu')
-            .setPlaceholder('اختر ما تريد شراءه')
-            .addOptions([
-                { label: '🎣 سنارة صيد', value: 'fishing_rod' },
-                { label: '🪓 فأس', value: 'axe' },
-                { label: '⛏️ أدوات منجم', value: 'mining_tools' },
-                { label: '🔨 مزاد السيارات والعقارات', value: 'auction' },
-            ])
+            .setCustomId('market_item_select')
+            .setPlaceholder('🛒 اختر غرضاً')
+            .addOptions(options)
     );
-    return { embed, menu };
+
+    return { embeds: [embed], components: [menu, resetRow('market')] };
 }
