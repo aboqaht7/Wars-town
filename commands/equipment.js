@@ -33,20 +33,30 @@ async function buildEquipment(db) {
     const embed = new EmbedBuilder()
         .setTitle('🔨 متجر المعدات')
         .setColor(0x4527A0)
-        .setDescription(items.length
-            ? 'اختر المعدة التي تريد شراءها من القائمة.'
-            : '> لا توجد معدات متاحة حالياً. انتظر الإدارة.')
         .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
-    if (!items.length) return { embeds: [embed], components: [resetRow('معدات')] };
+    if (!items.length) {
+        embed.setDescription('> لا توجد معدات متاحة حالياً. انتظر الإدارة.');
+        return { embeds: [embed], components: [resetRow('معدات')] };
+    }
+
+    embed.setDescription('اختر المعدة التي تريد شراءها من القائمة أدناه.\n\u200B');
+
+    for (const it of items.slice(0, 25)) {
+        embed.addFields({
+            name: `🔨 ${it.name}`,
+            value: `> 💰 **السعر:** ${Number(it.price).toLocaleString()} ريال` +
+                   (it.description ? `\n> 📝 ${it.description}` : ''),
+            inline: false,
+        });
+    }
 
     const options = items.slice(0, 25).map(it => ({
         label: it.name,
         value: String(it.id),
-        description: `💰 ${Number(it.price).toLocaleString()} ريال` +
-            (it.description ? ` — ${it.description.slice(0, 50)}` : ''),
+        description: `💰 ${Number(it.price).toLocaleString()} ريال`,
     }));
 
     const menu = new ActionRowBuilder().addComponents(
