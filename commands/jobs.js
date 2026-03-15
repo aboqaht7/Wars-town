@@ -26,24 +26,12 @@ module.exports = {
 };
 
 async function buildJobs(db) {
-    const prices = await db.getJobPrices();
-    const img    = await db.getImage('jobs');
-
-    const fishPrices  = ['سمك هامور','سالمون','روبيان','حوت']
-        .map(f => `**${f}:** ${(prices[f]||0).toLocaleString()} ريال`).join(' • ');
-    const woodPrice   = `**خشب:** ${(prices['خشب']||0).toLocaleString()} ريال`;
-    const minePrices  = ['الماس','ذهب','فضة','نحاس']
-        .map(m => `**${m}:** ${(prices[m]||0).toLocaleString()} ريال`).join(' • ');
+    const img = await db.getImage('jobs');
 
     const embed = new EmbedBuilder()
         .setTitle('💼 الوظائف الحرة')
         .setColor(0xF57F17)
-        .addFields(
-            { name: '🎣 صيد السمك  〔يتطلب: سنارة〕',            value: fishPrices,  inline: false },
-            { name: '🪓 تقطيع الخشب  〔يتطلب: فأس〕',            value: woodPrice,   inline: false },
-            { name: '⛏️ المنجم  〔يتطلب: أدوات المنجم〕',         value: minePrices,  inline: false },
-        )
-        .setDescription('> الأسعار تتجدد كل ساعة تلقائياً\n> كل وظيفة تعطيك كمية عشوائية من ١ إلى ١٠')
+        .setDescription('> اختر وظيفتك من القائمة أدناه')
         .setFooter({ text: `نظام الوظائف • بوت FANTASY • كولداون ${COOLDOWN_SECONDS} ثوان بين كل وظيفة` })
         .setTimestamp();
     if (img) embed.setImage(img);
