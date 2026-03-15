@@ -432,6 +432,8 @@ client.on('interactionCreate', async interaction => {
         if (['bank_balance','bank_deposit','bank_withdraw','bank_transfer'].includes(interaction.customId)) {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');
 
                 if (interaction.customId === 'bank_balance') {
@@ -1324,6 +1326,8 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'bank_deposit_modal') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const amount = parseInt(interaction.fields.getTextInputValue('deposit_amount').replace(/,/g, ''));
                 if (isNaN(amount) || amount <= 0)
                     return interaction.reply({ content: '❌ المبلغ غير صحيح.', flags: 64 });
@@ -1348,6 +1352,8 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'bank_withdraw_modal') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const amount = parseInt(interaction.fields.getTextInputValue('withdraw_amount').replace(/,/g, ''));
                 if (isNaN(amount) || amount <= 0)
                     return interaction.reply({ content: '❌ المبلغ غير صحيح.', flags: 64 });
@@ -1372,6 +1378,8 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'bank_transfer_modal') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const toIban  = interaction.fields.getTextInputValue('transfer_iban').trim();
                 const rawAmt  = interaction.fields.getTextInputValue('transfer_amount').trim().replace(/,/g, '');
                 const note    = interaction.fields.getTextInputValue('transfer_note').trim() || null;
