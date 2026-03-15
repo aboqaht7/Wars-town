@@ -543,6 +543,53 @@ async function initPropertiesTable() {
 }
 initPropertiesTable().catch(console.error);
 
+async function initAdminRanksTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS admin_ranks (
+            discord_id VARCHAR PRIMARY KEY,
+            username   VARCHAR,
+            rank_name  TEXT NOT NULL,
+            points     INT DEFAULT 0,
+            assigned_by VARCHAR,
+            assigned_at TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initAdminRanksTable().catch(console.error);
+
+async function setAdminRank(discordId, username, rankName, assignedBy) {
+    await query(
+        `INSERT INTO admin_ranks (discord_id, username, rank_name, assigned_by, assigned_at)
+         VALUES ($1,$2,$3,$4,NOW())
+         ON CONFLICT (discord_id) DO UPDATE
+         SET rank_name=$3, username=$2, assigned_by=$4, assigned_at=NOW()`,
+        [discordId, username, rankName, assignedBy]
+    );
+}
+
+async function getAdminRank(discordId) {
+    const res = await query('SELECT * FROM admin_ranks WHERE discord_id=$1', [discordId]);
+    return res.rows[0] || null;
+}
+
+async function removeAdminRank(discordId) {
+    const res = await query('DELETE FROM admin_ranks WHERE discord_id=$1 RETURNING *', [discordId]);
+    return res.rows[0] || null;
+}
+
+async function getAllAdminRanks() {
+    const res = await query('SELECT * FROM admin_ranks ORDER BY assigned_at ASC');
+    return res.rows;
+}
+
+async function updateAdminPoints(discordId, delta) {
+    const res = await query(
+        'UPDATE admin_ranks SET points = points + $1 WHERE discord_id=$2 RETURNING *',
+        [delta, discordId]
+    );
+    return res.rows[0] || null;
+}
+
 async function initBlackMarketTable() {
     await query(`
         CREATE TABLE IF NOT EXISTS black_market (
@@ -867,6 +914,7 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    setAdminRank, getAdminRank, removeAdminRank, getAllAdminRanks, updateAdminPoints,
     addBlackMarketItem, getBlackMarketItems, getBlackMarketItemById, deleteBlackMarketItem, deleteAllBlackMarketItems, updateBlackMarketItem,
     addProperty, getProperties, getPropertyById, getPropertyByName, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,
