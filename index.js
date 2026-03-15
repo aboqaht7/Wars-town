@@ -1428,12 +1428,6 @@ client.on('interactionCreate', async interaction => {
                     const ch = await client.channels.fetch(startChannelId);
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
-                if (alertsChannelId && alertsChannelId !== startChannelId) {
-                    try {
-                        const ach = await client.channels.fetch(alertsChannelId);
-                        if (ach) await ach.send({ embeds: [embed] });
-                    } catch {}
-                }
                 sendToCharLog(embed);
                 return interaction.reply({ content: '✅ تم إرسال إشعار بدء الرحلة.', flags: 64 });
             } catch (e) {
