@@ -1371,7 +1371,7 @@ async function setJobCooldown(discordId, jobName) {
 
 async function hasItem(discordId, itemName, qty = 1) {
     const res = await query(
-        'SELECT quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)',
+        `SELECT quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name) LIKE '%' || LOWER($2) || '%'`,
         [discordId, itemName]
     );
     return res.rows[0] ? Number(res.rows[0].quantity) >= qty : false;

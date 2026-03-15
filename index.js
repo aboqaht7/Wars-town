@@ -203,9 +203,9 @@ client.on('interactionCreate', async interaction => {
 
                 const jobKey = interaction.customId.replace('do_job_', '');
                 const JOBS = {
-                    fishing:     { label: '🎣 صيد السمك',   req: 'سنارة',         items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
-                    woodcutting: { label: '🪓 تقطيع الخشب', req: 'فأس',           items: ['خشب'],                            weights: [100],       color: 0x4E342E },
-                    mining:      { label: '⛏️ المنجم',       req: 'أدوات المنجم', items: ['الماس','ذهب','فضة','نحاس'],     weights: [5,20,35,40], color: 0x546E7A },
+                    fishing:     { label: '🎣 صيد السمك',   req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 تقطيع الخشب', req: 'فأس',      items: ['خشب'],                            weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ المنجم',       req: 'بيكاكس',   items: ['الماس','ذهب','فضة','نحاس'],     weights: [5,20,35,40], color: 0x546E7A },
                 };
                 const job = JOBS[jobKey];
                 if (!job) return;
@@ -1888,9 +1888,9 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const jobMap = {
-                    fishing:     { label: '🎣 صيد السمك',    req: 'سنارة',           items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
-                    woodcutting: { label: '🪓 تقطيع الخشب',  req: 'فأس',             items: ['خشب'],                             weights: [100],       color: 0x4E342E },
-                    mining:      { label: '⛏️ المنجم',        req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],      weights: [5,20,35,40], color: 0x546E7A },
+                    fishing:     { label: '🎣 صيد السمك',    req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 تقطيع الخشب',  req: 'فأس',      items: ['خشب'],                             weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ المنجم',        req: 'بيكاكس',   items: ['الماس','ذهب','فضة','نحاس'],      weights: [5,20,35,40], color: 0x546E7A },
                 };
 
                 const job = jobMap[value];
