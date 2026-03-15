@@ -34,6 +34,10 @@ module.exports = {
         .addSubcommand(s => s
             .setName('قائمة')
             .setDescription('عرض جميع أغراض البلاك ماركت')
+        )
+        .addSubcommand(s => s
+            .setName('عرض')
+            .setDescription('أرسل إمبيد البلاك ماركت العام في الروم الحالي')
         ),
 
     async slashExecute(interaction) {
@@ -107,6 +111,47 @@ module.exports = {
                 );
             }
             return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)], flags: 64 });
+        }
+
+        if (sub === 'عرض') {
+            const items = await db.getBlackMarketItems();
+
+            const embed = new EmbedBuilder()
+                .setTitle('🖤 البلاك ماركت')
+                .setColor(0x1a1a2e)
+                .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
+                .setTimestamp();
+
+            if (!items.length) {
+                embed.setDescription('🚫 لا توجد أغراض متاحة حالياً في البلاك ماركت.');
+                return interaction.reply({ embeds: [embed] });
+            }
+
+            embed.setDescription('اختر غرضاً من القائمة أدناه لشرائه:\n\u200b');
+            embed.addFields(
+                items.map(it => ({
+                    name: `🔹 ${it.name}`,
+                    value: `💰 **${Number(it.price).toLocaleString('en-US')}$**`,
+                    inline: true,
+                }))
+            );
+
+            const { StringSelectMenuBuilder } = require('discord.js');
+            const menu = new StringSelectMenuBuilder()
+                .setCustomId('black_market_menu')
+                .setPlaceholder('اختر غرضاً...')
+                .addOptions(
+                    items.map(it => ({
+                        label: it.name,
+                        description: `${Number(it.price).toLocaleString('en-US')}$`,
+                        value: String(it.id),
+                    }))
+                );
+
+            const menuRow  = new ActionRowBuilder().addComponents(menu);
+            const resetRow = new ActionRowBuilder().addComponents(resetButton);
+            await interaction.reply({ content: '✅ تم إرسال إمبيد البلاك ماركت.', flags: 64 });
+            return interaction.channel.send({ embeds: [embed], components: [menuRow, resetRow] });
         }
     },
 };
