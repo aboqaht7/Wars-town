@@ -1779,8 +1779,8 @@ client.on('interactionCreate', async interaction => {
                 } catch (_) {}
 
                 // تحديث اللوحة
-                const { buildDashboard } = require('./commands/lawyer-dashboard');
-                const newDash = await buildDashboard(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                const { buildTasks } = require('./commands/lawyer-tasks');
+                const newDash = await buildTasks(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
                 return interaction.update(newDash);
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
