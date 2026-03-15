@@ -23,7 +23,7 @@ module.exports = {
 async function build(db) {
     const robberies = await db.getRobberies();
     const embed = new EmbedBuilder()
-        .setTitle('🔫 نظام السرقات')
+        .setTitle('⛓️ نظام السرقات')
         .setColor(0xB71C1C)
         .setDescription(robberies.length
             ? 'اختر السرقة التي تريد تنفيذها من القائمة.'
@@ -44,7 +44,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('robbery_menu')
-            .setPlaceholder('💰 اختر السرقة')
+            .setPlaceholder('⛓️ اختر السرقة')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu, resetRow('crime')] };
