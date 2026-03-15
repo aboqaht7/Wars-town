@@ -15,7 +15,9 @@ module.exports = {
         const allLawyers = await db.getLawyers();
         const lawyer = allLawyers.find(l => l.discord_id === message.author.id);
         if (!lawyer) return message.reply('❌ أنت لست مسجلاً كمحامٍ معتمد.');
-        message.channel.send(await build(db, message.author.id, lawyer.lawyer_name));
+        const channelId = await db.getConfig('lawyer_tasks_channel');
+        const target = (channelId && message.guild.channels.cache.get(channelId)) || message.channel;
+        target.send(await build(db, message.author.id, lawyer.lawyer_name));
     },
 
     async slashExecute(interaction, db) {
@@ -24,7 +26,11 @@ module.exports = {
         const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
         if (!lawyer)
             return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
-        await interaction.channel.send(await build(db, interaction.user.id, lawyer.lawyer_name));
+
+        const channelId = await db.getConfig('lawyer_tasks_channel');
+        const target = (channelId && interaction.guild.channels.cache.get(channelId)) || interaction.channel;
+
+        await target.send(await build(db, interaction.user.id, lawyer.lawyer_name));
         await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };

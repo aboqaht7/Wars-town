@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
 const row2 = new ActionRowBuilder().addComponents(resetButton);
-const { buildDashboard } = require('./lawyer-dashboard');
+const { buildTasks } = require('./lawyer-tasks');
 
 module.exports = {
     name: 'إدارة-محامين',
@@ -22,6 +22,11 @@ module.exports = {
         .addSubcommand(s => s
             .setName('قائمة')
             .setDescription('عرض جميع المحامين المعتمدين')
+        )
+        .addSubcommand(s => s
+            .setName('تعيين-روم')
+            .setDescription('تحديد الروم الذي تُرسل فيه مهام المحامين')
+            .addChannelOption(o => o.setName('الروم').setDescription('الروم المخصص لمهام المحامين').setRequired(true))
         ),
 
     async slashExecute(interaction, db) {
@@ -63,9 +68,11 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
-            // أرسل لوحة المحامي المحدّثة تلقائياً
-            await interaction.channel.send(await buildDashboard(db, user.id, name));
-            return interaction.reply({ content: '​', flags: 64 });
+            // أرسل مهام المحامي الجديد للروم المحدد تلقائياً
+            const tasksChannelId = await db.getConfig('lawyer_tasks_channel');
+            const tasksTarget = (tasksChannelId && interaction.guild.channels.cache.get(tasksChannelId)) || interaction.channel;
+            await tasksTarget.send(await buildTasks(db, user.id, name));
+            return interaction.reply({ content: '\u200b', flags: 64 });
         }
 
         if (sub === 'حذف') {
@@ -109,7 +116,19 @@ module.exports = {
                 .addFields({ name: 'الإجمالي', value: `${lawyers.length} محامٍ`, inline: true })
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.reply({ content: '\u200b', flags: 64 });
+        }
+
+        if (sub === 'تعيين-روم') {
+            const channel = interaction.options.getChannel('الروم');
+            await db.setConfig('lawyer_tasks_channel', channel.id);
+            const embed = new EmbedBuilder()
+                .setTitle('✅ تم تعيين روم مهام المحامين')
+                .setColor(0x0D47A1)
+                .setDescription(`سيتم إرسال مهام المحامين في <#${channel.id}> تلقائياً`)
+                .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+            await interaction.channel.send({ embeds: [embed], components: [row2] });
+            return interaction.reply({ content: '\u200b', flags: 64 });
         }
     },
 };
