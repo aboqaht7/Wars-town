@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
     name: 'تغريد',
@@ -12,18 +12,33 @@ module.exports = {
         const xChannelId = await db.getConfig('x_channel');
         if (!xChannelId) return message.reply('❌ لم يتم تحديد روم التغريدات بعد.');
         const post = await db.postTweet(message.author.id, content);
-        const embed = new EmbedBuilder()
-            .setAuthor({ name: `@${account.x_username}`, iconURL: message.author.displayAvatarURL() })
-            .setColor(0x000000)
-            .setDescription(content)
-            .addFields(
-                { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
-                { name: '❤️ الإعجابات', value: '`0`', inline: true },
-            )
-            .setFooter({ text: 'منصة X • بوت FANTASY' })
-            .setTimestamp();
+        const { embed, row } = buildTweetMessage(post, message.author.displayAvatarURL());
         const xChannel = message.guild?.channels?.cache.get(xChannelId);
-        if (xChannel) await xChannel.send({ embeds: [embed] });
+        if (xChannel) await xChannel.send({ embeds: [embed], components: [row] });
         message.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>` });
     }
 };
+
+function buildTweetMessage(post, avatarURL) {
+    const embed = new EmbedBuilder()
+        .setAuthor({ name: `@${post.x_username}`, iconURL: avatarURL || undefined })
+        .setColor(0x000000)
+        .setDescription(post.content)
+        .addFields(
+            { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
+            { name: '❤️', value: `\`${post.likes ?? 0}\``, inline: true },
+            { name: '🔁', value: `\`${post.retweets ?? 0}\``, inline: true },
+        )
+        .setFooter({ text: 'منصة X • بوت FANTASY' })
+        .setTimestamp();
+
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId(`x_like_${post.id}`).setLabel(`❤️ ${post.likes ?? 0}`).setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(`x_retweet_${post.id}`).setLabel(`🔁 ${post.retweets ?? 0}`).setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(`x_reply_${post.id}`).setLabel('💬 رد').setStyle(ButtonStyle.Secondary),
+    );
+
+    return { embed, row };
+}
+
+module.exports.buildTweetMessage = buildTweetMessage;

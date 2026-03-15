@@ -420,8 +420,56 @@ async function getXTimeline(limit = 10) {
     return res.rows;
 }
 
+// x_posts migrations for retweet/reply columns
+(async () => {
+    await query(`ALTER TABLE x_posts ADD COLUMN IF NOT EXISTS retweets  INTEGER DEFAULT 0`);
+    await query(`ALTER TABLE x_posts ADD COLUMN IF NOT EXISTS replies   INTEGER DEFAULT 0`);
+    await query(`ALTER TABLE x_posts ADD COLUMN IF NOT EXISTS type      TEXT DEFAULT 'tweet'`);
+    await query(`ALTER TABLE x_posts ADD COLUMN IF NOT EXISTS reply_to_id INTEGER`);
+    await query(`ALTER TABLE x_posts ADD COLUMN IF NOT EXISTS retweet_of_id INTEGER`);
+    await query(`ALTER TABLE x_posts ADD COLUMN IF NOT EXISTS orig_username TEXT`);
+})().catch(console.error);
+
 async function likePost(postId) {
-    await query('UPDATE x_posts SET likes = likes + 1 WHERE id = $1', [postId]);
+    const res = await query(
+        'UPDATE x_posts SET likes = likes + 1 WHERE id = $1 RETURNING likes',
+        [postId]
+    );
+    return res.rows[0]?.likes ?? 0;
+}
+
+async function getPostById(id) {
+    const res = await query('SELECT * FROM x_posts WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function retweetPost(discordId, originalPostId) {
+    const acc = await query('SELECT x_username FROM x_accounts WHERE discord_id=$1', [discordId]);
+    const xUsername = acc.rows[0]?.x_username || null;
+    const orig = await query('SELECT * FROM x_posts WHERE id=$1', [originalPostId]);
+    if (!orig.rows[0]) return null;
+    const o = orig.rows[0];
+    const res = await query(
+        `INSERT INTO x_posts (discord_id, username, x_username, content, type, retweet_of_id, orig_username)
+         VALUES ($1,$2,$3,$4,'retweet',$5,$6) RETURNING *`,
+        [discordId, xUsername || discordId, xUsername, o.content, originalPostId, o.x_username]
+    );
+    await query('UPDATE x_posts SET retweets = retweets + 1 WHERE id=$1', [originalPostId]);
+    return res.rows[0];
+}
+
+async function replyPost(discordId, originalPostId, content) {
+    const acc = await query('SELECT x_username FROM x_accounts WHERE discord_id=$1', [discordId]);
+    const xUsername = acc.rows[0]?.x_username || null;
+    const orig = await query('SELECT * FROM x_posts WHERE id=$1', [originalPostId]);
+    if (!orig.rows[0]) return null;
+    const res = await query(
+        `INSERT INTO x_posts (discord_id, username, x_username, content, type, reply_to_id, orig_username)
+         VALUES ($1,$2,$3,$4,'reply',$5,$6) RETURNING *`,
+        [discordId, xUsername || discordId, xUsername, content, originalPostId, orig.rows[0].x_username]
+    );
+    await query('UPDATE x_posts SET replies = replies + 1 WHERE id=$1', [originalPostId]);
+    return res.rows[0];
 }
 
 async function deletePost(postId, discordId) {
@@ -1323,7 +1371,7 @@ module.exports = {
     addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,
     sendSnap, getSnapInbox, markSnapSeen, getSnapConversation,
     createXAccount, getXAccount, deleteXAccount,
-    postTweet, getXTimeline, likePost, deletePost,
+    postTweet, getXTimeline, likePost, deletePost, getPostById, retweetPost, replyPost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,

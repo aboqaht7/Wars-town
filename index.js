@@ -1486,15 +1486,78 @@ client.on('interactionCreate', async interaction => {
         }
 
 
-        if (interaction.customId === 'x_menu') {
-            const postId = parseInt(value.replace('like_', ''));
+        // ── أزرار منصة X (إعجاب / رتويت / رد) ─────────────────────────────────
+        if (interaction.customId.startsWith('x_like_')) {
             try {
-                await db.likePost(postId);
-                return interaction.reply({ content: `❤️ أعجبك المنشور **#${postId}**`, flags: 64 });
-            } catch (e) {
-                console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
-            }
+                const postId = parseInt(interaction.customId.replace('x_like_', ''));
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const newLikes = await db.likePost(postId);
+                const comps = interaction.message.components.map(row => {
+                    const { ActionRowBuilder: ARB2, ButtonBuilder: BB2 } = require('discord.js');
+                    const newRow = new ARB2();
+                    for (const btn of row.components) {
+                        const b = BB2.from(btn.toJSON());
+                        if (btn.customId === `x_like_${postId}`) b.setLabel(`❤️ ${newLikes}`);
+                        newRow.addComponents(b);
+                    }
+                    return newRow;
+                });
+                return interaction.update({ components: comps });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        if (interaction.customId.startsWith('x_retweet_')) {
+            try {
+                const postId = parseInt(interaction.customId.replace('x_retweet_', ''));
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const myAcc = await db.getXAccount(interaction.user.id);
+                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                const xChannelId = await db.getConfig('x_channel');
+                if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات.', flags: 64 });
+                const orig = await db.getPostById(postId);
+                if (!orig) return interaction.reply({ content: '❌ التغريدة غير موجودة.', flags: 64 });
+                const rt = await db.retweetPost(interaction.user.id, postId);
+                const embed = new EmbedBuilder()
+                    .setAuthor({ name: `@${myAcc.x_username} 🔁 رتويت`, iconURL: interaction.user.displayAvatarURL() })
+                    .setColor(0x1DA1F2)
+                    .setDescription(orig.content)
+                    .addFields(
+                        { name: '↩️ رتويت من', value: `@${orig.x_username}`, inline: true },
+                        { name: '🆔 رقم المنشور', value: `\`#${rt.id}\``, inline: true },
+                    )
+                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setTimestamp();
+                const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
+                if (xChannel) await xChannel.send({ embeds: [embed] });
+                const comps = interaction.message.components.map(row => {
+                    const { ActionRowBuilder: ARB3, ButtonBuilder: BB3 } = require('discord.js');
+                    const newRow = new ARB3();
+                    for (const btn of row.components) {
+                        const b = BB3.from(btn.toJSON());
+                        if (btn.customId === `x_retweet_${postId}`) b.setLabel(`🔁 ${orig.retweets + 1}`);
+                        newRow.addComponents(b);
+                    }
+                    return newRow;
+                });
+                await interaction.update({ components: comps });
+                return interaction.followUp({ content: `✅ تم الرتويت في <#${xChannelId}>`, flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        if (interaction.customId.startsWith('x_reply_')) {
+            try {
+                const postId = parseInt(interaction.customId.replace('x_reply_', ''));
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const myAcc = await db.getXAccount(interaction.user.id);
+                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                const { ModalBuilder: MBR, TextInputBuilder: TIBR, TextInputStyle: TISR, ActionRowBuilder: ARBR } = require('discord.js');
+                const modal = new MBR().setCustomId(`x_reply_modal_${postId}`).setTitle('💬 الرد على التغريدة')
+                    .addComponents(new ARBR().addComponents(
+                        new TIBR().setCustomId('reply_content').setLabel('نص ردك')
+                            .setStyle(TISR.Paragraph).setRequired(true).setMaxLength(280)
+                    ));
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
 
@@ -2259,22 +2322,45 @@ client.on('interactionCreate', async interaction => {
                 const xChannelId = await db.getConfig('x_channel');
                 if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات. تواصل مع المسؤولين.', flags: 64 });
                 const post = await db.postTweet(interaction.user.id, content);
+                const { buildTweetMessage } = require('./commands/tweet');
+                const { embed: tweetEmbed, row: tweetRow } = buildTweetMessage(post, interaction.user.displayAvatarURL());
+                const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
+                if (xChannel) await xChannel.send({ embeds: [tweetEmbed], components: [tweetRow] });
+                return interaction.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء نشر التغريدة.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId.startsWith('x_reply_modal_')) {
+            try {
+                const postId = parseInt(interaction.customId.replace('x_reply_modal_', ''));
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const content = interaction.fields.getTextInputValue('reply_content').trim();
+                const myAcc = await db.getXAccount(interaction.user.id);
+                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                const xChannelId = await db.getConfig('x_channel');
+                if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات.', flags: 64 });
+                const orig = await db.getPostById(postId);
+                if (!orig) return interaction.reply({ content: '❌ التغريدة الأصلية غير موجودة.', flags: 64 });
+                const reply = await db.replyPost(interaction.user.id, postId, content);
                 const embed = new EmbedBuilder()
-                    .setAuthor({ name: `@${account.x_username}`, iconURL: interaction.user.displayAvatarURL() })
-                    .setColor(0x000000)
+                    .setAuthor({ name: `@${myAcc.x_username}`, iconURL: interaction.user.displayAvatarURL() })
+                    .setColor(0x17BF63)
                     .setDescription(content)
                     .addFields(
-                        { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
-                        { name: '❤️ الإعجابات', value: '`0`', inline: true },
+                        { name: '↩️ رداً على', value: `@${orig.x_username} • #${postId}`, inline: true },
+                        { name: '🆔 رقم الرد', value: `\`#${reply.id}\``, inline: true },
                     )
                     .setFooter({ text: 'منصة X • بوت FANTASY' })
                     .setTimestamp();
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [embed] });
-                return interaction.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>`, flags: 64 });
+                return interaction.reply({ content: `✅ تم نشر ردك في <#${xChannelId}>`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء نشر التغريدة.', flags: 64 });
+                return interaction.reply({ content: '❌ حدث خطأ أثناء نشر الرد.', flags: 64 });
             }
         }
 
