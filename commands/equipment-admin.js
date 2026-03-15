@@ -109,7 +109,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const items = await db.getEquipmentItems();
             const embed = new EmbedBuilder()
-                .setTitle('🎒 قائمة المعدات')
+                .setTitle('🔨 قائمة المعدات')
                 .setColor(0x4527A0)
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
             if (!items.length) {

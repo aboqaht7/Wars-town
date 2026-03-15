@@ -312,7 +312,7 @@ client.on('interactionCreate', async interaction => {
                     .setColor(0x4527A0)
                     .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
                     .addFields(
-                        { name: '🎒 المعدة',          value: item.name,                                         inline: true },
+                        { name: '🔨 المعدة',          value: item.name,                                         inline: true },
                         { name: '💸 المبلغ المدفوع',  value: `${Number(item.price).toLocaleString()} ريال`,    inline: true },
                         { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
                     )
@@ -923,7 +923,7 @@ client.on('interactionCreate', async interaction => {
                 const cash     = Number(identity?.cash || 0);
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`🎒 ${item.name}`)
+                    .setTitle(`🔨 ${item.name}`)
                     .setColor(0x4527A0)
                     .addFields(
                         { name: '💰 السعر',       value: `**${Number(item.price).toLocaleString()} ريال**`, inline: true },

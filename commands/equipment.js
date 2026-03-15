@@ -5,7 +5,7 @@ module.exports = {
     name: 'معدات',
     data: new SlashCommandBuilder()
         .setName('معدات')
-        .setDescription('🎒 متجر المعدات — اشترِ معداتك'),
+        .setDescription('🔨 متجر المعدات — اشترِ معداتك'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
@@ -31,7 +31,7 @@ async function buildEquipment(db) {
     const img   = await db.getImage('معدات');
 
     const embed = new EmbedBuilder()
-        .setTitle('🎒 متجر المعدات')
+        .setTitle('🔨 متجر المعدات')
         .setColor(0x4527A0)
         .setDescription(items.length
             ? 'اختر المعدة التي تريد شراءها من القائمة.'
@@ -52,7 +52,7 @@ async function buildEquipment(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('equipment_item_select')
-            .setPlaceholder('🎒 اختر معدة')
+            .setPlaceholder('🔨 اختر معدة')
             .addOptions(options)
     );
 
