@@ -938,7 +938,7 @@ client.on('interactionCreate', async interaction => {
                         .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
                         .setTimestamp();
                     sendToCharLog(embedOut);
-                    return interaction.reply({ embeds: [embedOut] });
+                    return interaction.reply({ embeds: [embedOut], flags: 64 });
                 }
             } catch (e) {
                 console.error(e);
@@ -1009,7 +1009,7 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
                     .setTimestamp();
                 sendToCharLog(embed);
-                return interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ أثناء تسجيل الدخول.', flags: 64 });
