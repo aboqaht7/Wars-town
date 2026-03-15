@@ -13,7 +13,7 @@ async function build() {
         .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
         .setTimestamp();
 
-    const img = await db.getImage('black_market');
+    const img = await db.getImage('بلاك ماركت');
     if (img) embed.setImage(img);
 
     if (!items.length) return { embeds: [embed], components: [resetRow('بلاك-ماركت')] };
