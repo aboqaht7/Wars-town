@@ -118,7 +118,10 @@ client.on('interactionCreate', async interaction => {
                         if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
                     } catch {}
                 }
+            } else {
+                await interaction.deferUpdate().catch(() => {});
             }
+            return;
         }
 
         if (['trip_start', 'trip_hurricane', 'trip_renewal', 'trip_alert'].includes(interaction.customId)) {
