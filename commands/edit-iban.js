@@ -16,7 +16,7 @@ module.exports = {
                 { name: 'الخانة 2', value: 2 },
                 { name: 'الخانة 3', value: 3 },
             ))
-        .addStringOption(o => o.setName('الإيبان-الجديد').setDescription('الإيبان الجديد (7 أرقام)').setRequired(true)),
+        .addStringOption(o => o.setName('الإيبان-الجديد').setDescription('الإيبان الجديد (أرقام فقط)').setRequired(true)),
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
@@ -26,8 +26,8 @@ module.exports = {
         const slot    = interaction.options.getInteger('الخانة');
         const newIban = interaction.options.getString('الإيبان-الجديد').trim();
 
-        if (!/^\d{7}$/.test(newIban))
-            return interaction.reply({ content: '❌ الإيبان يجب أن يكون **7 أرقام** فقط.', flags: 64 });
+        if (!/^\d+$/.test(newIban))
+            return interaction.reply({ content: '❌ الإيبان يجب أن يحتوي على **أرقام فقط**.', flags: 64 });
 
         const result = await db.updateIban(target.id, slot, newIban);
         if (!result.success)
@@ -58,7 +58,7 @@ module.exports = {
 
         if (!target) return message.reply('❌ الاستخدام: `-تعديل-إيبان @اللاعب [الخانة] [الإيبان الجديد]`');
         if (![1, 2, 3].includes(slot)) return message.reply('❌ الخانة يجب أن تكون 1 أو 2 أو 3.');
-        if (!newIban || !/^\d{7}$/.test(newIban)) return message.reply('❌ الإيبان يجب أن يكون 7 أرقام.');
+        if (!newIban || !/^\d+$/.test(newIban)) return message.reply('❌ الإيبان يجب أن يحتوي على أرقام فقط.');
 
         const result = await db.updateIban(target.id, slot, newIban);
         if (!result.success) return message.reply(`❌ ${result.error}`);
