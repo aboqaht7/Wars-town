@@ -1,39 +1,81 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const {
+    SlashCommandBuilder, EmbedBuilder, ActionRowBuilder,
+    ButtonBuilder, ButtonStyle, StringSelectMenuBuilder
+} = require('discord.js');
 const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'محامي',
-    data: new SlashCommandBuilder().setName('محامي').setDescription('⚖️ لوحة المحامي — طلبات التوكيل'),
+    data: new SlashCommandBuilder().setName('محامي').setDescription('⚖️ قائمة المحامين المعتمدين'),
 
     async execute(message, args, db) {
-        await db.ensureUser(message.author.id, message.author.username);
-        const lawyer = await db.getLawyers().then(l => l.find(x => x.discord_id === message.author.id));
-        if (!lawyer) return message.reply('❌ أنت لست مسجلاً كمحامٍ معتمد.');
-        message.channel.send(await build(db, message.author.id, lawyer.lawyer_name));
+        message.channel.send(await buildMain(db));
     },
 
     async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
-        const allLawyers = await db.getLawyers();
-        const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
-        if (!lawyer) return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
-        await interaction.channel.send(await build(db, interaction.user.id, lawyer.lawyer_name));
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.channel.send(await buildMain(db));
+        await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };
 
-module.exports.buildDashboard = build;
+module.exports.buildDashboard  = buildDashboard;
+module.exports.buildMain       = buildMain;
 
-async function build(db, lawyerId, lawyerName) {
+/* ─── اللوحة الرئيسية: قائمة كل المحامين + منيو ─── */
+async function buildMain(db) {
+    const lawyers = await db.getLawyers();
+    const img     = await db.getImage('محاماة');
+
+    const embed = new EmbedBuilder()
+        .setTitle('⚖️ المحامون المعتمدون')
+        .setColor(0x0D47A1)
+        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setTimestamp();
+
+    if (img) embed.setThumbnail(img);
+
+    if (!lawyers.length) {
+        embed.setDescription('> 📭 لا يوجد محامون مسجلون حالياً');
+        return { embeds: [embed], components: [resetRow('محامي')] };
+    }
+
+    embed.setDescription(
+        lawyers.map((l, i) => `**${i + 1}.** ${l.lawyer_name} — <@${l.discord_id}>`).join('\n')
+    );
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId('lawyer_select')
+        .setPlaceholder('👤 اختر محامياً لعرض لوحته')
+        .addOptions(
+            lawyers.slice(0, 25).map(l => ({
+                label: l.lawyer_name,
+                value: l.discord_id,
+                description: `عرض طلبات التوكيل الخاصة بـ ${l.lawyer_name}`,
+                emoji: '⚖️',
+            }))
+        );
+
+    return {
+        embeds: [embed],
+        components: [
+            new ActionRowBuilder().addComponents(menu),
+            resetRow('محامي'),
+        ],
+    };
+}
+
+/* ─── لوحة محامي بعينه: طلباته + أزرار القبول/الرفض ─── */
+async function buildDashboard(db, lawyerId, lawyerName) {
     const requests = await db.getLawyerRequests(lawyerId);
-    const img = await db.getImage('محاماة');
+    const img      = await db.getImage('محاماة');
 
     const embed = new EmbedBuilder()
         .setTitle('⚖️ لوحة المحامي')
-        .setColor(0x0D47A1)
+        .setColor(0x1B5E20)
         .setAuthor({ name: `المحامي: ${lawyerName}` })
         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
         .setTimestamp();
+
     if (img) embed.setThumbnail(img);
 
     const components = [];

@@ -1672,6 +1672,18 @@ client.on('interactionCreate', async interaction => {
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
+        // ── lawyer_select: عرض لوحة المحامي المختار علناً ──────────────────
+        if (interaction.customId === 'lawyer_select') {
+            try {
+                const { buildDashboard } = require('./commands/lawyer-dashboard');
+                const lawyers = await db.getLawyers();
+                const lawyer  = lawyers.find(l => l.discord_id === value);
+                if (!lawyer) return interaction.reply({ content: '❌ المحامي غير موجود.', flags: 64 });
+                await interaction.channel.send(await buildDashboard(db, lawyer.discord_id, lawyer.lawyer_name));
+                return interaction.reply({ content: '\u200b', flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
         // ── رفض / توكيل قاضي / حكم / محامي — فتح موودال ──────────────────────
         // ── case_sel_lawyer: بعد اختيار القضية، اعرض قائمة المحامين ────────
         if (interaction.customId === 'case_sel_lawyer') {
