@@ -95,7 +95,7 @@ async function sendToCharLog(embed) {
 
 const resetCommandMap = {
     police: 'police', bank: 'bank', bag: 'bag', identity: 'identity',
-    phone: 'phone', trips: 'trips', jobs: 'jobs', market: 'market',
+    phone: 'phone', الرحلات: 'الرحلات', jobs: 'jobs', market: 'market',
     law: 'law', admin: 'admin', crime: 'crime', health: 'health',
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
     x_platform: 'منصة-x', help: 'help', properties: 'properties',

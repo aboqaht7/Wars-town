@@ -2,9 +2,9 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const { resetRow } = require('../utils');
 
 module.exports = {
-    name: 'trips',
+    name: 'الرحلات',
     data: new SlashCommandBuilder()
-        .setName('trips')
+        .setName('الرحلات')
         .setDescription('نظام الرحلات'),
 
     async execute(message, args, db) {
@@ -34,7 +34,7 @@ async function build(db) {
         .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
         .setTimestamp();
 
-    const img = await db.getImage('trips');
+    const img = await db.getImage('الرحلات');
     if (img) embed.setImage(img);
 
     const row = new ActionRowBuilder().addComponents(
@@ -44,5 +44,5 @@ async function build(db) {
         new ButtonBuilder().setCustomId('trip_alert').setLabel('تنبيه').setStyle(ButtonStyle.Secondary).setEmoji('📣'),
     );
 
-    return { embeds: [embed], components: [row, resetRow('trips')] };
+    return { embeds: [embed], components: [row, resetRow('الرحلات')] };
 }
