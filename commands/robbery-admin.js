@@ -47,7 +47,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [embed] , flags: 64 });
         }
 
         if (sub === 'حذف') {
@@ -61,7 +61,7 @@ module.exports = {
                 .setDescription(`تم حذف سرقة **${rob.name}** بنجاح.`)
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [embed] , flags: 64 });
         }
 
         if (sub === 'قائمة') {

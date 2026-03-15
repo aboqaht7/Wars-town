@@ -63,6 +63,6 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
         .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
         .setTimestamp();
 
-    if (interaction) return interaction.reply({ embeds: [embed] });
+    if (interaction) return interaction.reply({ embeds: [embed] , flags: 64 });
     channel.send({ embeds: [embed] });
 }

@@ -29,6 +29,6 @@ module.exports = {
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
             .setFooter({ text: 'منصة X • بوت FANTASY' })
             .setTimestamp();
-        interaction.reply({ embeds: [embed] });
+        interaction.reply({ embeds: [embed] , flags: 64 });
     }
 };

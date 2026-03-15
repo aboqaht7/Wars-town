@@ -78,7 +78,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'حذف-رتبة') {
@@ -92,7 +92,7 @@ module.exports = {
                 .setDescription(`تم حذف رتبة **${deleted.name}** من القائمة.`)
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'الرتب') {
@@ -106,7 +106,7 @@ module.exports = {
                 .addFields({ name: 'العدد الكلي', value: `${ranks.length} رتبة`, inline: true })
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'تعيين') {
@@ -130,7 +130,7 @@ module.exports = {
 
             if (prev) embed.addFields({ name: 'الرتبة السابقة', value: prev.rank_name, inline: true });
 
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'إزالة') {
@@ -149,7 +149,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'نقاط') {
@@ -173,7 +173,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'عرض') {
@@ -196,7 +196,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
 
         if (sub === 'قائمة') {
@@ -220,7 +220,7 @@ module.exports = {
                 .addFields({ name: 'الإجمالي', value: `${all.length} إداري`, inline: true })
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed], components: [row2] });
+            return interaction.reply({ embeds: [embed], components: [row2] , flags: 64 });
         }
     },
 };

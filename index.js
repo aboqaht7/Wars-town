@@ -1109,7 +1109,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                     .setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ أثناء تنفيذ السرقة.', flags: 64 });
@@ -1422,7 +1422,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💵 الكاش المتبقي', value: `\`${(Number(result.sender.cash) - amount).toLocaleString()} ريال\``, inline: true },
                     )
                     .setFooter({ text: 'نظام البنك • بوت FANTASY' }).setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -1448,7 +1448,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💵 الكاش الجديد', value: `\`${(Number(result.sender.cash) + amount).toLocaleString()} ريال\``, inline: true },
                     )
                     .setFooter({ text: 'نظام البنك • بوت FANTASY' }).setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -1487,7 +1487,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'نظام البنك • بوت FANTASY' })
                     .setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
@@ -1590,7 +1590,7 @@ client.on('interactionCreate', async interaction => {
                     .setDescription(`أُرسل سناب لـ **@${receiverAcc.snap_username}** بنجاح 👻`)
                     .setFooter({ text: 'سناب شات • بوت FANTASY' })
                     .setTimestamp();
-                return interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ أثناء إرسال السناب.', flags: 64 });

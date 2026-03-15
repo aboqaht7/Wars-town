@@ -54,7 +54,7 @@ module.exports = {
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
             if (imageUrl) embed.setThumbnail(imageUrl);
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [embed] , flags: 64 });
         }
 
         if (sub === 'تعديل-صورة') {
@@ -73,7 +73,7 @@ module.exports = {
                 .setImage(imageUrl)
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [embed] , flags: 64 });
         }
 
         if (sub === 'حذف') {
@@ -87,7 +87,7 @@ module.exports = {
                 .setDescription(`تم حذف عقار **${prop.name}** بنجاح.`)
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [embed] , flags: 64 });
         }
 
         if (sub === 'حذف-الكل') {
@@ -98,7 +98,7 @@ module.exports = {
                 .setDescription('> تم مسح جميع العقارات من القائمة.')
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
                 .setTimestamp();
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [embed] , flags: 64 });
         }
 
         if (sub === 'قائمة') {

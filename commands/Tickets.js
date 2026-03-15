@@ -30,6 +30,6 @@ module.exports = {
                 ])
         );
 
-        interaction.reply({ embeds: [embed], components: [menu] });
+        interaction.reply({ embeds: [embed], components: [menu] , flags: 64 });
     }
 };

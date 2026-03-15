@@ -20,7 +20,7 @@ module.exports = {
         const cars = await db.getShowroom();
         const img = await db.getImage('showroom');
         const { embed, components } = build(cars, img);
-        interaction.reply({ embeds: [embed], components });
+        interaction.reply({ embeds: [embed], components , flags: 64 });
     }
 };
 

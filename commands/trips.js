@@ -16,7 +16,7 @@ module.exports = {
     async slashExecute(interaction, db) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) return interaction.reply({ content: '❌ هذا الأمر للمسؤولين فقط.', flags: 64 });
         const payload = await build(db);
-        interaction.reply(payload);
+        interaction.reply({ ...payload, flags: 64 });
     }
 };
 

@@ -22,6 +22,6 @@ module.exports = {
             )
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
             .setTimestamp();
-        return interaction.reply({ embeds: [embed] });
+        return interaction.reply({ embeds: [embed] , flags: 64 });
     }
 };
