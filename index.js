@@ -241,8 +241,8 @@ client.on('interactionCreate', async interaction => {
                 if (lastUsed) {
                     const elapsed = Date.now() - new Date(lastUsed).getTime();
                     if (elapsed < cooldownMs) {
-                        const remaining = Math.ceil((cooldownMs - elapsed) / 60000);
-                        return interaction.reply({ content: `⏳ يجب الانتظار **${remaining} دقيقة** قبل تنفيذ هذه الوظيفة مجدداً.`, flags: 64 });
+                        const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
+                        return interaction.reply({ content: `⏳ يجب الانتظار **${remaining} ثانية** قبل تنفيذ هذه الوظيفة مجدداً.`, flags: 64 });
                     }
                 }
 
@@ -274,7 +274,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💹 سعر الوحدة',        value: `${unitPrice.toLocaleString()} ريال`,  inline: true },
                         { name: '💰 القيمة التقديرية',  value: `${estValue.toLocaleString()} ريال`,   inline: true },
                         { name: '🎒 تُضاف إلى',         value: 'حقيبتك',                             inline: true },
-                        { name: '⏳ الكولداون',          value: `${COOLDOWN_MINUTES} دقائق`,           inline: true },
+                        { name: '⏳ الكولداون',          value: `10 ثوان`,                             inline: true },
                     )
                     .setFooter({ text: 'نظام الوظائف • بوت FANTASY — بيع مكاسبك عبر قائمة الوظائف' })
                     .setTimestamp();

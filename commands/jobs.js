@@ -1,7 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow } = require('../utils');
 
-const COOLDOWN_MINUTES = 5;
+const COOLDOWN_SECONDS = 10;
+const COOLDOWN_MINUTES = COOLDOWN_SECONDS / 60;
 
 module.exports = {
     name: 'jobs',
@@ -43,7 +44,7 @@ async function buildJobs(db) {
             { name: '⛏️ المنجم  〔يتطلب: أدوات المنجم〕',         value: minePrices,  inline: false },
         )
         .setDescription('> الأسعار تتجدد كل ساعة تلقائياً\n> كل وظيفة تعطيك كمية عشوائية من ١ إلى ١٠')
-        .setFooter({ text: `نظام الوظائف • بوت FANTASY • كولداون ${COOLDOWN_MINUTES} دقائق بين كل وظيفة` })
+        .setFooter({ text: `نظام الوظائف • بوت FANTASY • كولداون ${COOLDOWN_SECONDS} ثوان بين كل وظيفة` })
         .setTimestamp();
     if (img) embed.setImage(img);
 
