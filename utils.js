@@ -9,4 +9,11 @@ function resetRow(key) {
     );
 }
 
-module.exports = { resetRow };
+async function isAdmin(member, db) {
+    if (member.permissions.has('Administrator')) return true;
+    const progRoleId = await db.getConfig('programmer_role_id');
+    if (progRoleId && member.roles.cache.has(progRoleId)) return true;
+    return false;
+}
+
+module.exports = { resetRow, isAdmin };

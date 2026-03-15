@@ -24,7 +24,8 @@ module.exports = {
         ),
 
     async slashExecute(interaction, db) {
-        if (!interaction.member.permissions.has('Administrator'))
+        const { isAdmin } = require('../utils');
+        if (!(await isAdmin(interaction.member, db)))
             return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
 
         const sub = interaction.options.getSubcommand();

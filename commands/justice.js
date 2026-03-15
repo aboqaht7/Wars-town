@@ -1,17 +1,17 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, isAdmin } = require('../utils');
 
 module.exports = {
     name: 'عدل',
     data: new SlashCommandBuilder().setName('عدل').setDescription('🏛️ نظام العدل — إدارة القضايا'),
 
     async execute(message, args, db) {
-        if (!message.member.permissions.has('Administrator')) return message.reply('❌ هذا الأمر للإدارة فقط.');
+        if (!(await isAdmin(message.member, db))) return message.reply('❌ هذا الأمر للإدارة فقط.');
         message.channel.send(await build(db));
     },
 
     async slashExecute(interaction, db) {
-        if (!interaction.member.permissions.has('Administrator'))
+        if (!(await isAdmin(interaction.member, db)))
             return interaction.reply({ content: '❌ هذا الأمر للإدارة فقط.', flags: 64 });
         interaction.reply(await build(db));
     },
