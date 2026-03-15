@@ -1687,7 +1687,7 @@ client.on('interactionCreate', async interaction => {
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
-        // ── lawyer_pick_{caseId}: تعيين المحامي على القضية ──────────────────
+        // ── lawyer_pick_{caseId}: إرسال طلب توكيل للمحامي ──────────────────
         if (interaction.customId.startsWith('lawyer_pick_')) {
             try {
                 const caseId   = Number(interaction.customId.replace('lawyer_pick_', ''));
@@ -1698,36 +1698,77 @@ client.on('interactionCreate', async interaction => {
                 if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
                 if (!lawyer) return interaction.reply({ content: '❌ المحامي غير موجود.', flags: 64 });
 
-                await db.assignLawyer(caseId, lawyerId, lawyer.lawyer_name);
-
-                const embed = new EmbedBuilder()
-                    .setTitle('✅ تم توكيل المحامي')
-                    .setColor(0xE65100)
-                    .addFields(
-                        { name: '🔢 رقم القضية',        value: c.case_number,          inline: true },
-                        { name: '📌 العنوان',             value: c.title,                inline: true },
-                        { name: '👨‍⚖️ المحامي الموكَّل', value: `<@${lawyerId}>`,       inline: true },
-                    )
-                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                await db.createLawyerRequest(caseId, c.case_number, c.title, interaction.user.id, c.plaintiff_name, lawyerId);
 
                 // إشعار المحامي بـ DM
                 try {
                     const lawyerUser = await interaction.client.users.fetch(lawyerId);
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle('👨‍⚖️ تم توكيلك في قضية')
-                        .setColor(0xE65100)
+                        .setTitle('📨 طلب توكيل جديد')
+                        .setColor(0x0D47A1)
+                        .setDescription('> لديك طلب توكيل جديد — استخدم `/محامي` للقبول أو الرفض')
                         .addFields(
                             { name: '🔢 رقم القضية', value: c.case_number,          inline: true },
                             { name: '📌 العنوان',     value: c.title,                inline: true },
-                            { name: '👤 المدعي',      value: `<@${c.plaintiff_id}>`, inline: true },
-                            { name: '⚔️ المدعى عليه', value: c.defendant,            inline: true },
+                            { name: '👤 الموكّل',     value: c.plaintiff_name,       inline: true },
                         )
                         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                     await lawyerUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
+                const embed = new EmbedBuilder()
+                    .setTitle('📨 تم إرسال طلب التوكيل')
+                    .setColor(0x0D47A1)
+                    .setDescription(`> تم إرسال طلب التوكيل إلى **${lawyer.lawyer_name}**\nسيُخطَر عبر الرسائل الخاصة، وبإمكانه القبول أو الرفض عبر \`/محامي\``)
+                    .addFields(
+                        { name: '🔢 رقم القضية', value: c.case_number, inline: true },
+                        { name: '📌 العنوان',     value: c.title,       inline: true },
+                    )
+                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                 const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── قبول/رفض طلب التوكيل (أزرار لوحة المحامي) ───────────────────────
+        if (interaction.customId.startsWith('lawyer_req_accept_') || interaction.customId.startsWith('lawyer_req_reject_')) {
+            try {
+                const isAccept = interaction.customId.startsWith('lawyer_req_accept_');
+                const reqId    = parseInt((isAccept
+                    ? interaction.customId.replace('lawyer_req_accept_', '')
+                    : interaction.customId.replace('lawyer_req_reject_', '')));
+                const req = await db.getLawyerRequestById(reqId);
+                if (!req) return interaction.reply({ content: '❌ الطلب غير موجود أو انتهت صلاحيته.', flags: 64 });
+                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: '❌ هذا الطلب ليس موجهاً لك.', flags: 64 });
+                if (req.status !== 'pending') return interaction.reply({ content: '❌ تم البت في هذا الطلب مسبقاً.', flags: 64 });
+
+                await db.updateLawyerRequest(reqId, isAccept ? 'accepted' : 'rejected');
+                const allLawyers = await db.getLawyers();
+                const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
+
+                if (isAccept) {
+                    await db.assignLawyer(req.case_id, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                }
+
+                // إشعار الموكّل
+                try {
+                    const plaintiffUser = await interaction.client.users.fetch(req.plaintiff_id);
+                    const dmEmbed = new EmbedBuilder()
+                        .setTitle(isAccept ? '✅ تم قبول طلب التوكيل' : '❌ تم رفض طلب التوكيل')
+                        .setColor(isAccept ? 0x1B5E20 : 0xB71C1C)
+                        .addFields(
+                            { name: '🔢 رقم القضية', value: req.case_number,              inline: true },
+                            { name: '📌 العنوان',     value: req.case_title,               inline: true },
+                            { name: '👨‍⚖️ المحامي',   value: lawyer?.lawyer_name || '—', inline: true },
+                        )
+                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                    await plaintiffUser.send({ embeds: [dmEmbed] });
+                } catch (_) {}
+
+                // تحديث اللوحة
+                const { buildDashboard } = require('./commands/lawyer-dashboard');
+                const newDash = await buildDashboard(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                return interaction.update(newDash);
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 

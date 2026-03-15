@@ -1226,6 +1226,51 @@ async function assignLawyer(id, lawyerId, lawyerName) {
         [id, lawyerId, lawyerName]);
 }
 
+// ─── LAWYER REQUESTS ──────────────────────────────────────────────────────────
+async function initLawyerRequestsTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS lawyer_requests (
+            id             SERIAL PRIMARY KEY,
+            case_id        INTEGER NOT NULL,
+            case_number    TEXT NOT NULL,
+            case_title     TEXT NOT NULL,
+            plaintiff_id   TEXT NOT NULL,
+            plaintiff_name TEXT NOT NULL,
+            lawyer_id      TEXT NOT NULL,
+            status         TEXT DEFAULT 'pending',
+            created_at     TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initLawyerRequestsTable().catch(console.error);
+
+async function createLawyerRequest(caseId, caseNumber, caseTitle, plaintiffId, plaintiffName, lawyerId) {
+    await query(`DELETE FROM lawyer_requests WHERE case_id=$1`, [caseId]);
+    const res = await query(
+        `INSERT INTO lawyer_requests (case_id, case_number, case_title, plaintiff_id, plaintiff_name, lawyer_id)
+         VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+        [caseId, caseNumber, caseTitle, plaintiffId, plaintiffName, lawyerId]
+    );
+    return res.rows[0];
+}
+
+async function getLawyerRequests(lawyerId) {
+    const res = await query(
+        `SELECT * FROM lawyer_requests WHERE lawyer_id=$1 AND status='pending' ORDER BY created_at DESC`,
+        [lawyerId]
+    );
+    return res.rows;
+}
+
+async function getLawyerRequestById(id) {
+    const res = await query(`SELECT * FROM lawyer_requests WHERE id=$1`, [id]);
+    return res.rows[0] || null;
+}
+
+async function updateLawyerRequest(id, status) {
+    await query(`UPDATE lawyer_requests SET status=$2 WHERE id=$1`, [id, status]);
+}
+
 // ─── JUDGES REGISTRY ──────────────────────────────────────────────────────────
 async function initJudgesTable() {
     await query(`
@@ -1420,5 +1465,6 @@ module.exports = {
     createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById,
     acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
     getLawyers, addLawyer, removeLawyer,
+    createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,
 };
