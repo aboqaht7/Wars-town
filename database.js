@@ -1178,6 +1178,34 @@ async function assignLawyer(id, lawyerId, lawyerName) {
         [id, lawyerId, lawyerName]);
 }
 
+// ─── LAWYERS REGISTRY ─────────────────────────────────────────────────────────
+async function initLawyersTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS lawyers (
+            discord_id   TEXT PRIMARY KEY,
+            lawyer_name  TEXT NOT NULL,
+            added_at     TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initLawyersTable().catch(console.error);
+
+async function getLawyers() {
+    const res = await query('SELECT * FROM lawyers ORDER BY lawyer_name ASC');
+    return res.rows;
+}
+async function addLawyer(discordId, lawyerName) {
+    await query(
+        `INSERT INTO lawyers (discord_id, lawyer_name) VALUES ($1,$2)
+         ON CONFLICT (discord_id) DO UPDATE SET lawyer_name=$2`,
+        [discordId, lawyerName]
+    );
+}
+async function removeLawyer(discordId) {
+    const res = await query('DELETE FROM lawyers WHERE discord_id=$1 RETURNING *', [discordId]);
+    return res.rows[0] || null;
+}
+
 async function getJobPrices() {
     const res = await query('SELECT item_name, price FROM job_prices ORDER BY item_name');
     const map = {};
@@ -1311,4 +1339,5 @@ module.exports = {
     CASE_STATUS,
     createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById,
     acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
+    getLawyers, addLawyer, removeLawyer,
 };
