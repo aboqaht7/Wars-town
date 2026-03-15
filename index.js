@@ -2260,11 +2260,10 @@ client.on('interactionCreate', async interaction => {
                 if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات. تواصل مع المسؤولين.', flags: 64 });
                 const post = await db.postTweet(interaction.user.id, content);
                 const embed = new EmbedBuilder()
-                    .setTitle('𝕏 تغريدة جديدة')
+                    .setAuthor({ name: `@${account.x_username}`, iconURL: interaction.user.displayAvatarURL() })
                     .setColor(0x000000)
-                    .setDescription(`> ${content}`)
+                    .setDescription(content)
                     .addFields(
-                        { name: '👤 الحساب', value: `**@${account.x_username}**`, inline: true },
                         { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
                         { name: '❤️ الإعجابات', value: '`0`', inline: true },
                     )

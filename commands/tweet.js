@@ -13,11 +13,10 @@ module.exports = {
         if (!xChannelId) return message.reply('❌ لم يتم تحديد روم التغريدات بعد.');
         const post = await db.postTweet(message.author.id, content);
         const embed = new EmbedBuilder()
-            .setTitle('𝕏 تغريدة جديدة')
+            .setAuthor({ name: `@${account.x_username}`, iconURL: message.author.displayAvatarURL() })
             .setColor(0x000000)
-            .setDescription(`> ${content}`)
+            .setDescription(content)
             .addFields(
-                { name: '👤 الحساب', value: `**@${account.x_username}**`, inline: true },
                 { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
                 { name: '❤️ الإعجابات', value: '`0`', inline: true },
             )
