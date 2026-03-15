@@ -532,6 +532,55 @@ async function initPropertiesTable() {
 }
 initPropertiesTable().catch(console.error);
 
+async function initBlackMarketTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS black_market (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL,
+            price BIGINT NOT NULL
+        )
+    `);
+}
+initBlackMarketTable().catch(console.error);
+
+async function addBlackMarketItem(name, price) {
+    const res = await query(
+        'INSERT INTO black_market (name, price) VALUES ($1, $2) RETURNING *',
+        [name, price]
+    );
+    return res.rows[0];
+}
+
+async function getBlackMarketItems() {
+    const res = await query('SELECT * FROM black_market ORDER BY id ASC');
+    return res.rows;
+}
+
+async function getBlackMarketItemById(id) {
+    const res = await query('SELECT * FROM black_market WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+
+async function deleteBlackMarketItem(id) {
+    await query('DELETE FROM black_market WHERE id=$1', [id]);
+}
+
+async function deleteAllBlackMarketItems() {
+    await query('DELETE FROM black_market');
+}
+
+async function updateBlackMarketItem(id, { name, price }) {
+    const fields = [];
+    const vals   = [];
+    let i = 1;
+    if (name  !== undefined) { fields.push(`name=$${i++}`);  vals.push(name); }
+    if (price !== undefined) { fields.push(`price=$${i++}`); vals.push(price); }
+    if (!fields.length) return null;
+    vals.push(id);
+    const res = await query(`UPDATE black_market SET ${fields.join(', ')} WHERE id=$${i} RETURNING *`, vals);
+    return res.rows[0] || null;
+}
+
 async function addProperty(name, price, imageUrl) {
     const res = await query(
         'INSERT INTO properties (name, price, image_url) VALUES ($1, $2, $3) RETURNING *',
@@ -785,6 +834,7 @@ module.exports = {
     getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
+    addBlackMarketItem, getBlackMarketItems, getBlackMarketItemById, deleteBlackMarketItem, deleteAllBlackMarketItems, updateBlackMarketItem,
     addProperty, getProperties, getPropertyById, getPropertyByName, updateProperty, deleteProperty, deleteAllProperties, updatePropertyImage,
     deleteIdentity, deleteAllIdentities,
     addToCash,

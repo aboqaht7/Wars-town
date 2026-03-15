@@ -95,7 +95,7 @@ async function sendToCharLog(embed) {
 
 const resetCommandMap = {
     police: 'police', bank: 'bank', bag: 'bag', identity: 'identity',
-    phone: 'phone', الرحلات: 'الرحلات', jobs: 'jobs', market: 'market',
+    phone: 'phone', الرحلات: 'الرحلات', jobs: 'jobs', market: 'market', 'بلاك-ماركت': 'بلاك-ماركت',
     law: 'law', admin: 'admin', crime: 'crime', health: 'health',
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
     x_platform: 'منصة-x', help: 'help', properties: 'properties',
@@ -176,6 +176,45 @@ client.on('interactionCreate', async interaction => {
                     new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص التنبيه').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                 );
                 return interaction.showModal(modal);
+            }
+        }
+
+        if (interaction.customId.startsWith('buy_bm_')) {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const itemId = parseInt(interaction.customId.replace('buy_bm_', ''));
+                const item   = await db.getBlackMarketItemById(itemId);
+                if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+
+                const cash = Number(identity.cash);
+                if (cash < item.price) return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString('en-US')}$** ولديك **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
+
+                await db.addToCash(interaction.user.id, identity.slot, -item.price);
+                await db.addItem(interaction.user.id, item.name, 1);
+
+                const embed = new EmbedBuilder()
+                    .setTitle('✅ تمت عملية الشراء')
+                    .setColor(0x1a1a2e)
+                    .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
+                    .addFields(
+                        { name: '🛒 الغرض',        value: item.name,                                                    inline: true },
+                        { name: '💸 المبلغ المدفوع', value: `${Number(item.price).toLocaleString('en-US')}$`,           inline: true },
+                        { name: '💰 رصيدك المتبقي',  value: `${(cash - item.price).toLocaleString('en-US')}$`,          inline: true },
+                    )
+                    .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
         }
 
@@ -684,6 +723,38 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId === 'black_market_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const itemId = parseInt(value);
+                const item   = await db.getBlackMarketItemById(itemId);
+                if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`🖤 ${item.name}`)
+                    .setColor(0x1a1a2e)
+                    .addFields(
+                        { name: '💰 السعر', value: `**${Number(item.price).toLocaleString('en-US')}$**`, inline: true },
+                    )
+                    .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
+                    .setTimestamp();
+
+                const buyBtn = new ButtonBuilder()
+                    .setCustomId(`buy_bm_${item.id}`)
+                    .setLabel(`🛒 شراء ${item.name}`)
+                    .setStyle(ButtonStyle.Danger);
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                const row = new ActionRowBuilder().addComponents(buyBtn, resetBtn);
+                return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
         }
 
