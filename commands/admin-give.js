@@ -9,7 +9,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('admin-give')
         .setDescription('أوامر إدارية: منح أموال أو أغراض للاعبين')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(s => s
             .setName('اموال')
             .setDescription('أضف أموالاً لشخصية لاعب')

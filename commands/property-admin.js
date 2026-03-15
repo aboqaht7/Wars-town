@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('إدارة-عقارات')
         .setDescription('إدارة العقارات (أدمن فقط)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(sub => sub
             .setName('اضافة')
             .setDescription('إضافة عقار جديد')

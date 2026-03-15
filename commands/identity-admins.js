@@ -6,7 +6,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('مسؤولين-الهوية')
         .setDescription('تعيين رتبة مسؤولي الهوية وقناة لوق الهويات')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addRoleOption(opt =>
             opt.setName('رتبة').setDescription('رتبة مسؤولي الهوية').setRequired(true))
         .addChannelOption(opt =>

@@ -6,7 +6,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('حذف-هوية')
         .setDescription('حذف هوية محددة للاعب (أدمن فقط)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addUserOption(o => o.setName('لاعب').setDescription('المنشن المراد حذف هويته').setRequired(true))
         .addIntegerOption(o =>
             o.setName('رقم-الهوية')

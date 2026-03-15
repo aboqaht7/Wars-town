@@ -20,7 +20,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('character-log')
         .setDescription('سجل أحداث الشخصيات وطلبات الهويات المعلّقة')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
         .addIntegerOption(opt =>
             opt.setName('عدد').setDescription('عدد سجلات الأحداث (افتراضي 15)').setRequired(false).setMinValue(1).setMaxValue(50))
         .addUserOption(opt =>

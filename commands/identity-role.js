@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('هوية-رتبة')
         .setDescription('تعيين الرتبة التي تُمنح تلقائياً عند قبول الهوية')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addRoleOption(opt =>
             opt.setName('رتبة').setDescription('الرتبة التي تُعطى عند قبول الهوية').setRequired(true)),
 

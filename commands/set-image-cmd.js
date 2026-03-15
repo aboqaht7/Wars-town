@@ -30,7 +30,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('تعديل-صورة-امبيد')
         .setDescription('تعديل صورة إمبيد أي نظام')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption(o => o
             .setName('النظام')
             .setDescription('اختر النظام')

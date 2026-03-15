@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('تعديل-سرقة')
         .setDescription('تعديل سرقة موجودة (أدمن فقط)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption(o => o.setName('اسم-السرقة').setDescription('اسم السرقة المراد تعديلها').setRequired(true))
         .addStringOption(o => o.setName('اسم-جديد').setDescription('الاسم الجديد للسرقة').setRequired(false))
         .addStringOption(o => o.setName('ادوات').setDescription('الأدوات الجديدة مفصولة بفاصلة').setRequired(false))

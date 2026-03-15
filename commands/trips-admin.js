@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('إعداد-رحلات')
         .setDescription('تحديد رومات نظام الرحلات (أدمن فقط)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addChannelOption(o => o.setName('روم-التنبيهات').setDescription('الروم الذي تُرسل فيه تنبيهات الإعصار والتجديد والتنبيهات المخصصة').setRequired(true))
         .addChannelOption(o => o.setName('روم-الرحلات').setDescription('الروم الذي يُرسل فيه إشعار بدء الرحلة').setRequired(true)),
 

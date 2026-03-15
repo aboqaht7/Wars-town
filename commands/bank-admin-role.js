@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('رتبة-مسؤولين-البنك')
         .setDescription('تعيين رتبة مسؤولي البنك')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addRoleOption(opt =>
             opt.setName('رتبة').setDescription('الرتبة التي تملك صلاحيات أدمن البنك').setRequired(true)),
 

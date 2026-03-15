@@ -8,7 +8,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('إعداد-بلاغات')
         .setDescription('ضبط قنوات استقبال بلاغات الشرطة والإسعاف')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(s => s
             .setName('شرطة')
             .setDescription('حدد روم استقبال بلاغات الشرطة')

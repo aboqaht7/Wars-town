@@ -8,7 +8,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('تعديل-إيبان')
         .setDescription('تعديل إيبان هوية لاعب معين')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addUserOption(o => o.setName('اللاعب').setDescription('اللاعب المراد تعديل إيبانه').setRequired(true))
         .addIntegerOption(o => o.setName('الخانة').setDescription('رقم الخانة (1، 2، أو 3)').setRequired(true)
             .addChoices(

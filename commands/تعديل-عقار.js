@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('تعديل-عقار')
         .setDescription('تعديل عقار موجود (أدمن فقط)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption(o => o.setName('اسم-العقار').setDescription('اسم العقار المراد تعديله').setRequired(true))
         .addStringOption(o => o.setName('اسم-جديد').setDescription('الاسم الجديد للعقار').setRequired(false))
         .addIntegerOption(o => o.setName('سعر').setDescription('السعر الجديد (ريال)').setRequired(false).setMinValue(1))

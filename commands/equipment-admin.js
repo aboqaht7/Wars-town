@@ -8,7 +8,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('إدارة-معدات')
         .setDescription('إدارة أغراض متجر المعدات')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(s => s
             .setName('اضافة')
             .setDescription('أضف معدة للمتجر')

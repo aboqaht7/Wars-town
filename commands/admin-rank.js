@@ -7,7 +7,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-ادارة')
         .setDescription('إدارة رتب الإداريين في السيرفر')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(s => s
             .setName('تعيين')
             .setDescription('تعيين أو تغيير رتبة إداري')

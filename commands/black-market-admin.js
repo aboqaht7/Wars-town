@@ -8,7 +8,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('إدارة-بلاك-ماركت')
         .setDescription('إدارة أغراض البلاك ماركت')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(s => s
             .setName('اضافة')
             .setDescription('أضف غرضاً جديداً')

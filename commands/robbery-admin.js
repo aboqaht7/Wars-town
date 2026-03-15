@@ -5,7 +5,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('إدارة-سرقة')
         .setDescription('إدارة السرقات (أدمن فقط)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(sub => sub
             .setName('اضافة')
             .setDescription('إضافة سرقة جديدة')
