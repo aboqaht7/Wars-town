@@ -146,7 +146,6 @@ client.on('interactionCreate', async interaction => {
                     const ch = await client.channels.fetch(alertsChannelId);
                     if (ch) await ch.send({ embeds: [hurricaneEmbed] });
                 } catch {}
-                sendToCharLog(hurricaneEmbed);
                 return interaction.reply({ content: '✅ تم إرسال تحذير الإعصار.', flags: 64 });
             }
 
