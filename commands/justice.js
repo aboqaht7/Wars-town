@@ -13,7 +13,7 @@ module.exports = {
     async slashExecute(interaction, db) {
         if (!interaction.member.permissions.has('Administrator'))
             return interaction.reply({ content: '❌ هذا الأمر للإدارة فقط.', flags: 64 });
-        interaction.reply({ ...(await build(db)), flags: 64 });
+        interaction.reply(await build(db));
     },
 };
 
