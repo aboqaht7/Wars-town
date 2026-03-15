@@ -42,21 +42,13 @@ async function buildEquipment(db) {
         return { embeds: [embed], components: [resetRow('معدات')] };
     }
 
-    embed.setDescription('اختر المعدة التي تريد شراءها من القائمة أدناه.\n\u200B');
-
-    for (const it of items.slice(0, 25)) {
-        embed.addFields({
-            name: `🔨 ${it.name}`,
-            value: `> 💰 **السعر:** ${Number(it.price).toLocaleString()} ريال` +
-                   (it.description ? `\n> 📝 ${it.description}` : ''),
-            inline: false,
-        });
-    }
+    embed.setDescription('اختر المعدة من القائمة أدناه.');
 
     const options = items.slice(0, 25).map(it => ({
         label: it.name,
         value: String(it.id),
-        description: `💰 ${Number(it.price).toLocaleString()} ريال`,
+        description: `💰 ${Number(it.price).toLocaleString()} ريال` +
+            (it.description ? ` — ${it.description.slice(0, 40)}` : ''),
     }));
 
     const menu = new ActionRowBuilder().addComponents(
