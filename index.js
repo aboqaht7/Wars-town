@@ -192,30 +192,6 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
-        if (interaction.customId === 'report_police' || interaction.customId === 'report_ambulance') {
-            try {
-                await db.ensureUser(interaction.user.id, interaction.user.username);
-                const err = await db.checkLoginAndIdentity(interaction.user.id);
-                if (err) return interaction.reply({ content: err, flags: 64 });
-
-                const isPolice = interaction.customId === 'report_police';
-                const modal = new ModalBuilder()
-                    .setCustomId(isPolice ? 'report_police_modal' : 'report_ambulance_modal')
-                    .setTitle(isPolice ? '🚨 بلاغ شرطة' : '🚑 بلاغ إسعاف');
-                modal.addComponents(
-                    new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('report_location').setLabel('الموقع').setStyle(TextInputStyle.Short).setRequired(true)
-                    ),
-                    new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('report_details').setLabel('تفاصيل البلاغ').setStyle(TextInputStyle.Paragraph).setRequired(true)
-                    ),
-                );
-                return interaction.showModal(modal);
-            } catch (e) {
-                console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
-            }
-        }
 
         if (interaction.customId.startsWith('do_job_')) {
             try {
@@ -1519,6 +1495,31 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+
+        if (interaction.customId === 'phone_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const err = await db.checkLoginAndIdentity(interaction.user.id);
+                if (err) return interaction.reply({ content: err, flags: 64 });
+
+                const isPolice = value === 'report_police';
+                const modal = new ModalBuilder()
+                    .setCustomId(isPolice ? 'report_police_modal' : 'report_ambulance_modal')
+                    .setTitle(isPolice ? '🚨 بلاغ شرطة' : '🚑 بلاغ إسعاف');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('report_location').setLabel('الموقع').setStyle(TextInputStyle.Short).setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('report_details').setLabel('تفاصيل البلاغ').setStyle(TextInputStyle.Paragraph).setRequired(true)
+                    ),
+                );
+                return interaction.showModal(modal);
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
 
         if (interaction.customId === 'central_market_sell') {
             try {
