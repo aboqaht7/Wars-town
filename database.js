@@ -823,6 +823,27 @@ async function markSnapSeen(snapId, userId) {
     await query('UPDATE snap_messages SET seen=TRUE WHERE id=$1 AND receiver_id=$2', [snapId, userId]);
 }
 
+async function getSnapConversation(userId, friendId) {
+    const res = await query(
+        `SELECT sm.*,
+            sa.snap_username AS sender_username,
+            ra.snap_username AS receiver_username
+         FROM snap_messages sm
+         JOIN snap_accounts sa ON sa.discord_id = sm.sender_id
+         JOIN snap_accounts ra ON ra.discord_id = sm.receiver_id
+         WHERE (sm.sender_id=$1 AND sm.receiver_id=$2)
+            OR (sm.sender_id=$2 AND sm.receiver_id=$1)
+         ORDER BY sm.created_at DESC
+         LIMIT 15`,
+        [userId, friendId]
+    );
+    await query(
+        'UPDATE snap_messages SET seen=TRUE WHERE sender_id=$2 AND receiver_id=$1 AND seen=FALSE',
+        [userId, friendId]
+    );
+    return res.rows.reverse();
+}
+
 async function getTickets(discordId) {
     const res = await query(
         'SELECT id, ticket_type, subject, status, created_at FROM tickets WHERE discord_id = $1 ORDER BY created_at DESC',
@@ -854,7 +875,7 @@ module.exports = {
     checkLoginAndIdentity,
     createSnapAccount, getSnapAccount, getSnapAccountByUsername,
     addSnapFriend, acceptSnapFriend, getSnapFriends, getPendingSnapRequests,
-    sendSnap, getSnapInbox, markSnapSeen,
+    sendSnap, getSnapInbox, markSnapSeen, getSnapConversation,
     createXAccount, getXAccount, deleteXAccount,
     postTweet, getXTimeline, likePost, deletePost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,

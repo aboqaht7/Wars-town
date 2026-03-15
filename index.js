@@ -1146,15 +1146,51 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'snap_friend_select') {
             try {
-                const { ModalBuilder: MSN2, TextInputBuilder: TISN2, TextInputStyle: TSSN2, ActionRowBuilder: ARSN2 } = require('discord.js');
-                const receiverId = value;
-                const receiverAcc = await db.getSnapAccount(receiverId);
-                const modal = new MSN2()
-                    .setCustomId(`snap_send_modal_${receiverId}`)
-                    .setTitle(`📸 إرسال سناب لـ ${receiverAcc?.snap_username || 'صديق'}`)
-                    .addComponents(new ARSN2().addComponents(
-                        new TISN2().setCustomId('snap_content').setLabel('محتوى السناب')
-                            .setStyle(TSSN2.Paragraph).setRequired(true).setMaxLength(300)
+                const friendId  = value;
+                const myAcc     = await db.getSnapAccount(interaction.user.id);
+                const friendAcc = await db.getSnapAccount(friendId);
+                if (!friendAcc) return interaction.reply({ content: '❌ لم يُعثر على حساب الصديق.', flags: 64 });
+
+                const msgs = await db.getSnapConversation(interaction.user.id, friendId);
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`💬 محادثتك مع @${friendAcc.snap_username}`)
+                    .setColor(0xFFFC00)
+                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setTimestamp();
+
+                if (!msgs.length) {
+                    embed.setDescription('> لا توجد رسائل بعد. ابدأ المحادثة الآن!');
+                } else {
+                    embed.setDescription(
+                        msgs.map(m => {
+                            const isMe = m.sender_id === interaction.user.id;
+                            const time = new Date(m.created_at).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+                            return `${isMe ? '📤 **أنت**' : `📥 **@${m.sender_username}**`} — ${time}\n> ${m.content}`;
+                        }).join('\n\n')
+                    );
+                }
+
+                const sendBtn  = new ButtonBuilder().setCustomId(`snap_msg_btn_${friendId}`).setLabel('📸 إرسال رسالة').setStyle(ButtonStyle.Primary);
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                const row = new ActionRowBuilder().addComponents(sendBtn, resetBtn);
+                return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId.startsWith('snap_msg_btn_')) {
+            try {
+                const friendId  = interaction.customId.replace('snap_msg_btn_', '');
+                const friendAcc = await db.getSnapAccount(friendId);
+                const modal = new ModalBuilder()
+                    .setCustomId(`snap_send_modal_${friendId}`)
+                    .setTitle(`📸 رسالة لـ @${friendAcc?.snap_username || 'صديق'}`)
+                    .addComponents(new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('snap_content').setLabel('نص الرسالة')
+                            .setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(300)
                     ));
                 return interaction.showModal(modal);
             } catch (e) {
