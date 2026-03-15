@@ -1226,6 +1226,38 @@ async function assignLawyer(id, lawyerId, lawyerName) {
         [id, lawyerId, lawyerName]);
 }
 
+// ─── JUDGES REGISTRY ──────────────────────────────────────────────────────────
+async function initJudgesTable() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS judges (
+            discord_id   TEXT PRIMARY KEY,
+            judge_name   TEXT NOT NULL,
+            added_at     TIMESTAMP DEFAULT NOW()
+        )
+    `);
+}
+initJudgesTable().catch(console.error);
+
+async function getJudges() {
+    const res = await query('SELECT * FROM judges ORDER BY judge_name ASC');
+    return res.rows;
+}
+async function addJudge(discordId, judgeName) {
+    await query(
+        `INSERT INTO judges (discord_id, judge_name) VALUES ($1,$2)
+         ON CONFLICT (discord_id) DO UPDATE SET judge_name=$2`,
+        [discordId, judgeName]
+    );
+}
+async function removeJudge(discordId) {
+    const res = await query('DELETE FROM judges WHERE discord_id=$1 RETURNING *', [discordId]);
+    return res.rows[0] || null;
+}
+async function getJudgeById(discordId) {
+    const res = await query('SELECT * FROM judges WHERE discord_id=$1', [discordId]);
+    return res.rows[0] || null;
+}
+
 // ─── LAWYERS REGISTRY ─────────────────────────────────────────────────────────
 async function initLawyersTable() {
     await query(`
@@ -1388,4 +1420,5 @@ module.exports = {
     createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById,
     acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
     getLawyers, addLawyer, removeLawyer,
+    getJudges, addJudge, removeJudge, getJudgeById,
 };
