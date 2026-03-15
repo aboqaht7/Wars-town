@@ -1197,6 +1197,14 @@ async function getCasesByStatus(status) {
     return res.rows;
 }
 
+async function getCasesByJudge(judgeId) {
+    const res = await query(
+        `SELECT * FROM cases WHERE judge_id=$1 AND status='in_progress' ORDER BY updated_at DESC`,
+        [judgeId]
+    );
+    return res.rows;
+}
+
 async function getCaseById(id) {
     const res = await query('SELECT * FROM cases WHERE id=$1', [id]);
     return res.rows[0] || null;
@@ -1462,7 +1470,7 @@ module.exports = {
     hasItem, removeItem, sellJobItems, sellJobItemsByCategory,
     JOB_ITEMS,
     CASE_STATUS,
-    createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById,
+    createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById, getCasesByJudge,
     acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
     getLawyers, addLawyer, removeLawyer,
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
