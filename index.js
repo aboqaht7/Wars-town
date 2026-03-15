@@ -19,6 +19,14 @@ for (const file of commandFiles) {
 
 client.once('clientReady', () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
+    setInterval(async () => {
+        try {
+            await db.updateAllJobPrices();
+            console.log('✅ تم تحديث أسعار الوظائف تلقائياً');
+        } catch (e) {
+            console.error('❌ خطأ في تحديث أسعار الوظائف:', e.message);
+        }
+    }, 60 * 60 * 1000);
 });
 
 const menuHandlers = {
@@ -202,6 +210,77 @@ client.on('interactionCreate', async interaction => {
                     ),
                 );
                 return interaction.showModal(modal);
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
+        if (interaction.customId.startsWith('do_job_')) {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
+
+                const jobKey = interaction.customId.replace('do_job_', '');
+                const JOBS = {
+                    fishing:     { label: '🎣 صيد السمك',   req: 'سنارة',         items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 تقطيع الخشب', req: 'فأس',           items: ['خشب'],                            weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ المنجم',       req: 'أدوات المنجم', items: ['الماس','ذهب','فضة','نحاس'],     weights: [5,20,35,40], color: 0x546E7A },
+                };
+                const job = JOBS[jobKey];
+                if (!job) return;
+
+                const hasReq = await db.hasItem(interaction.user.id, job.req);
+                if (!hasReq)
+                    return interaction.reply({ content: `❌ تحتاج **${job.req}** في حقيبتك لتنفيذ هذه الوظيفة.`, flags: 64 });
+
+                const { COOLDOWN_MINUTES } = require('./commands/jobs');
+                const cooldownMs = COOLDOWN_MINUTES * 60 * 1000;
+                const lastUsed   = await db.getJobCooldown(interaction.user.id, jobKey);
+                if (lastUsed) {
+                    const elapsed = Date.now() - new Date(lastUsed).getTime();
+                    if (elapsed < cooldownMs) {
+                        const remaining = Math.ceil((cooldownMs - elapsed) / 60000);
+                        return interaction.reply({ content: `⏳ يجب الانتظار **${remaining} دقيقة** قبل تنفيذ هذه الوظيفة مجدداً.`, flags: 64 });
+                    }
+                }
+
+                function weightedRandom(items, weights) {
+                    const total = weights.reduce((a, b) => a + b, 0);
+                    let r = Math.random() * total;
+                    for (let i = 0; i < items.length; i++) {
+                        r -= weights[i];
+                        if (r <= 0) return items[i];
+                    }
+                    return items[items.length - 1];
+                }
+
+                const qty      = Math.floor(Math.random() * 10) + 1;
+                const obtained = weightedRandom(job.items, job.weights);
+                const prices   = await db.getJobPrices();
+                const unitPrice = prices[obtained] || 0;
+                const estValue  = unitPrice * qty;
+
+                await db.addItem(interaction.user.id, obtained, qty);
+                await db.setJobCooldown(interaction.user.id, jobKey);
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`${job.label} — النتيجة`)
+                    .setColor(job.color)
+                    .setDescription(`حصلت على **${qty} ${obtained}** 🎉`)
+                    .addFields(
+                        { name: '📦 الغنيمة',          value: `${qty}× ${obtained}`,                  inline: true },
+                        { name: '💹 سعر الوحدة',        value: `${unitPrice.toLocaleString()} ريال`,  inline: true },
+                        { name: '💰 القيمة التقديرية',  value: `${estValue.toLocaleString()} ريال`,   inline: true },
+                        { name: '🎒 تُضاف إلى',         value: 'حقيبتك',                             inline: true },
+                        { name: '⏳ الكولداون',          value: `${COOLDOWN_MINUTES} دقائق`,           inline: true },
+                    )
+                    .setFooter({ text: 'نظام الوظائف • بوت FANTASY — بيع مكاسبك عبر قائمة الوظائف' })
+                    .setTimestamp();
+
+                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -1439,6 +1518,60 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+
+        if (interaction.customId === 'jobs_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
+
+                const prices = await db.getJobPrices();
+
+                if (value === 'sell') {
+                    const identity = await db.getActiveIdentity(interaction.user.id);
+                    if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+                    const { totalValue, sold } = await db.sellJobItems(interaction.user.id);
+                    if (!sold.length) return interaction.reply({ content: '❌ ليس لديك أي مكاسب لبيعها في حقيبتك.', flags: 64 });
+                    await db.addToCash(interaction.user.id, identity.slot, totalValue);
+                    const lines = sold.map(s => `• **${s.name}** × ${s.qty} — ${s.price.toLocaleString()} ريال/وحدة = **${s.value.toLocaleString()} ريال**`).join('\n');
+                    const embed = new EmbedBuilder()
+                        .setTitle('💰 تمت عملية البيع')
+                        .setColor(0x2E7D32)
+                        .setDescription(lines)
+                        .addFields({ name: '💵 الإجمالي', value: `**${totalValue.toLocaleString()} ريال**`, inline: false })
+                        .setFooter({ text: 'نظام الوظائف • بوت FANTASY' }).setTimestamp();
+                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                }
+
+                const jobMap = {
+                    fishing:     { label: '🎣 صيد السمك',    req: 'سنارة',           items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 تقطيع الخشب',  req: 'فأس',             items: ['خشب'],                             weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ المنجم',        req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],      weights: [5,20,35,40], color: 0x546E7A },
+                };
+
+                const job = jobMap[value];
+                if (!job) return;
+
+                const priceLines = job.items.map(it => `• **${it}:** ${(prices[it]||0).toLocaleString()} ريال`).join('\n');
+                const embed = new EmbedBuilder()
+                    .setTitle(job.label)
+                    .setColor(job.color)
+                    .addFields(
+                        { name: '🎒 المطلوب',       value: job.req,    inline: true },
+                        { name: '📦 الكمية',         value: '١ – ١٠ عشوائي', inline: true },
+                        { name: '💹 الأسعار الحالية', value: priceLines, inline: false },
+                    )
+                    .setFooter({ text: 'نظام الوظائف • بوت FANTASY' }).setTimestamp();
+
+                const startBtn  = new ButtonBuilder().setCustomId(`do_job_${value}`).setLabel('▶️ ابدأ').setStyle(ButtonStyle.Success);
+                const resetBtn  = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(startBtn, resetBtn)], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
 
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;

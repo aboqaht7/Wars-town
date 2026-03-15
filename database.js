@@ -1039,6 +1039,134 @@ async function createTicket(discordId, ticketType, subject) {
     return res.rows[0].id;
 }
 
+// ═══════════════════════════════════════════════════════
+//  JOB SYSTEM — prices, cooldowns, actions
+// ═══════════════════════════════════════════════════════
+const JOB_ITEMS = {
+    fishing:    ['سمك هامور', 'سالمون', 'روبيان', 'حوت'],
+    woodcutting:['خشب'],
+    mining:     ['الماس', 'ذهب', 'فضة', 'نحاس'],
+};
+
+const PRICE_RANGES = {
+    'سمك هامور': [300,  1500],
+    'سالمون':    [150,  800],
+    'روبيان':    [80,   400],
+    'حوت':       [1000, 4000],
+    'خشب':       [50,   300],
+    'الماس':     [3000, 10000],
+    'ذهب':       [800,  3000],
+    'فضة':       [300,  1200],
+    'نحاس':      [80,   500],
+};
+
+const DEFAULT_PRICES = {
+    'سمك هامور': 500,  'سالمون': 300,  'روبيان': 150,  'حوت': 2000,
+    'خشب': 100,
+    'الماس': 5000, 'ذهب': 1500, 'فضة': 600, 'نحاس': 200,
+};
+
+async function initJobTables() {
+    await query(`
+        CREATE TABLE IF NOT EXISTS job_prices (
+            item_name  TEXT PRIMARY KEY,
+            price      INTEGER NOT NULL,
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    `);
+    await query(`
+        CREATE TABLE IF NOT EXISTS job_cooldowns (
+            discord_id TEXT NOT NULL,
+            job_name   TEXT NOT NULL,
+            last_used  TIMESTAMP DEFAULT NOW(),
+            PRIMARY KEY (discord_id, job_name)
+        )
+    `);
+    for (const [item, price] of Object.entries(DEFAULT_PRICES)) {
+        await query(
+            `INSERT INTO job_prices (item_name, price) VALUES ($1,$2) ON CONFLICT (item_name) DO NOTHING`,
+            [item, price]
+        );
+    }
+}
+initJobTables().catch(console.error);
+
+async function getJobPrices() {
+    const res = await query('SELECT item_name, price FROM job_prices ORDER BY item_name');
+    const map = {};
+    for (const r of res.rows) map[r.item_name] = Number(r.price);
+    return map;
+}
+
+async function updateAllJobPrices() {
+    for (const [item, [min, max]] of Object.entries(PRICE_RANGES)) {
+        const price = Math.floor(Math.random() * (max - min + 1)) + min;
+        await query('UPDATE job_prices SET price=$1, updated_at=NOW() WHERE item_name=$2', [price, item]);
+    }
+}
+
+async function getJobCooldown(discordId, jobName) {
+    const res = await query(
+        'SELECT last_used FROM job_cooldowns WHERE discord_id=$1 AND job_name=$2',
+        [discordId, jobName]
+    );
+    return res.rows[0]?.last_used || null;
+}
+
+async function setJobCooldown(discordId, jobName) {
+    await query(
+        `INSERT INTO job_cooldowns (discord_id, job_name, last_used) VALUES ($1,$2,NOW())
+         ON CONFLICT (discord_id, job_name) DO UPDATE SET last_used=NOW()`,
+        [discordId, jobName]
+    );
+}
+
+async function hasItem(discordId, itemName, qty = 1) {
+    const res = await query(
+        'SELECT quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)',
+        [discordId, itemName]
+    );
+    return res.rows[0] ? Number(res.rows[0].quantity) >= qty : false;
+}
+
+async function removeItem(discordId, itemName, qty = 1) {
+    const res = await query(
+        'SELECT quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)',
+        [discordId, itemName]
+    );
+    if (!res.rows[0]) return;
+    const current = Number(res.rows[0].quantity);
+    if (current <= qty) {
+        await query('DELETE FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)', [discordId, itemName]);
+    } else {
+        await query(
+            'UPDATE inventory SET quantity=$1 WHERE discord_id=$2 AND LOWER(item_name)=LOWER($3)',
+            [current - qty, discordId, itemName]
+        );
+    }
+}
+
+async function sellJobItems(discordId) {
+    const allJobItems = [
+        ...JOB_ITEMS.fishing, ...JOB_ITEMS.woodcutting, ...JOB_ITEMS.mining
+    ];
+    const inv = await query('SELECT item_name, quantity FROM inventory WHERE discord_id=$1', [discordId]);
+    const prices = await getJobPrices();
+    let totalValue = 0;
+    const sold = [];
+    for (const row of inv.rows) {
+        const match = allJobItems.find(ji => ji.toLowerCase() === row.item_name.toLowerCase());
+        if (!match) continue;
+        const price = prices[match] || 0;
+        const qty   = Number(row.quantity);
+        const value = price * qty;
+        totalValue += value;
+        sold.push({ name: row.item_name, qty, price, value });
+        await query('DELETE FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)', [discordId, row.item_name]);
+    }
+    return { totalValue, sold };
+}
+
 module.exports = {
     query, ensureUser, generateIban,
     unlockSlot3, isSlot3Unlocked,
@@ -1069,5 +1197,8 @@ module.exports = {
     adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,
     getImage, setImage,
     getInventory, addItem,
-    getTickets, createTicket
+    getTickets, createTicket,
+    getJobPrices, updateAllJobPrices, getJobCooldown, setJobCooldown,
+    hasItem, removeItem, sellJobItems,
+    JOB_ITEMS,
 };
