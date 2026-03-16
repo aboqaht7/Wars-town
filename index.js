@@ -2843,6 +2843,11 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('messageCreate', async message => {
+    // حذف رسائل البوت تلقائياً بعد دقيقة
+    if (message.author.id === client.user?.id) {
+        setTimeout(() => message.delete().catch(() => {}), 60_000);
+        return;
+    }
     if (message.author.bot) return;
     const prefix = process.env.PREFIX || '-';
     if (!message.content.startsWith(prefix)) return;
