@@ -569,6 +569,80 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        // ── تفعيل / رفض طلب التفعيل ───────────────────────────────────────────
+        if (interaction.customId.startsWith('activate_approve_') || interaction.customId.startsWith('activate_reject_')) {
+            const isApprove = interaction.customId.startsWith('activate_approve_');
+            const reqId = parseInt(interaction.customId.replace(isApprove ? 'activate_approve_' : 'activate_reject_', ''));
+            try {
+                const { isAdmin } = require('./utils');
+                if (!(await isAdmin(interaction.member, db)))
+                    return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+
+                const req = await db.getActivationRequest(reqId);
+                if (!req) return interaction.update({ content: '❌ الطلب غير موجود أو تمت معالجته.', embeds: [], components: [] });
+
+                if (isApprove) {
+                    // منح رتبة التفعيل
+                    try {
+                        const roleId = await db.getConfig('activation_role_id');
+                        if (roleId) {
+                            const member = await interaction.guild.members.fetch(req.user_id).catch(() => null);
+                            if (member) await member.roles.add(roleId).catch(() => {});
+                        }
+                    } catch (_) {}
+
+                    const approveEmbed = new EmbedBuilder()
+                        .setTitle('✅ تم قبول طلب التفعيل')
+                        .setColor(0x2E7D32)
+                        .addFields(
+                            { name: '👤 اللاعب',       value: `<@${req.user_id}>`,  inline: true },
+                            { name: '🎮 ID سوني',       value: `\`${req.sony_id}\``, inline: true },
+                            { name: '✅ قبله',           value: `<@${interaction.user.id}>`, inline: true },
+                        )
+                        .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+
+                    await interaction.update({ embeds: [approveEmbed], components: [] });
+
+                    try {
+                        const user = await client.users.fetch(req.user_id);
+                        await user.send(
+                            `✅ **تم قبول طلب تفعيلك في سيرفر ${interaction.guild.name}!**\n` +
+                            `> 🎮 **ID سوني:** \`${req.sony_id}\`\n` +
+                            `> يمكنك الآن الوصول إلى السيرفر بشكل كامل.`
+                        );
+                    } catch (_) {}
+
+                } else {
+                    const rejectEmbed = new EmbedBuilder()
+                        .setTitle('❌ تم رفض طلب التفعيل')
+                        .setColor(0xB71C1C)
+                        .addFields(
+                            { name: '👤 اللاعب',  value: `<@${req.user_id}>`,         inline: true },
+                            { name: '🎮 ID سوني', value: `\`${req.sony_id}\``,         inline: true },
+                            { name: '❌ رفضه',    value: `<@${interaction.user.id}>`,  inline: true },
+                        )
+                        .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+
+                    await interaction.update({ embeds: [rejectEmbed], components: [] });
+
+                    try {
+                        const user = await client.users.fetch(req.user_id);
+                        await user.send(
+                            `❌ **تم رفض طلب تفعيلك في سيرفر ${interaction.guild.name}.**\n` +
+                            `> تواصل مع الإدارة لمعرفة السبب أو إعادة المحاولة.`
+                        );
+                    } catch (_) {}
+                }
+
+                await db.deleteActivationRequest(reqId);
+            } catch (e) {
+                console.error(e);
+                if (!interaction.replied && !interaction.deferred)
+                    interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         if (['bank_balance','bank_deposit','bank_withdraw','bank_transfer'].includes(interaction.customId)) {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
@@ -2091,6 +2165,61 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (interaction.isModalSubmit()) {
+
+        // ── طلب تفعيل الحساب ──────────────────────────────────────────────────
+        if (interaction.customId === 'activation_sony_modal') {
+            try {
+                const sonyId = interaction.fields.getTextInputValue('sony_id').trim();
+
+                const logChannelId = await db.getConfig('activation_log_channel');
+                if (!logChannelId)
+                    return interaction.reply({ content: '❌ لم يتم تعيين قناة التفعيل بعد. تواصل مع الإدارة.', flags: 64 });
+
+                const logChannel = interaction.guild.channels.cache.get(logChannelId);
+                if (!logChannel)
+                    return interaction.reply({ content: '❌ قناة التفعيل غير موجودة. تواصل مع الإدارة.', flags: 64 });
+
+                const req = await db.createActivationRequest(
+                    interaction.user.id,
+                    interaction.user.username,
+                    sonyId
+                );
+
+                const reqEmbed = new EmbedBuilder()
+                    .setTitle('🎮 طلب تفعيل جديد')
+                    .setColor(0x1565C0)
+                    .addFields(
+                        { name: '👤 اللاعب',          value: `<@${interaction.user.id}> (${interaction.user.username})`, inline: false },
+                        { name: '🎮 ID سوني (PSN)',   value: `\`${sonyId}\``, inline: true },
+                        { name: '🆔 Discord ID',      value: `\`${interaction.user.id}\``, inline: true },
+                    )
+                    .setThumbnail(interaction.user.displayAvatarURL())
+                    .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+
+                const approveBtn = new ButtonBuilder()
+                    .setCustomId(`activate_approve_${req.id}`)
+                    .setLabel('✅ تفعيل')
+                    .setStyle(ButtonStyle.Success);
+
+                const rejectBtn = new ButtonBuilder()
+                    .setCustomId(`activate_reject_${req.id}`)
+                    .setLabel('❌ رفض')
+                    .setStyle(ButtonStyle.Danger);
+
+                await logChannel.send({
+                    embeds: [reqEmbed],
+                    components: [new ActionRowBuilder().addComponents(approveBtn, rejectBtn)],
+                });
+
+                return interaction.reply({
+                    content: `✅ **تم إرسال طلب تفعيلك بنجاح!**\n> 🎮 **ID سوني:** \`${sonyId}\`\n> انتظر موافقة الإدارة.`,
+                    flags: 64
+                });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
+            }
+        }
 
         // ── رفع قضية جديدة ────────────────────────────────────────────────────
         if (interaction.customId === 'new_case_modal') {

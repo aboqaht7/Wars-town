@@ -1532,6 +1532,7 @@ module.exports = {
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,
     addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
+    createActivationRequest, getActivationRequest, deleteActivationRequest,
 };
 
 /* ─── جدول المخالفات ─── */
@@ -1574,4 +1575,38 @@ async function getExpiredViolations() {
 async function getViolationByUserId(userId) {
     const res = await pool.query(`SELECT * FROM violations WHERE user_id = $1 LIMIT 1`, [userId]);
     return res.rows[0] || null;
+}
+
+/* ─── جدول طلبات التفعيل ─── */
+async function initActivationTable() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS activation_requests (
+            id         SERIAL PRIMARY KEY,
+            user_id    TEXT NOT NULL UNIQUE,
+            username   TEXT NOT NULL,
+            sony_id    TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+    `);
+}
+initActivationTable().catch(console.error);
+
+async function createActivationRequest(userId, username, sonyId) {
+    await pool.query(
+        `INSERT INTO activation_requests (user_id, username, sony_id)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (user_id) DO UPDATE SET sony_id=$3, username=$2, created_at=NOW()`,
+        [userId, username, sonyId]
+    );
+    const res = await pool.query(`SELECT * FROM activation_requests WHERE user_id=$1`, [userId]);
+    return res.rows[0];
+}
+
+async function getActivationRequest(id) {
+    const res = await pool.query(`SELECT * FROM activation_requests WHERE id=$1`, [id]);
+    return res.rows[0] || null;
+}
+
+async function deleteActivationRequest(id) {
+    await pool.query(`DELETE FROM activation_requests WHERE id=$1`, [id]);
 }
