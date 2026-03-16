@@ -19,6 +19,7 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const payload = await buildJobs(db);
+        if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
         await interaction.reply({ content: '​', flags: 64 });
     },

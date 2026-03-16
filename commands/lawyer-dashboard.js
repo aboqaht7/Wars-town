@@ -13,7 +13,9 @@ module.exports = {
     },
 
     async slashExecute(interaction, db) {
-        await interaction.channel.send(await buildMain(db));
+        const main = await buildMain(db);
+        if (interaction._isReset) return interaction.message.edit(main);
+        await interaction.channel.send(main);
         await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };

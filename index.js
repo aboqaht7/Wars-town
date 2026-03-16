@@ -126,21 +126,11 @@ client.on('interactionCreate', async interaction => {
                 try {
                     await interaction.deferUpdate();
                     interaction._isReset = true;
-
-                    // اعتراض channel.send → تحويله لتعديل الرسالة الحالية
-                    const _origSend = interaction.channel.send.bind(interaction.channel);
-                    interaction.channel.send = async (data) => {
-                        interaction.channel.send = _origSend; // استعادة الأصل فوراً
-                        return interaction.message.edit(data).catch(() => _origSend(data));
-                    };
-
-                    // تجاهل الردود الصامتة (invisible ephemeral)
                     interaction.reply = async (data) => {
                         if (!data || data?.flags === 64 ||
                             data?.content === '\u200b' || data?.content === '​') return;
                         return interaction.editReply(data);
                     };
-
                     await command.slashExecute(interaction, db);
                 } catch (e) {
                     console.error(e);

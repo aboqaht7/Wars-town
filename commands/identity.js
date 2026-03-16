@@ -17,7 +17,9 @@ module.exports = {
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const { embed, menu } = await buildMain(interaction.user.id, db);
-        await interaction.channel.send({ embeds: [embed], components: [menu, resetRow('identity')] });
+        const main = { embeds: [embed], components: [menu, resetRow('identity')] };
+        if (interaction._isReset) return interaction.message.edit(main);
+        await interaction.channel.send(main);
         await interaction.reply({ content: '​', flags: 64 });
     }
 };
