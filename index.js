@@ -3017,22 +3017,48 @@ setInterval(async () => {
         const expired = await db.getExpiredViolations();
         if (!expired.length) return;
 
-        const roleId = await db.getConfig('violation_role_id');
+        const banRoleId        = await db.getConfig('violation_role_id');
+        const activationRoleId = await db.getConfig('activation_role_id');
+        const identityRoleId   = await db.getConfig('identity_role');
+
         for (const v of expired) {
             try {
                 const guild = client.guilds.cache.first();
                 if (!guild) continue;
                 const member = await guild.members.fetch(v.user_id).catch(() => null);
-                if (member && roleId) {
-                    const role = guild.roles.cache.get(roleId);
-                    if (role) await member.roles.remove(role).catch(() => {});
+
+                if (member) {
+                    // جمع الرتب المراد إعادتها
+                    const rolesToRestore = new Set();
+
+                    try {
+                        const saved = JSON.parse(v.saved_roles || '[]');
+                        saved.forEach(id => rolesToRestore.add(id));
+                    } catch (_) {}
+
+                    if (activationRoleId) rolesToRestore.add(activationRoleId);
+                    if (identityRoleId)   rolesToRestore.add(identityRoleId);
+                    if (banRoleId)        rolesToRestore.delete(banRoleId);
+
+                    // إزالة رتبة الباند
+                    if (banRoleId) {
+                        const banRole = guild.roles.cache.get(banRoleId);
+                        if (banRole) await member.roles.remove(banRole).catch(() => {});
+                    }
+
+                    // إعادة الرتب السابقة
+                    for (const roleId of rolesToRestore) {
+                        const role = guild.roles.cache.get(roleId);
+                        if (role) await member.roles.add(role).catch(() => {});
+                    }
                 }
+
                 await db.removeViolation(v.user_id);
 
                 // إشعار اللاعب
                 try {
                     const user = await client.users.fetch(v.user_id);
-                    await user.send(`✅ **انتهت مدة مخالفتك في سيرفر ${guild?.name || 'السيرفر'} — تم رفع الباند تلقائياً.**`);
+                    await user.send(`✅ **انتهت مدة مخالفتك في سيرفر ${guild?.name || 'السيرفر'} — تم رفع الباند وإعادة جميع رتبك تلقائياً.**`);
                 } catch (_) {}
             } catch (e) { console.error('violation cleanup error:', e); }
         }

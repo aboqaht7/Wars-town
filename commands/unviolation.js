@@ -10,23 +10,50 @@ module.exports = {
         if (!target)
             return message.reply('❌ استخدم: `-فك-مخالف @اللاعب`');
 
-        const roleId = await db.getConfig('violation_role_id');
-        if (!roleId)
-            return message.reply('❌ لم يتم تعيين رتبة المبند.');
+        const violation = await db.getViolationByUserId(target.id);
 
-        const role = message.guild.roles.cache.get(roleId);
-        if (role) await target.roles.remove(role).catch(() => {});
+        // جمع الرتب المراد إعادتها
+        const rolesToRestore = new Set();
+
+        if (violation?.saved_roles) {
+            try {
+                const saved = JSON.parse(violation.saved_roles);
+                saved.forEach(id => rolesToRestore.add(id));
+            } catch (_) {}
+        }
+
+        // رتبة التفعيل ورتبة الهوية دائماً
+        const activationRoleId = await db.getConfig('activation_role_id');
+        const identityRoleId   = await db.getConfig('identity_role');
+        if (activationRoleId) rolesToRestore.add(activationRoleId);
+        if (identityRoleId)   rolesToRestore.add(identityRoleId);
+
+        // رتبة الباند — نحذفها من القائمة إن وُجدت
+        const banRoleId = await db.getConfig('violation_role_id');
+        if (banRoleId) rolesToRestore.delete(banRoleId);
+
+        // تطبيق الرتب
+        for (const roleId of rolesToRestore) {
+            const role = message.guild.roles.cache.get(roleId);
+            if (role) await target.roles.add(role).catch(() => {});
+        }
+
+        // إزالة رتبة الباند
+        if (banRoleId) {
+            const banRole = message.guild.roles.cache.get(banRoleId);
+            if (banRole) await target.roles.remove(banRole).catch(() => {});
+        }
 
         await db.removeViolation(target.id);
 
         await message.channel.send(
-            `✅ **تم فك المخالفة عن ${target}**\n> **المنفذ:** ${message.author}`
+            `✅ **تم فك المخالفة عن ${target} وتمت استعادة جميع رتبه**\n> **المنفذ:** ${message.author}`
         );
 
         try {
             await target.send(
                 `✅ **تم رفع المخالفة عنك في سيرفر ${message.guild.name}**\n` +
-                `> تمت استعادة وصولك الكامل.`
+                `> تمت استعادة جميع رتبك السابقة بالكامل.`
             );
         } catch (_) {}
     }

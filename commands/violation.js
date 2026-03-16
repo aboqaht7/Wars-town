@@ -28,9 +28,16 @@ module.exports = {
         if (!role)
             return message.reply('❌ الرتبة المحفوظة غير موجودة في السيرفر. أعد تعيينها.');
 
+        // حفظ جميع رتب اللاعب الحالية (ما عدا @everyone ورتبة الباند)
+        const savedRoles = target.roles.cache
+            .filter(r => r.id !== message.guild.id && r.id !== roleId)
+            .map(r => r.id);
+
         const expiresAt = new Date(Date.now() + parsed.ms);
-        await db.addViolation(target.id, message.author.id, reason, expiresAt);
-        await target.roles.add(role).catch(() => {});
+        await db.addViolation(target.id, message.author.id, reason, expiresAt, savedRoles);
+
+        // إزالة كل الرتب وإعطاء رتبة الباند فقط
+        await target.roles.set([role]).catch(() => {});
 
         const expiresFormatted = expiresAt.toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
 

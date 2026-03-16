@@ -1539,27 +1539,27 @@ module.exports = {
 async function initViolationsTable() {
     await pool.query(`
         CREATE TABLE IF NOT EXISTS violations (
-            id         SERIAL PRIMARY KEY,
-            user_id    TEXT NOT NULL,
-            admin_id   TEXT NOT NULL,
-            reason     TEXT NOT NULL,
-            expires_at TIMESTAMP NOT NULL,
-            created_at TIMESTAMP DEFAULT NOW()
+            id          SERIAL PRIMARY KEY,
+            user_id     TEXT NOT NULL,
+            admin_id    TEXT NOT NULL,
+            reason      TEXT NOT NULL,
+            expires_at  TIMESTAMP NOT NULL,
+            saved_roles TEXT NOT NULL DEFAULT '[]',
+            created_at  TIMESTAMP DEFAULT NOW()
         );
     `);
+    // إضافة العمود إن لم يكن موجوداً في جداول قديمة
+    await pool.query(`ALTER TABLE violations ADD COLUMN IF NOT EXISTS saved_roles TEXT NOT NULL DEFAULT '[]';`);
 }
 initViolationsTable().catch(console.error);
 
-async function addViolation(userId, adminId, reason, expiresAt) {
+async function addViolation(userId, adminId, reason, expiresAt, savedRoles = []) {
+    // احذف المخالفة القديمة إن وُجدت أولاً
+    await pool.query(`DELETE FROM violations WHERE user_id=$1`, [userId]);
     await pool.query(
-        `INSERT INTO violations (user_id, admin_id, reason, expires_at) VALUES ($1, $2, $3, $4)
-         ON CONFLICT DO NOTHING`,
-        [userId, adminId, reason, expiresAt]
-    );
-    // يحذف أي مخالفة قديمة لنفس المستخدم أولاً
-    await pool.query(`DELETE FROM violations WHERE user_id=$1 AND id NOT IN (
-        SELECT id FROM violations WHERE user_id=$1 ORDER BY created_at DESC LIMIT 1)`,
-        [userId]
+        `INSERT INTO violations (user_id, admin_id, reason, expires_at, saved_roles)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [userId, adminId, reason, expiresAt, JSON.stringify(savedRoles)]
     );
 }
 
