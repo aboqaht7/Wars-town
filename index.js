@@ -1,4 +1,21 @@
 const fs = require('fs');
+
+/* ── منع تشغيل أكثر من نسخة واحدة ─────────────────────────────────────── */
+const PID_FILE = '/tmp/fantasy_bot.pid';
+if (fs.existsSync(PID_FILE)) {
+    const oldPid = parseInt(fs.readFileSync(PID_FILE, 'utf8').trim(), 10);
+    if (!isNaN(oldPid) && oldPid !== process.pid) {
+        try { process.kill(oldPid, 'SIGKILL'); console.log(`[PID] قُتلت النسخة القديمة (${oldPid})`); }
+        catch (_) {}
+    }
+}
+fs.writeFileSync(PID_FILE, String(process.pid));
+const cleanupPid = () => { try { fs.unlinkSync(PID_FILE); } catch (_) {} };
+process.on('exit',   cleanupPid);
+process.on('SIGTERM', () => { cleanupPid(); process.exit(0); });
+process.on('SIGINT',  () => { cleanupPid(); process.exit(0); });
+/* ───────────────────────────────────────────────────────────────────────── */
+
 const {
     Client, Collection, GatewayIntentBits, EmbedBuilder,
     ModalBuilder, TextInputBuilder, TextInputStyle,
@@ -3082,6 +3099,8 @@ client.on('messageCreate', async message => {
 client.on('error', (err) => console.error('Discord client error:', err));
 process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
 process.on('uncaughtException',  (err) => console.error('Uncaught exception:', err));
+process.on('SIGTERM', () => { console.log('SIGTERM received — exiting.'); process.exit(0); });
+process.on('SIGINT',  () => { console.log('SIGINT received — exiting.');  process.exit(0); });
 
 // ── فحص دوري كل دقيقة لرفع المخالفات المنتهية ──────────────────────────
 setInterval(async () => {
