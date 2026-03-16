@@ -8,7 +8,6 @@ const OPTIONS = [
     { label: '𝕏 منصة X', value: 'x_platform' },
     { label: '🎒 الحقيبة', value: 'bag' },
     { label: '🏦 البنك', value: 'bank' },
-    { label: '👮 الشرطة', value: 'police' },
     { label: '✈️ الرحلات والأحداث', value: 'events' },
     { label: '💼 الوظائف والأسواق', value: 'jobs' },
     { label: '🛒 سوق الأدوات', value: 'market' },
