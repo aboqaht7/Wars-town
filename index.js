@@ -108,6 +108,8 @@ const resetCommandMap = {
     قاضي: 'قاضي',
     'مهام-محامي': 'مهام-محامي',
     تفعيل: 'تفعيل',
+    تجميع: 'تجميع',
+    تصنيع: 'تصنيع',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -1102,6 +1104,33 @@ client.on('interactionCreate', async interaction => {
                 );
                 return interaction.showModal(modal);
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── تجميع الموارد ──────────────────────────────────────────────────────────
+        if (interaction.customId === 'gather_resources') {
+            try {
+                await interaction.deferUpdate();
+                const RESOURCES = [
+                    { name: 'ألمنيوم', emoji: '🔩' },
+                    { name: 'حديد',    emoji: '⚙️' },
+                    { name: 'خشب',     emoji: '🪵' },
+                    { name: 'أربطة',   emoji: '🪢' },
+                    { name: 'مسامير',  emoji: '📌' },
+                ];
+                const last      = await db.getLastGathered(interaction.user.id);
+                const available = last ? RESOURCES.filter(r => r.name !== last) : RESOURCES;
+                const picked    = available[Math.floor(Math.random() * available.length)];
+                const amount    = Math.floor(Math.random() * 19) + 2;
+
+                await db.setLastGathered(interaction.user.id, picked.name);
+                await db.addItem(interaction.user.id, picked.name, amount);
+
+                const displayName = interaction.member?.displayName || interaction.user.username;
+                await interaction.channel.send(
+                    `🪛 **${displayName}** جمّع **${amount}x ${picked.emoji} ${picked.name}** وأضافها إلى حقيبته!`
+                );
+            } catch (e) { console.error(e); }
+            return;
         }
 
         return;
@@ -2177,6 +2206,49 @@ client.on('interactionCreate', async interaction => {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
+        }
+
+        // ── تصنيع السلاح ───────────────────────────────────────────────────────────
+        if (interaction.customId === 'craft_weapon') {
+            try {
+                const CRAFT_RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
+                const CRAFT_WEAPONS = {
+                    craft_sns:     { name: 'Pistol SNS',    req: 200 },
+                    craft_vintage: { name: 'Pistol Vintage', req: 300 },
+                    craft_mkii:    { name: 'Pistol MK II',   req: 500 },
+                };
+                const weapon = CRAFT_WEAPONS[value];
+                if (!weapon) return interaction.reply({ content: '❌ خيار غير صالح.', flags: 64 });
+
+                // تحقق من الموارد وأعرض النقص إن وُجد
+                const missing = [];
+                for (const res of CRAFT_RESOURCES) {
+                    const qty = await db.getItemQty(interaction.user.id, res);
+                    if (qty < weapon.req) missing.push(`> ${res}: لديك **${qty}** / تحتاج **${weapon.req}**`);
+                }
+
+                if (missing.length) {
+                    return interaction.reply({
+                        content: `❌ **لا تملك موارد كافية لتصنيع ${weapon.name}**\n${missing.join('\n')}`,
+                        flags: 64,
+                    });
+                }
+
+                await interaction.deferUpdate();
+                for (const res of CRAFT_RESOURCES) {
+                    await db.removeItem(interaction.user.id, res, weapon.req);
+                }
+                await db.addItem(interaction.user.id, weapon.name, 1);
+
+                const displayName = interaction.member?.displayName || interaction.user.username;
+                await interaction.channel.send(
+                    `🔫 **${displayName}** صنّع **${weapon.name}** بنجاح وأضافه إلى حقيبته!`
+                );
+            } catch (e) {
+                console.error(e);
+                interaction.reply({ content: '❌ حدث خطأ أثناء التصنيع.', flags: 64 }).catch(() => {});
+            }
+            return;
         }
 
         const handler = menuHandlers[interaction.customId];

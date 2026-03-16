@@ -1533,7 +1533,41 @@ module.exports = {
     getJudges, addJudge, removeJudge, getJudgeById,
     addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
     createActivationRequest, getActivationRequest, deleteActivationRequest,
+    getLastGathered, setLastGathered, getItemQty,
 };
+
+/* ─── جدول آخر تجميع (لمنع التكرار) ─── */
+async function initGatheringTable() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS gathering_last (
+            user_id     TEXT PRIMARY KEY,
+            resource    TEXT NOT NULL,
+            updated_at  TIMESTAMP DEFAULT NOW()
+        );
+    `);
+}
+initGatheringTable().catch(console.error);
+
+async function getLastGathered(userId) {
+    const res = await pool.query('SELECT resource FROM gathering_last WHERE user_id=$1', [userId]);
+    return res.rows[0]?.resource || null;
+}
+
+async function setLastGathered(userId, resource) {
+    await pool.query(
+        `INSERT INTO gathering_last (user_id, resource, updated_at) VALUES ($1, $2, NOW())
+         ON CONFLICT (user_id) DO UPDATE SET resource=$2, updated_at=NOW()`,
+        [userId, resource]
+    );
+}
+
+async function getItemQty(discordId, itemName) {
+    const res = await pool.query(
+        'SELECT quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)',
+        [discordId, itemName]
+    );
+    return res.rows[0] ? Number(res.rows[0].quantity) : 0;
+}
 
 /* ─── جدول المخالفات ─── */
 async function initViolationsTable() {
