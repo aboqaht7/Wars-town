@@ -22,10 +22,8 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         const main = await buildMain(db);
-        // إذا جاء الطلب من زر Reset (interaction مؤجل مسبقاً) → حدّث الرسالة الموجودة فقط
-        if (interaction.deferred) {
-            return interaction.editReply(main);
-        }
+        // جاء من زر Reset → عدّل الرسالة الحالية مباشرةً
+        if (interaction._isReset) return interaction.message.edit(main);
         // طلب slash عادي → أرسل للروم المحدد
         const channelId = await db.getConfig('lawyer_tasks_channel');
         const target = (channelId && interaction.guild.channels.cache.get(channelId)) || interaction.channel;

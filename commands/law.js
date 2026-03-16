@@ -13,9 +13,10 @@ module.exports = {
     },
 
     async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
         const main = await build(db);
-        if (interaction.deferred) return interaction.editReply(main);
+        // جاء من زر Reset → عدّل الرسالة الحالية مباشرةً
+        if (interaction._isReset) return interaction.message.edit(main);
+        await db.ensureUser(interaction.user.id, interaction.user.username);
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         await interaction.channel.send(main);

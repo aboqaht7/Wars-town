@@ -125,7 +125,14 @@ client.on('interactionCreate', async interaction => {
             if (command?.slashExecute) {
                 try {
                     await interaction.deferUpdate();
-                    interaction.reply = (data) => interaction.editReply(data);
+                    // نمرّر علامة لـ slashExecute تخبره أنه جاء من زر Reset
+                    // حتى يعدّل الرسالة الحالية بدلاً من إرسال رسالة جديدة
+                    interaction._isReset = true;
+                    interaction.reply = async (data) => {
+                        // إذا كانت رسالة الـ flags: 64 الصامتة → تجاهلها
+                        if (data?.flags === 64 || data?.content === '\u200b' || data?.content === '​') return;
+                        return interaction.editReply(data);
+                    };
                     await command.slashExecute(interaction, db);
                 } catch (e) {
                     console.error(e);
