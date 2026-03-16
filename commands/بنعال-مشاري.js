@@ -9,6 +9,6 @@ module.exports = {
         if (!target.bannable) return message.reply('❌ لا أستطيع طرد هذا اللاعب.');
         const username = target.user.username;
         await target.ban({ reason: `تشهير نهائي — بواسطة ${message.author.username}`, deleteMessageSeconds: 0 });
-        await message.channel.send(`🚫 تم طرد **${username}** من السيرفر نهائياً.`);
+        await message.channel.send(`🚫 تم طرد الحثالة **${username}** من السيرفر نهائياً.`);
     }
 };
