@@ -2860,4 +2860,32 @@ client.on('error', (err) => console.error('Discord client error:', err));
 process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
 process.on('uncaughtException',  (err) => console.error('Uncaught exception:', err));
 
+// ── فحص دوري كل دقيقة لرفع المخالفات المنتهية ──────────────────────────
+setInterval(async () => {
+    try {
+        const expired = await db.getExpiredViolations();
+        if (!expired.length) return;
+
+        const roleId = await db.getConfig('violation_role_id');
+        for (const v of expired) {
+            try {
+                const guild = client.guilds.cache.first();
+                if (!guild) continue;
+                const member = await guild.members.fetch(v.user_id).catch(() => null);
+                if (member && roleId) {
+                    const role = guild.roles.cache.get(roleId);
+                    if (role) await member.roles.remove(role).catch(() => {});
+                }
+                await db.removeViolation(v.user_id);
+
+                // إشعار اللاعب
+                try {
+                    const user = await client.users.fetch(v.user_id);
+                    await user.send(`✅ **انتهت مدة مخالفتك في سيرفر ${guild?.name || 'السيرفر'} — تم رفع الباند تلقائياً.**`);
+                } catch (_) {}
+            } catch (e) { console.error('violation cleanup error:', e); }
+        }
+    } catch (e) { console.error('violation interval error:', e); }
+}, 60_000);
+
 client.login(process.env.DISCORD_TOKEN);

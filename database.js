@@ -1531,4 +1531,47 @@ module.exports = {
     getLawyers, addLawyer, removeLawyer,
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,
+    addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
 };
+
+/* ─── جدول المخالفات ─── */
+async function initViolationsTable() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS violations (
+            id         SERIAL PRIMARY KEY,
+            user_id    TEXT NOT NULL,
+            admin_id   TEXT NOT NULL,
+            reason     TEXT NOT NULL,
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+    `);
+}
+initViolationsTable().catch(console.error);
+
+async function addViolation(userId, adminId, reason, expiresAt) {
+    await pool.query(
+        `INSERT INTO violations (user_id, admin_id, reason, expires_at) VALUES ($1, $2, $3, $4)
+         ON CONFLICT DO NOTHING`,
+        [userId, adminId, reason, expiresAt]
+    );
+    // يحذف أي مخالفة قديمة لنفس المستخدم أولاً
+    await pool.query(`DELETE FROM violations WHERE user_id=$1 AND id NOT IN (
+        SELECT id FROM violations WHERE user_id=$1 ORDER BY created_at DESC LIMIT 1)`,
+        [userId]
+    );
+}
+
+async function removeViolation(userId) {
+    await pool.query(`DELETE FROM violations WHERE user_id = $1`, [userId]);
+}
+
+async function getExpiredViolations() {
+    const res = await pool.query(`SELECT * FROM violations WHERE expires_at <= NOW()`);
+    return res.rows;
+}
+
+async function getViolationByUserId(userId) {
+    const res = await pool.query(`SELECT * FROM violations WHERE user_id = $1 LIMIT 1`, [userId]);
+    return res.rows[0] || null;
+}
