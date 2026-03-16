@@ -1850,7 +1850,8 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
 
                 const { buildTasks } = require('./commands/lawyer-tasks');
-                return interaction.reply(await buildTasks(db, lawyer.discord_id, lawyer.lawyer_name));
+                const dash = await buildTasks(db, lawyer.discord_id, lawyer.lawyer_name);
+                return interaction.reply({ ...dash, flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 

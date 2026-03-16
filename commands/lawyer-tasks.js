@@ -179,5 +179,5 @@ async function buildPrivate(db, lawyerId, lawyerName) {
         }
     }
 
-    return { embeds: [embed], components, flags: 64 };
+    return { embeds: [embed], components };
 }
