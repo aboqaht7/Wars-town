@@ -14,13 +14,10 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
-        const judgeRoleId = await db.getConfig('judge_role_id');
-        if (judgeRoleId && !interaction.member.roles.cache.has(judgeRoleId))
-            return interaction.reply({ content: '❌ هذا الأمر للقضاة المعتمدين فقط.', flags: 64 });
         const judge = await db.getJudgeById(interaction.user.id);
         if (!judge) return interaction.reply({ content: '❌ أنت لست مسجلاً كقاضٍ معتمد.', flags: 64 });
         await interaction.channel.send(await build(db, interaction.user.id, judge.judge_name));
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };
 
