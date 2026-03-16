@@ -14,9 +14,11 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
+        const main = await build(db);
+        if (interaction.deferred) return interaction.editReply(main);
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
-        await interaction.channel.send(await build(db));
+        await interaction.channel.send(main);
         await interaction.reply({ content: '​', flags: 64 });
     },
 };
