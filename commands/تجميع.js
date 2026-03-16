@@ -11,14 +11,8 @@ const RESOURCES = [
 function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('🪛 نظام التجميع')
-        .setDescription(
-            '> اضغط على الزر أدناه لجمع موارد عشوائية تُضاف لحقيبتك مباشرة.\n\n' +
-            '**الموارد المتاحة:**\n' +
-            RESOURCES.map(r => `> ${r.emoji} **${r.name}**`).join('\n') + '\n\n' +
-            '> ⚠️ لن تحصل على نفس المورد مرتين متتاليتين.'
-        )
-        .setColor(0x2ecc71)
-        .setFooter({ text: 'الموارد تُستخدم في نظام التصنيع' });
+        .setDescription('اضغط على الزر أدناه لجمع موارد عشوائية تُضاف لحقيبتك مباشرة.')
+        .setColor(0x2ecc71);
 }
 
 function buildRow() {

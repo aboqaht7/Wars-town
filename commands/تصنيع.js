@@ -8,14 +8,11 @@ const WEAPONS = [
     { value: 'craft_mkii',    label: '🔫 Pistol MK II',    description: 'يحتاج 500 من كل مورد', req: 500 },
 ];
 
-const CRAFT_IMAGE = '';
-
 function buildEmbed() {
-    const embed = new EmbedBuilder()
+    return new EmbedBuilder()
         .setTitle('🏭 نظام التصنيع')
+        .setDescription('اختر المسدس الذي تريد تصنيعه من القائمة أدناه.')
         .setColor(0xe74c3c);
-    if (CRAFT_IMAGE) embed.setImage(CRAFT_IMAGE);
-    return embed;
 }
 
 function buildRow() {
