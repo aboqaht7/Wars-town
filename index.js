@@ -894,6 +894,28 @@ client.on('interactionCreate', async interaction => {
                         RETAINER_FEE,
                         `بدل توكيل — قضية ${req.case_number}`
                     );
+
+                    // ✉️ إرسال تفاصيل الموكّل والقضية للمحامي في الخاص
+                    try {
+                        const fullCase = await db.getCaseById(req.case_id);
+                        const lawyerUser = await interaction.client.users.fetch(interaction.user.id);
+                        const caseEmbed = new EmbedBuilder()
+                            .setTitle('📂 تفاصيل القضية الجديدة')
+                            .setColor(0x0D47A1)
+                            .setDescription('لقد قبلت هذا التوكيل. فيما يلي تفاصيل الموكّل والقضية:')
+                            .addFields(
+                                { name: '🔢 رقم القضية', value: fullCase?.case_number || req.case_number, inline: true },
+                                { name: '📌 عنوان القضية', value: fullCase?.title || req.case_title, inline: true },
+                                { name: '👤 اسم الموكّل', value: req.plaintiff_name, inline: true },
+                                { name: '🪪 معرّف الموكّل', value: `<@${req.plaintiff_id}>`, inline: true },
+                                { name: '🎯 المدّعى عليه', value: fullCase?.defendant || '—', inline: true },
+                                { name: '📋 وصف القضية', value: fullCase?.description || '—', inline: false },
+                                { name: '🗂️ الأدلة', value: fullCase?.evidence || '—', inline: false },
+                            )
+                            .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+                            .setTimestamp();
+                        await lawyerUser.send({ embeds: [caseEmbed] });
+                    } catch (_) {}
                 }
 
                 // إشعار الموكّل
