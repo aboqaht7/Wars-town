@@ -110,12 +110,7 @@ const resetCommandMap = {
     تفعيل: 'تفعيل',
 };
 
-const _handledInteractions = new Set();
 client.on('interactionCreate', async interaction => {
-    if (_handledInteractions.has(interaction.id)) return;
-    _handledInteractions.add(interaction.id);
-    setTimeout(() => _handledInteractions.delete(interaction.id), 10_000);
-
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('reset_')) {
             const key = interaction.customId.replace('reset_', '');
@@ -2989,12 +2984,7 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-const _handledMessages = new Set();
 client.on('messageCreate', async message => {
-    if (_handledMessages.has(message.id)) return;
-    _handledMessages.add(message.id);
-    setTimeout(() => _handledMessages.delete(message.id), 10_000);
-
     // حذف رسائل البوت تلقائياً بعد دقيقة
     if (message.author.id === client.user?.id) {
         setTimeout(() => message.delete().catch(() => {}), 60_000);
