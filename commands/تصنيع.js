@@ -8,19 +8,14 @@ const WEAPONS = [
     { value: 'craft_mkii',    label: '🔫 Pistol MK II',    description: 'يحتاج 500 من كل مورد', req: 500 },
 ];
 
+const CRAFT_IMAGE = '';
+
 function buildEmbed() {
-    return new EmbedBuilder()
+    const embed = new EmbedBuilder()
         .setTitle('🏭 نظام التصنيع')
-        .setDescription(
-            '> اختر المسدس الذي تريد تصنيعه من القائمة أدناه.\n\n' +
-            '**المسدسات المتاحة:**\n' +
-            WEAPONS.map(w => `> ${w.label} — **${w.req}** من كل مورد`).join('\n') + '\n\n' +
-            '**الموارد المطلوبة لكل مسدس:**\n' +
-            '> 🔩 ألمنيوم | ⚙️ حديد | 🪵 خشب | 🪢 أربطة | 📌 مسامير\n\n' +
-            '> 💡 احصل على الموارد عبر `/تجميع`'
-        )
-        .setColor(0xe74c3c)
-        .setFooter({ text: 'المسدسات تُضاف لحقيبتك مباشرة بعد التصنيع' });
+        .setColor(0xe74c3c);
+    if (CRAFT_IMAGE) embed.setImage(CRAFT_IMAGE);
+    return embed;
 }
 
 function buildRow() {
