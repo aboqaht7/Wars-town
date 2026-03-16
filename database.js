@@ -1234,6 +1234,31 @@ async function assignLawyer(id, lawyerId, lawyerName) {
         [id, lawyerId, lawyerName]);
 }
 
+async function getCasesByLawyer(lawyerId) {
+    const res = await query(
+        `SELECT * FROM cases WHERE lawyer_id=$1 ORDER BY updated_at DESC`,
+        [lawyerId]
+    );
+    return res.rows;
+}
+
+async function chargeLawyerFee(plaintiffId, lawyerId, amount, note) {
+    const plaintiff = await getActiveIdentity(plaintiffId);
+    if (!plaintiff) return { success: false, error: 'الموكّل غير مسجل في البنك.' };
+    if (Number(plaintiff.balance) < amount)
+        return { success: false, error: `رصيد الموكّل غير كافٍ. رصيده: \`${Number(plaintiff.balance).toLocaleString()} ريال\`` };
+    const lawyer = await getActiveIdentity(lawyerId);
+    if (!lawyer) return { success: false, error: 'المحامي لا يملك شخصية نشطة.' };
+
+    await query('UPDATE identities SET balance = balance - $1 WHERE discord_id=$2 AND slot=$3',
+        [amount, plaintiffId, plaintiff.slot]);
+    await query('UPDATE identities SET balance = balance + $1 WHERE iban=$2',
+        [amount, lawyer.iban]);
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ($1,$2,$3,'transfer',$4)`,
+        [plaintiff.iban, lawyer.iban, amount, note]);
+    return { success: true };
+}
+
 // ─── LAWYER REQUESTS ──────────────────────────────────────────────────────────
 async function initLawyerRequestsTable() {
     await query(`
@@ -1472,6 +1497,7 @@ module.exports = {
     CASE_STATUS,
     createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById, getCasesByJudge,
     acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
+    getCasesByLawyer, chargeLawyerFee,
     getLawyers, addLawyer, removeLawyer,
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,

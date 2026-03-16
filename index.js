@@ -883,21 +883,41 @@ client.on('interactionCreate', async interaction => {
                 const allLawyers = await db.getLawyers();
                 const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
 
+                let feeResult = null;
                 if (isAccept) {
                     await db.assignLawyer(req.case_id, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                    // خصم بدل التوكيل الثابت 5000 تلقائياً
+                    const { RETAINER_FEE } = require('./commands/lawyer-tasks');
+                    feeResult = await db.chargeLawyerFee(
+                        req.plaintiff_id,
+                        interaction.user.id,
+                        RETAINER_FEE,
+                        `بدل توكيل — قضية ${req.case_number}`
+                    );
                 }
 
                 // إشعار الموكّل
                 try {
+                    const { RETAINER_FEE } = require('./commands/lawyer-tasks');
                     const plaintiffUser = await interaction.client.users.fetch(req.plaintiff_id);
+                    const dmFields = [
+                        { name: '🔢 رقم القضية', value: req.case_number,              inline: true },
+                        { name: '📌 العنوان',     value: req.case_title,               inline: true },
+                        { name: '👨‍⚖️ المحامي',   value: lawyer?.lawyer_name || '—', inline: true },
+                    ];
+                    if (isAccept) {
+                        dmFields.push({
+                            name: '💰 بدل التوكيل',
+                            value: feeResult?.success
+                                ? `✅ تم خصم **${RETAINER_FEE.toLocaleString()} ريال** من حسابك`
+                                : `⚠️ ${feeResult?.error || 'تعذّر خصم بدل التوكيل'}`,
+                            inline: false,
+                        });
+                    }
                     const dmEmbed = new EmbedBuilder()
                         .setTitle(isAccept ? '✅ تم قبول طلب التوكيل' : '❌ تم رفض طلب التوكيل')
                         .setColor(isAccept ? 0x1B5E20 : 0xB71C1C)
-                        .addFields(
-                            { name: '🔢 رقم القضية', value: req.case_number,              inline: true },
-                            { name: '📌 العنوان',     value: req.case_title,               inline: true },
-                            { name: '👨‍⚖️ المحامي',   value: lawyer?.lawyer_name || '—', inline: true },
-                        )
+                        .addFields(...dmFields)
                         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
@@ -905,6 +925,51 @@ client.on('interactionCreate', async interaction => {
                 // تحديث اللوحة
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const newDash = await buildTasks(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                return interaction.update(newDash);
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── طلب أتعاب إضافية 10,000 ───────────────────────────────────────────
+        if (interaction.customId.startsWith('lawyer_atab_')) {
+            try {
+                const caseId = Number(interaction.customId.replace('lawyer_atab_', ''));
+                const c = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (c.lawyer_id !== interaction.user.id)
+                    return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
+
+                const { ATAB_FEE } = require('./commands/lawyer-tasks');
+                const result = await db.chargeLawyerFee(
+                    c.plaintiff_id,
+                    interaction.user.id,
+                    ATAB_FEE,
+                    `أتعاب محاماة — قضية ${c.case_number}`
+                );
+
+                if (!result.success)
+                    return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+
+                // إشعار الموكّل بالأتعاب
+                try {
+                    const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
+                    const dmEmbed = new EmbedBuilder()
+                        .setTitle('💼 تم خصم أتعاب المحاماة')
+                        .setColor(0xE65100)
+                        .addFields(
+                            { name: '🔢 رقم القضية', value: c.case_number,              inline: true },
+                            { name: '📌 العنوان',     value: c.title,                   inline: true },
+                            { name: '👨‍⚖️ المحامي',   value: c.lawyer_name || '—',     inline: true },
+                            { name: '💰 المبلغ المخصوم', value: `**${ATAB_FEE.toLocaleString()} ريال**`, inline: false },
+                        )
+                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                    await plaintiffUser.send({ embeds: [dmEmbed] });
+                } catch (_) {}
+
+                // تحديث اللوحة
+                const allLawyers = await db.getLawyers();
+                const lawyerData = allLawyers.find(l => l.discord_id === interaction.user.id);
+                const { buildTasks } = require('./commands/lawyer-tasks');
+                const newDash = await buildTasks(db, interaction.user.id, lawyerData?.lawyer_name || interaction.user.username);
                 return interaction.update(newDash);
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }

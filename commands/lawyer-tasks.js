@@ -4,6 +4,9 @@ const {
 } = require('discord.js');
 const { resetRow } = require('../utils');
 
+const RETAINER_FEE = 5000;
+const ATAB_FEE     = 10000;
+
 module.exports = {
     name: 'مهام-محامي',
     data: new SlashCommandBuilder()
@@ -36,40 +39,37 @@ module.exports = {
 };
 
 module.exports.buildTasks = build;
+module.exports.RETAINER_FEE = RETAINER_FEE;
+module.exports.ATAB_FEE     = ATAB_FEE;
 
 async function build(db, lawyerId, lawyerName) {
-    const requests = await db.getLawyerRequests(lawyerId);
-    const img      = await db.getImage('محاماة');
+    const requests     = await db.getLawyerRequests(lawyerId);
+    const activeCases  = await db.getCasesByLawyer(lawyerId);
+    const img          = await db.getImage('محاماة');
 
     const embed = new EmbedBuilder()
-        .setTitle('📋 مهام المحامي — طلبات التوكيل')
+        .setTitle('📋 مهام المحامي')
         .setColor(0x0D47A1)
         .setAuthor({ name: `المحامي: ${lawyerName}` })
-        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setFooter({ text: `بدل التوكيل الثابت: ${RETAINER_FEE.toLocaleString()} ريال • نظام المحاماة • بوت FANTASY` })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
 
     const components = [];
 
-    if (!requests.length) {
-        embed.setDescription('> 📭 لا توجد طلبات توكيل معلقة حالياً');
-    } else {
-        embed.setDescription(`> 📬 لديك **${requests.length}** طلب توكيل معلق`);
+    /* ── قسم 1: طلبات التوكيل المعلقة ── */
+    if (requests.length) {
+        embed.addFields({
+            name: `📬 طلبات التوكيل المعلقة (${requests.length})`,
+            value: requests.slice(0, 8).map((r, i) =>
+                `**${i + 1}.** 📁 ${r.case_number} — ${r.case_title}\n` +
+                `> 👤 الموكّل: **${r.plaintiff_name}** (<@${r.plaintiff_id}>)\n` +
+                `> 💰 بدل التوكيل: **${RETAINER_FEE.toLocaleString()} ريال** (يُخصم تلقائياً عند القبول)`
+            ).join('\n\n'),
+            inline: false,
+        });
 
-        // أول 8 طلبات كحقول تفصيلية
-        embed.addFields(
-            requests.slice(0, 8).map((r, i) => ({
-                name: `${i + 1}. 📁 ${r.case_number} — ${r.case_title}`,
-                value: [
-                    `👤 **الموكّل:** ${r.plaintiff_name} (<@${r.plaintiff_id}>)`,
-                    `📌 **موضوع القضية:** ${r.case_title}`,
-                ].join('\n'),
-                inline: false,
-            }))
-        );
-
-        // أزرار قبول / رفض لكل طلب (حتى 4)
         for (const r of requests.slice(0, 4)) {
             components.push(
                 new ActionRowBuilder().addComponents(
@@ -81,6 +81,41 @@ async function build(db, lawyerId, lawyerName) {
                         .setCustomId(`lawyer_req_reject_${r.id}`)
                         .setLabel(`❌ رفض — ${r.case_number}`)
                         .setStyle(ButtonStyle.Danger),
+                )
+            );
+        }
+    } else {
+        embed.addFields({
+            name: '📬 طلبات التوكيل المعلقة',
+            value: '> 📭 لا توجد طلبات معلقة حالياً',
+            inline: false,
+        });
+    }
+
+    /* ── قسم 2: القضايا الجارية مع زر الأتعاب ── */
+    if (activeCases.length) {
+        embed.addFields({
+            name: `⚖️ قضاياي الجارية (${activeCases.length})`,
+            value: activeCases.slice(0, 6).map((c, i) =>
+                `**${i + 1}.** 📁 ${c.case_number} — ${c.title}\n` +
+                `> 👤 الموكّل: **${c.plaintiff_name}** • الحالة: **${db.CASE_STATUS?.[c.status] || c.status}**`
+            ).join('\n\n'),
+            inline: false,
+        });
+
+        embed.addFields({
+            name: '💼 حق الأتعاب',
+            value: `> إذا كانت القضية طويلة ومتعبة يحق لك طلب **${ATAB_FEE.toLocaleString()} ريال** أتعاباً إضافية`,
+            inline: false,
+        });
+
+        for (const c of activeCases.slice(0, 3)) {
+            components.push(
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`lawyer_atab_${c.id}`)
+                        .setLabel(`💰 طلب أتعاب ${ATAB_FEE.toLocaleString()} — ${c.case_number}`)
+                        .setStyle(ButtonStyle.Primary),
                 )
             );
         }
