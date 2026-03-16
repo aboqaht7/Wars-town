@@ -1230,8 +1230,10 @@ async function issueVerdict(id, verdict, verdictBy) {
 }
 
 async function assignLawyer(id, lawyerId, lawyerName) {
-    await query(`UPDATE cases SET lawyer_id=$2, lawyer_name=$3, updated_at=NOW() WHERE id=$1`,
-        [id, lawyerId, lawyerName]);
+    await query(
+        `UPDATE cases SET lawyer_id=$2, lawyer_name=$3, lawyer_assigned_at=NOW(), updated_at=NOW() WHERE id=$1`,
+        [id, lawyerId, lawyerName]
+    );
 }
 
 async function getCasesByLawyer(lawyerId) {

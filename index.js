@@ -938,6 +938,13 @@ client.on('interactionCreate', async interaction => {
                 if (c.lawyer_id !== interaction.user.id)
                     return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
 
+                // ✅ شرط 15 يوم
+                const DAYS_REQUIRED = 15;
+                const assignedAt = c.lawyer_assigned_at ? new Date(c.lawyer_assigned_at).getTime() : null;
+                const daysPassed  = assignedAt ? Math.floor((Date.now() - assignedAt) / 86_400_000) : 0;
+                if (daysPassed < DAYS_REQUIRED)
+                    return interaction.reply({ content: `⏳ لم يحن وقت المطالبة بالأتعاب بعد — يتبقى **${DAYS_REQUIRED - daysPassed} يوم**.`, flags: 64 });
+
                 const { ATAB_FEE } = require('./commands/lawyer-tasks');
                 const result = await db.chargeLawyerFee(
                     c.plaintiff_id,

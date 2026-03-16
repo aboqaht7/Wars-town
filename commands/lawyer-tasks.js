@@ -94,28 +94,50 @@ async function build(db, lawyerId, lawyerName) {
 
     /* ── قسم 2: القضايا الجارية مع زر الأتعاب ── */
     if (activeCases.length) {
+        const now = Date.now();
+        const DAYS_REQUIRED = 15;
+
+        const caseLines = activeCases.slice(0, 6).map((c, i) => {
+            const assignedAt = c.lawyer_assigned_at ? new Date(c.lawyer_assigned_at).getTime() : null;
+            const daysPassed = assignedAt ? Math.floor((now - assignedAt) / 86_400_000) : null;
+            const eligible   = daysPassed !== null && daysPassed >= DAYS_REQUIRED;
+            const daysLeft   = daysPassed !== null ? Math.max(0, DAYS_REQUIRED - daysPassed) : DAYS_REQUIRED;
+
+            return (
+                `**${i + 1}.** 📁 ${c.case_number} — ${c.title}\n` +
+                `> 👤 الموكّل: **${c.plaintiff_name}** • الحالة: **${db.CASE_STATUS?.[c.status] || c.status}**\n` +
+                (eligible
+                    ? `> ✅ مضى ${daysPassed} يوماً — يحق لك المطالبة بالأتعاب`
+                    : `> ⏳ يتبقى **${daysLeft} يوم** لاستحقاق الأتعاب`)
+            );
+        });
+
         embed.addFields({
             name: `⚖️ قضاياي الجارية (${activeCases.length})`,
-            value: activeCases.slice(0, 6).map((c, i) =>
-                `**${i + 1}.** 📁 ${c.case_number} — ${c.title}\n` +
-                `> 👤 الموكّل: **${c.plaintiff_name}** • الحالة: **${db.CASE_STATUS?.[c.status] || c.status}**`
-            ).join('\n\n'),
+            value: caseLines.join('\n\n'),
             inline: false,
         });
 
         embed.addFields({
             name: '💼 حق الأتعاب',
-            value: `> إذا كانت القضية طويلة ومتعبة يحق لك طلب **${ATAB_FEE.toLocaleString()} ريال** أتعاباً إضافية`,
+            value: `> بعد مرور **${DAYS_REQUIRED} يوماً** على القضية يحق لك طلب **${ATAB_FEE.toLocaleString()} ريال** أتعاباً إضافية`,
             inline: false,
         });
 
         for (const c of activeCases.slice(0, 3)) {
+            const assignedAt = c.lawyer_assigned_at ? new Date(c.lawyer_assigned_at).getTime() : null;
+            const daysPassed = assignedAt ? Math.floor((now - assignedAt) / 86_400_000) : 0;
+            const eligible   = daysPassed >= DAYS_REQUIRED;
+
             components.push(
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`lawyer_atab_${c.id}`)
-                        .setLabel(`💰 طلب أتعاب ${ATAB_FEE.toLocaleString()} — ${c.case_number}`)
-                        .setStyle(ButtonStyle.Primary),
+                        .setLabel(eligible
+                            ? `💰 طلب أتعاب ${ATAB_FEE.toLocaleString()} — ${c.case_number}`
+                            : `⏳ الأتعاب بعد ${DAYS_REQUIRED - daysPassed} يوم — ${c.case_number}`)
+                        .setStyle(eligible ? ButtonStyle.Primary : ButtonStyle.Secondary)
+                        .setDisabled(!eligible),
                 )
             );
         }
