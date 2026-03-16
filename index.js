@@ -864,6 +864,48 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        // ── قبول/رفض طلب التوكيل (أزرار لوحة المحامي) ───────────────────────
+        if (interaction.customId.startsWith('lawyer_req_accept_') || interaction.customId.startsWith('lawyer_req_reject_')) {
+            try {
+                const isAccept = interaction.customId.startsWith('lawyer_req_accept_');
+                const reqId    = parseInt((isAccept
+                    ? interaction.customId.replace('lawyer_req_accept_', '')
+                    : interaction.customId.replace('lawyer_req_reject_', '')));
+                const req = await db.getLawyerRequestById(reqId);
+                if (!req) return interaction.reply({ content: '❌ الطلب غير موجود أو انتهت صلاحيته.', flags: 64 });
+                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: '❌ هذا الطلب ليس موجهاً لك.', flags: 64 });
+                if (req.status !== 'pending') return interaction.reply({ content: '❌ تم البت في هذا الطلب مسبقاً.', flags: 64 });
+
+                await db.updateLawyerRequest(reqId, isAccept ? 'accepted' : 'rejected');
+                const allLawyers = await db.getLawyers();
+                const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
+
+                if (isAccept) {
+                    await db.assignLawyer(req.case_id, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                }
+
+                // إشعار الموكّل
+                try {
+                    const plaintiffUser = await interaction.client.users.fetch(req.plaintiff_id);
+                    const dmEmbed = new EmbedBuilder()
+                        .setTitle(isAccept ? '✅ تم قبول طلب التوكيل' : '❌ تم رفض طلب التوكيل')
+                        .setColor(isAccept ? 0x1B5E20 : 0xB71C1C)
+                        .addFields(
+                            { name: '🔢 رقم القضية', value: req.case_number,              inline: true },
+                            { name: '📌 العنوان',     value: req.case_title,               inline: true },
+                            { name: '👨‍⚖️ المحامي',   value: lawyer?.lawyer_name || '—', inline: true },
+                        )
+                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                    await plaintiffUser.send({ embeds: [dmEmbed] });
+                } catch (_) {}
+
+                // تحديث اللوحة
+                const { buildTasks } = require('./commands/lawyer-tasks');
+                const newDash = await buildTasks(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
+                return interaction.update(newDash);
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
         return;
     }
 
@@ -1740,48 +1782,6 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                 const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
-        }
-
-        // ── قبول/رفض طلب التوكيل (أزرار لوحة المحامي) ───────────────────────
-        if (interaction.customId.startsWith('lawyer_req_accept_') || interaction.customId.startsWith('lawyer_req_reject_')) {
-            try {
-                const isAccept = interaction.customId.startsWith('lawyer_req_accept_');
-                const reqId    = parseInt((isAccept
-                    ? interaction.customId.replace('lawyer_req_accept_', '')
-                    : interaction.customId.replace('lawyer_req_reject_', '')));
-                const req = await db.getLawyerRequestById(reqId);
-                if (!req) return interaction.reply({ content: '❌ الطلب غير موجود أو انتهت صلاحيته.', flags: 64 });
-                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: '❌ هذا الطلب ليس موجهاً لك.', flags: 64 });
-                if (req.status !== 'pending') return interaction.reply({ content: '❌ تم البت في هذا الطلب مسبقاً.', flags: 64 });
-
-                await db.updateLawyerRequest(reqId, isAccept ? 'accepted' : 'rejected');
-                const allLawyers = await db.getLawyers();
-                const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
-
-                if (isAccept) {
-                    await db.assignLawyer(req.case_id, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
-                }
-
-                // إشعار الموكّل
-                try {
-                    const plaintiffUser = await interaction.client.users.fetch(req.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder()
-                        .setTitle(isAccept ? '✅ تم قبول طلب التوكيل' : '❌ تم رفض طلب التوكيل')
-                        .setColor(isAccept ? 0x1B5E20 : 0xB71C1C)
-                        .addFields(
-                            { name: '🔢 رقم القضية', value: req.case_number,              inline: true },
-                            { name: '📌 العنوان',     value: req.case_title,               inline: true },
-                            { name: '👨‍⚖️ المحامي',   value: lawyer?.lawyer_name || '—', inline: true },
-                        )
-                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
-                    await plaintiffUser.send({ embeds: [dmEmbed] });
-                } catch (_) {}
-
-                // تحديث اللوحة
-                const { buildTasks } = require('./commands/lawyer-tasks');
-                const newDash = await buildTasks(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
-                return interaction.update(newDash);
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
