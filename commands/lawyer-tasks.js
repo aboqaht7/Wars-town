@@ -1,6 +1,7 @@
 const {
     SlashCommandBuilder, EmbedBuilder,
-    ActionRowBuilder, ButtonBuilder, ButtonStyle
+    ActionRowBuilder, ButtonBuilder, ButtonStyle,
+    StringSelectMenuBuilder,
 } = require('discord.js');
 const { resetRow } = require('../utils');
 
@@ -11,47 +12,76 @@ module.exports = {
     name: 'مهام-محامي',
     data: new SlashCommandBuilder()
         .setName('مهام-محامي')
-        .setDescription('⚖️ عرض طلبات التوكيل الخاصة بك وقبولها أو رفضها'),
+        .setDescription('⚖️ لوحة مهام المحامين — اختر اسمك من القائمة'),
 
     async execute(message, args, db) {
-        await db.ensureUser(message.author.id, message.author.username);
-        const allLawyers = await db.getLawyers();
-        const lawyer = allLawyers.find(l => l.discord_id === message.author.id);
-        if (!lawyer) return message.reply('❌ أنت لست مسجلاً كمحامٍ معتمد.');
         const channelId = await db.getConfig('lawyer_tasks_channel');
         const target = (channelId && message.guild.channels.cache.get(channelId)) || message.channel;
-        target.send(await build(db, message.author.id, lawyer.lawyer_name));
+        target.send(await buildMain(db));
     },
 
     async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
-        const allLawyers = await db.getLawyers();
-        const lawyer = allLawyers.find(l => l.discord_id === interaction.user.id);
-        if (!lawyer)
-            return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
-
         const channelId = await db.getConfig('lawyer_tasks_channel');
         const target = (channelId && interaction.guild.channels.cache.get(channelId)) || interaction.channel;
-
-        await target.send(await build(db, interaction.user.id, lawyer.lawyer_name));
+        await target.send(await buildMain(db));
         await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };
 
-module.exports.buildTasks = build;
+module.exports.buildMain    = buildMain;
+module.exports.buildTasks   = buildPrivate;
 module.exports.RETAINER_FEE = RETAINER_FEE;
 module.exports.ATAB_FEE     = ATAB_FEE;
 
-async function build(db, lawyerId, lawyerName) {
-    const requests     = await db.getLawyerRequests(lawyerId);
-    const activeCases  = await db.getCasesByLawyer(lawyerId);
-    const img          = await db.getImage('محاماة');
+// ─── اللوحة العامة (بدون أي معلومات شخصية) ─────────────────────────────────
+async function buildMain(db) {
+    const allLawyers = await db.getLawyers();
+    const img = await db.getImage('محاماة');
 
     const embed = new EmbedBuilder()
-        .setTitle('📋 مهام المحامي')
+        .setTitle('⚖️ مهام المحامين')
         .setColor(0x0D47A1)
-        .setAuthor({ name: `المحامي: ${lawyerName}` })
-        .setFooter({ text: `بدل التوكيل الثابت: ${RETAINER_FEE.toLocaleString()} ريال • نظام المحاماة • بوت FANTASY` })
+        .setDescription(
+            '> اختر اسمك من القائمة أدناه للوصول إلى لوحة مهامك الخاصة.\n' +
+            '> لا يمكن لأي محامٍ الدخول على لوحة محامٍ آخر.'
+        )
+        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setTimestamp();
+
+    if (img) embed.setThumbnail(img);
+
+    if (!allLawyers.length) {
+        embed.setDescription('> 📭 لا يوجد محامون مسجلون حالياً.');
+        return { embeds: [embed], components: [resetRow('مهام-محامي')] };
+    }
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId('lawyer_tasks_select')
+        .setPlaceholder('اختر اسمك...')
+        .addOptions(allLawyers.map(l => ({
+            label: l.lawyer_name,
+            value: l.discord_id,
+        })));
+
+    return {
+        embeds: [embed],
+        components: [
+            new ActionRowBuilder().addComponents(menu),
+            resetRow('مهام-محامي'),
+        ],
+    };
+}
+
+// ─── اللوحة الخاصة بالمحامي (ephemeral) ─────────────────────────────────────
+async function buildPrivate(db, lawyerId, lawyerName) {
+    const requests    = await db.getLawyerRequests(lawyerId);
+    const activeCases = await db.getCasesByLawyer(lawyerId);
+    const img         = await db.getImage('محاماة');
+
+    const embed = new EmbedBuilder()
+        .setTitle('📋 لوحة مهامي')
+        .setColor(0x0D47A1)
+        .setFooter({ text: `بدل التوكيل: ${RETAINER_FEE.toLocaleString()} ريال • نظام المحاماة • بوت FANTASY` })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
@@ -64,7 +94,6 @@ async function build(db, lawyerId, lawyerName) {
             name: `📬 طلبات التوكيل المعلقة (${requests.length})`,
             value: requests.slice(0, 8).map((r, i) =>
                 `**${i + 1}.** 📁 ${r.case_number} — ${r.case_title}\n` +
-                `> 👤 الموكّل: **${r.plaintiff_name}** (<@${r.plaintiff_id}>)\n` +
                 `> 💰 بدل التوكيل: **${RETAINER_FEE.toLocaleString()} ريال** (يُخصم تلقائياً عند القبول)`
             ).join('\n\n'),
             inline: false,
@@ -105,24 +134,25 @@ async function build(db, lawyerId, lawyerName) {
 
             return (
                 `**${i + 1}.** 📁 ${c.case_number} — ${c.title}\n` +
-                `> 👤 الموكّل: **${c.plaintiff_name}** • الحالة: **${db.CASE_STATUS?.[c.status] || c.status}**\n` +
+                `> الحالة: **${db.CASE_STATUS?.[c.status] || c.status}**\n` +
                 (eligible
                     ? `> ✅ مضى ${daysPassed} يوماً — يحق لك المطالبة بالأتعاب`
                     : `> ⏳ يتبقى **${daysLeft} يوم** لاستحقاق الأتعاب`)
             );
         });
 
-        embed.addFields({
-            name: `⚖️ قضاياي الجارية (${activeCases.length})`,
-            value: caseLines.join('\n\n'),
-            inline: false,
-        });
-
-        embed.addFields({
-            name: '💼 حق الأتعاب',
-            value: `> بعد مرور **${DAYS_REQUIRED} يوماً** على القضية يحق لك طلب **${ATAB_FEE.toLocaleString()} ريال** أتعاباً إضافية`,
-            inline: false,
-        });
+        embed.addFields(
+            {
+                name: `⚖️ قضاياي الجارية (${activeCases.length})`,
+                value: caseLines.join('\n\n'),
+                inline: false,
+            },
+            {
+                name: '💼 حق الأتعاب',
+                value: `> بعد مرور **${DAYS_REQUIRED} يوماً** على القضية يحق لك طلب **${ATAB_FEE.toLocaleString()} ريال** أتعاباً إضافية`,
+                inline: false,
+            }
+        );
 
         for (const c of activeCases.slice(0, 3)) {
             const assignedAt = c.lawyer_assigned_at ? new Date(c.lawyer_assigned_at).getTime() : null;
@@ -143,6 +173,5 @@ async function build(db, lawyerId, lawyerName) {
         }
     }
 
-    components.push(resetRow('مهام-محامي'));
-    return { embeds: [embed], components };
+    return { embeds: [embed], components, flags: 64 };
 }

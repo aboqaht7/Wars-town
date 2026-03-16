@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
 const row2 = new ActionRowBuilder().addComponents(resetButton);
-const { buildTasks } = require('./lawyer-tasks');
+const { buildMain } = require('./lawyer-tasks');
 
 module.exports = {
     name: 'إدارة-محامين',
@@ -71,7 +71,7 @@ module.exports = {
             // أرسل مهام المحامي الجديد للروم المحدد تلقائياً
             const tasksChannelId = await db.getConfig('lawyer_tasks_channel');
             const tasksTarget = (tasksChannelId && interaction.guild.channels.cache.get(tasksChannelId)) || interaction.channel;
-            await tasksTarget.send(await buildTasks(db, user.id, name));
+            await tasksTarget.send(await buildMain(db));
             return interaction.reply({ content: '\u200b', flags: 64 });
         }
 

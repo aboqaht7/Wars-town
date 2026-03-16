@@ -1814,6 +1814,24 @@ client.on('interactionCreate', async interaction => {
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
+        // ── lawyer_tasks_select: لوحة المهام الخاصة — فقط لصاحبها ──────────
+        if (interaction.customId === 'lawyer_tasks_select') {
+            try {
+                const selectedId = value;
+                // ❌ منع المحامي من الدخول على لوحة محامٍ آخر
+                if (interaction.user.id !== selectedId)
+                    return interaction.reply({ content: '❌ لا يمكنك الدخول على لوحة محامٍ آخر.', flags: 64 });
+
+                const lawyers = await db.getLawyers();
+                const lawyer  = lawyers.find(l => l.discord_id === selectedId);
+                if (!lawyer)
+                    return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
+
+                const { buildTasks } = require('./commands/lawyer-tasks');
+                return interaction.reply(await buildTasks(db, lawyer.discord_id, lawyer.lawyer_name));
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
         // ── رفض / توكيل قاضي / حكم / محامي — فتح موودال ──────────────────────
         // ── case_sel_lawyer: بعد اختيار القضية، اعرض قائمة المحامين ────────
         if (interaction.customId === 'case_sel_lawyer') {
