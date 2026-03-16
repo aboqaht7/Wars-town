@@ -1010,6 +1010,34 @@ client.on('interactionCreate', async interaction => {
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
+        // ── التخلي عن قضية (فتح modal) ───────────────────────────────────────
+        if (interaction.customId.startsWith('lawyer_abandon_')) {
+            try {
+                const caseId = Number(interaction.customId.replace('lawyer_abandon_', ''));
+                const c = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (c.lawyer_id !== interaction.user.id)
+                    return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
+
+                const { ABANDON_FEE } = require('./commands/lawyer-tasks');
+                const modal = new ModalBuilder()
+                    .setCustomId(`lawyer_abandon_modal_${caseId}`)
+                    .setTitle(`🚫 التخلي عن القضية — ${c.case_number}`);
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId('abandon_reason')
+                            .setLabel(`سبب التخلي عن التوكيل`)
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setPlaceholder(`سيُرفع هذا السبب للموكّل • سيُخصم ${ABANDON_FEE.toLocaleString()} ريال من رصيدك`)
+                            .setRequired(true)
+                            .setMinLength(10)
+                    )
+                );
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
         return;
     }
 
@@ -2114,6 +2142,46 @@ client.on('interactionCreate', async interaction => {
 
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ أثناء رفع القضية.', flags: 64 }); }
+        }
+
+        // ── تأكيد التخلي عن القضية ────────────────────────────────────────────
+        if (interaction.customId.startsWith('lawyer_abandon_modal_')) {
+            try {
+                const caseId = Number(interaction.customId.replace('lawyer_abandon_modal_', ''));
+                const reason = interaction.fields.getTextInputValue('abandon_reason').trim();
+                const c = await db.getCaseById(caseId);
+                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (c.lawyer_id !== interaction.user.id)
+                    return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
+
+                const { ABANDON_FEE } = require('./commands/lawyer-tasks');
+                const result = await db.abandonCase(caseId, interaction.user.id, c.plaintiff_id, ABANDON_FEE);
+
+                if (!result.success)
+                    return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+
+                // إشعار الموكّل بالخاص
+                try {
+                    const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
+                    const dmEmbed = new EmbedBuilder()
+                        .setTitle('⚠️ تخلّى المحامي عن قضيتك')
+                        .setColor(0xB71C1C)
+                        .setDescription(`تخلّى المحامي **${c.lawyer_name}** عن تمثيلك في القضية.`)
+                        .addFields(
+                            { name: '🔢 رقم القضية',   value: c.case_number, inline: true },
+                            { name: '📌 العنوان',       value: c.title,       inline: true },
+                            { name: '📝 سبب التخلي',    value: reason,        inline: false },
+                            { name: '💰 التعويض',
+                              value: `✅ تم إعادة **${ABANDON_FEE.toLocaleString()} ريال** إلى رصيدك`,
+                              inline: false },
+                        )
+                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                    await plaintiffUser.send({ embeds: [dmEmbed] });
+                } catch (_) {}
+
+                // رد على المحامي
+                await interaction.reply({ content: `✅ تم التخلي عن القضية **${c.case_number}** وخصم **${ABANDON_FEE.toLocaleString()} ريال** من رصيدك كتعويض للموكّل.`, flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
         // ── رفض قضية ─────────────────────────────────────────────────────────

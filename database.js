@@ -1261,6 +1261,34 @@ async function chargeLawyerFee(plaintiffId, lawyerId, amount, note) {
     return { success: true };
 }
 
+// ─── LAWYER ABANDON CASE ──────────────────────────────────────────────────────
+async function abandonCase(caseId, lawyerId, plaintiffId, refundAmount) {
+    // 1. خصم المبلغ من المحامي وإعادته للموكّل
+    const lawyer    = await getActiveIdentity(lawyerId);
+    const plaintiff = await getActiveIdentity(plaintiffId);
+
+    if (!lawyer)    return { success: false, error: 'المحامي لا يملك شخصية نشطة.' };
+    if (!plaintiff) return { success: false, error: 'الموكّل لا يملك شخصية نشطة.' };
+    if (Number(lawyer.balance) < refundAmount)
+        return { success: false, error: `رصيد المحامي غير كافٍ للتعويض. رصيده: \`${Number(lawyer.balance).toLocaleString()} ريال\`` };
+
+    await query('UPDATE identities SET balance = balance - $1 WHERE discord_id=$2 AND slot=$3',
+        [refundAmount, lawyerId, lawyer.slot]);
+    await query('UPDATE identities SET balance = balance + $1 WHERE discord_id=$2 AND slot=$3',
+        [refundAmount, plaintiffId, plaintiff.slot]);
+    await query(`INSERT INTO transactions (from_iban, to_iban, amount, type, note) VALUES ($1,$2,$3,'transfer',$4)`,
+        [lawyer.iban, plaintiff.iban, refundAmount, 'تعويض تخلٍّ عن التوكيل']);
+
+    // 2. إلغاء ارتباط المحامي بالقضية وإعادة الحالة لـ accepted
+    await query(
+        `UPDATE cases SET lawyer_id=NULL, lawyer_name=NULL, lawyer_assigned_at=NULL,
+         status='accepted', updated_at=NOW() WHERE id=$1`,
+        [caseId]
+    );
+
+    return { success: true };
+}
+
 // ─── LAWYER REQUESTS ──────────────────────────────────────────────────────────
 async function initLawyerRequestsTable() {
     await query(`
@@ -1499,7 +1527,7 @@ module.exports = {
     CASE_STATUS,
     createCase, getCasesByPlaintiff, getCasesByStatus, getCaseById, getCasesByJudge,
     acceptCase, rejectCase, assignJudge, issueVerdict, assignLawyer,
-    getCasesByLawyer, chargeLawyerFee,
+    getCasesByLawyer, chargeLawyerFee, abandonCase,
     getLawyers, addLawyer, removeLawyer,
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,

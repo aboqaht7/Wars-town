@@ -5,8 +5,9 @@ const {
 } = require('discord.js');
 const { resetRow } = require('../utils');
 
-const RETAINER_FEE = 5000;
-const ATAB_FEE     = 10000;
+const RETAINER_FEE  = 5000;
+const ATAB_FEE      = 10000;
+const ABANDON_FEE   = RETAINER_FEE / 2;   // 2500 — نصف بدل التوكيل يُردّ للموكّل
 
 module.exports = {
     name: 'مهام-محامي',
@@ -36,6 +37,7 @@ module.exports.buildMain    = buildMain;
 module.exports.buildTasks   = buildPrivate;
 module.exports.RETAINER_FEE = RETAINER_FEE;
 module.exports.ATAB_FEE     = ATAB_FEE;
+module.exports.ABANDON_FEE  = ABANDON_FEE;
 
 // ─── اللوحة العامة (بدون أي معلومات شخصية) ─────────────────────────────────
 async function buildMain(db) {
@@ -168,10 +170,14 @@ async function buildPrivate(db, lawyerId, lawyerName) {
                     new ButtonBuilder()
                         .setCustomId(`lawyer_atab_${c.id}`)
                         .setLabel(eligible
-                            ? `💰 طلب أتعاب ${ATAB_FEE.toLocaleString()} — ${c.case_number}`
-                            : `⏳ الأتعاب بعد ${DAYS_REQUIRED - daysPassed} يوم — ${c.case_number}`)
+                            ? `💰 أتعاب ${ATAB_FEE.toLocaleString()} — ${c.case_number}`
+                            : `⏳ أتعاب بعد ${DAYS_REQUIRED - daysPassed}ي — ${c.case_number}`)
                         .setStyle(eligible ? ButtonStyle.Primary : ButtonStyle.Secondary)
                         .setDisabled(!eligible),
+                    new ButtonBuilder()
+                        .setCustomId(`lawyer_abandon_${c.id}`)
+                        .setLabel(`🚫 تخلٍّ — ${c.case_number}`)
+                        .setStyle(ButtonStyle.Danger),
                 )
             );
         }
