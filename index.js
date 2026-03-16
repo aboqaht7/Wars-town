@@ -107,6 +107,7 @@ const resetCommandMap = {
     محامي: 'محامي',
     قاضي: 'قاضي',
     'مهام-محامي': 'مهام-محامي',
+    تفعيل: 'تفعيل',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -1108,6 +1109,27 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isStringSelectMenu()) {
         const value = interaction.values[0];
+
+        // ── منيو التفعيل ────────────────────────────────────────────────────────
+        if (interaction.customId === 'activation_menu' && value === 'activate_now') {
+            const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');
+            const modal = new ModalBuilder()
+                .setCustomId('activation_sony_modal')
+                .setTitle('🎮 طلب تفعيل الحساب');
+            modal.addComponents(
+                new ARB().addComponents(
+                    new TextInputBuilder()
+                        .setCustomId('sony_id')
+                        .setLabel('ادخل ID سوني الخاص بك (PSN)')
+                        .setStyle(TextInputStyle.Short)
+                        .setPlaceholder('مثال: PlayerName123')
+                        .setRequired(true)
+                        .setMinLength(3)
+                        .setMaxLength(50)
+                )
+            );
+            return interaction.showModal(modal);
+        }
 
         if (interaction.customId === 'showroom_menu') {
             const carId = parseInt(value.replace('car_', ''));
