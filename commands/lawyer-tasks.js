@@ -21,9 +21,15 @@ module.exports = {
     },
 
     async slashExecute(interaction, db) {
+        const main = await buildMain(db);
+        // إذا جاء الطلب من زر Reset (interaction مؤجل مسبقاً) → حدّث الرسالة الموجودة فقط
+        if (interaction.deferred) {
+            return interaction.editReply(main);
+        }
+        // طلب slash عادي → أرسل للروم المحدد
         const channelId = await db.getConfig('lawyer_tasks_channel');
         const target = (channelId && interaction.guild.channels.cache.get(channelId)) || interaction.channel;
-        await target.send(await buildMain(db));
+        await target.send(main);
         await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };
