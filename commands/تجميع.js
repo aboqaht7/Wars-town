@@ -40,7 +40,7 @@ module.exports = {
         if (interaction._isReset) {
             return interaction.message.edit({ embeds: [buildEmbed()], components: [buildRow()] });
         }
-        await interaction.reply({ content: '\u200b', flags: 64 });
+        await interaction.reply({ content: '\u200b', flags: 65 });
         await interaction.channel.send({ embeds: [buildEmbed()], components: [buildRow()] });
     },
 

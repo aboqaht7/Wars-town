@@ -2218,7 +2218,7 @@ client.on('interactionCreate', async interaction => {
                     craft_mkii:    { name: 'Pistol MK II',   req: 500 },
                 };
                 const weapon = CRAFT_WEAPONS[value];
-                if (!weapon) return interaction.reply({ content: '❌ خيار غير صالح.', flags: 64 });
+                if (!weapon) return interaction.reply({ content: '❌ خيار غير صالح.', flags: 65 });
 
                 // تحقق من الموارد وأعرض النقص إن وُجد
                 const missing = [];
@@ -2230,7 +2230,7 @@ client.on('interactionCreate', async interaction => {
                 if (missing.length) {
                     return interaction.reply({
                         content: `❌ **لا تملك موارد كافية لتصنيع ${weapon.name}**\n${missing.join('\n')}`,
-                        flags: 64,
+                        flags: 65,
                     });
                 }
 
@@ -2246,7 +2246,7 @@ client.on('interactionCreate', async interaction => {
                 );
             } catch (e) {
                 console.error(e);
-                interaction.reply({ content: '❌ حدث خطأ أثناء التصنيع.', flags: 64 }).catch(() => {});
+                interaction.reply({ content: '❌ حدث خطأ أثناء التصنيع.', flags: 65 }).catch(() => {});
             }
             return;
         }
