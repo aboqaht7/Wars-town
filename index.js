@@ -111,6 +111,9 @@ const resetCommandMap = {
     'سوق-مركزي': 'سوق-مركزي',
     محاماة: 'محاماة',
     عدل: 'عدل',
+    محامي: 'محامي',
+    قاضي: 'قاضي',
+    'مهام-محامي': 'مهام-محامي',
 };
 
 client.on('interactionCreate', async interaction => {
@@ -1617,6 +1620,7 @@ client.on('interactionCreate', async interaction => {
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_defendant').setLabel('المدعى عليه').setStyle(TextInputStyle.Short).setRequired(true)),
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_desc').setLabel('وصف القضية').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_evidence').setLabel('الأدلة (اختياري)').setStyle(TextInputStyle.Paragraph).setRequired(false)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_lawyer_fee').setLabel('بدل المحاماة (اختياري)').setStyle(TextInputStyle.Short).setRequired(false).setPlaceholder('مثال: 5000$')),
                     );
                     return interaction.showModal(modal);
                 }
@@ -1711,6 +1715,18 @@ client.on('interactionCreate', async interaction => {
 
                 const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+        }
+
+        // ── judge_select: عرض لوحة القاضي المختار علناً ────────────────────
+        if (interaction.customId === 'judge_select') {
+            try {
+                const { buildJudgeDashboard } = require('./commands/judge-dashboard');
+                const judges = await db.getJudges();
+                const judge  = judges.find(j => j.discord_id === value);
+                if (!judge) return interaction.reply({ content: '❌ القاضي غير موجود.', flags: 64 });
+                await interaction.channel.send(await buildJudgeDashboard(db, judge.discord_id, judge.judge_name));
+                return interaction.reply({ content: '\u200b', flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -1944,23 +1960,25 @@ client.on('interactionCreate', async interaction => {
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
 
-                const title     = interaction.fields.getTextInputValue('case_title').trim();
-                const defendant = interaction.fields.getTextInputValue('case_defendant').trim();
-                const desc      = interaction.fields.getTextInputValue('case_desc').trim();
-                const evidence  = interaction.fields.getTextInputValue('case_evidence')?.trim() || '';
+                const title      = interaction.fields.getTextInputValue('case_title').trim();
+                const defendant  = interaction.fields.getTextInputValue('case_defendant').trim();
+                const desc       = interaction.fields.getTextInputValue('case_desc').trim();
+                const evidence   = interaction.fields.getTextInputValue('case_evidence')?.trim() || '';
+                const lawyerFee  = interaction.fields.getTextInputValue('case_lawyer_fee')?.trim() || '';
 
-                const newCase = await db.createCase(interaction.user.id, identity.full_name || interaction.user.username, defendant, title, desc, evidence);
+                const newCase = await db.createCase(interaction.user.id, identity.full_name || interaction.user.username, defendant, title, desc, evidence, lawyerFee);
 
                 const embed = new EmbedBuilder()
                     .setTitle('📁 تم رفع القضية')
                     .setColor(0x0D47A1)
                     .addFields(
-                        { name: '🔢 رقم القضية',   value: newCase.case_number,          inline: true },
-                        { name: '📌 العنوان',       value: title,                        inline: true },
-                        { name: '⚔️ المدعى عليه',  value: defendant,                    inline: true },
-                        { name: '📝 الوصف',         value: desc.slice(0,300),            inline: false },
-                        { name: '🔍 الأدلة',        value: evidence || 'لا توجد أدلة',  inline: false },
-                        { name: '⏳ الحالة',         value: '⏳ معلقة — بانتظار الإدارة', inline: true },
+                        { name: '🔢 رقم القضية',    value: newCase.case_number,                inline: true },
+                        { name: '📌 العنوان',        value: title,                              inline: true },
+                        { name: '⚔️ المدعى عليه',   value: defendant,                           inline: true },
+                        { name: '📝 الوصف',          value: desc.slice(0, 300),                 inline: false },
+                        { name: '🔍 الأدلة',         value: evidence || 'لا توجد أدلة',         inline: false },
+                        { name: '💰 بدل المحاماة',   value: lawyerFee || 'غير محدد',            inline: true },
+                        { name: '⏳ الحالة',          value: '⏳ معلقة — بانتظار الإدارة',       inline: true },
                     )
                     .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
                     .setTimestamp();

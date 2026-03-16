@@ -1,29 +1,73 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const {
+    SlashCommandBuilder, EmbedBuilder, ActionRowBuilder,
+    ButtonBuilder, ButtonStyle, StringSelectMenuBuilder
+} = require('discord.js');
 const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'قاضي',
-    data: new SlashCommandBuilder().setName('قاضي').setDescription('🏛️ لوحة القاضي — القضايا الجارية'),
+    data: new SlashCommandBuilder().setName('قاضي').setDescription('🏛️ قائمة القضاة المعتمدين'),
 
     async execute(message, args, db) {
-        await db.ensureUser(message.author.id, message.author.username);
-        const judge = await db.getJudgeById(message.author.id);
-        if (!judge) return message.reply('❌ أنت لست مسجلاً كقاضٍ معتمد.');
-        message.channel.send(await build(db, message.author.id, judge.judge_name));
+        message.channel.send(await buildMain(db));
     },
 
     async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
-        const judge = await db.getJudgeById(interaction.user.id);
-        if (!judge) return interaction.reply({ content: '❌ أنت لست مسجلاً كقاضٍ معتمد.', flags: 64 });
-        await interaction.channel.send(await build(db, interaction.user.id, judge.judge_name));
+        await interaction.channel.send(await buildMain(db));
         await interaction.reply({ content: '\u200b', flags: 64 });
     },
 };
 
-async function build(db, judgeId, judgeName) {
+module.exports.buildMain          = buildMain;
+module.exports.buildJudgeDashboard = buildJudgeDashboard;
+
+/* ─── اللوحة الرئيسية: قائمة كل القضاة + منيو ─── */
+async function buildMain(db) {
+    const judges = await db.getJudges();
+    const img    = await db.getImage('عدل');
+
+    const embed = new EmbedBuilder()
+        .setTitle('🏛️ القضاة المعتمدون')
+        .setColor(0x4A148C)
+        .setFooter({ text: 'نظام العدل • بوت FANTASY' })
+        .setTimestamp();
+
+    if (img) embed.setThumbnail(img);
+
+    if (!judges.length) {
+        embed.setDescription('> 📭 لا يوجد قضاة مسجلون حالياً');
+        return { embeds: [embed], components: [resetRow('قاضي')] };
+    }
+
+    embed.setDescription(
+        judges.map((j, i) => `**${i + 1}.** ${j.judge_name} — <@${j.discord_id}>`).join('\n')
+    );
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId('judge_select')
+        .setPlaceholder('🏛️ اختر قاضياً لعرض قضاياه')
+        .addOptions(
+            judges.slice(0, 25).map(j => ({
+                label: j.judge_name,
+                value: j.discord_id,
+                description: `عرض القضايا الجارية لـ ${j.judge_name}`,
+                emoji: '⚖️',
+            }))
+        );
+
+    return {
+        embeds: [embed],
+        components: [
+            new ActionRowBuilder().addComponents(menu),
+            resetRow('قاضي'),
+        ],
+    };
+}
+
+/* ─── لوحة قاضٍ بعينه: قضاياه الجارية ─── */
+async function buildJudgeDashboard(db, judgeId, judgeName) {
     const cases = await db.getCasesByJudge(judgeId);
-    const img = await db.getImage('عدل');
+    const img   = await db.getImage('عدل');
 
     const embed = new EmbedBuilder()
         .setTitle('🏛️ لوحة القاضي')
@@ -31,6 +75,7 @@ async function build(db, judgeId, judgeName) {
         .setAuthor({ name: `القاضي: ${judgeName}` })
         .setFooter({ text: 'نظام العدل • بوت FANTASY' })
         .setTimestamp();
+
     if (img) embed.setThumbnail(img);
 
     if (!cases.length) {

@@ -1175,14 +1175,14 @@ async function initCasesTable() {
 }
 initCasesTable().catch(console.error);
 
-async function createCase(plaintiffId, plaintiffName, defendant, title, description, evidence) {
+async function createCase(plaintiffId, plaintiffName, defendant, title, description, evidence, lawyerFee = '') {
     const count  = await query('SELECT COUNT(*) FROM cases');
     const num    = String(Number(count.rows[0].count) + 1).padStart(4, '0');
     const caseNo = `CASE-${num}`;
     const res    = await query(
-        `INSERT INTO cases (case_number, plaintiff_id, plaintiff_name, defendant, title, description, evidence)
-         VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
-        [caseNo, plaintiffId, plaintiffName, defendant, title, description, evidence]
+        `INSERT INTO cases (case_number, plaintiff_id, plaintiff_name, defendant, title, description, evidence, lawyer_fee)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+        [caseNo, plaintiffId, plaintiffName, defendant, title, description, evidence, lawyerFee]
     );
     return res.rows[0];
 }
