@@ -3074,9 +3074,10 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('messageCreate', async message => {
-    // حذف رسائل البوت تلقائياً بعد دقيقة
+    // حذف رسائل البوت — الإمبيدات الرئيسية (تحتوي embed + قائمة/زر) تبقى دائمة
     if (message.author.id === client.user?.id) {
-        setTimeout(() => message.delete().catch(() => {}), 60_000);
+        const isPanel = message.embeds.length > 0 && message.components.length > 0;
+        if (!isPanel) setTimeout(() => message.delete().catch(() => {}), 60_000);
         return;
     }
     if (message.author.bot) return;
