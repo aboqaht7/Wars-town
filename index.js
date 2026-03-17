@@ -25,7 +25,7 @@ const {
 const db = require('./database');
 require('dotenv').config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -3087,8 +3087,9 @@ client.on('messageCreate', async message => {
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift();
+    console.log(`[CMD] name="${commandName}" hex=${Buffer.from(commandName).toString('hex')}`);
     const command = client.commands.get(commandName);
-    if (!command) return;
+    if (!command) { console.log(`[CMD] not found: ${commandName}`); return; }
 
     try {
         await command.execute(message, args, db);
