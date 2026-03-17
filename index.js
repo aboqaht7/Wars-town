@@ -3094,8 +3094,8 @@ client.on('messageCreate', async message => {
     try {
         await command.execute(message, args, db);
     } catch (error) {
-        console.error(error);
-        message.reply('حدث خطأ أثناء تنفيذ الأمر!');
+        console.error(`[CMD ERROR] ${commandName}:`, error?.message || error);
+        message.reply(`حدث خطأ أثناء تنفيذ الأمر!\n\`${error?.message || error}\``);
     }
 });
 
