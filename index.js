@@ -1143,10 +1143,10 @@ client.on('interactionCreate', async interaction => {
                 await db.setLastGathered(interaction.user.id, picked.name);
                 await db.addItem(interaction.user.id, picked.name, amount);
 
-                const displayName = interaction.member?.displayName || interaction.user.username;
-                await interaction.channel.send(
-                    `🪛 **${displayName}** جمّع **${amount}x ${picked.emoji} ${picked.name}** وأضافها إلى حقيبته!`
-                );
+                await interaction.followUp({
+                    content: `🪛 جمّعت **${amount}x ${picked.emoji} ${picked.name}** وأضفتها إلى حقيبتك!`,
+                    flags: 64
+                });
             } catch (e) { console.error(e); }
             return;
         }
