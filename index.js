@@ -20,12 +20,16 @@ const {
     Client, Collection, GatewayIntentBits, EmbedBuilder,
     ModalBuilder, TextInputBuilder, TextInputStyle,
     ActionRowBuilder, StringSelectMenuBuilder,
-    ButtonBuilder, ButtonStyle, PermissionFlagsBits
+    ButtonBuilder, ButtonStyle, PermissionFlagsBits,
+    AuditLogEvent, Partials
 } = require('discord.js');
 const db = require('./database');
 require('dotenv').config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers],
+    partials: [Partials.Message]
+});
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -3097,6 +3101,51 @@ client.on('messageCreate', async message => {
         console.error(`[CMD ERROR] ${commandName}:`, error?.message || error);
         message.reply(`حدث خطأ أثناء تنفيذ الأمر!\n\`${error?.message || error}\``);
     }
+});
+
+// ── حماية حذف الرسائل — فقط أصحاب رتبة الحذف يقدرون يحذفون ──────────
+client.on('messageDelete', async (message) => {
+    try {
+        if (!message.guild) return;
+        if (message.partial) return;
+        if (message.author?.bot) return;
+
+        const deleteRoleId = await db.getConfig('delete_role_id');
+        if (!deleteRoleId) return;
+
+        const logs = await message.guild.fetchAuditLogs({
+            type: AuditLogEvent.MessageDelete,
+            limit: 1
+        });
+        const entry = logs.entries.first();
+        if (!entry) return;
+        if (Date.now() - entry.createdTimestamp > 5000) return;
+        if (entry.target?.id !== message.author.id) return;
+
+        const executor = await message.guild.members.fetch(entry.executor.id).catch(() => null);
+        if (!executor) return;
+        if (executor.id === client.user.id) return;
+        if (executor.roles.cache.has(deleteRoleId)) return;
+
+        const content = message.content || '';
+        const embeds = message.embeds || [];
+        if (!content && embeds.length === 0) return;
+
+        const restoreEmbed = new EmbedBuilder()
+            .setColor(0xE53935)
+            .setTitle('🚫 حذف غير مصرح')
+            .setDescription(`**${executor.displayName}** حذف رسالة بدون صلاحية — تم استعادتها:`)
+            .addFields(
+                { name: '👤 صاحب الرسالة', value: `<@${message.author.id}>`, inline: true },
+                { name: '🗑️ من حذفها', value: `<@${executor.id}>`, inline: true },
+            )
+            .setFooter({ text: 'نظام حماية الحذف • بوت FANTASY' })
+            .setTimestamp();
+
+        if (content) restoreEmbed.addFields({ name: '📝 الرسالة', value: content.slice(0, 1024) });
+
+        await message.channel.send({ embeds: [restoreEmbed, ...embeds] });
+    } catch (_) {}
 });
 
 client.on('error', (err) => console.error('Discord client error:', err));
