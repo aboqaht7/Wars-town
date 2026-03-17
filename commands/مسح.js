@@ -1,12 +1,10 @@
 module.exports = {
     name: 'مسح',
     async execute(message, args, db) {
-        const { isAdmin } = require('../utils');
         const deleteRoleId = await db.getConfig('delete_role_id');
-        const authorized = deleteRoleId
-            ? message.member.roles.cache.has(deleteRoleId)
-            : await isAdmin(message.member, db);
-        if (!authorized)
+        if (!deleteRoleId)
+            return message.reply('❌ لم يتم تعيين رتبة مسؤولي الحذف بعد.');
+        if (!message.member.roles.cache.has(deleteRoleId))
             return message.reply('❌ ليس لديك صلاحية تنفيذ أمر الحذف.');
 
         const amount = parseInt(args[0]);
