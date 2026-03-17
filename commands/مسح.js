@@ -2,8 +2,12 @@ module.exports = {
     name: 'مسح',
     async execute(message, args, db) {
         const { isAdmin } = require('../utils');
-        if (!(await isAdmin(message.member, db)))
-            return message.reply('❌ للإدارة فقط.');
+        const deleteRoleId = await db.getConfig('delete_role_id');
+        const authorized = deleteRoleId
+            ? message.member.roles.cache.has(deleteRoleId)
+            : await isAdmin(message.member, db);
+        if (!authorized)
+            return message.reply('❌ ليس لديك صلاحية تنفيذ أمر الحذف.');
 
         const amount = parseInt(args[0]);
         if (isNaN(amount) || amount < 1 || amount > 100)
