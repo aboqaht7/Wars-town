@@ -602,12 +602,13 @@ client.on('interactionCreate', async interaction => {
                 if (!req) return interaction.update({ content: '❌ الطلب غير موجود أو تمت معالجته.', embeds: [], components: [] });
 
                 if (isApprove) {
-                    // منح رتبة التفعيل
+                    // منح رتبة التفعيل وتعيين النيك نيم بـ ID سوني
                     try {
                         const roleId = await db.getConfig('activation_role_id');
-                        if (roleId) {
-                            const member = await interaction.guild.members.fetch(req.user_id).catch(() => null);
-                            if (member) await member.roles.add(roleId).catch(() => {});
+                        const member = await interaction.guild.members.fetch(req.user_id).catch(() => null);
+                        if (member) {
+                            if (roleId) await member.roles.add(roleId).catch(() => {});
+                            await member.setNickname(req.sony_id).catch(() => {});
                         }
                     } catch (_) {}
 
