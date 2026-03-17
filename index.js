@@ -602,21 +602,12 @@ client.on('interactionCreate', async interaction => {
                 if (!req) return interaction.update({ content: '❌ الطلب غير موجود أو تمت معالجته.', embeds: [], components: [] });
 
                 if (isApprove) {
-                    // منح رتبة التفعيل وتعيين الاسم المستعار والـ ID تلقائياً
+                    // منح رتبة التفعيل
                     try {
                         const roleId = await db.getConfig('activation_role_id');
-                        const member = await interaction.guild.members.fetch(req.user_id).catch(() => null);
-                        if (member) {
-                            if (roleId) await member.roles.add(roleId).catch(() => {});
-
-                            // تعيين الاسم المستعار والـ ID من نظام الهوية
-                            try {
-                                const identity = await db.getActiveIdentity(req.user_id);
-                                if (identity?.character_name) {
-                                    const nick = `${identity.character_name} | ${identity.iban ?? ''}`.trim().replace(/\s*\|\s*$/, '');
-                                    await member.setNickname(nick).catch(() => {});
-                                }
-                            } catch (_) {}
+                        if (roleId) {
+                            const member = await interaction.guild.members.fetch(req.user_id).catch(() => null);
+                            if (member) await member.roles.add(roleId).catch(() => {});
                         }
                     } catch (_) {}
 
