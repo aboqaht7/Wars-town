@@ -2302,6 +2302,25 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isModalSubmit()) {
 
+        // ── إضافة زر أولوية (من المودال) ────────────────────────────────────────
+        if (interaction.customId.startsWith('priority_add_modal_')) {
+            try {
+                const style = interaction.customId.replace('priority_add_modal_', '');
+                const label = interaction.fields.getTextInputValue('priority_label').trim();
+                const text  = interaction.fields.getTextInputValue('priority_text').trim();
+                if (!label || !text) return interaction.reply({ content: '❌ يجب تعبئة جميع الحقول.', flags: 64 });
+
+                const btn = await db.addPriorityButton(label, text, style);
+                await interaction.reply({
+                    content: `✅ تم إضافة زر الأولوية **${label}** (ID: ${btn.id})`,
+                    flags: 64
+                });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
         // ── طلب تفعيل الحساب ──────────────────────────────────────────────────
         if (interaction.customId === 'activation_sony_modal') {
             try {

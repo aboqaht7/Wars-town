@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 
 module.exports = {
     name: 'أولوية-إضافة-زر',
@@ -9,11 +9,6 @@ module.exports = {
         .addStringOption(opt =>
             opt.setName('اسم-الزر')
                 .setDescription('النص الظاهر على الزر')
-                .setRequired(true)
-        )
-        .addStringOption(opt =>
-            opt.setName('الأولوية')
-                .setDescription('نص الأولوية المرسل عند الضغط')
                 .setRequired(true)
         )
         .addStringOption(opt =>
@@ -29,14 +24,32 @@ module.exports = {
         ),
 
     async slashExecute(interaction, db) {
-        const label    = interaction.options.getString('اسم-الزر');
-        const priority = interaction.options.getString('الأولوية');
-        const style    = interaction.options.getString('اللون');
+        const label = interaction.options.getString('اسم-الزر');
+        const style = interaction.options.getString('اللون');
 
-        const btn = await db.addPriorityButton(label, priority, style);
-        await interaction.reply({
-            content: `✅ تم إضافة زر الأولوية:\n> 🏷️ **${label}** — أولوية: **${priority}** — لون: **${style}** (ID: ${btn.id})`,
-            flags: 64
-        });
+        const modal = new ModalBuilder()
+            .setCustomId(`priority_add_modal_${style}`)
+            .setTitle(`زر: ${label.slice(0, 30)}`);
+
+        const textInput = new TextInputBuilder()
+            .setCustomId('priority_text')
+            .setLabel('النص المُرسل عند الضغط على الزر')
+            .setStyle(TextInputStyle.Paragraph)
+            .setRequired(true)
+            .setMaxLength(2000);
+
+        const labelInput = new TextInputBuilder()
+            .setCustomId('priority_label')
+            .setLabel('اسم الزر (لا تغيّره)')
+            .setStyle(TextInputStyle.Short)
+            .setValue(label)
+            .setRequired(true);
+
+        modal.addComponents(
+            new ActionRowBuilder().addComponents(labelInput),
+            new ActionRowBuilder().addComponents(textInput),
+        );
+
+        await interaction.showModal(modal);
     }
 };
