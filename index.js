@@ -1128,6 +1128,40 @@ client.on('interactionCreate', async interaction => {
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
+        // ── أزرار الأولوية ──────────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('priority_')) {
+            try {
+                const btnId = parseInt(interaction.customId.replace('priority_', ''));
+                const buttons = await db.getPriorityButtons();
+                const btn = buttons.find(b => b.id === btnId);
+                if (!btn) return interaction.reply({ content: '❌ هذا الزر لم يعد موجوداً.', flags: 64 });
+
+                const channelId = await db.getConfig('priority_channel_id');
+                if (!channelId) return interaction.reply({ content: '❌ لم يتم تعيين روم الأولوية بعد.', flags: 64 });
+
+                const targetChannel = interaction.guild.channels.cache.get(channelId);
+                if (!targetChannel) return interaction.reply({ content: '❌ روم الأولوية غير موجود.', flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                const displayName = identity?.character_name || interaction.member?.displayName || interaction.user.username;
+
+                const embed = new EmbedBuilder()
+                    .setTitle('🚨 بلاغ أولوية')
+                    .setColor(0xF57C00)
+                    .addFields(
+                        { name: '👤 المُبلّغ', value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '🏷️ الاسم', value: displayName, inline: true },
+                        { name: '⚡ الأولوية', value: btn.priority, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الأولوية • بوت FANTASY' })
+                    .setTimestamp();
+
+                await targetChannel.send({ embeds: [embed] });
+                await interaction.reply({ content: `✅ تم إرسال بلاغ الأولوية: **${btn.priority}**`, flags: 64 });
+            } catch (e) { console.error(e); }
+            return;
+        }
+
         // ── تجميع الموارد ──────────────────────────────────────────────────────────
         if (interaction.customId === 'gather_resources') {
             try {

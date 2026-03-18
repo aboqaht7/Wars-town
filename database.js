@@ -1534,6 +1534,7 @@ module.exports = {
     addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
+    addPriorityButton, removePriorityButton, getPriorityButtons,
 };
 
 /* ─── جدول آخر تجميع (لمنع التكرار) ─── */
@@ -1643,4 +1644,34 @@ async function getActivationRequest(id) {
 
 async function deleteActivationRequest(id) {
     await pool.query(`DELETE FROM activation_requests WHERE id=$1`, [id]);
+}
+
+/* ─── جدول أزرار الأولوية ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS priority_buttons (
+            id          SERIAL PRIMARY KEY,
+            label       TEXT NOT NULL,
+            priority    TEXT NOT NULL,
+            style       TEXT NOT NULL DEFAULT 'Primary'
+        );
+    `);
+})().catch(console.error);
+
+async function addPriorityButton(label, priority, style) {
+    const res = await pool.query(
+        `INSERT INTO priority_buttons (label, priority, style) VALUES ($1, $2, $3) RETURNING *`,
+        [label, priority, style]
+    );
+    return res.rows[0];
+}
+
+async function removePriorityButton(id) {
+    const res = await pool.query(`DELETE FROM priority_buttons WHERE id=$1 RETURNING *`, [id]);
+    return res.rows[0] || null;
+}
+
+async function getPriorityButtons() {
+    const res = await pool.query(`SELECT * FROM priority_buttons ORDER BY id`);
+    return res.rows;
 }
