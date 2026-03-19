@@ -44,7 +44,6 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         const sub = interaction.options.getSubcommand();
-        console.log(`[إعداد-رحلات] sub=${sub} replied=${interaction.replied} deferred=${interaction.deferred}`);
 
         if (sub === 'روم-البدء') {
             const ch = interaction.options.getChannel('الروم');

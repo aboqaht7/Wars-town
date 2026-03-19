@@ -38,6 +38,15 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
+/* ── منع معالجة نفس التفاعل مرتين (مشكلة Gateway) ────────────────────── */
+const _handledInteractions = new Set();
+function markInteraction(id) {
+    if (_handledInteractions.has(id)) return false;
+    _handledInteractions.add(id);
+    setTimeout(() => _handledInteractions.delete(id), 10_000);
+    return true;
+}
+
 client.once('clientReady', () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
     setInterval(async () => {
@@ -209,6 +218,8 @@ const resetCommandMap = {
 };
 
 client.on('interactionCreate', async interaction => {
+    if (!markInteraction(interaction.id)) return;
+
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('reset_')) {
             const key = interaction.customId.replace('reset_', '');
