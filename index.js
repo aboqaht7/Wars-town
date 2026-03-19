@@ -2211,23 +2211,6 @@ client.on('interactionCreate', async interaction => {
 
                 const prices = await db.getJobPrices();
 
-                if (value === 'sell') {
-                    const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
-                    const { totalValue, sold } = await db.sellJobItems(interaction.user.id);
-                    if (!sold.length) return interaction.reply({ content: '❌ ليس لديك أي مكاسب لبيعها في حقيبتك.', flags: 64 });
-                    await db.addToCash(interaction.user.id, identity.slot, totalValue);
-                    const lines = sold.map(s => `• **${s.name}** × ${s.qty} — ${s.price.toLocaleString()} ريال/وحدة = **${s.value.toLocaleString()} ريال**`).join('\n');
-                    const embed = new EmbedBuilder()
-                        .setTitle('💰 تمت عملية البيع')
-                        .setColor(0x2E7D32)
-                        .setDescription(lines)
-                        .addFields({ name: '💵 الإجمالي', value: `**${totalValue.toLocaleString()} ريال**`, inline: false })
-                        .setFooter({ text: 'نظام الوظائف • بوت FANTASY' }).setTimestamp();
-                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
-                }
-
                 const jobMap = {
                     fishing:     { label: '🎣 صيد السمك',    req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
                     woodcutting: { label: '🪓 تقطيع الخشب',  req: 'فأس',      items: ['خشب'],                             weights: [100],       color: 0x4E342E },

@@ -46,7 +46,6 @@ async function buildJobs(db) {
                 { label: '🎣 صيد السمك',      value: 'fishing',     description: 'يتطلب: سنارة' },
                 { label: '🪓 تقطيع الخشب',    value: 'woodcutting', description: 'يتطلب: فأس' },
                 { label: '⛏️ المنجم',          value: 'mining',      description: 'يتطلب: أدوات المنجم' },
-                { label: '💰 بيع مكاسبي',     value: 'sell',        description: 'بيع كل السمك والخشب والمعادن' },
             ])
     );
 
