@@ -175,16 +175,23 @@ client.on('interactionCreate', async interaction => {
                 await db.logoutAllUsers();
                 await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
 
-                const hurricaneEmbed = new EmbedBuilder()
-                    .setTitle('🌪️ تحذير — إعصار!')
-                    .setColor(0xB71C1C)
-                    .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
-                    .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
-                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
-                    .setTimestamp();
+                const customMsg = await db.getConfig('trip_hurricane_message');
                 try {
                     const ch = await client.channels.fetch(alertsChannelId);
-                    if (ch) await ch.send({ embeds: [hurricaneEmbed] });
+                    if (ch) {
+                        if (customMsg) {
+                            await ch.send(customMsg);
+                        } else {
+                            const hurricaneEmbed = new EmbedBuilder()
+                                .setTitle('🌪️ تحذير — إعصار!')
+                                .setColor(0xB71C1C)
+                                .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
+                                .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
+                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setTimestamp();
+                            await ch.send({ embeds: [hurricaneEmbed] });
+                        }
+                    }
                 } catch {}
                 return interaction.reply({ content: '✅ تم إرسال تحذير الإعصار.', flags: 64 });
             }
@@ -2302,6 +2309,20 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isModalSubmit()) {
 
+        // ── تعيين رسالة رحلة مخصصة ────────────────────────────────────────────
+        if (interaction.customId.startsWith('set_trip_msg_')) {
+            try {
+                const type = interaction.customId.replace('set_trip_msg_', '');
+                const text = interaction.fields.getTextInputValue('trip_msg_text').trim();
+                await db.setConfig(`${type}_message`, text);
+                const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
+                await interaction.reply({ content: `✅ تم حفظ رسالة **${labels[type]}**.`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
         // ── إضافة زر أولوية (من المودال) ────────────────────────────────────────
         if (interaction.customId.startsWith('priority_add_modal_')) {
             try {
@@ -2940,25 +2961,31 @@ client.on('interactionCreate', async interaction => {
                 await db.setConfig('trip_open', 'true');
                 await db.setConfig('hurricane_active', 'false');
 
-                const embed = new EmbedBuilder()
-                    .setTitle('✈️ بدء رحلة جديدة!')
-                    .setColor(0x2E7D32)
-                    .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
-                    .addFields(
-                        { name: '🎤 الهوست',       value: `\`${hostId}\``, inline: true },
-                        { name: '🎤 نائب الهوست', value: deputy,           inline: true },
-                        { name: '👁️ الرقابي',      value: supervisor,      inline: true },
-                        { name: '🕐 وقت الرحلة',  value: tripTime,         inline: true },
-                        { name: '🔧 بدأها',         value: `<@${interaction.user.id}>`, inline: true },
-                    )
-                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
-                    .setTimestamp();
-
+                const customMsg = await db.getConfig('trip_start_message');
                 try {
                     const ch = await client.channels.fetch(startChannelId);
-                    if (ch) await ch.send({ embeds: [embed] });
+                    if (ch) {
+                        if (customMsg) {
+                            await ch.send(customMsg);
+                        } else {
+                            const embed = new EmbedBuilder()
+                                .setTitle('✈️ بدء رحلة جديدة!')
+                                .setColor(0x2E7D32)
+                                .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
+                                .addFields(
+                                    { name: '🎤 الهوست',       value: `\`${hostId}\``, inline: true },
+                                    { name: '🎤 نائب الهوست', value: deputy,           inline: true },
+                                    { name: '👁️ الرقابي',      value: supervisor,      inline: true },
+                                    { name: '🕐 وقت الرحلة',  value: tripTime,         inline: true },
+                                    { name: '🔧 بدأها',         value: `<@${interaction.user.id}>`, inline: true },
+                                )
+                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setTimestamp();
+                            await ch.send({ embeds: [embed] });
+                            sendToCharLog(embed);
+                        }
+                    }
                 } catch {}
-                sendToCharLog(embed);
                 return interaction.reply({ content: '✅ تم إرسال إشعار بدء الرحلة.', flags: 64 });
             } catch (e) {
                 console.error(e);
@@ -2973,20 +3000,26 @@ client.on('interactionCreate', async interaction => {
 
                 const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim();
 
-                const embed = new EmbedBuilder()
-                    .setTitle('🔄 تجديد الرحلة')
-                    .setColor(0x1565C0)
-                    .setDescription('🔄 **تم تجديد الرحلة!**')
-                    .addFields(
-                        { name: '🎤 ID الهوست',  value: `\`${hostId}\``, inline: true },
-                        { name: '🔧 جدّدها',      value: `<@${interaction.user.id}>`, inline: true },
-                    )
-                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
-                    .setTimestamp();
-
+                const customMsg = await db.getConfig('trip_renewal_message');
                 try {
                     const ch = await client.channels.fetch(alertsChannelId);
-                    if (ch) await ch.send({ embeds: [embed] });
+                    if (ch) {
+                        if (customMsg) {
+                            await ch.send(customMsg);
+                        } else {
+                            const embed = new EmbedBuilder()
+                                .setTitle('🔄 تجديد الرحلة')
+                                .setColor(0x1565C0)
+                                .setDescription('🔄 **تم تجديد الرحلة!**')
+                                .addFields(
+                                    { name: '🎤 ID الهوست',  value: `\`${hostId}\``, inline: true },
+                                    { name: '🔧 جدّدها',      value: `<@${interaction.user.id}>`, inline: true },
+                                )
+                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setTimestamp();
+                            await ch.send({ embeds: [embed] });
+                        }
+                    }
                 } catch {}
                 return interaction.reply({ content: '✅ تم إرسال إشعار التجديد.', flags: 64 });
             } catch (e) {
