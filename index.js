@@ -289,9 +289,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'نظام الوظائف • بوت FANTASY — بيع مكاسبك عبر قائمة الوظائف' })
                     .setTimestamp();
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -328,9 +326,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
                     .setTimestamp();
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -368,9 +364,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'نظام المتجر • بوت FANTASY' })
                     .setTimestamp();
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -408,9 +402,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
                     .setTimestamp();
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -1257,8 +1249,7 @@ client.on('interactionCreate', async interaction => {
                     .setCustomId(`buy_bm_${item.id}`)
                     .setLabel(`🛒 شراء ${item.name}`)
                     .setStyle(ButtonStyle.Danger);
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                const row = new ActionRowBuilder().addComponents(buyBtn, resetBtn);
+                const row = new ActionRowBuilder().addComponents(buyBtn);
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
@@ -1293,13 +1284,11 @@ client.on('interactionCreate', async interaction => {
 
                 if (cash < item.price) {
                     embed.addFields({ name: '❌ رصيد غير كافٍ', value: `تحتاج ${(item.price - cash).toLocaleString()} ريال إضافية`, inline: false });
-                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                    return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
                 const buyBtn   = new ButtonBuilder().setCustomId(`buy_market_${item.id}`).setLabel(`✅ تأكيد الشراء`).setStyle(ButtonStyle.Success);
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn, resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -1333,12 +1322,11 @@ client.on('interactionCreate', async interaction => {
 
                 if (cash < item.price) {
                     embed.addFields({ name: '❌ رصيد غير كافٍ', value: `تحتاج ${(item.price - cash).toLocaleString()} ريال إضافية`, inline: false });
-                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary))], flags: 64 });
+                    return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
                 const buyBtn   = new ButtonBuilder().setCustomId(`buy_equipment_${item.id}`).setLabel('✅ تأكيد الشراء').setStyle(ButtonStyle.Success);
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn, resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -1734,8 +1722,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const sendBtn  = new ButtonBuilder().setCustomId(`snap_msg_btn_${friendId}`).setLabel('📸 إرسال رسالة').setStyle(ButtonStyle.Primary);
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                const row = new ActionRowBuilder().addComponents(sendBtn, resetBtn);
+                const row = new ActionRowBuilder().addComponents(sendBtn);
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
@@ -1931,8 +1918,7 @@ client.on('interactionCreate', async interaction => {
                         .setDescription(lines.slice(0, 4000))
                         .setFooter({ text: `إجمالي القضايا: ${cases.length} • بوت FANTASY` })
                         .setTimestamp();
-                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                    return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                    return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
                 if (value === 'hire_lawyer') {
@@ -1945,8 +1931,7 @@ client.on('interactionCreate', async interaction => {
                         new StringSelectMenuBuilder().setCustomId('case_sel_lawyer').setPlaceholder('📁 أولاً: اختر القضية')
                             .addOptions(eligible.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `الحالة: ${db.CASE_STATUS[c.status]}` })))
                     );
-                    const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                    return interaction.reply({ content: '👨‍⚖️ **الخطوة 1:** اختر القضية:', components: [sel, new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                    return interaction.reply({ content: '👨‍⚖️ **الخطوة 1:** اختر القضية:', components: [sel], flags: 64 });
                 }
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
@@ -1975,8 +1960,7 @@ client.on('interactionCreate', async interaction => {
                     new StringSelectMenuBuilder().setCustomId(cfg.customId).setPlaceholder('اختر القضية')
                         .addOptions(cases.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `ضد: ${c.defendant} • ${db.CASE_STATUS[c.status]}` })))
                 );
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ content: cfg.label + ':', components: [sel, new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ content: cfg.label + ':', components: [sel], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2006,9 +1990,7 @@ client.on('interactionCreate', async interaction => {
                         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2066,8 +2048,7 @@ client.on('interactionCreate', async interaction => {
                     new StringSelectMenuBuilder().setCustomId(`lawyer_pick_${caseId}`).setPlaceholder('👨‍⚖️ الخطوة 2: اختر المحامي')
                         .addOptions(lawyers.slice(0,25).map(l => ({ label: l.lawyer_name, value: l.discord_id, description: `ID: ${l.discord_id}` })))
                 );
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ content: '👨‍⚖️ **الخطوة 2:** اختر المحامي:', components: [sel, new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ content: '👨‍⚖️ **الخطوة 2:** اختر المحامي:', components: [sel], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2109,8 +2090,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '📌 العنوان',     value: c.title,       inline: true },
                     )
                     .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2194,9 +2174,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'السوق المركزي • بوت FANTASY' })
                     .setTimestamp();
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -2232,8 +2210,7 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'نظام الوظائف • بوت FANTASY' }).setTimestamp();
 
                 const startBtn  = new ButtonBuilder().setCustomId(`do_job_${value}`).setLabel('▶️ ابدأ').setStyle(ButtonStyle.Success);
-                const resetBtn  = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(startBtn, resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(startBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -2410,8 +2387,6 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
                     .setTimestamp();
 
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-
                 // إشعار روم القضايا إن وُجد
                 const casesChannelId = await db.getConfig('cases_channel');
                 if (casesChannelId) {
@@ -2419,7 +2394,7 @@ client.on('interactionCreate', async interaction => {
                     if (ch) ch.send({ embeds: [embed] }).catch(() => {});
                 }
 
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ أثناء رفع القضية.', flags: 64 }); }
         }
 
@@ -2496,9 +2471,7 @@ client.on('interactionCreate', async interaction => {
                         ).setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2529,9 +2502,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: `عُيِّن بواسطة: ${interaction.user.username} • بوت FANTASY` })
                     .setTimestamp();
-
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2560,8 +2531,6 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: `أصدره: ${interaction.user.username} • بوت FANTASY` })
                     .setTimestamp();
 
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-
                 // DM المدعي بالحكم
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
@@ -2582,7 +2551,7 @@ client.on('interactionCreate', async interaction => {
                     if (ch) ch.send({ embeds: [embed] }).catch(() => {});
                 }
 
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
@@ -2610,8 +2579,6 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
                     .setTimestamp();
 
-                const resetBtn = new ButtonBuilder().setCustomId('reset_menu').setLabel('🔄 Reset Menu').setStyle(ButtonStyle.Secondary);
-
                 // إشعار روم القضايا إن وُجد
                 const casesChannelId = await db.getConfig('cases_channel');
                 if (casesChannelId) {
@@ -2619,7 +2586,7 @@ client.on('interactionCreate', async interaction => {
                     if (ch) ch.send({ embeds: [embed] }).catch(() => {});
                 }
 
-                return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetBtn)], flags: 64 });
+                return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
 
