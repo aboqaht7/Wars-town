@@ -115,6 +115,17 @@ async function sendToCharLog(embed) {
     }
 }
 
+async function sendToTripLog(embed) {
+    try {
+        const channelId = await db.getConfig('trip_log_channel');
+        if (!channelId) return;
+        const ch = await client.channels.fetch(channelId);
+        if (ch) await ch.send({ embeds: [embed] });
+    } catch (e) {
+        console.error('trip log channel error:', e);
+    }
+}
+
 const resetCommandMap = {
     bank: 'bank', bag: 'bag', identity: 'identity',
     phone: 'phone', الرحلات: 'الرحلات', jobs: 'jobs', market: 'market', 'بلاك-ماركت': 'بلاك-ماركت',
@@ -190,6 +201,7 @@ client.on('interactionCreate', async interaction => {
                                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
                                 .setTimestamp();
                             await ch.send({ embeds: [hurricaneEmbed] });
+                            sendToTripLog(hurricaneEmbed);
                         }
                     }
                 } catch {}
@@ -2998,6 +3010,7 @@ client.on('interactionCreate', async interaction => {
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
                             sendToCharLog(embed);
+                            sendToTripLog(embed);
                         }
                     }
                 } catch {}
@@ -3033,6 +3046,7 @@ client.on('interactionCreate', async interaction => {
                                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
+                            sendToTripLog(embed);
                         }
                     }
                 } catch {}
@@ -3062,6 +3076,7 @@ client.on('interactionCreate', async interaction => {
                     const ch = await client.channels.fetch(alertsChannelId);
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
+                sendToTripLog(embed);
                 return interaction.reply({ content: '✅ تم إرسال التنبيه.', flags: 64 });
             } catch (e) {
                 console.error(e);
