@@ -1641,6 +1641,13 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        if (interaction.customId === 'ticket_menu') {
+            return interaction.reply({
+                content: '⚠️ هذه القائمة قديمة. الرجاء استخدام البانل الجديد `/tickets` لفتح تكت.',
+                flags: 64
+            });
+        }
+
         if (interaction.customId === 'robbery_menu') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
