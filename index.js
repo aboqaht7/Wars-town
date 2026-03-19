@@ -1276,10 +1276,58 @@ client.on('interactionCreate', async interaction => {
                 );
 
                 await interaction.update({ components: [newRow] });
+                await db.addStaffActivity(claimer.id, 'tickets_count');
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء الاستلام.', flags: 64 });
             }
+        }
+
+        // ── كشف نقاط الإدارة ────────────────────────────────────────────────────
+        if (interaction.customId === 'points_check') {
+            const data  = await db.getStaffActivity(interaction.user.id);
+            const trips   = data.trips_count   || 0;
+            const gmc     = data.gmc_count     || 0;
+            const tickets = data.tickets_count || 0;
+            const manual  = data.manual_points || 0;
+            const total   = trips * 5 + gmc * 8 + tickets * 5 + manual;
+
+            const embed = new EmbedBuilder()
+                .setTitle(`📊 نقاط ${interaction.user.username}`)
+                .setColor(0x1565C0)
+                .addFields(
+                    { name: '🚀 فتح رحلات',       value: `${trips} رحلة × 5 = **${trips * 5} نقطة**`,   inline: false },
+                    { name: '👁️ حضور رقابة (GMC)',  value: `${gmc} مرة × 8 = **${gmc * 8} نقطة**`,       inline: false },
+                    { name: '🎫 استلام تكتات',      value: `${tickets} تكت × 5 = **${tickets * 5} نقطة**`, inline: false },
+                    { name: '✏️ نقاط مضافة يدوياً', value: `**${manual} نقطة**`,                           inline: false },
+                    { name: '─────────────────', value: `🏆 **الإجمالي: ${total} نقطة**`,               inline: false },
+                )
+                .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' }).setTimestamp();
+            return interaction.reply({ embeds: [embed], flags: 64 });
+        }
+
+        // ── إضافة / خصم نقاط (مسؤولين فقط) ─────────────────────────────────────
+        if (interaction.customId === 'points_add_btn' || interaction.customId === 'points_deduct_btn') {
+            const isAdd = interaction.customId === 'points_add_btn';
+            const pointsAdminRole = await db.getConfig('points_admin_role');
+            const isAdmin = pointsAdminRole
+                ? interaction.member.roles.cache.has(pointsAdminRole)
+                : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+            if (!isAdmin) return interaction.reply({ content: '❌ فقط مسؤولو النقاط يقدرون يستخدمون هذا الزر.', flags: 64 });
+
+            const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB4 } = require('discord.js');
+            const modal = new ModalBuilder()
+                .setCustomId(isAdd ? 'points_add_modal' : 'points_deduct_modal')
+                .setTitle(isAdd ? '➕ إضافة نقاط' : '➖ خصم نقاط');
+            modal.addComponents(
+                new ARB4().addComponents(
+                    new TextInputBuilder().setCustomId('target_id').setLabel('ID الديسكورد للشخص').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 123456789012345678')
+                ),
+                new ARB4().addComponents(
+                    new TextInputBuilder().setCustomId('points_amount').setLabel('عدد النقاط').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 10')
+                )
+            );
+            return interaction.showModal(modal);
         }
 
         // ── إغلاق تكت ───────────────────────────────────────────────────────────
@@ -2494,6 +2542,38 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        // ── إضافة / خصم نقاط يدوية ──────────────────────────────────────────────
+        if (interaction.customId === 'points_add_modal' || interaction.customId === 'points_deduct_modal') {
+            try {
+                const isAdd     = interaction.customId === 'points_add_modal';
+                const targetId  = interaction.fields.getTextInputValue('target_id').trim();
+                const amount    = parseInt(interaction.fields.getTextInputValue('points_amount').trim());
+
+                if (isNaN(amount) || amount <= 0) return interaction.reply({ content: '❌ أدخل عدداً صحيحاً موجباً.', flags: 64 });
+
+                const delta = isAdd ? amount : -amount;
+                await db.addStaffManualPoints(targetId, delta);
+
+                const target = await client.users.fetch(targetId).catch(() => null);
+
+                const embed = new EmbedBuilder()
+                    .setColor(isAdd ? 0x2E7D32 : 0xB71C1C)
+                    .setTitle(isAdd ? '➕ تمت إضافة النقاط' : '➖ تم خصم النقاط')
+                    .addFields(
+                        { name: '👤 الشخص',    value: target ? `<@${targetId}>` : targetId, inline: true },
+                        { name: '📊 العملية',  value: `${isAdd ? '+' : '-'}${amount} نقطة`,    inline: true },
+                        { name: '🔧 بواسطة',   value: `<@${interaction.user.id}>`,             inline: true },
+                    )
+                    .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' }).setTimestamp();
+
+                await interaction.channel.send({ embeds: [embed] });
+                return interaction.reply({ content: '​', flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء تعديل النقاط.', flags: 64 });
+            }
+        }
+
         // ── تعيين رسالة رحلة مخصصة ────────────────────────────────────────────
         if (interaction.customId.startsWith('set_trip_msg_')) {
             try {
@@ -3162,6 +3242,7 @@ client.on('interactionCreate', async interaction => {
                         }
                     }
                 } catch {}
+                await db.addStaffActivity(interaction.user.id, 'trips_count');
                 return interaction.reply({ content: '✅ تم إرسال إشعار بدء الرحلة.', flags: 64 });
             } catch (e) {
                 console.error(e);

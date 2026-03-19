@@ -1537,6 +1537,7 @@ module.exports = {
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
+    addStaffActivity, addStaffManualPoints, getStaffActivity,
 };
 
 /* ─── جدول آخر تجميع (لمنع التكرار) ─── */
@@ -1703,6 +1704,44 @@ async function getOpenTicketByChannel(channelId) {
 
 async function removeOpenTicket(channelId) {
     await pool.query(`DELETE FROM open_tickets WHERE channel_id=$1`, [channelId]);
+}
+
+/* ─── جدول نقاط الإدارة ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS staff_activity (
+            discord_id    VARCHAR PRIMARY KEY,
+            trips_count   INT DEFAULT 0,
+            gmc_count     INT DEFAULT 0,
+            tickets_count INT DEFAULT 0,
+            manual_points INT DEFAULT 0
+        )
+    `);
+})().catch(console.error);
+
+async function addStaffActivity(discordId, field) {
+    const allowed = ['trips_count', 'gmc_count', 'tickets_count'];
+    if (!allowed.includes(field)) return;
+    await pool.query(`
+        INSERT INTO staff_activity (discord_id, ${field})
+        VALUES ($1, 1)
+        ON CONFLICT (discord_id)
+        DO UPDATE SET ${field} = staff_activity.${field} + 1
+    `, [discordId]);
+}
+
+async function addStaffManualPoints(discordId, amount) {
+    await pool.query(`
+        INSERT INTO staff_activity (discord_id, manual_points)
+        VALUES ($1, $2)
+        ON CONFLICT (discord_id)
+        DO UPDATE SET manual_points = staff_activity.manual_points + $2
+    `, [discordId, amount]);
+}
+
+async function getStaffActivity(discordId) {
+    const res = await pool.query('SELECT * FROM staff_activity WHERE discord_id=$1', [discordId]);
+    return res.rows[0] || { discord_id: discordId, trips_count: 0, gmc_count: 0, tickets_count: 0, manual_points: 0 };
 }
 
 /* ─── جدول أزرار الأولوية ─── */
