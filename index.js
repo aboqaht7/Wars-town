@@ -3179,15 +3179,14 @@ client.on('messageCreate', async message => {
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift();
-    console.log(`[CMD] name="${commandName}" hex=${Buffer.from(commandName).toString('hex')}`);
     const command = client.commands.get(commandName);
-    if (!command) { console.log(`[CMD] not found: ${commandName}`); return; }
+    if (!command) return;
 
     try {
         await command.execute(message, args, db);
     } catch (error) {
         console.error(`[CMD ERROR] ${commandName}:`, error?.message || error);
-        message.reply(`حدث خطأ أثناء تنفيذ الأمر!\n\`${error?.message || error}\``);
+        message.reply('حدث خطأ أثناء تنفيذ الأمر!');
     }
 });
 
@@ -3295,5 +3294,12 @@ setInterval(async () => {
         }
     } catch (e) { console.error('violation interval error:', e); }
 }, 60_000);
+
+// ── Health check server for deployment ──────────────────────────────────
+const http = require('http');
+http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('OK');
+}).listen(process.env.PORT || 3000);
 
 client.login(process.env.DISCORD_TOKEN);
