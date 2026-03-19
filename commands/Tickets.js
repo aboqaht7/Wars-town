@@ -1,6 +1,7 @@
 const {
     SlashCommandBuilder, EmbedBuilder,
-    ActionRowBuilder, ButtonBuilder, ButtonStyle
+    ActionRowBuilder, ButtonBuilder, ButtonStyle,
+    StringSelectMenuBuilder
 } = require('discord.js');
 const { resetRow } = require('../utils');
 
@@ -11,61 +12,98 @@ module.exports = {
         .setDescription('نظام التكتات'),
 
     async execute(message, args, db) {
-        const payload = await build(db);
-        message.channel.send(payload);
+        const mode    = (await db.getConfig('ticket_display_mode')) || 'buttons';
+        const payloads = await build(db, mode);
+        for (const p of payloads) await message.channel.send(p);
     },
 
     async slashExecute(interaction, db) {
         if (interaction._isReset) {
-            const payload = await build(db);
-            return interaction.message.edit(payload);
+            const mode    = (await db.getConfig('ticket_display_mode')) || 'buttons';
+            const payloads = await build(db, mode);
+            return interaction.message.edit(payloads[0]);
         }
         await interaction.deferReply({ flags: 64 });
-        const payload = await build(db);
-        await interaction.channel.send(payload);
+        const mode    = (await db.getConfig('ticket_display_mode')) || 'buttons';
+        const payloads = await build(db, mode);
+        for (const p of payloads) await interaction.channel.send(p);
         await interaction.deleteReply().catch(() => {});
     }
 };
 
-async function build(db) {
+async function build(db, mode) {
     const types = await db.getTicketTypes();
+    const img   = await db.getImage('tickets').catch(() => null);
 
+    if (!types.length) {
+        const embed = new EmbedBuilder()
+            .setTitle('🎫 نظام التكتات')
+            .setColor(0x1565C0)
+            .setDescription('> لا توجد أنواع تكتات متاحة حالياً. انتظر الإدارة.')
+            .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+        if (img) embed.setImage(img);
+        return [{ embeds: [embed], components: [resetRow('tickets')] }];
+    }
+
+    if (mode === 'menu') {
+        return buildMenu(types, img);
+    }
+    return buildEmbeds(types, img);
+}
+
+function buildMenu(types, img) {
     const embed = new EmbedBuilder()
         .setTitle('🎫 نظام التكتات')
         .setColor(0x1565C0)
-        .setFooter({ text: 'نظام التكتات • بوت FANTASY' })
-        .setTimestamp();
-
-    const img = await db.getImage('tickets').catch(() => null);
+        .setDescription('اختر نوع التكت من القائمة أدناه وسيُنشأ لك روم خاص.')
+        .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
     if (img) embed.setImage(img);
 
-    if (!types.length) {
-        embed.setDescription('> لا توجد أنواع تكتات متاحة حالياً. انتظر الإدارة.');
-        return { embeds: [embed], components: [resetRow('tickets')] };
-    }
+    const options = types.slice(0, 25).map(t => ({
+        label: `${t.emoji} ${t.name}`,
+        value: String(t.id),
+        description: t.role_id ? `يستلمه فريق مخصص` : 'انقر للفتح',
+    }));
 
-    embed.setDescription('اضغط على نوع التكت الذي تريد فتحه وسيُنشأ لك روم خاص.');
+    const menuRow = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
+            .setCustomId('tickets_type_menu')
+            .setPlaceholder('🎫 اختر نوع التكت')
+            .addOptions(options)
+    );
 
-    const rows = [];
-    let currentRow = new ActionRowBuilder();
-    let count = 0;
+    return [{ embeds: [embed], components: [menuRow, resetRow('tickets')] }];
+}
 
-    for (const type of types) {
-        if (count > 0 && count % 5 === 0) {
-            rows.push(currentRow);
-            currentRow = new ActionRowBuilder();
-        }
-        currentRow.addComponents(
+function buildEmbeds(types, img) {
+    const payloads = [];
+
+    for (let i = 0; i < types.length; i++) {
+        const t = types[i];
+        const isLast = i === types.length - 1;
+
+        const embed = new EmbedBuilder()
+            .setTitle(`${t.emoji} ${t.name}`)
+            .setColor(0x1565C0)
+            .setDescription(
+                t.role_id
+                    ? `اضغط الزر لفتح تكت **${t.name}**.\n🛡️ يستلمه: <@&${t.role_id}>`
+                    : `اضغط الزر لفتح تكت **${t.name}**.`
+            )
+            .setFooter({ text: 'نظام التكتات • بوت FANTASY' });
+
+        if (img && i === 0) embed.setImage(img);
+
+        const btnRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId(`open_ticket_${type.id}`)
-                .setLabel(`${type.emoji} ${type.name}`)
+                .setCustomId(`open_ticket_${t.id}`)
+                .setLabel('🎫 فتح التكت')
                 .setStyle(ButtonStyle.Primary)
         );
-        count++;
-        if (rows.length >= 4) break;
-    }
-    if (currentRow.components.length > 0) rows.push(currentRow);
-    rows.push(resetRow('tickets'));
 
-    return { embeds: [embed], components: rows };
+        const components = isLast ? [btnRow, resetRow('tickets')] : [btnRow];
+        payloads.push({ embeds: [embed], components });
+    }
+
+    return payloads;
 }
