@@ -3440,9 +3440,9 @@ client.on('interactionCreate', async interaction => {
     try {
         await command.slashExecute(interaction, db);
     } catch (error) {
-        console.error(`[SLASH ERROR] /${interaction.commandName}:`, error?.message || error);
+        console.error(`[SLASH ERROR] /${interaction.commandName} code=${error?.code} replied=${interaction.replied} deferred=${interaction.deferred}\n${error?.stack || error}`);
         if (!interaction.replied && !interaction.deferred) {
-            interaction.reply({ content: 'حدث خطأ أثناء تنفيذ الأمر!', flags: 64 }).catch(() => {});
+            interaction.reply({ content: 'حدث خطأ أثناء تنفيذ الأمر!', flags: 64 }).catch(e2 => console.error('[SLASH CATCH-REPLY ERROR]', e2?.message));
         }
     }
 });

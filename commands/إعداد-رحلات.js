@@ -78,11 +78,11 @@ module.exports = {
                 .setLabel(`✏️ اكتب رسالة ${labels[type]}`)
                 .setStyle(ButtonStyle.Primary);
             const row = new ActionRowBuilder().addComponents(btn);
-            return interaction.reply({
-                content: `اضغط الزر لكتابة رسالة **${labels[type]}** المخصصة:`,
-                components: [row],
-                flags: 64
+            await interaction.channel.send({
+                content: `<@${interaction.user.id}> اضغط الزر لكتابة رسالة **${labels[type]}** المخصصة:`,
+                components: [row]
             });
+            return interaction.reply({ content: '\u200b', flags: 64 });
         }
 
         if (sub === 'معلومات') {
