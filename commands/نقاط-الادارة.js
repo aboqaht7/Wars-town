@@ -42,15 +42,6 @@ async function buildPanel(db) {
         .setColor(0x1565C0)
         .addFields(
             {
-                name: '🗂️ مصادر النقاط',
-                value:
-                    '> 🚀 فتح رحلة — **5 نقاط**\n' +
-                    '> 👁️ حضور رقابة (GMC) — **8 نقاط**\n' +
-                    '> 🎫 استلام تكت — **5 نقاط**\n' +
-                    '> ✏️ نقاط مضافة يدوياً',
-                inline: false
-            },
-            {
                 name: '🏆 ترتيب الموظفين',
                 value: leaderboard,
                 inline: false
