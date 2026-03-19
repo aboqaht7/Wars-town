@@ -1201,14 +1201,19 @@ client.on('interactionCreate', async interaction => {
 
                 const { PermissionFlagsBits: PFB, ChannelType } = require('discord.js');
 
+                const permOverwrites = [
+                    { id: interaction.guild.id, deny: [PFB.ViewChannel] },
+                    { id: interaction.user.id,  allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] },
+                    { id: interaction.client.user.id, allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ManageChannels] },
+                ];
+                if (type.role_id) {
+                    permOverwrites.push({ id: type.role_id, allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] });
+                }
+
                 const channelOptions = {
                     name: channelName,
                     type: ChannelType.GuildText,
-                    permissionOverwrites: [
-                        { id: interaction.guild.id, deny: [PFB.ViewChannel] },
-                        { id: interaction.user.id,  allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] },
-                        { id: interaction.client.user.id, allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ManageChannels] },
-                    ],
+                    permissionOverwrites: permOverwrites,
                 };
                 if (categoryId) channelOptions.parent = categoryId;
 
@@ -1216,17 +1221,23 @@ client.on('interactionCreate', async interaction => {
                 await db.createOpenTicket(interaction.user.id, ticketChannel.id, type.id, type.name);
 
                 const { ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
+                const receiverLine = type.role_id
+                    ? `\n🛡️ سيستلم هذا التكت: <@&${type.role_id}>`
+                    : '';
                 const ticketEmbed = new EmbedBuilder()
                     .setTitle(`${type.emoji} تكت — ${type.name}`)
                     .setColor(0x1565C0)
-                    .setDescription(`مرحباً <@${interaction.user.id}>!\n\nتم فتح تكت **${type.emoji} ${type.name}** بنجاح.\nسيتواصل معك أحد المسؤولين قريباً.\n\nعند الانتهاء اضغط زر **إغلاق التكت**.`)
+                    .setDescription(`مرحباً <@${interaction.user.id}>!\n\nتم فتح تكت **${type.emoji} ${type.name}** بنجاح.${receiverLine}\n\nعند الانتهاء اضغط زر **إغلاق التكت**.`)
                     .addFields({ name: '👤 صاحب التكت', value: `<@${interaction.user.id}>`, inline: true })
                     .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
 
                 const closeRow = new ARB2().addComponents(
                     new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('🔒 إغلاق التكت').setStyle(BS2.Danger)
                 );
-                await ticketChannel.send({ content: `<@${interaction.user.id}>`, embeds: [ticketEmbed], components: [closeRow] });
+                const pingContent = type.role_id
+                    ? `<@${interaction.user.id}> <@&${type.role_id}>`
+                    : `<@${interaction.user.id}>`;
+                await ticketChannel.send({ content: pingContent, embeds: [ticketEmbed], components: [closeRow] });
 
                 const ticketLogId = await db.getConfig('ticket_log_channel');
                 if (ticketLogId) {

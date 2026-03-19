@@ -11,6 +11,7 @@ module.exports = {
                 .setDescription('إضافة نوع تكت جديد')
                 .addStringOption(o => o.setName('الاسم').setDescription('اسم النوع (مثال: شكوى)').setRequired(true))
                 .addStringOption(o => o.setName('الإيموجي').setDescription('إيموجي النوع (مثال: 📝)').setRequired(false))
+                .addRoleOption(o => o.setName('الرتبة').setDescription('الرتبة التي تستلم هذا التكت (اختياري)').setRequired(false))
         )
         .addSubcommand(sub =>
             sub.setName('حذف-نوع')
@@ -41,16 +42,19 @@ module.exports = {
         const sub = interaction.options.getSubcommand();
 
         if (sub === 'إضافة-نوع') {
-            const name  = interaction.options.getString('الاسم').trim();
-            const emoji = interaction.options.getString('الإيموجي')?.trim() || '🎫';
-            const type  = await db.addTicketType(name, emoji);
+            const name   = interaction.options.getString('الاسم').trim();
+            const emoji  = interaction.options.getString('الإيموجي')?.trim() || '🎫';
+            const role   = interaction.options.getRole('الرتبة');
+            const type   = await db.addTicketType(name, emoji, role?.id || null);
+            const fields = [
+                { name: '🆔 الرقم', value: `\`${type.id}\``, inline: true },
+                { name: '🎫 الاسم', value: `${type.emoji} ${type.name}`, inline: true },
+            ];
+            if (role) fields.push({ name: '🛡️ الرتبة المستلِمة', value: `<@&${role.id}>`, inline: true });
             const embed = new EmbedBuilder()
                 .setTitle('✅ تمت إضافة نوع التكت')
                 .setColor(0x1565C0)
-                .addFields(
-                    { name: '🆔 الرقم', value: `\`${type.id}\``, inline: true },
-                    { name: '🎫 الاسم', value: `${type.emoji} ${type.name}`, inline: true },
-                )
+                .addFields(...fields)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -78,7 +82,12 @@ module.exports = {
             if (!types.length) {
                 embed.setDescription('> لا توجد أنواع. استخدم `/إعداد-تكتات إضافة-نوع` لإضافة نوع.');
             } else {
-                embed.setDescription(types.map(t => `\`${t.id}\` • ${t.emoji} **${t.name}**`).join('\n'));
+                embed.setDescription(
+                    types.map(t =>
+                        `\`${t.id}\` • ${t.emoji} **${t.name}**` +
+                        (t.role_id ? ` — <@&${t.role_id}>` : '')
+                    ).join('\n')
+                );
             }
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });

@@ -1654,7 +1654,8 @@ async function deleteActivationRequest(id) {
         CREATE TABLE IF NOT EXISTS ticket_types (
             id         SERIAL PRIMARY KEY,
             name       TEXT NOT NULL,
-            emoji      TEXT NOT NULL DEFAULT '🎫'
+            emoji      TEXT NOT NULL DEFAULT '🎫',
+            role_id    TEXT
         );
         CREATE TABLE IF NOT EXISTS open_tickets (
             id         SERIAL PRIMARY KEY,
@@ -1665,12 +1666,13 @@ async function deleteActivationRequest(id) {
             created_at TIMESTAMP DEFAULT NOW()
         );
     `);
+    await pool.query(`ALTER TABLE ticket_types ADD COLUMN IF NOT EXISTS role_id TEXT`);
 })().catch(console.error);
 
-async function addTicketType(name, emoji) {
+async function addTicketType(name, emoji, roleId = null) {
     const res = await pool.query(
-        `INSERT INTO ticket_types (name, emoji) VALUES ($1, $2) RETURNING *`,
-        [name, emoji]
+        `INSERT INTO ticket_types (name, emoji, role_id) VALUES ($1, $2, $3) RETURNING *`,
+        [name, emoji, roleId]
     );
     return res.rows[0];
 }
