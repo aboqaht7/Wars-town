@@ -30,6 +30,11 @@ module.exports = {
             sub.setName('لوق')
                 .setDescription('تعيين روم تسجيل أحداث التكتات')
                 .addChannelOption(o => o.setName('الروم').setDescription('روم اللوق').setRequired(true))
+        )
+        .addSubcommand(sub =>
+            sub.setName('مسؤولين')
+                .setDescription('تعيين رتبة مسؤولين التكتات (الوحيدون القادرون على الإغلاق)')
+                .addRoleOption(o => o.setName('الرتبة').setDescription('رتبة مسؤولي التكتات').setRequired(true))
         ),
 
     async slashExecute(interaction, db) {
@@ -98,6 +103,21 @@ module.exports = {
                 .setTitle('✅ تم تعيين روم لوق التكتات')
                 .setColor(0x1565C0)
                 .addFields({ name: '📋 الروم', value: `<#${ch.id}>`, inline: true })
+                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            await interaction.channel.send({ embeds: [embed] });
+            return interaction.reply({ content: '​', flags: 64 });
+        }
+
+        if (sub === 'مسؤولين') {
+            const role = interaction.options.getRole('الرتبة');
+            await db.setConfig('ticket_admin_role', role.id);
+            const embed = new EmbedBuilder()
+                .setTitle('✅ تم تعيين رتبة مسؤولي التكتات')
+                .setColor(0x7B1FA2)
+                .addFields(
+                    { name: '🛡️ الرتبة', value: `<@&${role.id}>`, inline: true },
+                    { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الرتبة يقدرون يغلقون التكتات', inline: false },
+                )
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });

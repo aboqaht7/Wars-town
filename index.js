@@ -1258,10 +1258,12 @@ client.on('interactionCreate', async interaction => {
                 const ticket    = await db.getOpenTicketByChannel(channelId);
                 const channel   = await client.channels.fetch(channelId).catch(() => null);
 
-                const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-                const isOwner = ticket?.discord_id === interaction.user.id;
-                if (!isAdmin && !isOwner) {
-                    return interaction.reply({ content: '❌ فقط صاحب التكت أو الإدارة يقدرون يغلقون التكت.', flags: 64 });
+                const ticketAdminRole = await db.getConfig('ticket_admin_role');
+                const hasRole = ticketAdminRole
+                    ? interaction.member.roles.cache.has(ticketAdminRole)
+                    : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                if (!hasRole) {
+                    return interaction.reply({ content: '❌ فقط مسؤولو التكتات يقدرون يغلقون التكت.', flags: 64 });
                 }
 
                 const ticketLogId = await db.getConfig('ticket_log_channel');
