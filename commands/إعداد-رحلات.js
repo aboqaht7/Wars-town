@@ -72,20 +72,17 @@ module.exports = {
         if (sub === 'رسالة') {
             const type   = interaction.options.getString('الحدث');
             const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
-            const modal  = new ModalBuilder()
-                .setCustomId(`set_trip_msg_${type}`)
-                .setTitle(`✏️ رسالة ${labels[type]}`);
-            modal.addComponents(
-                new ActionRowBuilder().addComponents(
-                    new TextInputBuilder()
-                        .setCustomId('trip_msg_text')
-                        .setLabel('نص الرسالة (اتركها فارغة لإعادة الافتراضي)')
-                        .setStyle(TextInputStyle.Paragraph)
-                        .setRequired(false)
-                        .setPlaceholder('اكتب الرسالة المخصصة هنا...')
-                )
-            );
-            return interaction.showModal(modal);
+            const { ButtonBuilder, ButtonStyle } = require('discord.js');
+            const btn = new ButtonBuilder()
+                .setCustomId(`trip_msg_btn_${type}`)
+                .setLabel(`✏️ اكتب رسالة ${labels[type]}`)
+                .setStyle(ButtonStyle.Primary);
+            const row = new ActionRowBuilder().addComponents(btn);
+            return interaction.reply({
+                content: `اضغط الزر لكتابة رسالة **${labels[type]}** المخصصة:`,
+                components: [row],
+                flags: 64
+            });
         }
 
         if (sub === 'معلومات') {

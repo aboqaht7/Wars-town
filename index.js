@@ -236,6 +236,26 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        if (interaction.customId.startsWith('trip_msg_btn_')) {
+            const type   = interaction.customId.replace('trip_msg_btn_', '');
+            const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
+            const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB_TM } = require('discord.js');
+            const modal = new ModalBuilder()
+                .setCustomId(`set_trip_msg_${type}`)
+                .setTitle(`✏️ رسالة ${labels[type] || type}`);
+            modal.addComponents(
+                new ARB_TM().addComponents(
+                    new TextInputBuilder()
+                        .setCustomId('trip_msg_text')
+                        .setLabel('نص الرسالة')
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setRequired(false)
+                        .setPlaceholder('اكتب الرسالة هنا... (اتركها فارغة لإعادة الرسالة الافتراضية)')
+                )
+            );
+            return interaction.showModal(modal);
+        }
+
         if (['trip_start', 'trip_hurricane', 'trip_renewal', 'trip_alert'].includes(interaction.customId)) {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({ content: '❌ هذا الزر للمسؤولين فقط.', flags: 64 });
@@ -2577,11 +2597,16 @@ client.on('interactionCreate', async interaction => {
         // ── تعيين رسالة رحلة مخصصة ────────────────────────────────────────────
         if (interaction.customId.startsWith('set_trip_msg_')) {
             try {
-                const type = interaction.customId.replace('set_trip_msg_', '');
-                const text = interaction.fields.getTextInputValue('trip_msg_text').trim();
-                await db.setConfig(`${type}_message`, text);
+                const type   = interaction.customId.replace('set_trip_msg_', '');
+                const text   = interaction.fields.getTextInputValue('trip_msg_text').trim();
                 const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
-                await interaction.reply({ content: `✅ تم حفظ رسالة **${labels[type]}**.`, flags: 64 });
+                if (text) {
+                    await db.setConfig(`${type}_message`, text);
+                    await interaction.reply({ content: `✅ تم حفظ رسالة **${labels[type]}** المخصصة.`, flags: 64 });
+                } else {
+                    await db.setConfig(`${type}_message`, '');
+                    await interaction.reply({ content: `🔄 تمت إعادة رسالة **${labels[type]}** للافتراضية.`, flags: 64 });
+                }
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
