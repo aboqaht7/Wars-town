@@ -7,31 +7,54 @@ module.exports = {
     name: 'نقاط-الادارة',
     data: new SlashCommandBuilder()
         .setName('نقاط-الادارة')
-        .setDescription('بانل نقاط الإدارة'),
+        .setDescription('بانل نقاط الإدارة العام'),
 
     async execute(message, args, db) {
-        const payload = buildPanel();
+        const payload = await buildPanel(db);
         await message.channel.send(payload);
     },
 
     async slashExecute(interaction, db) {
         await interaction.deferReply({ flags: 64 });
-        await interaction.channel.send(buildPanel());
+        await interaction.channel.send(await buildPanel(db));
         await interaction.deleteReply().catch(() => {});
     }
 };
 
-function buildPanel() {
+async function buildPanel(db) {
+    const all = await db.getAllStaffActivity();
+
+    const medals = ['🥇', '🥈', '🥉'];
+    let leaderboard = '';
+
+    if (!all.length) {
+        leaderboard = '> لا توجد بيانات بعد.';
+    } else {
+        leaderboard = all.slice(0, 10).map((row, i) => {
+            const total = Number(row.total) || 0;
+            const medal = medals[i] || `${i + 1}.`;
+            return `${medal} <@${row.discord_id}> — **${total} نقطة**`;
+        }).join('\n');
+    }
+
     const embed = new EmbedBuilder()
-        .setTitle('📊 نظام نقاط الإدارة')
+        .setTitle('📊 لوحة نقاط الإدارة')
         .setColor(0x1565C0)
-        .setDescription(
-            '> اضغط على الزر المناسب لعرض أو تعديل نقاط الإدارة.\n\n' +
-            '🗂️ **مصادر النقاط:**\n' +
-            '> 🚀 فتح رحلة — **5 نقاط**\n' +
-            '> 👁️ حضور رقابة (GMC) — **8 نقاط**\n' +
-            '> 🎫 استلام تكت — **5 نقاط**\n' +
-            '> ✏️ نقاط مضافة يدوياً'
+        .addFields(
+            {
+                name: '🗂️ مصادر النقاط',
+                value:
+                    '> 🚀 فتح رحلة — **5 نقاط**\n' +
+                    '> 👁️ حضور رقابة (GMC) — **8 نقاط**\n' +
+                    '> 🎫 استلام تكت — **5 نقاط**\n' +
+                    '> ✏️ نقاط مضافة يدوياً',
+                inline: false
+            },
+            {
+                name: '🏆 ترتيب الموظفين',
+                value: leaderboard,
+                inline: false
+            }
         )
         .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' })
         .setTimestamp();

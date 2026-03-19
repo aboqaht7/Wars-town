@@ -1537,7 +1537,7 @@ module.exports = {
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
-    addStaffActivity, addStaffManualPoints, getStaffActivity,
+    addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
 };
 
 /* ─── جدول آخر تجميع (لمنع التكرار) ─── */
@@ -1742,6 +1742,16 @@ async function addStaffManualPoints(discordId, amount) {
 async function getStaffActivity(discordId) {
     const res = await pool.query('SELECT * FROM staff_activity WHERE discord_id=$1', [discordId]);
     return res.rows[0] || { discord_id: discordId, trips_count: 0, gmc_count: 0, tickets_count: 0, manual_points: 0 };
+}
+
+async function getAllStaffActivity() {
+    const res = await pool.query(`
+        SELECT *,
+            (trips_count * 5 + gmc_count * 8 + tickets_count * 5 + manual_points) AS total
+        FROM staff_activity
+        ORDER BY total DESC
+    `);
+    return res.rows;
 }
 
 /* ─── جدول أزرار الأولوية ─── */
