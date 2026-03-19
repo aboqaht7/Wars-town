@@ -3118,10 +3118,11 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('messageCreate', async message => {
-    // حذف رسائل البوت — الإمبيدات الرئيسية (تحتوي embed + قائمة/زر) تبقى دائمة
+    // حذف رسائل البوت — الإمبيدات والرسائل ذات الأزرار تبقى دائمة، فقط الردود النصية القصيرة تُحذف
     if (message.author.id === client.user?.id) {
-        const isPanel = message.embeds.length > 0 && message.components.length > 0;
-        if (!isPanel) setTimeout(() => message.delete().catch(() => {}), 60_000);
+        const hasEmbeds = message.embeds.length > 0;
+        const hasComponents = message.components.length > 0;
+        if (!hasEmbeds && !hasComponents) setTimeout(() => message.delete().catch(() => {}), 60_000);
         return;
     }
     if (message.author.bot) return;
