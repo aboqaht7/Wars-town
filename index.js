@@ -161,7 +161,10 @@ async function handleOpenTicket(interaction, typeId) {
             .addFields({ name: '👤 صاحب التكت', value: `<@${interaction.user.id}>`, inline: true })
             .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
 
-        const closeRow    = new ARB2().addComponents(new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('🔒 إغلاق التكت').setStyle(BS2.Danger));
+        const closeRow = new ARB2().addComponents(
+            new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('📋 استلام التكت').setStyle(BS2.Secondary),
+            new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('🔒 إغلاق التكت').setStyle(BS2.Danger)
+        );
         const pingContent = type.role_id ? `<@${interaction.user.id}> <@&${type.role_id}>` : `<@${interaction.user.id}>`;
         await ticketChannel.send({ content: pingContent, embeds: [ticketEmbed], components: [closeRow] });
 
@@ -1251,6 +1254,32 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId.startsWith('open_ticket_')) {
             const typeId = parseInt(interaction.customId.replace('open_ticket_', ''));
             return handleOpenTicket(interaction, typeId);
+        }
+
+        // ── استلام تكت ──────────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('claim_ticket_')) {
+            try {
+                const channelId = interaction.customId.replace('claim_ticket_', '');
+                const claimer   = interaction.user;
+                const { ActionRowBuilder: ARB3, ButtonBuilder: BB3, ButtonStyle: BS3 } = require('discord.js');
+
+                const newRow = new ARB3().addComponents(
+                    new BB3()
+                        .setCustomId(`claim_ticket_${channelId}`)
+                        .setLabel(`✅ مستلَم بواسطة: ${claimer.username}`)
+                        .setStyle(BS3.Success)
+                        .setDisabled(true),
+                    new BB3()
+                        .setCustomId(`close_ticket_${channelId}`)
+                        .setLabel('🔒 إغلاق التكت')
+                        .setStyle(BS3.Danger)
+                );
+
+                await interaction.update({ components: [newRow] });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء الاستلام.', flags: 64 });
+            }
         }
 
         // ── إغلاق تكت ───────────────────────────────────────────────────────────
