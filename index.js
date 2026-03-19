@@ -1564,6 +1564,20 @@ client.on('interactionCreate', async interaction => {
                     await db.addToCash(interaction.user.id, identity.slot, amount);
                 }
 
+                const reportChannelId = await db.getConfig('robbery_report_channel');
+                if (reportChannelId) {
+                    const { ModalBuilder: RM, TextInputBuilder: RT, TextInputStyle: RS, ActionRowBuilder: RA } = require('discord.js');
+                    const modal = new RM()
+                        .setCustomId(`robbery_report_${robberyId}_${amount}`)
+                        .setTitle('📍 بلاغ موقع السرقة');
+                    modal.addComponents(
+                        new RA().addComponents(
+                            new RT().setCustomId('robbery_location').setLabel('وين موقعك؟ (اكتب الموقع)').setStyle(RS.Paragraph).setRequired(true).setMaxLength(500)
+                        ),
+                    );
+                    return interaction.showModal(modal);
+                }
+
                 const embed = new EmbedBuilder()
                     .setTitle('💰 تمت السرقة بنجاح!')
                     .setColor(0x2E7D32)
@@ -2268,6 +2282,57 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (interaction.isModalSubmit()) {
+
+        // ── بلاغ موقع السرقة ────────────────────────────────────────────────
+        if (interaction.customId.startsWith('robbery_report_')) {
+            try {
+                const parts = interaction.customId.replace('robbery_report_', '').split('_');
+                const robberyId = parseInt(parts[0]);
+                const amount = parseInt(parts[1]);
+                const location = interaction.fields.getTextInputValue('robbery_location').trim();
+
+                const rob = await db.getRobberyById(robberyId);
+                const robName = rob?.name || 'سرقة';
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                const displayName = identity?.character_name || interaction.member?.displayName || interaction.user.username;
+
+                const reportChannelId = await db.getConfig('robbery_report_channel');
+                if (reportChannelId) {
+                    const ch = await client.channels.fetch(reportChannelId).catch(() => null);
+                    if (ch) {
+                        const reportEmbed = new EmbedBuilder()
+                            .setTitle('🚨 بلاغ سرقة')
+                            .setColor(0xD32F2F)
+                            .addFields(
+                                { name: '👤 السارق', value: `<@${interaction.user.id}>`, inline: true },
+                                { name: '🏷️ الاسم', value: displayName, inline: true },
+                                { name: '🔫 نوع السرقة', value: robName, inline: true },
+                                { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                                { name: '📍 الموقع', value: location, inline: false },
+                            )
+                            .setFooter({ text: 'بلاغات السرقة • بوت FANTASY' })
+                            .setTimestamp();
+                        await ch.send({ embeds: [reportEmbed] });
+                    }
+                }
+
+                const embed = new EmbedBuilder()
+                    .setTitle('💰 تمت السرقة بنجاح!')
+                    .setColor(0x2E7D32)
+                    .addFields(
+                        { name: '🔫 نوع السرقة', value: robName, inline: true },
+                        { name: '💵 المبلغ المسروق', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                        { name: '📍 الموقع المبلّغ', value: location, inline: false },
+                    )
+                    .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
 
         // ── تعيين رسالة رحلة مخصصة ────────────────────────────────────────────
         if (interaction.customId.startsWith('set_trip_msg_')) {
