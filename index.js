@@ -1186,6 +1186,109 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        // ── فتح تكت ─────────────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('open_ticket_')) {
+            try {
+                const typeId = parseInt(interaction.customId.replace('open_ticket_', ''));
+                const types  = await db.getTicketTypes();
+                const type   = types.find(t => t.id === typeId);
+                if (!type) return interaction.reply({ content: '❌ نوع التكت غير موجود.', flags: 64 });
+
+                const categoryId = await db.getConfig('ticket_category_id');
+
+                const cleanName = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;
+                const channelName = `ticket-${cleanName}`;
+
+                const { PermissionFlagsBits: PFB, ChannelType } = require('discord.js');
+
+                const channelOptions = {
+                    name: channelName,
+                    type: ChannelType.GuildText,
+                    permissionOverwrites: [
+                        { id: interaction.guild.id, deny: [PFB.ViewChannel] },
+                        { id: interaction.user.id,  allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] },
+                        { id: interaction.client.user.id, allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ManageChannels] },
+                    ],
+                };
+                if (categoryId) channelOptions.parent = categoryId;
+
+                const ticketChannel = await interaction.guild.channels.create(channelOptions);
+                await db.createOpenTicket(interaction.user.id, ticketChannel.id, type.id, type.name);
+
+                const { ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
+                const ticketEmbed = new EmbedBuilder()
+                    .setTitle(`${type.emoji} تكت — ${type.name}`)
+                    .setColor(0x1565C0)
+                    .setDescription(`مرحباً <@${interaction.user.id}>!\n\nتم فتح تكت **${type.emoji} ${type.name}** بنجاح.\nسيتواصل معك أحد المسؤولين قريباً.\n\nعند الانتهاء اضغط زر **إغلاق التكت**.`)
+                    .addFields({ name: '👤 صاحب التكت', value: `<@${interaction.user.id}>`, inline: true })
+                    .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+
+                const closeRow = new ARB2().addComponents(
+                    new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('🔒 إغلاق التكت').setStyle(BS2.Danger)
+                );
+                await ticketChannel.send({ content: `<@${interaction.user.id}>`, embeds: [ticketEmbed], components: [closeRow] });
+
+                const ticketLogId = await db.getConfig('ticket_log_channel');
+                if (ticketLogId) {
+                    const logCh = await client.channels.fetch(ticketLogId).catch(() => null);
+                    if (logCh) {
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle('🎫 تم فتح تكت جديد')
+                            .setColor(0x2E7D32)
+                            .addFields(
+                                { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
+                                { name: '🗂️ النوع', value: `${type.emoji} ${type.name}`, inline: true },
+                                { name: '📌 الروم', value: `<#${ticketChannel.id}>`, inline: true },
+                            ).setTimestamp();
+                        await logCh.send({ embeds: [logEmbed] });
+                    }
+                }
+
+                return interaction.reply({ content: `✅ تم فتح تكتك في <#${ticketChannel.id}>`, flags: 64 });
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء إنشاء التكت.', flags: 64 });
+            }
+        }
+
+        // ── إغلاق تكت ───────────────────────────────────────────────────────────
+        if (interaction.customId.startsWith('close_ticket_')) {
+            try {
+                const channelId = interaction.customId.replace('close_ticket_', '');
+                const ticket    = await db.getOpenTicketByChannel(channelId);
+                const channel   = await client.channels.fetch(channelId).catch(() => null);
+
+                const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const isOwner = ticket?.discord_id === interaction.user.id;
+                if (!isAdmin && !isOwner) {
+                    return interaction.reply({ content: '❌ فقط صاحب التكت أو الإدارة يقدرون يغلقون التكت.', flags: 64 });
+                }
+
+                const ticketLogId = await db.getConfig('ticket_log_channel');
+                if (ticketLogId) {
+                    const logCh = await client.channels.fetch(ticketLogId).catch(() => null);
+                    if (logCh) {
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle('🔒 تم إغلاق تكت')
+                            .setColor(0xB71C1C)
+                            .addFields(
+                                { name: '👤 صاحب التكت', value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
+                                { name: '🗂️ النوع',      value: ticket?.type_name || '—', inline: true },
+                                { name: '🔧 أغلقه',      value: `<@${interaction.user.id}>`, inline: true },
+                            ).setTimestamp();
+                        await logCh.send({ embeds: [logEmbed] });
+                    }
+                }
+
+                await db.removeOpenTicket(channelId);
+                await interaction.reply({ content: '🔒 سيتم إغلاق التكت خلال 5 ثوان...', flags: 64 });
+                setTimeout(async () => { if (channel) await channel.delete().catch(() => {}); }, 5000);
+            } catch (e) {
+                console.error(e);
+                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
         return;
     }
 

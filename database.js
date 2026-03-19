@@ -1535,6 +1535,8 @@ module.exports = {
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
     addPriorityButton, removePriorityButton, getPriorityButtons,
+    addTicketType, removeTicketType, getTicketTypes,
+    createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
 };
 
 /* ─── جدول آخر تجميع (لمنع التكرار) ─── */
@@ -1644,6 +1646,61 @@ async function getActivationRequest(id) {
 
 async function deleteActivationRequest(id) {
     await pool.query(`DELETE FROM activation_requests WHERE id=$1`, [id]);
+}
+
+/* ─── جداول التكتات ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS ticket_types (
+            id         SERIAL PRIMARY KEY,
+            name       TEXT NOT NULL,
+            emoji      TEXT NOT NULL DEFAULT '🎫'
+        );
+        CREATE TABLE IF NOT EXISTS open_tickets (
+            id         SERIAL PRIMARY KEY,
+            discord_id TEXT NOT NULL,
+            channel_id TEXT NOT NULL UNIQUE,
+            type_id    INT,
+            type_name  TEXT,
+            created_at TIMESTAMP DEFAULT NOW()
+        );
+    `);
+})().catch(console.error);
+
+async function addTicketType(name, emoji) {
+    const res = await pool.query(
+        `INSERT INTO ticket_types (name, emoji) VALUES ($1, $2) RETURNING *`,
+        [name, emoji]
+    );
+    return res.rows[0];
+}
+
+async function removeTicketType(id) {
+    const res = await pool.query(`DELETE FROM ticket_types WHERE id=$1 RETURNING *`, [id]);
+    return res.rows[0] || null;
+}
+
+async function getTicketTypes() {
+    const res = await pool.query(`SELECT * FROM ticket_types ORDER BY id`);
+    return res.rows;
+}
+
+async function createOpenTicket(discordId, channelId, typeId, typeName) {
+    const res = await pool.query(
+        `INSERT INTO open_tickets (discord_id, channel_id, type_id, type_name)
+         VALUES ($1, $2, $3, $4) ON CONFLICT (channel_id) DO NOTHING RETURNING *`,
+        [discordId, channelId, typeId, typeName]
+    );
+    return res.rows[0];
+}
+
+async function getOpenTicketByChannel(channelId) {
+    const res = await pool.query(`SELECT * FROM open_tickets WHERE channel_id=$1`, [channelId]);
+    return res.rows[0] || null;
+}
+
+async function removeOpenTicket(channelId) {
+    await pool.query(`DELETE FROM open_tickets WHERE channel_id=$1`, [channelId]);
 }
 
 /* ─── جدول أزرار الأولوية ─── */
