@@ -37,19 +37,7 @@ module.exports = {
                 .setDescription('تعيين رتبة مسؤولين التكتات (الوحيدون القادرون على الإغلاق)')
                 .addRoleOption(o => o.setName('الرتبة').setDescription('رتبة مسؤولي التكتات').setRequired(true))
         )
-        .addSubcommand(sub =>
-            sub.setName('عرض')
-                .setDescription('تغيير طريقة عرض بانل التكتات')
-                .addStringOption(o =>
-                    o.setName('النوع')
-                        .setDescription('طريقة العرض')
-                        .setRequired(true)
-                        .addChoices(
-                            { name: '🎫 إمبيد لكل تكت (كل تكت رسالة مستقلة)', value: 'buttons' },
-                            { name: '📋 منيو (قائمة منسدلة)', value: 'menu' }
-                        )
-                )
-        ),
+        ,
 
     async slashExecute(interaction, db) {
         const sub = interaction.options.getSubcommand();
@@ -145,20 +133,5 @@ module.exports = {
             return interaction.reply({ content: '​', flags: 64 });
         }
 
-        if (sub === 'عرض') {
-            const mode = interaction.options.getString('النوع');
-            await db.setConfig('ticket_display_mode', mode);
-            const labels = { buttons: '🎫 إمبيد لكل تكت', menu: '📋 منيو (قائمة منسدلة)' };
-            const embed = new EmbedBuilder()
-                .setTitle('✅ تم تغيير طريقة عرض التكتات')
-                .setColor(0x1565C0)
-                .addFields(
-                    { name: '🖥️ طريقة العرض', value: labels[mode], inline: true },
-                    { name: 'ℹ️ ملاحظة', value: 'أرسل `/tickets` من جديد لتطبيق الشكل الجديد.', inline: false },
-                )
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
-            await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
-        }
     }
 };
