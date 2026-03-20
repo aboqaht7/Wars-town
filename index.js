@@ -3244,20 +3244,21 @@ client.on('interactionCreate', async interaction => {
         }
 
         if (interaction.customId === 'trip_start_modal') {
+            await interaction.deferReply({ ephemeral: true });
             try {
-                const startChannelId  = await db.getConfig('trips_start_channel');
-                const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!startChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم بدء الرحلة. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+                const startChannelId = await db.getConfig('trips_start_channel');
+                if (!startChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم بدء الرحلة. استخدم `/إعداد-رحلات` أولاً.' });
 
-                const hostId     = interaction.fields.getTextInputValue('trip_host_id').trim();
-                const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim();
-                const supervisor = interaction.fields.getTextInputValue('trip_supervisor').trim();
-                const tripTime   = interaction.fields.getTextInputValue('trip_time').trim();
+                const hostId     = interaction.fields.getTextInputValue('trip_host_id').trim()   || '—';
+                const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim()     || '—';
+                const supervisor = interaction.fields.getTextInputValue('trip_supervisor').trim() || '—';
+                const tripTime   = interaction.fields.getTextInputValue('trip_time').trim()       || '—';
 
                 await db.setConfig('trip_open', 'true');
                 await db.setConfig('hurricane_active', 'false');
 
                 const customMsg = await db.getConfig('trip_start_message');
+                let sent = false;
                 try {
                     const ch = await client.channels.fetch(startChannelId);
                     if (ch) {
@@ -3275,11 +3276,11 @@ client.on('interactionCreate', async interaction => {
                                 .setColor(0x2E7D32)
                                 .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
                                 .addFields(
-                                    { name: '🎤 الهوست',       value: `\`${hostId}\``, inline: true },
+                                    { name: '🎤 الهوست',      value: `\`${hostId}\``, inline: true },
                                     { name: '🎤 نائب الهوست', value: deputy,           inline: true },
-                                    { name: '👁️ الرقابي',      value: supervisor,      inline: true },
-                                    { name: '🕐 وقت الرحلة',  value: tripTime,         inline: true },
-                                    { name: '🔧 بدأها',         value: `<@${interaction.user.id}>`, inline: true },
+                                    { name: '👁️ الرقابي',     value: supervisor,       inline: true },
+                                    { name: '🕐 وقت الرحلة', value: tripTime,          inline: true },
+                                    { name: '🔧 بدأها',        value: `<@${interaction.user.id}>`, inline: true },
                                 )
                                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
                                 .setTimestamp();
@@ -3287,24 +3288,29 @@ client.on('interactionCreate', async interaction => {
                             sendToCharLog(embed);
                             sendToTripLog(embed);
                         }
+                        sent = true;
                     }
-                } catch {}
+                } catch (sendErr) {
+                    console.error('[trip_start] channel send error:', sendErr?.message);
+                }
                 await db.addStaffActivity(interaction.user.id, 'trips_count');
-                return interaction.reply({ content: '✅ تم إرسال إشعار بدء الرحلة.', flags: 64 });
+                return interaction.editReply({ content: sent ? '✅ تم إرسال إشعار بدء الرحلة.' : '⚠️ فُتحت الرحلة لكن تعذّر الإرسال — تحقق من صلاحيات البوت في الروم.' });
             } catch (e) {
-                console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                console.error('[trip_start_modal] error:', e?.message, e);
+                return interaction.editReply({ content: '❌ حدث خطأ: ' + (e?.message || e) });
             }
         }
 
         if (interaction.customId === 'trip_renewal_modal') {
+            await interaction.deferReply({ ephemeral: true });
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+                if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.' });
 
-                const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim();
+                const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim() || '—';
 
                 const customMsg = await db.getConfig('trip_renewal_message');
+                let sent = false;
                 try {
                     const ch = await client.channels.fetch(alertsChannelId);
                     if (ch) {
@@ -3319,20 +3325,23 @@ client.on('interactionCreate', async interaction => {
                                 .setColor(0x1565C0)
                                 .setDescription('🔄 **تم تجديد الرحلة!**')
                                 .addFields(
-                                    { name: '🎤 ID الهوست',  value: `\`${hostId}\``, inline: true },
-                                    { name: '🔧 جدّدها',      value: `<@${interaction.user.id}>`, inline: true },
+                                    { name: '🎤 ID الهوست', value: `\`${hostId}\``, inline: true },
+                                    { name: '🔧 جدّدها',     value: `<@${interaction.user.id}>`, inline: true },
                                 )
                                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
                             sendToTripLog(embed);
                         }
+                        sent = true;
                     }
-                } catch {}
-                return interaction.reply({ content: '✅ تم إرسال إشعار التجديد.', flags: 64 });
+                } catch (sendErr) {
+                    console.error('[trip_renewal] channel send error:', sendErr?.message);
+                }
+                return interaction.editReply({ content: sent ? '✅ تم إرسال إشعار التجديد.' : '⚠️ تم تسجيل التجديد لكن تعذّر الإرسال — تحقق من صلاحيات البوت في الروم.' });
             } catch (e) {
-                console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                console.error('[trip_renewal_modal] error:', e?.message, e);
+                return interaction.editReply({ content: '❌ حدث خطأ: ' + (e?.message || e) });
             }
         }
 
