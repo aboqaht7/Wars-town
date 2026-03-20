@@ -36,7 +36,7 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         const identity = await db.getActiveIdentity(interaction.user.id);
-        if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟لازم تسجل دخولك', flags: 64 });
+        if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
         if (interaction._isReset) {
             return interaction.message.edit({ embeds: [buildEmbed()], components: [buildRow()] });

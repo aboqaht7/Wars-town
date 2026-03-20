@@ -495,7 +495,7 @@ client.on('interactionCreate', async interaction => {
                 if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price) return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString('en-US')}$** ولديك **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
@@ -532,7 +532,7 @@ client.on('interactionCreate', async interaction => {
                 if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
@@ -570,7 +570,7 @@ client.on('interactionCreate', async interaction => {
                 if (!item) return interaction.reply({ content: '❌ هذه المعدة لم تعد متاحة.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
@@ -1339,7 +1339,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'gather_resources') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟لازم تسجل دخولك', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 await interaction.deferUpdate();
                 const RESOURCES = [
@@ -2483,7 +2483,7 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 let result;
                 if (value === 'all') {
@@ -2558,7 +2558,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'craft_weapon') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟لازم تسجل دخولك', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 const CRAFT_RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
                 const CRAFT_WEAPONS = {
@@ -2790,7 +2790,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ يجب تسجيل الدخول أولاً.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
 
                 const title      = interaction.fields.getTextInputValue('case_title').trim();
                 const defendant  = interaction.fields.getTextInputValue('case_defendant').trim();

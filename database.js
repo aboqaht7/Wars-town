@@ -934,12 +934,12 @@ async function deleteRobbery(id) {
 
 async function checkLoginAndIdentity(discordId, { allowCuffed = false } = {}) {
     const status = await getLoginStatus(discordId);
-    if (!status.is_logged_in) return '❌ لازم تسجّل دخول أولاً. استخدم `/identity` لتسجيل الدخول.';
+    if (!status.is_logged_in) return 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال';
     const res = await query(
         'SELECT character_name FROM identities WHERE discord_id=$1 AND slot=$2',
         [discordId, status.active_slot]
     );
-    if (!res.rows[0]?.character_name) return '❌ لازم تنشئ هوية أولاً. استخدم `/identity` لإنشاء شخصيتك.';
+    if (!res.rows[0]?.character_name) return 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال';
     if (!allowCuffed) {
         const cuffed = await pool.query('SELECT 1 FROM cuffed_players WHERE discord_id=$1', [discordId]);
         if (cuffed.rows[0]) return '🔗 أنت مكبّل ولا تستطيع تنفيذ هذا الإجراء.';
