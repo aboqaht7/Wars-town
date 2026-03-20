@@ -297,7 +297,14 @@ client.on('interactionCreate', async interaction => {
                         const ch = await client.channels.fetch(alertsChannelId);
                         if (ch) {
                             if (customMsg) {
-                                await ch.send(customMsg);
+                                const hurricaneEmbed = new EmbedBuilder()
+                                    .setTitle('🌪️ تحذير — إعصار!')
+                                    .setColor(0xB71C1C)
+                                    .setDescription(customMsg)
+                                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                    .setTimestamp();
+                                await ch.send({ embeds: [hurricaneEmbed] });
+                                sendToTripLog(hurricaneEmbed);
                             } else {
                                 const hurricaneEmbed = new EmbedBuilder()
                                     .setTitle('🌪️ تحذير — إعصار!')
