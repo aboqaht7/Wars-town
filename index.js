@@ -1338,6 +1338,9 @@ client.on('interactionCreate', async interaction => {
         // ── تجميع الموارد ──────────────────────────────────────────────────────────
         if (interaction.customId === 'gather_resources') {
             try {
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟لازم تسجل دخولك', flags: 64 });
+
                 await interaction.deferUpdate();
                 const RESOURCES = [
                     { name: 'ألمنيوم', emoji: '🔩' },
@@ -2554,6 +2557,9 @@ client.on('interactionCreate', async interaction => {
         // ── تصنيع السلاح ───────────────────────────────────────────────────────────
         if (interaction.customId === 'craft_weapon') {
             try {
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟لازم تسجل دخولك', flags: 64 });
+
                 const CRAFT_RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
                 const CRAFT_WEAPONS = {
                     craft_sns:     { name: 'Pistol SNS',    req: 200 },
