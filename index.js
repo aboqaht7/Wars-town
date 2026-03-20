@@ -14,6 +14,10 @@ const cleanupPid = () => { try { fs.unlinkSync(PID_FILE); } catch (_) {} };
 process.on('exit',   cleanupPid);
 process.on('SIGTERM', () => { cleanupPid(); process.exit(0); });
 process.on('SIGINT',  () => { cleanupPid(); process.exit(0); });
+process.on('unhandledRejection', (err) => {
+    if (err?.code === 40060 || err?.code === 10062) return;
+    console.error('Unhandled rejection:', err?.message || err);
+});
 /* ───────────────────────────────────────────────────────────────────────── */
 
 const {
@@ -318,7 +322,7 @@ client.on('interactionCreate', async interaction => {
                     new ARB().addComponents(new TextInputBuilder().setCustomId('trip_supervisor').setLabel('الرقابي').setStyle(TextInputStyle.Short).setRequired(true)),
                     new ARB().addComponents(new TextInputBuilder().setCustomId('trip_time').setLabel('وقت الرحلة').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 9:00 مساءً')),
                 );
-                return interaction.showModal(modal);
+                return interaction.showModal(modal).catch(() => {});
             }
 
             if (interaction.customId === 'trip_renewal') {
@@ -326,7 +330,7 @@ client.on('interactionCreate', async interaction => {
                 modal.addComponents(
                     new ARB().addComponents(new TextInputBuilder().setCustomId('renewal_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
                 );
-                return interaction.showModal(modal);
+                return interaction.showModal(modal).catch(() => {});
             }
 
             if (interaction.customId === 'trip_alert') {
@@ -334,7 +338,7 @@ client.on('interactionCreate', async interaction => {
                 modal.addComponents(
                     new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص التنبيه').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                 );
-                return interaction.showModal(modal);
+                return interaction.showModal(modal).catch(() => {});
             }
         }
 
@@ -3244,7 +3248,11 @@ client.on('interactionCreate', async interaction => {
         }
 
         if (interaction.customId === 'trip_start_modal') {
-            await interaction.deferReply({ ephemeral: true });
+            try {
+                await interaction.deferReply({ flags: 64 });
+            } catch (e) {
+                return;
+            }
             try {
                 const startChannelId = await db.getConfig('trips_start_channel');
                 if (!startChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم بدء الرحلة. استخدم `/إعداد-رحلات` أولاً.' });
@@ -3302,7 +3310,11 @@ client.on('interactionCreate', async interaction => {
         }
 
         if (interaction.customId === 'trip_renewal_modal') {
-            await interaction.deferReply({ ephemeral: true });
+            try {
+                await interaction.deferReply({ flags: 64 });
+            } catch (e) {
+                return;
+            }
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
                 if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.' });
