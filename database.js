@@ -932,7 +932,7 @@ async function deleteRobbery(id) {
     await query('DELETE FROM robberies WHERE id=$1', [id]);
 }
 
-async function checkLoginAndIdentity(discordId) {
+async function checkLoginAndIdentity(discordId, { allowCuffed = false } = {}) {
     const status = await getLoginStatus(discordId);
     if (!status.is_logged_in) return '❌ لازم تسجّل دخول أولاً. استخدم `/identity` لتسجيل الدخول.';
     const res = await query(
@@ -940,6 +940,10 @@ async function checkLoginAndIdentity(discordId) {
         [discordId, status.active_slot]
     );
     if (!res.rows[0]?.character_name) return '❌ لازم تنشئ هوية أولاً. استخدم `/identity` لإنشاء شخصيتك.';
+    if (!allowCuffed) {
+        const cuffed = await pool.query('SELECT 1 FROM cuffed_players WHERE discord_id=$1', [discordId]);
+        if (cuffed.rows[0]) return '🔗 أنت مكبّل ولا تستطيع تنفيذ هذا الإجراء.';
+    }
     return null;
 }
 
@@ -1538,7 +1542,37 @@ module.exports = {
     addTicketType, removeTicketType, getTicketTypes,
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
     addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
+    cuffPlayer, uncuffPlayer, isCuffed,
 };
+
+/* ─── نظام الكلبشة ─────────────────────────────────────────────────────── */
+async function cuffPlayer(targetId, cuffedById) {
+    await pool.query(`
+        INSERT INTO cuffed_players (discord_id, cuffed_by)
+        VALUES ($1, $2)
+        ON CONFLICT (discord_id) DO UPDATE SET cuffed_by = $2, cuffed_at = NOW()
+    `, [targetId, cuffedById]);
+}
+
+async function uncuffPlayer(targetId) {
+    await pool.query('DELETE FROM cuffed_players WHERE discord_id = $1', [targetId]);
+}
+
+async function isCuffed(discordId) {
+    const res = await pool.query('SELECT cuffed_by, cuffed_at FROM cuffed_players WHERE discord_id = $1', [discordId]);
+    return res.rows[0] || null;
+}
+
+async function initCuffedTable() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS cuffed_players (
+            discord_id  VARCHAR PRIMARY KEY,
+            cuffed_by   VARCHAR NOT NULL,
+            cuffed_at   TIMESTAMP DEFAULT NOW()
+        );
+    `);
+}
+initCuffedTable().catch(console.error);
 
 /* ─── جدول آخر تجميع (لمنع التكرار) ─── */
 async function initGatheringTable() {
