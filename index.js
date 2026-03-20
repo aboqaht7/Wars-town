@@ -387,6 +387,17 @@ client.on('interactionCreate', async interaction => {
             }
 
             if (interaction.customId === 'trip_renewal') {
+                const tripOpen       = await db.getConfig('trip_open');
+                const hurricaneActive = await db.getConfig('hurricane_active');
+
+                if (hurricaneActive === 'true') {
+                    return interaction.reply({ content: '⚠️ يوجد إعصار نشط — لا يمكن التجديد. يجب فتح رحلة جديدة أولاً عبر زر **بدء رحلة**.', flags: 64 });
+                }
+
+                if (tripOpen !== 'true') {
+                    return interaction.reply({ content: '❌ لا توجد رحلة مفتوحة حالياً — يجب بدء رحلة أولاً قبل التجديد.', flags: 64 });
+                }
+
                 const modal = new ModalBuilder().setCustomId('trip_renewal_modal').setTitle('تجديد الرحلة');
                 modal.addComponents(
                     new ARB().addComponents(new TextInputBuilder().setCustomId('renewal_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
