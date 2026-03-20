@@ -251,6 +251,11 @@ client.on('interactionCreate', async interaction => {
             const type   = interaction.customId.replace('trip_msg_btn_', '');
             const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB_TM } = require('discord.js');
+            const placeholders = {
+                trip_start:    'المتغيرات: {هوست} {نائب} {رقابي} {وقت} {منظم}\nاتركها فارغة لإعادة الرسالة الافتراضية',
+                trip_renewal:  'المتغيرات: {هوست} {منظم}\nاتركها فارغة لإعادة الرسالة الافتراضية',
+                trip_hurricane:'اتركها فارغة لإعادة الرسالة الافتراضية',
+            };
             const modal = new ModalBuilder()
                 .setCustomId(`set_trip_msg_${type}`)
                 .setTitle(`✏️ رسالة ${labels[type] || type}`);
@@ -261,7 +266,7 @@ client.on('interactionCreate', async interaction => {
                         .setLabel('نص الرسالة')
                         .setStyle(TextInputStyle.Paragraph)
                         .setRequired(false)
-                        .setPlaceholder('اكتب الرسالة هنا... (اتركها فارغة لإعادة الرسالة الافتراضية)')
+                        .setPlaceholder(placeholders[type] || 'اتركها فارغة لإعادة الرسالة الافتراضية')
                 )
             );
             return interaction.showModal(modal);
@@ -3257,7 +3262,13 @@ client.on('interactionCreate', async interaction => {
                     const ch = await client.channels.fetch(startChannelId);
                     if (ch) {
                         if (customMsg) {
-                            await ch.send(customMsg);
+                            const filled = customMsg
+                                .replace(/\{هوست\}/g,   hostId)
+                                .replace(/\{نائب\}/g,   deputy)
+                                .replace(/\{رقابي\}/g,  supervisor)
+                                .replace(/\{وقت\}/g,    tripTime)
+                                .replace(/\{منظم\}/g,   `<@${interaction.user.id}>`);
+                            await ch.send(filled);
                         } else {
                             const embed = new EmbedBuilder()
                                 .setTitle('✈️ بدء رحلة جديدة!')
@@ -3298,7 +3309,10 @@ client.on('interactionCreate', async interaction => {
                     const ch = await client.channels.fetch(alertsChannelId);
                     if (ch) {
                         if (customMsg) {
-                            await ch.send(customMsg);
+                            const filled = customMsg
+                                .replace(/\{هوست\}/g,  hostId)
+                                .replace(/\{منظم\}/g,  `<@${interaction.user.id}>`);
+                            await ch.send(filled);
                         } else {
                             const embed = new EmbedBuilder()
                                 .setTitle('🔄 تجديد الرحلة')
