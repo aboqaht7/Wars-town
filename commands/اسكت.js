@@ -62,7 +62,7 @@ module.exports = {
         }
 
         const durationArg = args.find(a => !a.startsWith('<'));
-        const durationMs  = parseDuration(durationArg) ?? 10 * 60_000;
+        const durationMs  = parseDuration(durationArg) ?? 60 * 60_000;
 
         if (durationMs > MAX_TIMEOUT_MS) {
             return message.reply('❌ الحد الأقصى للمدة هو **28 يوم**.');
