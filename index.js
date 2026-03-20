@@ -282,34 +282,40 @@ client.on('interactionCreate', async interaction => {
             }
 
             if (interaction.customId === 'trip_hurricane') {
-                const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
-
-                await db.setConfig('hurricane_active', 'true');
-                await db.setConfig('trip_open', 'false');
-                await db.logoutAllUsers();
-                await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
-
-                const customMsg = await db.getConfig('trip_hurricane_message');
+                try { await interaction.deferReply({ flags: 64 }); } catch { return; }
                 try {
-                    const ch = await client.channels.fetch(alertsChannelId);
-                    if (ch) {
-                        if (customMsg) {
-                            await ch.send(customMsg);
-                        } else {
-                            const hurricaneEmbed = new EmbedBuilder()
-                                .setTitle('🌪️ تحذير — إعصار!')
-                                .setColor(0xB71C1C)
-                                .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
-                                .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
-                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
-                                .setTimestamp();
-                            await ch.send({ embeds: [hurricaneEmbed] });
-                            sendToTripLog(hurricaneEmbed);
+                    const alertsChannelId = await db.getConfig('trips_alerts_channel');
+                    if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.' });
+
+                    await db.setConfig('hurricane_active', 'true');
+                    await db.setConfig('trip_open', 'false');
+                    await db.logoutAllUsers();
+                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
+
+                    const customMsg = await db.getConfig('trip_hurricane_message');
+                    try {
+                        const ch = await client.channels.fetch(alertsChannelId);
+                        if (ch) {
+                            if (customMsg) {
+                                await ch.send(customMsg);
+                            } else {
+                                const hurricaneEmbed = new EmbedBuilder()
+                                    .setTitle('🌪️ تحذير — إعصار!')
+                                    .setColor(0xB71C1C)
+                                    .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
+                                    .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
+                                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                    .setTimestamp();
+                                await ch.send({ embeds: [hurricaneEmbed] });
+                                sendToTripLog(hurricaneEmbed);
+                            }
                         }
-                    }
-                } catch {}
-                return interaction.reply({ content: '✅ تم إرسال تحذير الإعصار.', flags: 64 });
+                    } catch (sendErr) { console.error('[hurricane] send error:', sendErr?.message); }
+                    return interaction.editReply({ content: '✅ تم إرسال تحذير الإعصار.' });
+                } catch (e) {
+                    console.error('[hurricane] error:', e?.message);
+                    return interaction.editReply({ content: '❌ حدث خطأ.' });
+                }
             }
 
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');
@@ -3261,6 +3267,7 @@ client.on('interactionCreate', async interaction => {
                 const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim()     || '—';
                 const supervisor = interaction.fields.getTextInputValue('trip_supervisor').trim() || '—';
                 const tripTime   = interaction.fields.getTextInputValue('trip_time').trim()       || '—';
+                console.log(`[trip_start] host="${hostId}" deputy="${deputy}" supervisor="${supervisor}" time="${tripTime}"`);
 
                 await db.setConfig('trip_open', 'true');
                 await db.setConfig('hurricane_active', 'false');
