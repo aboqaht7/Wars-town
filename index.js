@@ -51,8 +51,56 @@ function markInteraction(id) {
     return true;
 }
 
-client.once('clientReady', () => {
+client.once('clientReady', async () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
+
+    // ── ضبط رسائل الرحلات الافتراضية ──────────────────────────────────────
+    try {
+        await db.setConfig('trip_start_message',
+`- إعـلان رحـلـة لـدولـة —FANTASY TOWN .
+
+
+ - أيـدي كـابـتـن الـطـائـرة : {هوست}
+
+- أيـدي مـسـاعـد الـطـائـرة : {نائب}
+
+— موعد التجوين : {وقت}
+
+— رقابي الـرحـلة: {رقابي}
+
+- مـلاحـظـات مـهـمة 
+
+- إضـافـة كـابـتـن الـطـائـرة والـمُـسـاعـد .
+
+- عـدم إزعـاج كـابـتـن الـطـائـرة والـمُـسـاعـد .
+|| @everyone ||`);
+
+        await db.setConfig('trip_renewal_message',
+`بدء الرحلة  — يوجد تجديد رحلة 
+الرجاء من الجميع وضع خيار { LAST LOCATION } 
+و الخروج من الرحلة و الدخول على الرحلة الجديدة 
+
+ايدي الهوست : {هوست}
+
+نتمنى لكم التوفيق دائماً ❣️
+|| @everyone ||`);
+
+        await db.setConfig('trip_hurricane_message',
+`التجديد اشعار اعصار 
+
+⚠️— يوجد اعصار في المدينة يجب على جميع اللاعبين 
+المغادرة من الرحلة و انتظار الرحلات القادمة 
+
+رحلة كانت ممتعة و نعوضكم الرحلات القادمة 
+
+نتمنى لكم التوفيق دائماً ❣️
+|| @everyone ||`);
+
+        console.log('✅ تم ضبط رسائل الرحلات');
+    } catch (e) {
+        console.error('❌ خطأ في ضبط رسائل الرحلات:', e.message);
+    }
+
     setInterval(async () => {
         try {
             await db.updateAllJobPrices();
