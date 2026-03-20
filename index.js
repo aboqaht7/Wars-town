@@ -3284,7 +3284,15 @@ client.on('interactionCreate', async interaction => {
                                 .replace(/\{رقابي\}/g,  supervisor)
                                 .replace(/\{وقت\}/g,    tripTime)
                                 .replace(/\{منظم\}/g,   `<@${interaction.user.id}>`);
-                            await ch.send(filled);
+                            const embed = new EmbedBuilder()
+                                .setTitle('✈️ بدء رحلة جديدة!')
+                                .setColor(0x2E7D32)
+                                .setDescription(filled)
+                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setTimestamp();
+                            await ch.send({ embeds: [embed] });
+                            sendToCharLog(embed);
+                            sendToTripLog(embed);
                         } else {
                             const embed = new EmbedBuilder()
                                 .setTitle('✈️ بدء رحلة جديدة!')
@@ -3337,7 +3345,14 @@ client.on('interactionCreate', async interaction => {
                             const filled = customMsg
                                 .replace(/\{هوست\}/g,  hostId)
                                 .replace(/\{منظم\}/g,  `<@${interaction.user.id}>`);
-                            await ch.send(filled);
+                            const embed = new EmbedBuilder()
+                                .setTitle('🔄 تجديد الرحلة')
+                                .setColor(0x1565C0)
+                                .setDescription(filled)
+                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setTimestamp();
+                            await ch.send({ embeds: [embed] });
+                            sendToTripLog(embed);
                         } else {
                             const embed = new EmbedBuilder()
                                 .setTitle('🔄 تجديد الرحلة')

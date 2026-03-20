@@ -50,6 +50,9 @@ async function buildPanel(db) {
         .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' })
         .setTimestamp();
 
+    const img = await db.getImage('نقاط-الادارة');
+    if (img) embed.setImage(img);
+
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('points_check')
