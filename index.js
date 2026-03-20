@@ -2600,6 +2600,25 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        // ── زر البانيك — إرسال الموقع ─────────────────────────────────────────
+        if (interaction.customId === 'panic_location_btn') {
+            const modal = new ModalBuilder()
+                .setCustomId('panic_location_modal')
+                .setTitle('📍 إرسال موقع الاستغاثة');
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setCustomId('panic_location_text')
+                        .setLabel('أين أنت الآن؟')
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setPlaceholder('اكتب موقعك بالتفصيل...')
+                        .setRequired(true)
+                        .setMaxLength(500)
+                )
+            );
+            return interaction.showModal(modal).catch(() => {});
+        }
+
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;
         const response = handler[value];
@@ -3475,6 +3494,41 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+        }
+
+        // ── موقع البانيك ─────────────────────────────────────────────────────
+        if (interaction.customId === 'panic_location_modal') {
+            try {
+                const location = interaction.fields.getTextInputValue('panic_location_text').trim();
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                const displayName = identity?.character_name || interaction.member?.displayName || interaction.user.username;
+
+                const panicChannelId = await db.getConfig('panic_channel');
+                if (!panicChannelId)
+                    return interaction.reply({ content: '❌ لم يتم إعداد روم الاستغاثة. تواصل مع الإدارة.', flags: 64 });
+
+                const ch = await client.channels.fetch(panicChannelId).catch(() => null);
+                if (!ch)
+                    return interaction.reply({ content: '❌ الروم غير موجود أو البوت لا يملك صلاحية الوصول إليه.', flags: 64 });
+
+                const embed = new EmbedBuilder()
+                    .setTitle('🆘 نداء استغاثة — بانيك')
+                    .setColor(0xD32F2F)
+                    .setThumbnail(interaction.user.displayAvatarURL())
+                    .addFields(
+                        { name: '👤 المستغيث', value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '🏷️ الاسم', value: displayName, inline: true },
+                        { name: '📍 الموقع', value: location, inline: false },
+                    )
+                    .setFooter({ text: 'نظام الاستغاثة • بوت FANTASY' })
+                    .setTimestamp();
+
+                await ch.send({ content: '@here', embeds: [embed] });
+                return interaction.reply({ content: '✅ تم إرسال موقعك، المساعدة في الطريق!', flags: 64 });
+            } catch (e) {
+                console.error('[PANIC ERROR]', e);
+                return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الموقع.', flags: 64 });
             }
         }
 
