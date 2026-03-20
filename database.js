@@ -1438,17 +1438,18 @@ async function hasItem(discordId, itemName, qty = 1) {
 
 async function removeItem(discordId, itemName, qty = 1) {
     const res = await query(
-        'SELECT quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)',
+        `SELECT item_name, quantity FROM inventory WHERE discord_id=$1 AND LOWER(item_name) LIKE '%' || LOWER($2) || '%'`,
         [discordId, itemName]
     );
     if (!res.rows[0]) return;
-    const current = Number(res.rows[0].quantity);
+    const exactName = res.rows[0].item_name;
+    const current   = Number(res.rows[0].quantity);
     if (current <= qty) {
-        await query('DELETE FROM inventory WHERE discord_id=$1 AND LOWER(item_name)=LOWER($2)', [discordId, itemName]);
+        await query('DELETE FROM inventory WHERE discord_id=$1 AND item_name=$2', [discordId, exactName]);
     } else {
         await query(
-            'UPDATE inventory SET quantity=$1 WHERE discord_id=$2 AND LOWER(item_name)=LOWER($3)',
-            [current - qty, discordId, itemName]
+            'UPDATE inventory SET quantity=$1 WHERE discord_id=$2 AND item_name=$3',
+            [current - qty, discordId, exactName]
         );
     }
 }
