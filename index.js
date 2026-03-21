@@ -814,6 +814,21 @@ client.on('interactionCreate', async interaction => {
 
                     await db.updatePendingCompanyStatus(pendingId, 'approved', interaction.user.id);
 
+                    // ── إنشاء رتبة مالك الشركة وتعيينها تلقائياً ──
+                    let ownerRoleMention = '';
+                    try {
+                        const ownerRole = await interaction.guild.roles.create({
+                            name: `مالك ${pending.company_name}`,
+                            color: 0x1565C0,
+                            reason: `تأسيس شركة ${pending.company_name}`,
+                        });
+                        const ownerMember = await interaction.guild.members.fetch(pending.discord_id);
+                        await ownerMember.roles.add(ownerRole);
+                        ownerRoleMention = ` — رتبة ${ownerRole} مُعيّنة`;
+                    } catch (roleErr) {
+                        console.error('[OWNER ROLE CREATE ERROR]', roleErr);
+                    }
+
                     const approveEmbed = new EmbedBuilder()
                         .setTitle('✅ تم قبول طلب التأسيس')
                         .setColor(0x1B5E20)
@@ -822,6 +837,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '🏢 الشركة', value: `**${pending.company_name}**`, inline: true },
                             { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
                         )
+                        .setDescription(ownerRoleMention || null)
                         .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
                     await interaction.update({ embeds: [approveEmbed], components: [] });
 
