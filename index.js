@@ -890,8 +890,16 @@ client.on('interactionCreate', async interaction => {
                 const ministryRoleId = await db.getConfig('trade_ministry_role');
                 const isAdminUser = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
-                if (!isAdminUser && !hasMinistryRole)
-                    return interaction.reply({ content: '❌ هذا الإجراء لمسؤولي وزارة التجارة فقط.', flags: 64 });
+
+                // تسجيل الدخول والخروج: رتبة الوزارة فقط بدون استثناء الأدمن
+                if (['ministry_login_btn', 'ministry_logout_btn'].includes(interaction.customId)) {
+                    if (!hasMinistryRole)
+                        return interaction.reply({ content: '❌ تسجيل الدخول والخروج لمسؤولي وزارة التجارة فقط.', flags: 64 });
+                } else {
+                    // باقي الأزرار: أدمن أو رتبة الوزارة
+                    if (!isAdminUser && !hasMinistryRole)
+                        return interaction.reply({ content: '❌ هذا الإجراء لمسؤولي وزارة التجارة فقط.', flags: 64 });
+                }
 
                 // ─── تسجيل دخول ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_login_btn') {
