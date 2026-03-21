@@ -1035,8 +1035,11 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
-                // ─── كشف المباشرين ────────────────────────────────────────────
+                // ─── كشف المباشرين (CIA Chef فقط) ───────────────────────────────
                 if (interaction.customId === 'cia_active_btn') {
+                    if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
+                        return interaction.reply({ content: '🔒 كشف المباشرين لـ CIA Chef فقط.', flags: 64 });
+
                     const active = await db.getAllActiveCia();
                     if (!active.length)
                         return interaction.reply({ content: '📭 لا يوجد أعضاء CIA مباشرون حالياً.', flags: 64 });
