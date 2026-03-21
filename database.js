@@ -1541,6 +1541,7 @@ module.exports = {
     getLastGathered, setLastGathered, getItemQty,
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
+    createPendingCompany, getPendingCompany, updatePendingCompanyStatus,
     hasTradePermit, grantTradePermit, revokeTradePermit, getAllTradePermits,
     createCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
     getCompanyMembers, addCompanyMember, removeCompanyMember, updateCompanyMemberRole,
@@ -1796,6 +1797,22 @@ async function getAllStaffActivity() {
 /* ─── جداول نظام الشركات ─── */
 (async () => {
     await pool.query(`
+        CREATE TABLE IF NOT EXISTS pending_companies (
+            id               SERIAL PRIMARY KEY,
+            discord_id       TEXT NOT NULL,
+            username         TEXT,
+            company_name     TEXT NOT NULL,
+            personal_info    TEXT,
+            company_details  TEXT,
+            management_plan  TEXT,
+            financial_info   TEXT,
+            status           TEXT DEFAULT 'pending',
+            reviewed_by      TEXT,
+            reviewed_at      TIMESTAMPTZ,
+            created_at       TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+    await pool.query(`
         CREATE TABLE IF NOT EXISTS trade_permits (
             discord_id  TEXT PRIMARY KEY,
             granted_by  TEXT NOT NULL,
@@ -1822,6 +1839,22 @@ async function getAllStaffActivity() {
         );
     `);
 })().catch(console.error);
+
+async function createPendingCompany(data) {
+    const res = await query(
+        `INSERT INTO pending_companies (discord_id, username, company_name, personal_info, company_details, management_plan, financial_info)
+         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [data.discordId, data.username, data.companyName, data.personalInfo, data.companyDetails, data.managementPlan, data.financialInfo]
+    );
+    return res.rows[0];
+}
+async function getPendingCompany(id) {
+    const res = await query('SELECT * FROM pending_companies WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+async function updatePendingCompanyStatus(id, status, reviewedBy) {
+    await query('UPDATE pending_companies SET status=$2, reviewed_by=$3, reviewed_at=NOW() WHERE id=$1', [id, status, reviewedBy]);
+}
 
 async function hasTradePermit(discordId) {
     const res = await query('SELECT 1 FROM trade_permits WHERE discord_id=$1', [discordId]);

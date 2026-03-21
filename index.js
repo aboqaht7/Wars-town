@@ -780,6 +780,91 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        if (interaction.customId.startsWith('approve_company_') || interaction.customId.startsWith('reject_company_')) {
+            const isApprove = interaction.customId.startsWith('approve_company_');
+            const pendingId = parseInt(interaction.customId.replace(isApprove ? 'approve_company_' : 'reject_company_', ''));
+            try {
+                const ministryRoleId = await db.getConfig('trade_ministry_role');
+                const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
+                if (!isAdmin && !hasMinistryRole)
+                    return interaction.reply({ content: '❌ هذا الزر لمسؤولي وزارة التجارة فقط.', flags: 64 });
+
+                const pending = await db.getPendingCompany(pendingId);
+                if (!pending)
+                    return interaction.reply({ content: '❌ الطلب غير موجود.', flags: 64 });
+                if (pending.status !== 'pending')
+                    return interaction.reply({ content: '❌ تمت معالجة هذا الطلب بالفعل.', flags: 64 });
+
+                if (isApprove) {
+                    const result = await db.createCompany(pending.company_name, pending.discord_id);
+                    if (result.error) {
+                        await db.updatePendingCompanyStatus(pendingId, 'rejected', interaction.user.id);
+                        const failEmbed = new EmbedBuilder()
+                            .setTitle('❌ فشل تأسيس الشركة')
+                            .setColor(0xB71C1C)
+                            .setDescription(`السبب: ${result.error}`)
+                            .addFields(
+                                { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
+                                { name: '🏢 الشركة', value: pending.company_name, inline: true },
+                            )
+                            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                        return interaction.update({ embeds: [failEmbed], components: [] });
+                    }
+
+                    await db.updatePendingCompanyStatus(pendingId, 'approved', interaction.user.id);
+
+                    const approveEmbed = new EmbedBuilder()
+                        .setTitle('✅ تم قبول طلب التأسيس')
+                        .setColor(0x1B5E20)
+                        .addFields(
+                            { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '🏢 الشركة', value: `**${pending.company_name}**`, inline: true },
+                            { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
+                        )
+                        .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                    await interaction.update({ embeds: [approveEmbed], components: [] });
+
+                    try {
+                        const user = await client.users.fetch(pending.discord_id);
+                        const dmEmbed = new EmbedBuilder()
+                            .setTitle('🏢 تمت الموافقة على طلب تأسيس شركتك!')
+                            .setColor(0x1B5E20)
+                            .setDescription(`مبروك! تم قبول طلبك وتأسيس شركة **${pending.company_name}** بنجاح.\n\nيمكنك الآن إدارتها عبر أوامر \`/شركة\`.`)
+                            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                        await user.send({ embeds: [dmEmbed] });
+                    } catch {}
+                } else {
+                    await db.updatePendingCompanyStatus(pendingId, 'rejected', interaction.user.id);
+
+                    const rejectEmbed = new EmbedBuilder()
+                        .setTitle('❌ تم رفض طلب التأسيس')
+                        .setColor(0xB71C1C)
+                        .addFields(
+                            { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '🏢 الشركة', value: pending.company_name, inline: true },
+                            { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
+                        )
+                        .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                    await interaction.update({ embeds: [rejectEmbed], components: [] });
+
+                    try {
+                        const user = await client.users.fetch(pending.discord_id);
+                        const dmEmbed = new EmbedBuilder()
+                            .setTitle('❌ تم رفض طلب تأسيس شركتك')
+                            .setColor(0xB71C1C)
+                            .setDescription(`للأسف، تم رفض طلب تأسيس شركة **${pending.company_name}**.\nيمكنك التواصل مع وزارة التجارة للمزيد من التفاصيل.`)
+                            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                        await user.send({ embeds: [dmEmbed] });
+                    } catch {}
+                }
+            } catch (e) {
+                console.error('[COMPANY APPROVE/REJECT ERROR]', e);
+                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         // ── تفعيل / رفض طلب التفعيل ───────────────────────────────────────────
         if (interaction.customId.startsWith('activate_approve_') || interaction.customId.startsWith('activate_reject_')) {
             const isApprove = interaction.customId.startsWith('activate_approve_');
@@ -3627,54 +3712,56 @@ client.on('interactionCreate', async interaction => {
                 if (existingComp)
                     return interaction.reply({ content: `❌ أنت مرتبط بالفعل بشركة **${existingComp.name}**.`, flags: 64 });
 
-                const result = await db.createCompany(compName, interaction.user.id);
-                if (result.error)
-                    return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+                const ministryChId = await db.getConfig('trade_ministry_channel');
+                if (!ministryChId)
+                    return interaction.reply({ content: '❌ لم يتم تحديد قناة وزارة التجارة بعد. تواصل مع الإدارة.', flags: 64 });
 
-                const successEmbed = new EmbedBuilder()
-                    .setTitle('🏢 تم تأسيس الشركة بنجاح!')
-                    .setColor(0x1B5E20)
-                    .setThumbnail(interaction.user.displayAvatarURL())
-                    .addFields(
-                        { name: '🏢 اسم الشركة', value: `**${compName}**`, inline: true },
-                        { name: '👑 المالك', value: `<@${interaction.user.id}>`, inline: true },
-                        { name: '🏷️ هوية المالك', value: identity.character_name || interaction.user.username, inline: true },
-                        { name: '💰 رصيد الشركة', value: '`0 ريال`', inline: true },
-                    )
-                    .setDescription('يمكنك الآن إدارة شركتك عبر أوامر `/شركة`.')
-                    .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
-                    .setTimestamp();
+                const pending = await db.createPendingCompany({
+                    discordId: interaction.user.id,
+                    username: interaction.user.username,
+                    companyName: compName,
+                    personalInfo: personal,
+                    companyDetails: details,
+                    managementPlan: management,
+                    financialInfo: financial,
+                });
 
-                await interaction.reply({ embeds: [successEmbed], flags: 64 });
+                await interaction.reply({
+                    content: `⏳ **تم إرسال طلب تأسيس شركة «${compName}» برقم \`#${pending.id}\` لوزارة التجارة.**\nسيصلك رد عند قبول أو رفض الطلب.`,
+                    flags: 64
+                });
 
-                const logChannelId = await db.getConfig('company_log_channel');
-                if (logChannelId) {
-                    try {
-                        const logCh = await client.channels.fetch(logChannelId);
-                        if (logCh) {
-                            const logEmbed = new EmbedBuilder()
-                                .setTitle('📋 طلب تأسيس شركة جديد')
-                                .setColor(0x1565C0)
-                                .setThumbnail(interaction.user.displayAvatarURL())
-                                .addFields(
-                                    { name: '👤 المتقدم', value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
-                                    { name: '🏢 اسم الشركة', value: compName, inline: true },
-                                    { name: '🏷️ الهوية', value: identity.character_name || '—', inline: true },
-                                    { name: '👤 المعلومات الشخصية', value: `\`\`\`${personal}\`\`\``, inline: false },
-                                    { name: '🏪 تفاصيل الشركة', value: `\`\`\`${details}\`\`\``, inline: false },
-                                    { name: '📊 الإدارة والتوظيف', value: `\`\`\`${management}\`\`\``, inline: false },
-                                    { name: '💰 المالية والالتزام', value: `\`\`\`${financial}\`\`\``, inline: false },
-                                )
-                                .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
-                                .setTimestamp();
-                            await logCh.send({ embeds: [logEmbed] });
-                        }
-                    } catch (e) { console.error('[COMPANY LOG ERROR]', e); }
-                }
+                try {
+                    const ministryCh = await client.channels.fetch(ministryChId);
+                    if (ministryCh) {
+                        const appEmbed = new EmbedBuilder()
+                            .setTitle(`📋 طلب تأسيس شركة — #${pending.id}`)
+                            .setColor(0xF57F17)
+                            .setThumbnail(interaction.user.displayAvatarURL())
+                            .addFields(
+                                { name: '👤 المتقدم', value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
+                                { name: '🏷️ الهوية', value: identity.character_name || '—', inline: true },
+                                { name: '💰 رصيد البنك', value: `\`${(identity.balance || 0).toLocaleString()} ريال\``, inline: true },
+                                { name: '🏢 اسم الشركة', value: `**${compName}**`, inline: true },
+                                { name: '👤 المعلومات الشخصية', value: `\`\`\`${personal}\`\`\``, inline: false },
+                                { name: '🏪 تفاصيل الشركة', value: `\`\`\`${details}\`\`\``, inline: false },
+                                { name: '📊 الإدارة والتوظيف', value: `\`\`\`${management}\`\`\``, inline: false },
+                                { name: '💰 المالية والالتزام', value: `\`\`\`${financial}\`\`\``, inline: false },
+                            )
+                            .setFooter({ text: `طلب #${pending.id} • بانتظار المراجعة` })
+                            .setTimestamp();
+
+                        const btnRow = new ActionRowBuilder().addComponents(
+                            new ButtonBuilder().setCustomId(`approve_company_${pending.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
+                            new ButtonBuilder().setCustomId(`reject_company_${pending.id}`).setLabel('❌ رفض').setStyle(ButtonStyle.Danger),
+                        );
+                        await ministryCh.send({ embeds: [appEmbed], components: [btnRow] });
+                    }
+                } catch (e) { console.error('[COMPANY CHANNEL ERROR]', e); }
             } catch (e) {
                 console.error('[COMPANY MODAL ERROR]', e);
                 if (!interaction.replied)
-                    return interaction.reply({ content: '❌ حدث خطأ أثناء تأسيس الشركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
             return;
         }
