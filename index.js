@@ -1506,6 +1506,91 @@ client.on('interactionCreate', async interaction => {
             return interaction.reply({ embeds: [embed], flags: 64 });
         }
 
+        if (interaction.customId === 'company_apply_btn') {
+            try {
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity)
+                    return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+
+                const hasPerm = await db.hasTradePermit(interaction.user.id);
+                if (!hasPerm)
+                    return interaction.reply({ content: '❌ لا تملك تصريحاً تجارياً. تواصل مع **وزارة التجارة** للحصول على تصريح.', flags: 64 });
+
+                const existingComp = await db.getUserCompany(interaction.user.id);
+                if (existingComp)
+                    return interaction.reply({ content: `❌ أنت مرتبط بالفعل بشركة **${existingComp.name}**. لا يمكنك تأسيس شركة أخرى.`, flags: 64 });
+
+                const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                const modal = new ModalBuilder()
+                    .setCustomId('company_found_modal')
+                    .setTitle('📋 استبيان تأسيس الشركة');
+
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('cf_personal').setLabel('المعلومات الشخصية')
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setPlaceholder('1. اسمك داخل الرول:\n2. عمرك داخل الرول:\n3. عمرك الحقيقي:')
+                            .setRequired(true).setMaxLength(300)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('cf_name').setLabel('اسم الشركة')
+                            .setStyle(TextInputStyle.Short)
+                            .setPlaceholder('اكتب اسم الشركة هنا')
+                            .setRequired(true).setMaxLength(40)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('cf_details').setLabel('تفاصيل الشركة')
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setPlaceholder('نوع الشركة / فكرة الشركة بالتفصيل / موقع الشركة داخل المدينة')
+                            .setRequired(true).setMaxLength(800)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('cf_management').setLabel('خطة الإدارة والتوظيف')
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setPlaceholder('كيف تدير الشركة / خبرة سابقة / عدد الموظفين / كيف توظف')
+                            .setRequired(true).setMaxLength(800)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('cf_financial').setLabel('الجانب المالي والالتزام')
+                            .setStyle(TextInputStyle.Paragraph)
+                            .setPlaceholder('رأس المال / مصدر الأموال / خطة الربح / التعهد بالقوانين / قبول الإغلاق')
+                            .setRequired(true).setMaxLength(800)
+                    ),
+                );
+
+                return interaction.showModal(modal);
+            } catch (e) {
+                console.error('[COMPANY APPLY BTN ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
+        if (interaction.customId === 'company_list_btn') {
+            try {
+                const companies = await db.getAllCompanies();
+                if (!companies.length)
+                    return interaction.reply({ content: '📋 لا توجد شركات مسجلة حالياً.', flags: 64 });
+
+                const list = companies.map((c, i) =>
+                    `**${i + 1}.** 🏢 **${c.name}** — مالك: <@${c.owner_discord_id}> — رصيد: \`${(c.balance || 0).toLocaleString()} ريال\``
+                ).join('\n');
+
+                const embed = new EmbedBuilder()
+                    .setTitle('🏢 قائمة الشركات المسجلة')
+                    .setColor(0x1565C0)
+                    .setDescription(list)
+                    .setFooter({ text: `نظام الشركات • ${companies.length} شركة` })
+                    .setTimestamp();
+
+                return interaction.reply({ embeds: [embed], flags: 64 });
+            } catch (e) {
+                console.error('[COMPANY LIST BTN ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         // ── إضافة / خصم نقاط (مسؤولين فقط) ─────────────────────────────────────
         if (interaction.customId === 'points_add_btn' || interaction.customId === 'points_deduct_btn') {
             const isAdd = interaction.customId === 'points_add_btn';
