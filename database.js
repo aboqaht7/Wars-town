@@ -1545,7 +1545,7 @@ module.exports = {
     hasTradePermit, grantTradePermit, revokeTradePermit, getAllTradePermits,
     createCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
     getCompanyMembers, addCompanyMember, removeCompanyMember, updateCompanyMemberRole,
-    depositToCompany, withdrawFromCompany, getAllCompanies, dissolveCompany,
+    depositToCompany, withdrawFromCompany, payCompanySalaries, getAllCompanies, dissolveCompany,
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
     addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
     cuffPlayer, uncuffPlayer, isCuffed,
@@ -1949,6 +1949,28 @@ async function withdrawFromCompany(companyId, discordId, slot, amount) {
     await query('UPDATE companies SET balance=balance-$1 WHERE id=$2', [amount, companyId]);
     await query('UPDATE identities SET cash=cash+$1 WHERE discord_id=$2 AND slot=$3', [amount, discordId, slot]);
     return { success: true };
+}
+async function payCompanySalaries(companyId) {
+    const compRes = await query('SELECT balance FROM companies WHERE id=$1', [companyId]);
+    const balance = compRes.rows[0]?.balance || 0;
+    const members = await query(
+        'SELECT discord_id, salary FROM company_members WHERE company_id=$1 AND salary>0',
+        [companyId]
+    );
+    if (members.rows.length === 0) return { error: 'لا يوجد موظفون برواتب محددة.' };
+    const total = members.rows.reduce((sum, m) => sum + parseInt(m.salary || 0), 0);
+    if (balance < total) return {
+        error: `رصيد الشركة غير كافٍ. المطلوب: **${total.toLocaleString()} ريال**، المتوفر: **${balance.toLocaleString()} ريال**.`
+    };
+    await query('UPDATE companies SET balance=balance-$1 WHERE id=$2', [total, companyId]);
+    for (const m of members.rows) {
+        await query(
+            `UPDATE identities SET cash=cash+$1 WHERE discord_id=$2
+             AND slot=(SELECT MIN(slot) FROM identities WHERE discord_id=$2)`,
+            [parseInt(m.salary), m.discord_id]
+        );
+    }
+    return { success: true, total, members: members.rows };
 }
 async function getAllCompanies() {
     const res = await query('SELECT * FROM companies ORDER BY created_at DESC', []);

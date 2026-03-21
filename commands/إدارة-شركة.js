@@ -49,6 +49,7 @@ module.exports = {
 
         const row2 = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId('comp_promote_btn').setLabel('⬆️ ترقية موظف').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('comp_paysalaries_btn').setLabel('💰 إيداع الرواتب').setStyle(ButtonStyle.Success),
         );
 
         return interaction.reply({ embeds: [embed], components: [row1, row2], flags: 64 });

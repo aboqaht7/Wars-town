@@ -1551,6 +1551,39 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        if (interaction.customId === 'comp_paysalaries_btn') {
+            try {
+                const company = await db.getCompanyByOwner(interaction.user.id);
+                if (!company)
+                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+
+                const res = await db.payCompanySalaries(company.id);
+                if (res.error)
+                    return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
+
+                const salaryLines = res.members.map(m =>
+                    `<@${m.discord_id}> — \`${parseInt(m.salary).toLocaleString()} ريال\``
+                ).join('\n');
+
+                const embed = new EmbedBuilder()
+                    .setTitle('💰 تم إيداع الرواتب')
+                    .setColor(0x2E7D32)
+                    .setDescription(`تم خصم **${res.total.toLocaleString()} ريال** من رصيد الشركة وإيداعها في حسابات الموظفين.`)
+                    .addFields(
+                        { name: `👥 الموظفون (${res.members.length})`, value: salaryLines, inline: false },
+                        { name: '🏢 الشركة', value: company.name, inline: true },
+                        { name: '💳 إجمالي المدفوع', value: `\`${res.total.toLocaleString()} ريال\``, inline: true },
+                    )
+                    .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error('[PAY SALARIES ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ أثناء صرف الرواتب.', flags: 64 });
+            }
+            return;
+        }
+
         if (interaction.customId === 'comp_promote_btn') {
             try {
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
