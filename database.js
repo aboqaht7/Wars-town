@@ -1541,6 +1541,10 @@ module.exports = {
     getLastGathered, setLastGathered, getItemQty,
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
+    hasTradePermit, grantTradePermit, revokeTradePermit, getAllTradePermits,
+    createCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
+    getCompanyMembers, addCompanyMember, removeCompanyMember, updateCompanyMemberRole,
+    depositToCompany, withdrawFromCompany, getAllCompanies, dissolveCompany,
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
     addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
     cuffPlayer, uncuffPlayer, isCuffed,
@@ -1787,6 +1791,132 @@ async function getAllStaffActivity() {
         ORDER BY total DESC
     `);
     return res.rows;
+}
+
+/* ─── جداول نظام الشركات ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS trade_permits (
+            discord_id  TEXT PRIMARY KEY,
+            granted_by  TEXT NOT NULL,
+            granted_at  TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS companies (
+            id               SERIAL PRIMARY KEY,
+            name             TEXT UNIQUE NOT NULL,
+            owner_discord_id TEXT NOT NULL,
+            balance          BIGINT DEFAULT 0,
+            created_at       TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS company_members (
+            id          SERIAL PRIMARY KEY,
+            company_id  INT REFERENCES companies(id) ON DELETE CASCADE,
+            discord_id  TEXT NOT NULL,
+            role        TEXT DEFAULT 'موظف',
+            joined_at   TIMESTAMPTZ DEFAULT NOW(),
+            UNIQUE(company_id, discord_id)
+        );
+    `);
+})().catch(console.error);
+
+async function hasTradePermit(discordId) {
+    const res = await query('SELECT 1 FROM trade_permits WHERE discord_id=$1', [discordId]);
+    return res.rows.length > 0;
+}
+async function grantTradePermit(discordId, grantedBy) {
+    await query(
+        `INSERT INTO trade_permits (discord_id, granted_by) VALUES ($1, $2)
+         ON CONFLICT (discord_id) DO UPDATE SET granted_by=$2, granted_at=NOW()`,
+        [discordId, grantedBy]
+    );
+}
+async function revokeTradePermit(discordId) {
+    const res = await query('DELETE FROM trade_permits WHERE discord_id=$1 RETURNING *', [discordId]);
+    return res.rows.length > 0;
+}
+async function getAllTradePermits() {
+    const res = await query('SELECT * FROM trade_permits ORDER BY granted_at DESC', []);
+    return res.rows;
+}
+async function createCompany(name, ownerDiscordId) {
+    const existing = await query('SELECT id FROM companies WHERE owner_discord_id=$1', [ownerDiscordId]);
+    if (existing.rows.length > 0) return { error: 'أنت تمتلك شركة بالفعل.' };
+    const nameTaken = await query('SELECT id FROM companies WHERE LOWER(name)=LOWER($1)', [name]);
+    if (nameTaken.rows.length > 0) return { error: 'اسم الشركة مأخوذ.' };
+    const res = await query(
+        `INSERT INTO companies (name, owner_discord_id) VALUES ($1, $2) RETURNING *`,
+        [name, ownerDiscordId]
+    );
+    return { company: res.rows[0] };
+}
+async function getCompanyByOwner(discordId) {
+    const res = await query('SELECT * FROM companies WHERE owner_discord_id=$1', [discordId]);
+    return res.rows[0] || null;
+}
+async function getCompanyByMember(discordId) {
+    const res = await query(
+        `SELECT c.* FROM companies c
+         JOIN company_members m ON m.company_id=c.id
+         WHERE m.discord_id=$1`,
+        [discordId]
+    );
+    return res.rows[0] || null;
+}
+async function getUserCompany(discordId) {
+    const owned = await getCompanyByOwner(discordId);
+    if (owned) return { ...owned, userRole: 'مالك' };
+    const member = await getCompanyByMember(discordId);
+    if (!member) return null;
+    const roleRes = await query('SELECT role FROM company_members WHERE company_id=$1 AND discord_id=$2', [member.id, discordId]);
+    return { ...member, userRole: roleRes.rows[0]?.role || 'موظف' };
+}
+async function getCompanyById(id) {
+    const res = await query('SELECT * FROM companies WHERE id=$1', [id]);
+    return res.rows[0] || null;
+}
+async function getCompanyMembers(companyId) {
+    const res = await query('SELECT * FROM company_members WHERE company_id=$1 ORDER BY joined_at', [companyId]);
+    return res.rows;
+}
+async function addCompanyMember(companyId, discordId, role = 'موظف') {
+    const existing = await query('SELECT id FROM company_members WHERE company_id=$1 AND discord_id=$2', [companyId, discordId]);
+    if (existing.rows.length > 0) return { error: 'هذا الشخص عضو بالفعل.' };
+    await query(`INSERT INTO company_members (company_id, discord_id, role) VALUES ($1, $2, $3)`, [companyId, discordId, role]);
+    return { success: true };
+}
+async function removeCompanyMember(companyId, discordId) {
+    const res = await query('DELETE FROM company_members WHERE company_id=$1 AND discord_id=$2 RETURNING *', [companyId, discordId]);
+    return res.rows.length > 0;
+}
+async function updateCompanyMemberRole(companyId, discordId, role) {
+    await query('UPDATE company_members SET role=$3 WHERE company_id=$1 AND discord_id=$2', [companyId, discordId, role]);
+}
+async function depositToCompany(companyId, discordId, slot, amount) {
+    const cashRes = await query('SELECT cash FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
+    const cash = cashRes.rows[0]?.cash || 0;
+    if (cash < amount) return { error: 'رصيدك النقدي غير كافٍ.' };
+    await query('UPDATE identities SET cash=cash-$1 WHERE discord_id=$2 AND slot=$3', [amount, discordId, slot]);
+    await query('UPDATE companies SET balance=balance+$1 WHERE id=$2', [amount, companyId]);
+    return { success: true };
+}
+async function withdrawFromCompany(companyId, discordId, slot, amount) {
+    const compRes = await query('SELECT balance FROM companies WHERE id=$1', [companyId]);
+    const balance = compRes.rows[0]?.balance || 0;
+    if (balance < amount) return { error: 'رصيد الشركة غير كافٍ.' };
+    await query('UPDATE companies SET balance=balance-$1 WHERE id=$2', [amount, companyId]);
+    await query('UPDATE identities SET cash=cash+$1 WHERE discord_id=$2 AND slot=$3', [amount, discordId, slot]);
+    return { success: true };
+}
+async function getAllCompanies() {
+    const res = await query('SELECT * FROM companies ORDER BY created_at DESC', []);
+    return res.rows;
+}
+async function dissolveCompany(companyId) {
+    await query('DELETE FROM companies WHERE id=$1', [companyId]);
 }
 
 /* ─── جدول أزرار الأولوية ─── */
