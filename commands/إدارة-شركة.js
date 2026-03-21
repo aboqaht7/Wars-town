@@ -40,11 +40,11 @@ module.exports = {
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('📥 إيداع').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('💵 إيداع').setStyle(ButtonStyle.Success),
             new ButtonBuilder().setCustomId('comp_withdraw_btn').setLabel('💸 سحب').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('➕ تعيين موظف').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('➖ إقالة موظف').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('🗑️ حل الشركة').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('📄 تعيين موظف').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('🧾 إقالة موظف').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('📜 حل الشركة').setStyle(ButtonStyle.Danger),
         );
 
         return interaction.reply({ embeds: [embed], components: [row1], flags: 64 });
