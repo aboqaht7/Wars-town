@@ -1838,6 +1838,19 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'company_list_btn') {
             try {
+                const userCompany = await db.getUserCompany(interaction.user.id);
+                if (!userCompany) {
+                    const { ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
+                    const applyRow = new ARB2().addComponents(
+                        new BB2().setCustomId('company_apply_btn').setLabel('📋 تقديم طلب تأسيس').setStyle(BS2.Success)
+                    );
+                    return interaction.reply({
+                        content: '❌ ليس لديك شركة مسجلة. يمكنك تقديم طلب تأسيس شركة من خلال الزر أدناه.',
+                        components: [applyRow],
+                        flags: 64
+                    });
+                }
+
                 const companies = await db.getAllCompanies();
                 if (!companies.length)
                     return interaction.reply({ content: '📋 لا توجد شركات مسجلة حالياً.', flags: 64 });

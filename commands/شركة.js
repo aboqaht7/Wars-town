@@ -30,7 +30,8 @@ module.exports = {
                 .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
                 .setTimestamp();
 
-            return interaction.reply({ embeds: [embed], flags: 64 });
+            await interaction.reply({ content: '\u200b', flags: 64 });
+            return interaction.channel.send({ embeds: [embed] });
         }
 
         const embed = new EmbedBuilder()
@@ -58,6 +59,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Secondary),
         );
 
-        return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+        await interaction.reply({ content: '\u200b', flags: 64 });
+        return interaction.channel.send({ embeds: [embed], components: [row] });
     },
 };
