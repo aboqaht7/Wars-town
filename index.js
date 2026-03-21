@@ -1506,6 +1506,84 @@ client.on('interactionCreate', async interaction => {
             return interaction.reply({ embeds: [embed], flags: 64 });
         }
 
+        if (interaction.customId === 'comp_deposit_btn' || interaction.customId === 'comp_withdraw_btn') {
+            try {
+                const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                const isDeposit = interaction.customId === 'comp_deposit_btn';
+                const modal = new ModalBuilder()
+                    .setCustomId(isDeposit ? 'comp_deposit_modal' : 'comp_withdraw_modal')
+                    .setTitle(isDeposit ? '📥 إيداع في حساب الشركة' : '💸 سحب من حساب الشركة');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('amount').setLabel('المبلغ')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('اكتب المبلغ بالأرقام فقط')
+                            .setRequired(true).setMaxLength(15)
+                    )
+                );
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); }
+            return;
+        }
+
+        if (interaction.customId === 'comp_hire_btn') {
+            try {
+                const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('➕ تعيين موظف');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 123456789012345678')
+                            .setRequired(true).setMaxLength(20)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('role').setLabel('الرتبة (مدير / محاسب / موظف)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('موظف')
+                            .setRequired(true).setMaxLength(20)
+                    ),
+                );
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); }
+            return;
+        }
+
+        if (interaction.customId === 'comp_fire_btn') {
+            try {
+                const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('➖ إقالة موظف');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 123456789012345678')
+                            .setRequired(true).setMaxLength(20)
+                    ),
+                );
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); }
+            return;
+        }
+
+        if (interaction.customId === 'comp_dissolve_btn') {
+            try {
+                const company = await db.getCompanyByOwner(interaction.user.id);
+                if (!company)
+                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+                if (company.balance > 0)
+                    return interaction.reply({ content: `❌ لا يمكن حل الشركة ورصيدها **${company.balance.toLocaleString()} ريال**. اسحب الرصيد أولاً.`, flags: 64 });
+
+                await db.dissolveCompany(company.id);
+                const embed = new EmbedBuilder()
+                    .setTitle('🏚️ تم حل الشركة')
+                    .setColor(0xB71C1C)
+                    .setDescription(`تم حل شركة **${company.name}** نهائياً وإغلاق جميع سجلاتها.`)
+                    .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error(e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         if (interaction.customId === 'company_apply_btn') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
@@ -3775,6 +3853,129 @@ client.on('interactionCreate', async interaction => {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
+        }
+
+        if (interaction.customId === 'comp_deposit_modal' || interaction.customId === 'comp_withdraw_modal') {
+            try {
+                const isDeposit = interaction.customId === 'comp_deposit_modal';
+                const amountStr = interaction.fields.getTextInputValue('amount').trim();
+                const amount = parseInt(amountStr);
+                if (isNaN(amount) || amount <= 0)
+                    return interaction.reply({ content: '❌ المبلغ غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity)
+                    return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+
+                const company = await db.getUserCompany(interaction.user.id);
+                if (!company)
+                    return interaction.reply({ content: '❌ أنت لست مرتبطاً بأي شركة.', flags: 64 });
+
+                if (isDeposit) {
+                    const result = await db.depositToCompany(company.id, interaction.user.id, identity.slot, amount);
+                    if (result.error) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+                    const updated = await db.getCompanyById(company.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('📥 تم الإيداع في حساب الشركة')
+                        .setColor(0x1B5E20)
+                        .addFields(
+                            { name: '🏢 الشركة', value: company.name, inline: true },
+                            { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                            { name: '💰 رصيد الشركة', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
+                        ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                } else {
+                    if (company.userRole !== 'مالك' && company.userRole !== 'مدير')
+                        return interaction.reply({ content: '❌ فقط المالك والمدير يستطيعان سحب الأموال.', flags: 64 });
+                    const result = await db.withdrawFromCompany(company.id, interaction.user.id, identity.slot, amount);
+                    if (result.error) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+                    const updated = await db.getCompanyById(company.id);
+                    const embed = new EmbedBuilder()
+                        .setTitle('💸 تم السحب من حساب الشركة')
+                        .setColor(0xF57F17)
+                        .addFields(
+                            { name: '🏢 الشركة', value: company.name, inline: true },
+                            { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                            { name: '💰 رصيد الشركة', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
+                        ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+            } catch (e) {
+                console.error('[COMP DEPOSIT/WITHDRAW ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
+        if (interaction.customId === 'comp_hire_modal') {
+            try {
+                const userId = interaction.fields.getTextInputValue('user_id').trim().replace(/[<@!>]/g, '');
+                const role = interaction.fields.getTextInputValue('role').trim();
+
+                if (!['مدير', 'محاسب', 'موظف'].includes(role))
+                    return interaction.reply({ content: '❌ الرتبة غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+
+                const company = await db.getCompanyByOwner(interaction.user.id);
+                if (!company)
+                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+
+                if (userId === interaction.user.id)
+                    return interaction.reply({ content: '❌ لا يمكنك تعيين نفسك.', flags: 64 });
+
+                const existing = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
+                if (existing) {
+                    await db.updateCompanyMemberRole(company.id, userId, role);
+                    return interaction.reply({
+                        embeds: [new EmbedBuilder().setTitle('✏️ تم تحديث رتبة الموظف').setColor(0xF57F17)
+                            .addFields({ name: '👤 الموظف', value: `<@${userId}>`, inline: true }, { name: '🏷️ الرتبة', value: `**${role}**`, inline: true })
+                            .setFooter({ text: `${company.name} • بوت FANTASY` }).setTimestamp()],
+                        flags: 64
+                    });
+                }
+
+                const res = await db.addCompanyMember(company.id, userId, role);
+                if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
+
+                const embed = new EmbedBuilder().setTitle('✅ تم تعيين الموظف').setColor(0x1B5E20)
+                    .addFields(
+                        { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
+                        { name: '🏷️ الرتبة', value: `**${role}**`, inline: true },
+                        { name: '🏢 الشركة', value: company.name, inline: true },
+                    ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error('[COMP HIRE ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
+            }
+            return;
+        }
+
+        if (interaction.customId === 'comp_fire_modal') {
+            try {
+                const userId = interaction.fields.getTextInputValue('user_id').trim().replace(/[<@!>]/g, '');
+
+                const company = await db.getCompanyByOwner(interaction.user.id);
+                if (!company)
+                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+
+                if (userId === interaction.user.id)
+                    return interaction.reply({ content: '❌ لا يمكنك إقالة نفسك.', flags: 64 });
+
+                const removed = await db.removeCompanyMember(company.id, userId);
+                if (!removed)
+                    return interaction.reply({ content: '❌ هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
+
+                const embed = new EmbedBuilder().setTitle('🚫 تم الإقالة').setColor(0xB71C1C)
+                    .addFields(
+                        { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
+                        { name: '🏢 الشركة', value: company.name, inline: true },
+                    ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error('[COMP FIRE ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
+            }
+            return;
         }
 
         if (interaction.customId === 'company_found_modal') {

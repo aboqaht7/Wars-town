@@ -1,193 +1,52 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const {
+    SlashCommandBuilder, EmbedBuilder,
+    ActionRowBuilder, ButtonBuilder, ButtonStyle
+} = require('discord.js');
 
 module.exports = {
     name: 'إدارة-شركة',
     data: new SlashCommandBuilder()
         .setName('إدارة-شركة')
-        .setDescription('إدارة شركتك (تعيين، إقالة، إيداع، سحب، حل)')
-        .addSubcommand(s => s
-            .setName('تعيين')
-            .setDescription('تعيين موظف في الشركة (مالك فقط)')
-            .addUserOption(o => o.setName('اللاعب').setDescription('اللاعب المراد تعيينه').setRequired(true))
-            .addStringOption(o => o
-                .setName('الرتبة')
-                .setDescription('رتبة الموظف')
-                .setRequired(true)
-                .addChoices(
-                    { name: 'مدير', value: 'مدير' },
-                    { name: 'محاسب', value: 'محاسب' },
-                    { name: 'موظف', value: 'موظف' },
-                )
-            )
-        )
-        .addSubcommand(s => s
-            .setName('إقالة')
-            .setDescription('إقالة موظف من الشركة (مالك فقط)')
-            .addUserOption(o => o.setName('اللاعب').setDescription('اللاعب المراد إقالته').setRequired(true))
-        )
-        .addSubcommand(s => s
-            .setName('إيداع')
-            .setDescription('إيداع مبلغ من كاشك لحساب الشركة')
-            .addIntegerOption(o => o.setName('المبلغ').setDescription('المبلغ المراد إيداعه').setRequired(true).setMinValue(1))
-        )
-        .addSubcommand(s => s
-            .setName('سحب')
-            .setDescription('سحب مبلغ من حساب الشركة (مالك أو مدير)')
-            .addIntegerOption(o => o.setName('المبلغ').setDescription('المبلغ المراد سحبه').setRequired(true).setMinValue(1))
-        )
-        .addSubcommand(s => s
-            .setName('حل')
-            .setDescription('حل الشركة وإغلاقها نهائياً (مالك فقط)')
-        ),
+        .setDescription('لوحة إدارة شركتك (يتطلب رتبة مستثمر)'),
 
     async slashExecute(interaction, db) {
-        const sub = interaction.options.getSubcommand();
+        const investorRoleId = await db.getConfig('investor_role');
+        const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+        const hasInvestorRole = investorRoleId && interaction.member.roles.cache.has(investorRoleId);
 
-        if (sub === 'تعيين') {
-            const company = await db.getCompanyByOwner(interaction.user.id);
-            if (!company)
-                return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+        if (!isAdmin && !hasInvestorRole)
+            return interaction.reply({ content: '❌ هذا الأمر لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
 
-            const target = interaction.options.getUser('اللاعب');
-            const role = interaction.options.getString('الرتبة');
+        const company = await db.getUserCompany(interaction.user.id);
+        if (!company)
+            return interaction.reply({ content: '❌ أنت لست مرتبطاً بأي شركة.', flags: 64 });
 
-            if (target.id === interaction.user.id)
-                return interaction.reply({ content: '❌ لا يمكنك تعيين نفسك.', flags: 64 });
+        const members = await db.getCompanyMembers(company.id);
+        const memberList = members.length
+            ? members.map(m => `<@${m.discord_id}> — **${m.role}**`).join('\n')
+            : '_لا يوجد موظفون_';
 
-            const existing = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === target.id);
-            if (existing) {
-                await db.updateCompanyMemberRole(company.id, target.id, role);
-                return interaction.reply({
-                    embeds: [new EmbedBuilder()
-                        .setTitle('✏️ تم تحديث رتبة الموظف')
-                        .setColor(0xF57F17)
-                        .addFields(
-                            { name: '👤 الموظف', value: `<@${target.id}>`, inline: true },
-                            { name: '🏷️ الرتبة الجديدة', value: `**${role}**`, inline: true },
-                        )
-                        .setFooter({ text: `${company.name} • بوت FANTASY` }).setTimestamp()],
-                    flags: 64
-                });
-            }
+        const embed = new EmbedBuilder()
+            .setTitle(`🏢 إدارة شركة ${company.name}`)
+            .setColor(0x1565C0)
+            .addFields(
+                { name: '👑 المالك', value: `<@${company.owner_discord_id}>`, inline: true },
+                { name: '💰 رصيد الشركة', value: `\`${(company.balance || 0).toLocaleString()} ريال\``, inline: true },
+                { name: '🏷️ رتبتك', value: `**${company.userRole}**`, inline: true },
+                { name: `👥 الموظفون (${members.length})`, value: memberList, inline: false },
+            )
+            .setDescription('اختر أحد الخيارات أدناه لإدارة شركتك.')
+            .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+            .setTimestamp();
 
-            const res = await db.addCompanyMember(company.id, target.id, role);
-            if (res.error)
-                return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
+        const row1 = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('📥 إيداع').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('comp_withdraw_btn').setLabel('💸 سحب').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('➕ تعيين موظف').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('➖ إقالة موظف').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('🗑️ حل الشركة').setStyle(ButtonStyle.Danger),
+        );
 
-            const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين الموظف')
-                .setColor(0x1B5E20)
-                .addFields(
-                    { name: '👤 الموظف', value: `<@${target.id}>`, inline: true },
-                    { name: '🏷️ الرتبة', value: `**${role}**`, inline: true },
-                    { name: '🏢 الشركة', value: company.name, inline: true },
-                )
-                .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
-
-            return interaction.reply({ embeds: [embed] });
-        }
-
-        if (sub === 'إقالة') {
-            const company = await db.getCompanyByOwner(interaction.user.id);
-            if (!company)
-                return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
-
-            const target = interaction.options.getUser('اللاعب');
-            if (target.id === interaction.user.id)
-                return interaction.reply({ content: '❌ لا يمكنك إقالة نفسك.', flags: 64 });
-
-            const removed = await db.removeCompanyMember(company.id, target.id);
-            if (!removed)
-                return interaction.reply({ content: '❌ هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
-
-            const embed = new EmbedBuilder()
-                .setTitle('🚫 تم الإقالة')
-                .setColor(0xB71C1C)
-                .addFields(
-                    { name: '👤 الموظف', value: `<@${target.id}>`, inline: true },
-                    { name: '🏢 الشركة', value: company.name, inline: true },
-                )
-                .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
-
-            return interaction.reply({ embeds: [embed] });
-        }
-
-        if (sub === 'إيداع') {
-            const identity = await db.getActiveIdentity(interaction.user.id);
-            if (!identity)
-                return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
-
-            const company = await db.getUserCompany(interaction.user.id);
-            if (!company)
-                return interaction.reply({ content: '❌ أنت لست مرتبطاً بأي شركة.', flags: 64 });
-
-            const amount = interaction.options.getInteger('المبلغ');
-            const result = await db.depositToCompany(company.id, interaction.user.id, identity.slot, amount);
-            if (result.error)
-                return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
-
-            const updated = await db.getCompanyById(company.id);
-            const embed = new EmbedBuilder()
-                .setTitle('📥 تم الإيداع في حساب الشركة')
-                .setColor(0x1B5E20)
-                .addFields(
-                    { name: '🏢 الشركة', value: company.name, inline: true },
-                    { name: '💵 المبلغ المودَع', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                    { name: '💰 رصيد الشركة الآن', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
-                )
-                .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
-
-            return interaction.reply({ embeds: [embed], flags: 64 });
-        }
-
-        if (sub === 'سحب') {
-            const identity = await db.getActiveIdentity(interaction.user.id);
-            if (!identity)
-                return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
-
-            const company = await db.getUserCompany(interaction.user.id);
-            if (!company)
-                return interaction.reply({ content: '❌ أنت لست مرتبطاً بأي شركة.', flags: 64 });
-
-            if (company.userRole !== 'مالك' && company.userRole !== 'مدير')
-                return interaction.reply({ content: '❌ فقط المالك والمدير يستطيعان سحب الأموال.', flags: 64 });
-
-            const amount = interaction.options.getInteger('المبلغ');
-            const result = await db.withdrawFromCompany(company.id, interaction.user.id, identity.slot, amount);
-            if (result.error)
-                return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
-
-            const updated = await db.getCompanyById(company.id);
-            const embed = new EmbedBuilder()
-                .setTitle('💸 تم السحب من حساب الشركة')
-                .setColor(0xF57F17)
-                .addFields(
-                    { name: '🏢 الشركة', value: company.name, inline: true },
-                    { name: '💵 المبلغ المسحوب', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                    { name: '💰 رصيد الشركة الآن', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
-                )
-                .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
-
-            return interaction.reply({ embeds: [embed], flags: 64 });
-        }
-
-        if (sub === 'حل') {
-            const company = await db.getCompanyByOwner(interaction.user.id);
-            if (!company)
-                return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
-
-            if (company.balance > 0)
-                return interaction.reply({ content: `❌ لا يمكن حل الشركة ورصيدها **${company.balance.toLocaleString()} ريال**. اسحب الرصيد أولاً.`, flags: 64 });
-
-            await db.dissolveCompany(company.id);
-
-            const embed = new EmbedBuilder()
-                .setTitle('🏚️ تم حل الشركة')
-                .setColor(0xB71C1C)
-                .setDescription(`تم حل شركة **${company.name}** نهائياً وإغلاق جميع سجلاتها.`)
-                .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
-
-            return interaction.reply({ embeds: [embed] });
-        }
+        return interaction.reply({ embeds: [embed], components: [row1], flags: 64 });
     },
 };
