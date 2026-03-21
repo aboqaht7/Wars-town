@@ -10,13 +10,6 @@ module.exports = {
         .setDescription('لوحة تحكم وزارة التجارة'),
 
     async slashExecute(interaction, db) {
-        const ministryRoleId = await db.getConfig('trade_ministry_role');
-        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-        const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
-
-        if (!isAdmin && !hasMinistryRole)
-            return interaction.reply({ content: '❌ هذا الأمر لمسؤولي وزارة التجارة فقط.', flags: 64 });
-
         const duty = await db.getMinistryDuty(interaction.user.id);
         const isOnDuty = duty?.status === 'on';
 
