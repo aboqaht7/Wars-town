@@ -23,7 +23,7 @@ module.exports = {
 
         const members = await db.getCompanyMembers(company.id);
         const memberList = members.length
-            ? members.map(m => `<@${m.discord_id}> — **${m.role}**`).join('\n')
+            ? members.map(m => `<@${m.discord_id}> — **${m.role}** — راتب: \`${(m.salary || 0).toLocaleString()} ريال\``).join('\n')
             : '_لا يوجد موظفون_';
 
         const embed = new EmbedBuilder()
@@ -47,6 +47,10 @@ module.exports = {
             new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('📜 حل الشركة').setStyle(ButtonStyle.Danger),
         );
 
-        return interaction.reply({ embeds: [embed], components: [row1], flags: 64 });
+        const row2 = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId('comp_promote_btn').setLabel('⬆️ ترقية موظف').setStyle(ButtonStyle.Primary),
+        );
+
+        return interaction.reply({ embeds: [embed], components: [row1, row2], flags: 64 });
     },
 };

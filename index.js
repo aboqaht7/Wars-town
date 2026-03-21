@@ -1528,7 +1528,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'comp_hire_btn') {
             try {
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-                const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('➕ تعيين موظف');
+                const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('📄 تعيين موظف');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
@@ -1539,6 +1539,37 @@ client.on('interactionCreate', async interaction => {
                         new TextInputBuilder().setCustomId('role').setLabel('الرتبة (مدير / محاسب / موظف)')
                             .setStyle(TextInputStyle.Short).setPlaceholder('موظف')
                             .setRequired(true).setMaxLength(20)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('salary').setLabel('الراتب الشهري (بالأرقام)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 5000')
+                            .setRequired(true).setMaxLength(12)
+                    ),
+                );
+                return interaction.showModal(modal);
+            } catch (e) { console.error(e); }
+            return;
+        }
+
+        if (interaction.customId === 'comp_promote_btn') {
+            try {
+                const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('⬆️ ترقية موظف');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 123456789012345678')
+                            .setRequired(true).setMaxLength(20)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('role').setLabel('الرتبة الجديدة (مدير / محاسب / موظف)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('مدير')
+                            .setRequired(true).setMaxLength(20)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder().setCustomId('salary').setLabel('الراتب الجديد (بالأرقام)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 8000')
+                            .setRequired(true).setMaxLength(12)
                     ),
                 );
                 return interaction.showModal(modal);
@@ -3909,11 +3940,15 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_hire_modal') {
             try {
-                const userId = interaction.fields.getTextInputValue('user_id').trim().replace(/[<@!>]/g, '');
-                const role = interaction.fields.getTextInputValue('role').trim();
+                const userId  = interaction.fields.getTextInputValue('user_id').trim().replace(/[<@!>]/g, '');
+                const role    = interaction.fields.getTextInputValue('role').trim();
+                const salaryStr = interaction.fields.getTextInputValue('salary').trim();
+                const salary  = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
                     return interaction.reply({ content: '❌ الرتبة غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+                if (isNaN(salary) || salary < 0)
+                    return interaction.reply({ content: '❌ الراتب غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
@@ -3923,28 +3958,60 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ content: '❌ لا يمكنك تعيين نفسك.', flags: 64 });
 
                 const existing = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
-                if (existing) {
-                    await db.updateCompanyMemberRole(company.id, userId, role);
-                    return interaction.reply({
-                        embeds: [new EmbedBuilder().setTitle('✏️ تم تحديث رتبة الموظف').setColor(0xF57F17)
-                            .addFields({ name: '👤 الموظف', value: `<@${userId}>`, inline: true }, { name: '🏷️ الرتبة', value: `**${role}**`, inline: true })
-                            .setFooter({ text: `${company.name} • بوت FANTASY` }).setTimestamp()],
-                        flags: 64
-                    });
-                }
+                if (existing)
+                    return interaction.reply({ content: '❌ هذا اللاعب موظف بالفعل. استخدم زر **ترقية موظف** لتعديل رتبته وراتبه.', flags: 64 });
 
-                const res = await db.addCompanyMember(company.id, userId, role);
+                const res = await db.addCompanyMember(company.id, userId, role, salary);
                 if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
 
                 const embed = new EmbedBuilder().setTitle('✅ تم تعيين الموظف').setColor(0x1B5E20)
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
                         { name: '🏷️ الرتبة', value: `**${role}**`, inline: true },
+                        { name: '💵 الراتب', value: `\`${salary.toLocaleString()} ريال\``, inline: true },
                         { name: '🏢 الشركة', value: company.name, inline: true },
                     ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP HIRE ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
+            }
+            return;
+        }
+
+        if (interaction.customId === 'comp_promote_modal') {
+            try {
+                const userId    = interaction.fields.getTextInputValue('user_id').trim().replace(/[<@!>]/g, '');
+                const role      = interaction.fields.getTextInputValue('role').trim();
+                const salaryStr = interaction.fields.getTextInputValue('salary').trim();
+                const salary    = parseInt(salaryStr);
+
+                if (!['مدير', 'محاسب', 'موظف'].includes(role))
+                    return interaction.reply({ content: '❌ الرتبة غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+                if (isNaN(salary) || salary < 0)
+                    return interaction.reply({ content: '❌ الراتب غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
+
+                const company = await db.getCompanyByOwner(interaction.user.id);
+                if (!company)
+                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+
+                const member = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
+                if (!member)
+                    return interaction.reply({ content: '❌ هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
+
+                await db.updateCompanyMemberRole(company.id, userId, role, salary);
+
+                const embed = new EmbedBuilder().setTitle('⬆️ تم ترقية الموظف').setColor(0x6A1B9A)
+                    .addFields(
+                        { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
+                        { name: '🏷️ الرتبة السابقة', value: `**${member.role}**`, inline: true },
+                        { name: '🏷️ الرتبة الجديدة', value: `**${role}**`, inline: true },
+                        { name: '💵 الراتب الجديد', value: `\`${salary.toLocaleString()} ريال\``, inline: true },
+                        { name: '🏢 الشركة', value: company.name, inline: true },
+                    ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            } catch (e) {
+                console.error('[COMP PROMOTE ERROR]', e);
                 if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
             }
             return;

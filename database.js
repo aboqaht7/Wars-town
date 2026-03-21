@@ -1828,12 +1828,14 @@ async function getAllStaffActivity() {
             created_at       TIMESTAMPTZ DEFAULT NOW()
         );
     `);
+    await pool.query(`ALTER TABLE company_members ADD COLUMN IF NOT EXISTS salary BIGINT DEFAULT 0`).catch(() => {});
     await pool.query(`
         CREATE TABLE IF NOT EXISTS company_members (
             id          SERIAL PRIMARY KEY,
             company_id  INT REFERENCES companies(id) ON DELETE CASCADE,
             discord_id  TEXT NOT NULL,
             role        TEXT DEFAULT 'موظف',
+            salary      BIGINT DEFAULT 0,
             joined_at   TIMESTAMPTZ DEFAULT NOW(),
             UNIQUE(company_id, discord_id)
         );
@@ -1915,18 +1917,22 @@ async function getCompanyMembers(companyId) {
     const res = await query('SELECT * FROM company_members WHERE company_id=$1 ORDER BY joined_at', [companyId]);
     return res.rows;
 }
-async function addCompanyMember(companyId, discordId, role = 'موظف') {
+async function addCompanyMember(companyId, discordId, role = 'موظف', salary = 0) {
     const existing = await query('SELECT id FROM company_members WHERE company_id=$1 AND discord_id=$2', [companyId, discordId]);
     if (existing.rows.length > 0) return { error: 'هذا الشخص عضو بالفعل.' };
-    await query(`INSERT INTO company_members (company_id, discord_id, role) VALUES ($1, $2, $3)`, [companyId, discordId, role]);
+    await query(`INSERT INTO company_members (company_id, discord_id, role, salary) VALUES ($1, $2, $3, $4)`, [companyId, discordId, role, salary]);
     return { success: true };
 }
 async function removeCompanyMember(companyId, discordId) {
     const res = await query('DELETE FROM company_members WHERE company_id=$1 AND discord_id=$2 RETURNING *', [companyId, discordId]);
     return res.rows.length > 0;
 }
-async function updateCompanyMemberRole(companyId, discordId, role) {
-    await query('UPDATE company_members SET role=$3 WHERE company_id=$1 AND discord_id=$2', [companyId, discordId, role]);
+async function updateCompanyMemberRole(companyId, discordId, role, salary = null) {
+    if (salary !== null) {
+        await query('UPDATE company_members SET role=$3, salary=$4 WHERE company_id=$1 AND discord_id=$2', [companyId, discordId, role, salary]);
+    } else {
+        await query('UPDATE company_members SET role=$3 WHERE company_id=$1 AND discord_id=$2', [companyId, discordId, role]);
+    }
 }
 async function depositToCompany(companyId, discordId, slot, amount) {
     const cashRes = await query('SELECT cash FROM identities WHERE discord_id=$1 AND slot=$2', [discordId, slot]);
