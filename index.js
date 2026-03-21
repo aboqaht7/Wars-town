@@ -865,6 +865,110 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        // ── أزرار وزارة التجارة ──────────────────────────────────────────────────
+        if (['ministry_login_btn','ministry_logout_btn','ministry_companies_btn','ministry_approve_btn'].includes(interaction.customId)) {
+            try {
+                const ministryRoleId = await db.getConfig('trade_ministry_role');
+                const isAdminUser = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
+                if (!isAdminUser && !hasMinistryRole)
+                    return interaction.reply({ content: '❌ هذا الإجراء لمسؤولي وزارة التجارة فقط.', flags: 64 });
+
+                // ─── تسجيل دخول ───────────────────────────────────────────────
+                if (interaction.customId === 'ministry_login_btn') {
+                    const duty = await db.getMinistryDuty(interaction.user.id);
+                    if (duty?.status === 'on')
+                        return interaction.reply({ content: '⚠️ أنت بالفعل مسجّل دخول.', flags: 64 });
+                    await db.setMinistryDuty(interaction.user.id, 'on');
+                    const ministryChId = await db.getConfig('trade_ministry_channel');
+                    if (ministryChId) {
+                        const ch = interaction.guild.channels.cache.get(ministryChId);
+                        if (ch) await ch.send({
+                            embeds: [new EmbedBuilder()
+                                .setTitle('🟢 تسجيل دخول — وزارة التجارة')
+                                .setColor(0x1B5E20)
+                                .addFields({ name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true })
+                                .setTimestamp()]
+                        });
+                    }
+                    return interaction.reply({ content: '✅ تم تسجيل دخولك بنجاح.', flags: 64 });
+                }
+
+                // ─── تسجيل خروج ───────────────────────────────────────────────
+                if (interaction.customId === 'ministry_logout_btn') {
+                    const duty = await db.getMinistryDuty(interaction.user.id);
+                    if (!duty || duty.status === 'off')
+                        return interaction.reply({ content: '⚠️ أنت لست مسجّل دخول أصلاً.', flags: 64 });
+                    await db.setMinistryDuty(interaction.user.id, 'off');
+                    const ministryChId = await db.getConfig('trade_ministry_channel');
+                    if (ministryChId) {
+                        const ch = interaction.guild.channels.cache.get(ministryChId);
+                        if (ch) await ch.send({
+                            embeds: [new EmbedBuilder()
+                                .setTitle('🔴 تسجيل خروج — وزارة التجارة')
+                                .setColor(0xB71C1C)
+                                .addFields({ name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true })
+                                .setTimestamp()]
+                        });
+                    }
+                    return interaction.reply({ content: '✅ تم تسجيل خروجك بنجاح.', flags: 64 });
+                }
+
+                // ─── عرض الشركات المسجلة ──────────────────────────────────────
+                if (interaction.customId === 'ministry_companies_btn') {
+                    const companies = await db.getAllCompanies();
+                    if (!companies.length)
+                        return interaction.reply({ content: '📋 لا توجد شركات مسجلة حالياً.', flags: 64 });
+
+                    const list = companies.map((c, i) =>
+                        `**${i + 1}.** ${c.name} — المالك: <@${c.owner_discord_id}> — الرصيد: \`${(c.balance || 0).toLocaleString()} ريال\``
+                    ).join('\n');
+
+                    const embed = new EmbedBuilder()
+                        .setTitle(`🏢 الشركات المسجلة (${companies.length})`)
+                        .setColor(0x1565C0)
+                        .setDescription(list)
+                        .setFooter({ text: 'وزارة التجارة • بوت FANTASY' })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                // ─── قبول شركة — عرض الطلبات المعلقة ─────────────────────────
+                if (interaction.customId === 'ministry_approve_btn') {
+                    const pending = await db.getAllPendingCompanies();
+                    if (!pending.length)
+                        return interaction.reply({ content: '📋 لا توجد طلبات شركات معلقة حالياً.', flags: 64 });
+
+                    for (const p of pending) {
+                        const embed = new EmbedBuilder()
+                            .setTitle(`📋 طلب تأسيس شركة #${p.id}`)
+                            .setColor(0xF57F17)
+                            .addFields(
+                                { name: '👤 المتقدم', value: `<@${p.discord_id}>`, inline: true },
+                                { name: '🏢 اسم الشركة', value: p.company_name, inline: true },
+                                { name: '📝 معلومات شخصية', value: p.personal_info || '—', inline: false },
+                                { name: '🏗️ تفاصيل الشركة', value: p.company_details || '—', inline: false },
+                                { name: '📊 خطة الإدارة', value: p.management_plan || '—', inline: false },
+                                { name: '💰 المعلومات المالية', value: p.financial_info || '—', inline: false },
+                            )
+                            .setFooter({ text: `وزارة التجارة • بوت FANTASY` })
+                            .setTimestamp();
+
+                        const row = new ActionRowBuilder().addComponents(
+                            new ButtonBuilder().setCustomId(`approve_company_${p.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
+                            new ButtonBuilder().setCustomId(`reject_company_${p.id}`).setLabel('❌ رفض').setStyle(ButtonStyle.Danger),
+                        );
+                        await interaction.channel.send({ embeds: [embed], components: [row] });
+                    }
+                    return interaction.reply({ content: `📨 تم عرض **${pending.length}** طلب/طلبات معلقة أعلاه.`, flags: 64 });
+                }
+            } catch (e) {
+                console.error('[MINISTRY BTN ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         // ── تفعيل / رفض طلب التفعيل ───────────────────────────────────────────
         if (interaction.customId.startsWith('activate_approve_') || interaction.customId.startsWith('activate_reject_')) {
             const isApprove = interaction.customId.startsWith('activate_approve_');

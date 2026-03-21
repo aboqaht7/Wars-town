@@ -1539,9 +1539,10 @@ module.exports = {
     addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
+    setMinistryDuty, getMinistryDuty,
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
-    createPendingCompany, getPendingCompany, updatePendingCompanyStatus,
+    createPendingCompany, getPendingCompany, getAllPendingCompanies, updatePendingCompanyStatus,
     hasTradePermit, grantTradePermit, revokeTradePermit, getAllTradePermits,
     createCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
     getCompanyMembers, addCompanyMember, removeCompanyMember, updateCompanyMemberRole,
@@ -1854,6 +1855,10 @@ async function getPendingCompany(id) {
     const res = await query('SELECT * FROM pending_companies WHERE id=$1', [id]);
     return res.rows[0] || null;
 }
+async function getAllPendingCompanies() {
+    const res = await query(`SELECT * FROM pending_companies WHERE status='pending' ORDER BY created_at ASC`, []);
+    return res.rows;
+}
 async function updatePendingCompanyStatus(id, status, reviewedBy) {
     await query('UPDATE pending_companies SET status=$2, reviewed_by=$3, reviewed_at=NOW() WHERE id=$1', [id, status, reviewedBy]);
 }
@@ -1991,6 +1996,28 @@ async function dissolveCompany(companyId) {
         );
     `);
 })().catch(console.error);
+
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS ministry_duty (
+            discord_id  TEXT PRIMARY KEY,
+            status      TEXT DEFAULT 'off',
+            updated_at  TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+})().catch(console.error);
+
+async function setMinistryDuty(discordId, status) {
+    await pool.query(
+        `INSERT INTO ministry_duty (discord_id, status, updated_at) VALUES ($1, $2, NOW())
+         ON CONFLICT (discord_id) DO UPDATE SET status=$2, updated_at=NOW()`,
+        [discordId, status]
+    );
+}
+async function getMinistryDuty(discordId) {
+    const res = await pool.query('SELECT * FROM ministry_duty WHERE discord_id=$1', [discordId]);
+    return res.rows[0] || null;
+}
 
 async function addPriorityButton(label, priority, style) {
     const res = await pool.query(
