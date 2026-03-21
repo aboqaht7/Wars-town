@@ -10,13 +10,6 @@ module.exports = {
         .setDescription('لوحة إدارة شركتك (يتطلب رتبة مستثمر)'),
 
     async slashExecute(interaction, db) {
-        const investorRoleId = await db.getConfig('investor_role');
-        const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
-        const hasInvestorRole = investorRoleId && interaction.member.roles.cache.has(investorRoleId);
-
-        if (!isAdmin && !hasInvestorRole)
-            return interaction.reply({ content: '❌ هذا الأمر لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
-
         const company = await db.getUserCompany(interaction.user.id);
         if (!company)
             return interaction.reply({ content: '❌ أنت لست مرتبطاً بأي شركة.', flags: 64 });

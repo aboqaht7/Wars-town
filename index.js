@@ -1508,6 +1508,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_deposit_btn' || interaction.customId === 'comp_withdraw_btn') {
             try {
+                const investorRoleId = await db.getConfig('investor_role');
+                const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+                if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const isDeposit = interaction.customId === 'comp_deposit_btn';
                 const modal = new ModalBuilder()
@@ -1527,6 +1531,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_hire_btn') {
             try {
+                const investorRoleId = await db.getConfig('investor_role');
+                const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+                if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('📄 تعيين موظف');
                 modal.addComponents(
@@ -1553,6 +1561,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_paysalaries_btn') {
             try {
+                const investorRoleId = await db.getConfig('investor_role');
+                const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+                if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
                     return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
@@ -1586,6 +1598,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_promote_btn') {
             try {
+                const investorRoleId = await db.getConfig('investor_role');
+                const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+                if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('⬆️ ترقية موظف');
                 modal.addComponents(
@@ -1612,6 +1628,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_fire_btn') {
             try {
+                const investorRoleId = await db.getConfig('investor_role');
+                const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+                if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('➖ إقالة موظف');
                 modal.addComponents(
@@ -1628,6 +1648,10 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId === 'comp_dissolve_btn') {
             try {
+                const investorRoleId = await db.getConfig('investor_role');
+                const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
+                if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
                     return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
