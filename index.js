@@ -1485,6 +1485,25 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
+        // ── زر البانيك — إرسال الموقع ─────────────────────────────────────────
+        if (interaction.customId === 'panic_location_btn') {
+            const modal = new ModalBuilder()
+                .setCustomId('panic_location_modal')
+                .setTitle('📍 إرسال موقع الاستغاثة');
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(
+                    new TextInputBuilder()
+                        .setCustomId('panic_location_text')
+                        .setLabel('أين أنت الآن؟')
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setPlaceholder('اكتب موقعك بالتفصيل...')
+                        .setRequired(true)
+                        .setMaxLength(500)
+                )
+            );
+            return interaction.showModal(modal).catch(() => {});
+        }
+
         return;
     }
 
@@ -2598,25 +2617,6 @@ client.on('interactionCreate', async interaction => {
                 interaction.reply({ content: '❌ حدث خطأ أثناء التصنيع.', flags: 65 }).catch(() => {});
             }
             return;
-        }
-
-        // ── زر البانيك — إرسال الموقع ─────────────────────────────────────────
-        if (interaction.customId === 'panic_location_btn') {
-            const modal = new ModalBuilder()
-                .setCustomId('panic_location_modal')
-                .setTitle('📍 إرسال موقع الاستغاثة');
-            modal.addComponents(
-                new ActionRowBuilder().addComponents(
-                    new TextInputBuilder()
-                        .setCustomId('panic_location_text')
-                        .setLabel('أين أنت الآن؟')
-                        .setStyle(TextInputStyle.Paragraph)
-                        .setPlaceholder('اكتب موقعك بالتفصيل...')
-                        .setRequired(true)
-                        .setMaxLength(500)
-                )
-            );
-            return interaction.showModal(modal).catch(() => {});
         }
 
         const handler = menuHandlers[interaction.customId];
