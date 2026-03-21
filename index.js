@@ -1035,6 +1035,45 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
+                // ─── هوية مزيفة — فتح مودال (CIA Chef فقط) ──────────────────────
+                if (interaction.customId === 'cia_fake_id_btn') {
+                    if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
+                        return interaction.reply({ content: '🔒 إنشاء الهوية المزيفة لـ CIA Chef فقط.', flags: 64 });
+
+                    const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                    const modal = new ModalBuilder()
+                        .setCustomId('cia_fake_id_modal')
+                        .setTitle('🪪 إنشاء هوية مزيفة');
+
+                    modal.addComponents(
+                        new ActionRowBuilder().addComponents(
+                            new TextInputBuilder()
+                                .setCustomId('fake_target')
+                                .setLabel('منشن الشخص أو الـ ID')
+                                .setStyle(TextInputStyle.Short)
+                                .setPlaceholder('@username أو 123456789')
+                                .setRequired(true)
+                        ),
+                        new ActionRowBuilder().addComponents(
+                            new TextInputBuilder()
+                                .setCustomId('fake_name')
+                                .setLabel('الاسم المزيف')
+                                .setStyle(TextInputStyle.Short)
+                                .setPlaceholder('مثال: محمد العمري')
+                                .setRequired(true)
+                        ),
+                        new ActionRowBuilder().addComponents(
+                            new TextInputBuilder()
+                                .setCustomId('fake_duration')
+                                .setLabel('مدة الانتهاء')
+                                .setStyle(TextInputStyle.Short)
+                                .setPlaceholder('مثال: 30m أو 2h أو 1d أو 7d')
+                                .setRequired(true)
+                        )
+                    );
+                    return interaction.showModal(modal);
+                }
+
                 // ─── كشف المباشرين (CIA Chef فقط) ───────────────────────────────
                 if (interaction.customId === 'cia_active_btn') {
                     if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
@@ -3335,6 +3374,80 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply({ embeds: [startEmbed] });
             } catch (e) {
                 console.error('[TRACKING MODAL ERROR]', e);
+                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+            }
+            return;
+        }
+
+        // ── هوية مزيفة — CIA ────────────────────────────────────────────────
+        if (interaction.customId === 'cia_fake_id_modal') {
+            try {
+                await interaction.deferReply({ flags: 64 });
+
+                const rawTarget  = interaction.fields.getTextInputValue('fake_target').trim();
+                const fakeName   = interaction.fields.getTextInputValue('fake_name').trim();
+                const rawDur     = interaction.fields.getTextInputValue('fake_duration').trim().toLowerCase();
+
+                // تحليل المدة
+                const durMatch = rawDur.match(/^(\d+)(m|h|d)$/);
+                if (!durMatch)
+                    return interaction.editReply({ content: '❌ صيغة المدة غير صحيحة. مثال: `30m` أو `2h` أو `7d`' });
+                const num  = parseInt(durMatch[1]);
+                const unit = durMatch[2];
+                const msMap = { m: 60_000, h: 3_600_000, d: 86_400_000 };
+                const expiresAt = new Date(Date.now() + num * msMap[unit]);
+
+                // استخراج الـ ID
+                const targetId = rawTarget.replace(/[<@!>]/g, '');
+                if (!/^\d{17,20}$/.test(targetId))
+                    return interaction.editReply({ content: '❌ المنشن أو الـ ID غير صحيح.' });
+
+                const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
+                if (!targetMember)
+                    return interaction.editReply({ content: '❌ الشخص غير موجود في السيرفر.' });
+
+                // توليد رقم هوية مزيف
+                const fakeIban = String(Math.floor(1000000 + Math.random() * 9000000));
+
+                // حفظ الهوية المزيفة
+                await db.createFakeIdentity(targetId, interaction.user.id, fakeName, fakeIban, expiresAt);
+
+                const expireTs = Math.floor(expiresAt.getTime() / 1000);
+
+                // إرسال الهوية للشخص عبر DM
+                const dmEmbed = new EmbedBuilder()
+                    .setTitle('🪪 هوية مزيفة — سرية للغاية')
+                    .setColor(0x0D1B2A)
+                    .setDescription('تم تزويدك بهوية مزيفة من وكالة CIA. لا تشارك هذه المعلومات مع أحد.')
+                    .addFields(
+                        { name: '👤 الاسم المزيف', value: fakeName, inline: true },
+                        { name: '🔢 رقم الهوية', value: `\`${fakeIban}\``, inline: true },
+                        { name: '⏳ تنتهي', value: `<t:${expireTs}:F> (<t:${expireTs}:R>)`, inline: false }
+                    )
+                    .setFooter({ text: 'CIA • بوت FANTASY — هذه المعلومات سرية' })
+                    .setTimestamp();
+
+                let dmSent = true;
+                try { await targetMember.send({ embeds: [dmEmbed] }); }
+                catch (_) { dmSent = false; }
+
+                // تأكيد للمصدر
+                const confirmEmbed = new EmbedBuilder()
+                    .setTitle('✅ تم إصدار الهوية المزيفة')
+                    .setColor(0x1B5E20)
+                    .addFields(
+                        { name: '🎯 الشخص', value: `<@${targetId}>`, inline: true },
+                        { name: '👤 الاسم المزيف', value: fakeName, inline: true },
+                        { name: '🔢 رقم الهوية', value: `\`${fakeIban}\``, inline: true },
+                        { name: '⏳ تنتهي', value: `<t:${expireTs}:R>`, inline: true },
+                        { name: '📨 DM', value: dmSent ? '✅ تم الإرسال' : '⚠️ الـ DM مغلق', inline: true }
+                    )
+                    .setFooter({ text: `صادرة من ${interaction.user.tag}` })
+                    .setTimestamp();
+
+                await interaction.editReply({ embeds: [confirmEmbed] });
+            } catch (e) {
+                console.error('[CIA FAKE ID ERROR]', e);
                 if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
             }
             return;

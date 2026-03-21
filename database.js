@@ -1552,6 +1552,7 @@ module.exports = {
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
     setMinistryDuty, getMinistryDuty,
+    createFakeIdentity, getFakeIdentity, deleteFakeIdentity,
     setCiaDuty, getCiaDuty, getAllActiveCia,
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
@@ -2030,6 +2031,38 @@ async function setMinistryDuty(discordId, status) {
 async function getMinistryDuty(discordId) {
     const res = await pool.query('SELECT * FROM ministry_duty WHERE discord_id=$1', [discordId]);
     return res.rows[0] || null;
+}
+
+/* ─── جدول الهويات المزيفة ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS fake_identities (
+            id          SERIAL PRIMARY KEY,
+            target_id   TEXT NOT NULL,
+            issuer_id   TEXT NOT NULL,
+            fake_name   TEXT NOT NULL,
+            fake_iban   TEXT NOT NULL,
+            expires_at  TIMESTAMPTZ NOT NULL,
+            created_at  TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+})().catch(console.error);
+
+async function createFakeIdentity(targetId, issuerId, fakeName, fakeIban, expiresAt) {
+    await pool.query(`DELETE FROM fake_identities WHERE target_id=$1`, [targetId]);
+    const res = await pool.query(
+        `INSERT INTO fake_identities (target_id, issuer_id, fake_name, fake_iban, expires_at)
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [targetId, issuerId, fakeName, fakeIban, expiresAt]
+    );
+    return res.rows[0];
+}
+async function getFakeIdentity(targetId) {
+    const res = await pool.query(`SELECT * FROM fake_identities WHERE target_id=$1 AND expires_at > NOW()`, [targetId]);
+    return res.rows[0] || null;
+}
+async function deleteFakeIdentity(targetId) {
+    await pool.query(`DELETE FROM fake_identities WHERE target_id=$1`, [targetId]);
 }
 
 /* ─── جدول حضور CIA ─── */

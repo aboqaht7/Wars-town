@@ -18,13 +18,14 @@ module.exports = {
             .setDescription(
                 '**🟢 تسجيل دخول** — سجّل حضورك كعضو CIA\n' +
                 '**🔴 تسجيل خروج** — سجّل مغادرتك\n' +
-                '**👥 كشف مباشرين** — عرض أعضاء CIA المباشرين حالياً\n\n' +
+                '**👥 كشف مباشرين** — عرض أعضاء CIA المباشرين (Chef فقط)\n' +
+                '**🪪 هوية مزيفة** — إصدار هوية مزيفة لشخص (Chef فقط)\n\n' +
                 '> الأزرار متاحة لأعضاء CIA فقط'
             )
             .setFooter({ text: 'CIA • بوت FANTASY' })
             .setTimestamp();
 
-        const row = new ActionRowBuilder().addComponents(
+        const row1 = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('cia_login_btn')
                 .setLabel('🟢 تسجيل دخول')
@@ -39,6 +40,13 @@ module.exports = {
                 .setStyle(ButtonStyle.Primary)
         );
 
-        await interaction.reply({ embeds: [embed], components: [row] });
+        const row2 = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('cia_fake_id_btn')
+                .setLabel('🪪 إنشاء هوية مزيفة')
+                .setStyle(ButtonStyle.Secondary)
+        );
+
+        await interaction.reply({ embeds: [embed], components: [row1, row2] });
     }
 };
