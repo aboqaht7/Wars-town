@@ -846,7 +846,7 @@ client.on('interactionCreate', async interaction => {
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('🏢 تمت الموافقة على طلب تأسيس شركتك!')
                             .setColor(0x1B5E20)
-                            .setDescription(`مبروك! تم قبول طلبك وتأسيس شركة **${pending.company_name}** بنجاح.\n\nيمكنك الآن إدارتها عبر أوامر \`/شركة\`.`)
+                            .setDescription(`مبروك أصبحت من تجار Fantasy town وفالك النجاح 🎉\n\nتم تأسيس شركة **${pending.company_name}** بنجاح. يمكنك الآن إدارتها عبر أوامر \`/شركة\`.`)
                             .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
