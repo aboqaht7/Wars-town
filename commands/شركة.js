@@ -1,6 +1,6 @@
 const {
     SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits,
-    ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder
+    ActionRowBuilder, ButtonBuilder, ButtonStyle
 } = require('discord.js');
 const db = require('../database');
 
@@ -10,8 +10,8 @@ module.exports = {
         .setName('شركة')
         .setDescription('إدارة شركتك')
         .addSubcommand(s => s
-            .setName('تأسيس')
-            .setDescription('تأسيس شركة جديدة (يتطلب تصريح تجاري)')
+            .setName('تقديم')
+            .setDescription('تقديم طلب تأسيس شركة جديدة (يتطلب تصريح تجاري)')
         )
         .addSubcommand(s => s
             .setName('معلومات')
