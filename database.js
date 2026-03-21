@@ -1552,6 +1552,7 @@ module.exports = {
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
     setMinistryDuty, getMinistryDuty,
+    setCiaDuty, getCiaDuty, getAllActiveCia,
     addPriorityButton, removePriorityButton, getPriorityButtons,
     addTicketType, removeTicketType, getTicketTypes,
     createPendingCompany, getPendingCompany, getAllPendingCompanies, updatePendingCompanyStatus,
@@ -2029,6 +2030,33 @@ async function setMinistryDuty(discordId, status) {
 async function getMinistryDuty(discordId) {
     const res = await pool.query('SELECT * FROM ministry_duty WHERE discord_id=$1', [discordId]);
     return res.rows[0] || null;
+}
+
+/* ─── جدول حضور CIA ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS cia_duty (
+            discord_id  TEXT PRIMARY KEY,
+            status      TEXT DEFAULT 'off',
+            updated_at  TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+})().catch(console.error);
+
+async function setCiaDuty(discordId, status) {
+    await pool.query(
+        `INSERT INTO cia_duty (discord_id, status, updated_at) VALUES ($1, $2, NOW())
+         ON CONFLICT (discord_id) DO UPDATE SET status=$2, updated_at=NOW()`,
+        [discordId, status]
+    );
+}
+async function getCiaDuty(discordId) {
+    const res = await pool.query('SELECT * FROM cia_duty WHERE discord_id=$1', [discordId]);
+    return res.rows[0] || null;
+}
+async function getAllActiveCia() {
+    const res = await pool.query(`SELECT * FROM cia_duty WHERE status='on' ORDER BY updated_at ASC`);
+    return res.rows;
 }
 
 async function addPriorityButton(label, priority, style) {

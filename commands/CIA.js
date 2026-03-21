@@ -10,14 +10,15 @@ module.exports = {
     name: 'cia',
     data: new SlashCommandBuilder()
         .setName('cia')
-        .setDescription('لوحة نظام CIA — ملفات المواطنين والتراكينق'),
+        .setDescription('لوحة نظام CIA — تسجيل الدخول والخروج وكشف المباشرين'),
     async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
             .setTitle('🕵️ CIA — وكالة الاستخبارات')
             .setColor(0x0D1B2A)
             .setDescription(
-                '**📋 كشف ملفات المواطنين** — عرض هويات وسوابق جميع المواطنين\n' +
-                '**📡 تراكينق** — تتبع شخص لمدة 20 ثانية\n\n' +
+                '**🟢 تسجيل دخول** — سجّل حضورك كعضو CIA\n' +
+                '**🔴 تسجيل خروج** — سجّل مغادرتك\n' +
+                '**👥 كشف مباشرين** — عرض أعضاء CIA المباشرين حالياً\n\n' +
                 '> الأزرار متاحة لأعضاء CIA فقط'
             )
             .setFooter({ text: 'CIA • بوت FANTASY' })
@@ -25,13 +26,17 @@ module.exports = {
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setCustomId('security_files_btn')
-                .setLabel('📋 كشف ملفات المواطنين')
-                .setStyle(ButtonStyle.Primary),
+                .setCustomId('cia_login_btn')
+                .setLabel('🟢 تسجيل دخول')
+                .setStyle(ButtonStyle.Success),
             new ButtonBuilder()
-                .setCustomId('tracking_btn')
-                .setLabel('📡 تراكينق')
-                .setStyle(ButtonStyle.Danger)
+                .setCustomId('cia_logout_btn')
+                .setLabel('🔴 تسجيل خروج')
+                .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+                .setCustomId('cia_active_btn')
+                .setLabel('👥 كشف مباشرين')
+                .setStyle(ButtonStyle.Primary)
         );
 
         await interaction.reply({ embeds: [embed], components: [row] });

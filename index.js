@@ -996,6 +996,70 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        // ── CIA: تسجيل دخول / خروج / كشف مباشرين ────────────────────────────────
+        if (['cia_login_btn','cia_logout_btn','cia_active_btn'].includes(interaction.customId)) {
+            try {
+                const ciaMemberRoleId = await db.getConfig('cia_member_role');
+                const ciaChefRoleId   = await db.getConfig('cia_chef_role');
+                const hasCiaAccess =
+                    (ciaMemberRoleId && interaction.member.roles.cache.has(ciaMemberRoleId)) ||
+                    (ciaChefRoleId   && interaction.member.roles.cache.has(ciaChefRoleId));
+                if (!hasCiaAccess)
+                    return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
+
+                // ─── تسجيل دخول ──────────────────────────────────────────────
+                if (interaction.customId === 'cia_login_btn') {
+                    const duty = await db.getCiaDuty(interaction.user.id);
+                    if (duty?.status === 'on')
+                        return interaction.reply({ content: '⚠️ أنت بالفعل مسجّل دخول.', flags: 64 });
+                    await db.setCiaDuty(interaction.user.id, 'on');
+                    const embed = new EmbedBuilder()
+                        .setTitle('🟢 CIA — تسجيل دخول')
+                        .setColor(0x1B5E20)
+                        .addFields({ name: '🕵️ العضو', value: `<@${interaction.user.id}>`, inline: true })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                // ─── تسجيل خروج ──────────────────────────────────────────────
+                if (interaction.customId === 'cia_logout_btn') {
+                    const duty = await db.getCiaDuty(interaction.user.id);
+                    if (!duty || duty.status === 'off')
+                        return interaction.reply({ content: '⚠️ أنت لست مسجّل دخول أصلاً.', flags: 64 });
+                    await db.setCiaDuty(interaction.user.id, 'off');
+                    const embed = new EmbedBuilder()
+                        .setTitle('🔴 CIA — تسجيل خروج')
+                        .setColor(0xB71C1C)
+                        .addFields({ name: '🕵️ العضو', value: `<@${interaction.user.id}>`, inline: true })
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                // ─── كشف المباشرين ────────────────────────────────────────────
+                if (interaction.customId === 'cia_active_btn') {
+                    const active = await db.getAllActiveCia();
+                    if (!active.length)
+                        return interaction.reply({ content: '📭 لا يوجد أعضاء CIA مباشرون حالياً.', flags: 64 });
+
+                    let desc = '';
+                    for (const row of active) {
+                        const since = Math.floor(new Date(row.updated_at).getTime() / 1000);
+                        desc += `🕵️ <@${row.discord_id}> — منذ <t:${since}:R>\n`;
+                    }
+                    const embed = new EmbedBuilder()
+                        .setTitle(`👥 CIA — المباشرون حالياً (${active.length})`)
+                        .setColor(0x0D1B2A)
+                        .setDescription(desc)
+                        .setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+            } catch (e) {
+                console.error('[CIA DUTY ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
         // ── كشف ملفات المواطنين ──────────────────────────────────────────────────
         if (interaction.customId === 'security_files_btn') {
             try {
