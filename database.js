@@ -383,6 +383,18 @@ async function getUserIdentities(discordId) {
     return res.rows;
 }
 
+async function getAllActiveIdentities() {
+    const res = await query(`
+        SELECT i.discord_id, i.slot, i.character_name, i.family_name, i.iban, i.birth_place, i.birth_date, i.gender
+        FROM identities i
+        JOIN users u ON u.discord_id = i.discord_id
+        WHERE i.slot = u.active_slot
+        AND i.character_name IS NOT NULL
+        ORDER BY i.character_name
+    `);
+    return res.rows;
+}
+
 async function createXAccount(discordId, xUsername) {
     const existing = await query('SELECT * FROM x_accounts WHERE discord_id = $1', [discordId]);
     if (existing.rows[0]) return { success: false, error: 'لديك حساب X بالفعل.' };
@@ -1520,7 +1532,7 @@ module.exports = {
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
-    ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban,
+    ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban, getAllActiveIdentities,
     transferMoney, transferItem, useItem, getTransactions, depositCash, withdrawCash,
     adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,
     getImage, setImage,

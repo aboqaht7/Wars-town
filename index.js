@@ -31,8 +31,8 @@ const db = require('./database');
 require('dotenv').config();
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers],
-    partials: [Partials.Message]
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.DirectMessages],
+    partials: [Partials.Message, Partials.Channel]
 });
 
 client.commands = new Collection();
@@ -50,6 +50,9 @@ function markInteraction(id) {
     setTimeout(() => _handledInteractions.delete(id), 10_000);
     return true;
 }
+
+/* ── جلسات التراكينق: targetId → { code, trackerId, channelId, guildId, timer } ── */
+const trackingSessions = new Map();
 
 client.once('clientReady', async () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
@@ -982,6 +985,77 @@ client.on('interactionCreate', async interaction => {
                 console.error('[MINISTRY BTN ERROR]', e);
                 if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
+            return;
+        }
+
+        // ── كشف ملفات المواطنين ──────────────────────────────────────────────────
+        if (interaction.customId === 'security_files_btn') {
+            try {
+                await interaction.deferReply({ flags: 64 });
+                const ministryRoleId = await db.getConfig('trade_ministry_role');
+                const allIdentities = await db.getAllActiveIdentities();
+
+                if (!allIdentities.length) {
+                    return interaction.editReply({ content: '📭 لا يوجد مواطنون مسجلون حالياً.' });
+                }
+
+                const filtered = [];
+                for (const id of allIdentities) {
+                    if (ministryRoleId) {
+                        const member = await interaction.guild.members.fetch(id.discord_id).catch(() => null);
+                        if (member && member.roles.cache.has(ministryRoleId)) continue;
+                    }
+                    const violation = await db.getViolationByUserId(id.discord_id);
+                    filtered.push({ ...id, violation });
+                }
+
+                if (!filtered.length) {
+                    return interaction.editReply({ content: '📭 لا يوجد مواطنون بعد استثناء المسؤولين.' });
+                }
+
+                const CHUNK = 10;
+                const embeds = [];
+                for (let i = 0; i < filtered.length; i += CHUNK) {
+                    const slice = filtered.slice(i, i + CHUNK);
+                    const embed = new EmbedBuilder()
+                        .setTitle(`📋 ملفات المواطنين — ${i + 1} إلى ${Math.min(i + CHUNK, filtered.length)} من ${filtered.length}`)
+                        .setColor(0x1A237E)
+                        .setTimestamp();
+
+                    let desc = '';
+                    for (const p of slice) {
+                        const fullName = [p.character_name, p.family_name].filter(Boolean).join(' ');
+                        const sawa = p.violation
+                            ? `⚠️ **${p.violation.reason}** (تنتهي: <t:${Math.floor(new Date(p.violation.expires_at).getTime() / 1000)}:R>)`
+                            : '✅ لا يوجد سوابق';
+                        desc += `👤 **${fullName}**\n🪪 الهوية: \`${p.iban}\`\n📌 السوابق: ${sawa}\n\n`;
+                    }
+                    embed.setDescription(desc.slice(0, 4000));
+                    embeds.push(embed);
+                }
+
+                await interaction.editReply({ embeds: embeds.slice(0, 10) });
+            } catch (e) {
+                console.error('[SECURITY FILES ERROR]', e);
+                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+            }
+            return;
+        }
+
+        // ── تراكينق — فتح مودال ──────────────────────────────────────────────────
+        if (interaction.customId === 'tracking_btn') {
+            const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+            const modal = new ModalBuilder()
+                .setCustomId('tracking_modal')
+                .setTitle('📡 تراكينق');
+            const input = new TextInputBuilder()
+                .setCustomId('tracking_target')
+                .setLabel('منشن الشخص أو الـ ID الخاص فيه')
+                .setStyle(TextInputStyle.Short)
+                .setPlaceholder('@username أو 123456789')
+                .setRequired(true);
+            modal.addComponents(new ActionRowBuilder().addComponents(input));
+            await interaction.showModal(modal);
             return;
         }
 
@@ -3097,6 +3171,92 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isModalSubmit()) {
 
+        // ── تراكينق ─────────────────────────────────────────────────────────
+        if (interaction.customId === 'tracking_modal') {
+            try {
+                await interaction.deferReply({ flags: 64 });
+                const raw = interaction.fields.getTextInputValue('tracking_target').trim();
+                const targetId = raw.replace(/[<@!>]/g, '');
+
+                if (!/^\d{17,20}$/.test(targetId)) {
+                    return interaction.editReply({ content: '❌ المنشن أو الـ ID غير صحيح.' });
+                }
+                if (targetId === interaction.user.id) {
+                    return interaction.editReply({ content: '❌ ما تقدر تتبع نفسك.' });
+                }
+                if (trackingSessions.has(targetId)) {
+                    return interaction.editReply({ content: '⚠️ هذا الشخص عليه تراكينق نشط بالفعل.' });
+                }
+
+                const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
+                if (!targetMember) {
+                    return interaction.editReply({ content: '❌ الشخص غير موجود في السيرفر.' });
+                }
+
+                const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                let code = '';
+                for (let i = 0; i < 6; i++) code += CHARS[Math.floor(Math.random() * CHARS.length)];
+
+                let dmSent = true;
+                try {
+                    await targetMember.send(
+                        `⚠️ **تنبيه أمني — يتم تتبعك!**\n\n` +
+                        `تم رصد عملية تتبع عليك من داخل سيرفر **${interaction.guild.name}**.\n\n` +
+                        `لإلغاء التراكينق اكتب هذا الكود هنا خلال **20 ثانية**:\n\n` +
+                        `\`\`\`${code}\`\`\``
+                    );
+                } catch (_) {
+                    dmSent = false;
+                }
+
+                const timer = setTimeout(async () => {
+                    if (!trackingSessions.has(targetId)) return;
+                    trackingSessions.delete(targetId);
+                    try {
+                        const trackerUser = await client.users.fetch(interaction.user.id);
+                        const ch = await client.channels.fetch(interaction.channelId).catch(() => null);
+                        if (ch) {
+                            const doneEmbed = new EmbedBuilder()
+                                .setTitle('📡 اكتمل التراكينق')
+                                .setColor(0x43A047)
+                                .setDescription(
+                                    `✅ تم تتبع ${targetMember} لمدة 20 ثانية بنجاح.\n` +
+                                    `👤 المُتتبَع: **${targetMember.displayName}**\n` +
+                                    `🔑 الكود: \`${code}\``
+                                )
+                                .setTimestamp();
+                            ch.send({ content: `<@${interaction.user.id}>`, embeds: [doneEmbed] }).catch(() => {});
+                        }
+                    } catch (_) {}
+                }, 20_000);
+
+                trackingSessions.set(targetId, {
+                    code,
+                    trackerId: interaction.user.id,
+                    channelId: interaction.channelId,
+                    guildId: interaction.guildId,
+                    timer
+                });
+
+                const startEmbed = new EmbedBuilder()
+                    .setTitle('📡 بدأ التراكينق')
+                    .setColor(0xE53935)
+                    .setDescription(
+                        `🎯 يتم الآن تتبع ${targetMember} لمدة **20 ثانية**\n` +
+                        (dmSent
+                            ? `📨 تم إرسال كود الإلغاء له في الخاص`
+                            : `⚠️ لم يتمكن البوت من إرسال رسالة خاصة للشخص (الـ DM مغلق)`)
+                    )
+                    .setTimestamp();
+
+                await interaction.editReply({ embeds: [startEmbed] });
+            } catch (e) {
+                console.error('[TRACKING MODAL ERROR]', e);
+                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+            }
+            return;
+        }
+
         // ── بلاغ موقع السرقة ────────────────────────────────────────────────
         if (interaction.customId.startsWith('robbery_report_')) {
             try {
@@ -4334,6 +4494,33 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('messageCreate', async message => {
+    // ── معالجة كود إلغاء التراكينق عبر DM ──────────────────────────────────
+    if (!message.guild && !message.author.bot) {
+        const session = trackingSessions.get(message.author.id);
+        if (session && message.content.trim().toUpperCase() === session.code) {
+            clearTimeout(session.timer);
+            trackingSessions.delete(message.author.id);
+            try {
+                await message.author.send('✅ **تم إلغاء التراكينق بنجاح!** كتبت الكود الصحيح.');
+            } catch (_) {}
+            try {
+                const ch = await client.channels.fetch(session.channelId).catch(() => null);
+                if (ch) {
+                    const cancelEmbed = new EmbedBuilder()
+                        .setTitle('📡 تم إلغاء التراكينق')
+                        .setColor(0xFF8F00)
+                        .setDescription(
+                            `🚫 قام <@${message.author.id}> بإلغاء التراكينق عن طريق كتابة الكود الصحيح.\n` +
+                            `🔑 الكود المستخدم: \`${session.code}\``
+                        )
+                        .setTimestamp();
+                    ch.send({ content: `<@${session.trackerId}>`, embeds: [cancelEmbed] }).catch(() => {});
+                }
+            } catch (_) {}
+        }
+        return;
+    }
+
     // حذف رسائل البوت — الإمبيدات والرسائل ذات الأزرار تبقى دائمة، فقط الردود النصية القصيرة تُحذف
     if (message.author.id === client.user?.id) {
         const hasEmbeds = message.embeds.length > 0;
