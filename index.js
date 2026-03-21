@@ -3606,6 +3606,79 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
         }
+
+        if (interaction.customId === 'company_found_modal') {
+            try {
+                const personal    = interaction.fields.getTextInputValue('cf_personal').trim();
+                const compName    = interaction.fields.getTextInputValue('cf_name').trim();
+                const details     = interaction.fields.getTextInputValue('cf_details').trim();
+                const management  = interaction.fields.getTextInputValue('cf_management').trim();
+                const financial   = interaction.fields.getTextInputValue('cf_financial').trim();
+
+                const identity = await db.getActiveIdentity(interaction.user.id);
+                if (!identity)
+                    return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+
+                const hasPerm = await db.hasTradePermit(interaction.user.id);
+                if (!hasPerm)
+                    return interaction.reply({ content: '❌ انتهت صلاحية تصريحك أو سُحب. تواصل مع **وزارة التجارة**.', flags: 64 });
+
+                const existingComp = await db.getUserCompany(interaction.user.id);
+                if (existingComp)
+                    return interaction.reply({ content: `❌ أنت مرتبط بالفعل بشركة **${existingComp.name}**.`, flags: 64 });
+
+                const result = await db.createCompany(compName, interaction.user.id);
+                if (result.error)
+                    return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+
+                const successEmbed = new EmbedBuilder()
+                    .setTitle('🏢 تم تأسيس الشركة بنجاح!')
+                    .setColor(0x1B5E20)
+                    .setThumbnail(interaction.user.displayAvatarURL())
+                    .addFields(
+                        { name: '🏢 اسم الشركة', value: `**${compName}**`, inline: true },
+                        { name: '👑 المالك', value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '🏷️ هوية المالك', value: identity.character_name || interaction.user.username, inline: true },
+                        { name: '💰 رصيد الشركة', value: '`0 ريال`', inline: true },
+                    )
+                    .setDescription('يمكنك الآن إدارة شركتك عبر أوامر `/شركة`.')
+                    .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+                    .setTimestamp();
+
+                await interaction.reply({ embeds: [successEmbed], flags: 64 });
+
+                const logChannelId = await db.getConfig('company_log_channel');
+                if (logChannelId) {
+                    try {
+                        const logCh = await client.channels.fetch(logChannelId);
+                        if (logCh) {
+                            const logEmbed = new EmbedBuilder()
+                                .setTitle('📋 طلب تأسيس شركة جديد')
+                                .setColor(0x1565C0)
+                                .setThumbnail(interaction.user.displayAvatarURL())
+                                .addFields(
+                                    { name: '👤 المتقدم', value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
+                                    { name: '🏢 اسم الشركة', value: compName, inline: true },
+                                    { name: '🏷️ الهوية', value: identity.character_name || '—', inline: true },
+                                    { name: '👤 المعلومات الشخصية', value: `\`\`\`${personal}\`\`\``, inline: false },
+                                    { name: '🏪 تفاصيل الشركة', value: `\`\`\`${details}\`\`\``, inline: false },
+                                    { name: '📊 الإدارة والتوظيف', value: `\`\`\`${management}\`\`\``, inline: false },
+                                    { name: '💰 المالية والالتزام', value: `\`\`\`${financial}\`\`\``, inline: false },
+                                )
+                                .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+                                .setTimestamp();
+                            await logCh.send({ embeds: [logEmbed] });
+                        }
+                    } catch (e) { console.error('[COMPANY LOG ERROR]', e); }
+                }
+            } catch (e) {
+                console.error('[COMPANY MODAL ERROR]', e);
+                if (!interaction.replied)
+                    return interaction.reply({ content: '❌ حدث خطأ أثناء تأسيس الشركة.', flags: 64 });
+            }
+            return;
+        }
+
         return;
     }
 

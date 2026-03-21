@@ -1,4 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const {
+    SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits,
+    ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder
+} = require('discord.js');
 const db = require('../database');
 
 module.exports = {
@@ -9,7 +12,6 @@ module.exports = {
         .addSubcommand(s => s
             .setName('تأسيس')
             .setDescription('تأسيس شركة جديدة (يتطلب تصريح تجاري)')
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم الشركة').setRequired(true).setMaxLength(40))
         )
         .addSubcommand(s => s
             .setName('معلومات')
@@ -70,25 +72,59 @@ module.exports = {
             if (existingComp)
                 return interaction.reply({ content: `❌ أنت مرتبط بالفعل بشركة **${existingComp.name}**. لا يمكنك تأسيس شركة أخرى.`, flags: 64 });
 
-            const name = interaction.options.getString('الاسم').trim();
-            const result = await db.createCompany(name, interaction.user.id);
-            if (result.error)
-                return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
+            const modal = new ModalBuilder()
+                .setCustomId('company_found_modal')
+                .setTitle('📋 استبيان تأسيس الشركة');
 
-            const embed = new EmbedBuilder()
-                .setTitle('🏢 تم تأسيس الشركة بنجاح!')
-                .setColor(0x1B5E20)
-                .addFields(
-                    { name: '🏢 اسم الشركة', value: `**${name}**`, inline: true },
-                    { name: '👑 المالك', value: `<@${interaction.user.id}>`, inline: true },
-                    { name: '🏷️ هوية المالك', value: identity.character_name, inline: true },
-                    { name: '💰 رصيد الشركة', value: '`0 ريال`', inline: true },
-                )
-                .setDescription('يمكنك الآن إدارة شركتك عبر أوامر `/شركة`.')
-                .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
-                .setTimestamp();
+            const personalInfo = new TextInputBuilder()
+                .setCustomId('cf_personal')
+                .setLabel('المعلومات الشخصية')
+                .setStyle(TextInputStyle.Paragraph)
+                .setPlaceholder('1. اسمك داخل الرول:\n2. عمرك داخل الرول:\n3. عمرك الحقيقي:')
+                .setRequired(true)
+                .setMaxLength(300);
 
-            return interaction.reply({ embeds: [embed] });
+            const companyName = new TextInputBuilder()
+                .setCustomId('cf_name')
+                .setLabel('اسم الشركة')
+                .setStyle(TextInputStyle.Short)
+                .setPlaceholder('اكتب اسم الشركة هنا')
+                .setRequired(true)
+                .setMaxLength(40);
+
+            const companyDetails = new TextInputBuilder()
+                .setCustomId('cf_details')
+                .setLabel('تفاصيل الشركة')
+                .setStyle(TextInputStyle.Paragraph)
+                .setPlaceholder('5. نوع الشركة (مطعم - شركة أمن - ورشة - استيراد وتصدير):\n6. فكرة الشركة بالتفصيل:\n7. موقع الشركة داخل المدينة:')
+                .setRequired(true)
+                .setMaxLength(800);
+
+            const managementPlan = new TextInputBuilder()
+                .setCustomId('cf_management')
+                .setLabel('خطة الإدارة والتوظيف')
+                .setStyle(TextInputStyle.Paragraph)
+                .setPlaceholder('8. كيف راح تدير الشركة؟\n9. هل عندك خبرة سابقة؟\n10. كم عدد الموظفين المتوقع؟\n11. كيف راح توظف اللاعبين؟')
+                .setRequired(true)
+                .setMaxLength(800);
+
+            const financialCommitment = new TextInputBuilder()
+                .setCustomId('cf_financial')
+                .setLabel('الجانب المالي والالتزام')
+                .setStyle(TextInputStyle.Paragraph)
+                .setPlaceholder('12. رأس المال المتوقع:\n13. مصدر الأموال داخل RP:\n14. خطتك للربح والاستمرارية:\n15. هل تتعهد بالالتزام بالقوانين؟\n16. هل تقبل إغلاق الشركة عند المخالفة؟')
+                .setRequired(true)
+                .setMaxLength(800);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(personalInfo),
+                new ActionRowBuilder().addComponents(companyName),
+                new ActionRowBuilder().addComponents(companyDetails),
+                new ActionRowBuilder().addComponents(managementPlan),
+                new ActionRowBuilder().addComponents(financialCommitment),
+            );
+
+            return interaction.showModal(modal);
         }
 
         if (sub === 'معلومات') {
