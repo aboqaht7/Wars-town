@@ -991,6 +991,10 @@ client.on('interactionCreate', async interaction => {
         // ── كشف ملفات المواطنين ──────────────────────────────────────────────────
         if (interaction.customId === 'security_files_btn') {
             try {
+                const ciaRoleId = await db.getConfig('cia_chef_role');
+                if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
+                    return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
+
                 await interaction.deferReply({ flags: 64 });
                 const ministryRoleId = await db.getConfig('trade_ministry_role');
                 const allIdentities = await db.getAllActiveIdentities();
@@ -1044,6 +1048,10 @@ client.on('interactionCreate', async interaction => {
 
         // ── تراكينق — فتح مودال ──────────────────────────────────────────────────
         if (interaction.customId === 'tracking_btn') {
+            const ciaRoleId = await db.getConfig('cia_chef_role');
+            if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
+                return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
+
             const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
             const modal = new ModalBuilder()
                 .setCustomId('tracking_modal')

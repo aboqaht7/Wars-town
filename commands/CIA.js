@@ -7,19 +7,20 @@ const {
 } = require('discord.js');
 
 module.exports = {
-    name: 'ملفات-الأمن',
+    name: 'cia',
     data: new SlashCommandBuilder()
-        .setName('ملفات-الأمن')
-        .setDescription('لوحة نظام ملفات الأمن والتراكينق'),
-    async execute(interaction, db) {
+        .setName('cia')
+        .setDescription('لوحة نظام CIA — ملفات المواطنين والتراكينق'),
+    async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
-            .setTitle('🛡️ نظام ملفات الأمن')
-            .setColor(0x1A237E)
+            .setTitle('🕵️ CIA — وكالة الاستخبارات')
+            .setColor(0x0D1B2A)
             .setDescription(
                 '**📋 كشف ملفات المواطنين** — عرض هويات وسوابق جميع المواطنين\n' +
-                '**📡 تراكينق** — تتبع شخص لمدة 20 ثانية'
+                '**📡 تراكينق** — تتبع شخص لمدة 20 ثانية\n\n' +
+                '> الأزرار متاحة لأعضاء CIA فقط'
             )
-            .setFooter({ text: 'نظام الأمن • بوت FANTASY' })
+            .setFooter({ text: 'CIA • بوت FANTASY' })
             .setTimestamp();
 
         const row = new ActionRowBuilder().addComponents(
