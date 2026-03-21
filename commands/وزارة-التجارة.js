@@ -10,17 +10,10 @@ module.exports = {
         .setDescription('لوحة تحكم وزارة التجارة'),
 
     async slashExecute(interaction, db) {
-        const duty = await db.getMinistryDuty(interaction.user.id);
-        const isOnDuty = duty?.status === 'on';
-
         const embed = new EmbedBuilder()
             .setTitle('🏛️ وزارة التجارة')
             .setColor(0x1565C0)
             .setDescription('مرحباً بك في لوحة تحكم وزارة التجارة. اختر أحد الخيارات أدناه.')
-            .addFields(
-                { name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true },
-                { name: '🟢 حالة الدوام', value: isOnDuty ? '**متواجد**' : '**غير متواجد**', inline: true },
-            )
             .setFooter({ text: 'وزارة التجارة • بوت FANTASY' })
             .setTimestamp();
 
@@ -33,6 +26,7 @@ module.exports = {
             new ButtonBuilder().setCustomId('ministry_approve_btn').setLabel('✅ قبول شركة').setStyle(ButtonStyle.Success),
         );
 
-        return interaction.reply({ embeds: [embed], components: [row1, row2], flags: 64 });
+        await interaction.reply({ content: '\u200b', flags: 64 });
+        return interaction.channel.send({ embeds: [embed], components: [row1, row2] });
     },
 };
