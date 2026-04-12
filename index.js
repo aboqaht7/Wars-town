@@ -1,5 +1,21 @@
 const fs = require('fs');
 
+/* ── مرجع رسالة سوق الأسهم الحية ───────────────────────────────────────── */
+let stockMarketMsg = null;
+
+async function refreshStockMarket(db) {
+    if (!stockMarketMsg) return;
+    try {
+        const { buildMarketEmbed } = require('./commands/سوق-الأسهم');
+        const built = await buildMarketEmbed(db);
+        if (!built) return;
+        await stockMarketMsg.edit({ embeds: [built.embed], components: [built.row] });
+    } catch (e) {
+        console.error('[STOCK REFRESH]', e.message);
+        stockMarketMsg = null;
+    }
+}
+
 /* ── تطبيع النص العربي للبحث ────────────────────────────────────────────── */
 function normalizeAr(str) {
     if (!str) return '';
@@ -3617,6 +3633,7 @@ client.on('interactionCreate', async interaction => {
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [embed] });
+                refreshStockMarket(db).catch(() => {});
             } catch (e) {
                 console.error('[STOCK MODAL ERROR]', e);
                 if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
@@ -4851,7 +4868,10 @@ client.on('interactionCreate', async interaction => {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
     try {
-        await command.slashExecute(interaction, db);
+        const result = await command.slashExecute(interaction, db);
+        if (interaction.commandName === 'سوق-الأسهم' && result?.id) {
+            stockMarketMsg = result;
+        }
     } catch (error) {
         console.error(`[SLASH ERROR] /${interaction.commandName}:`, error?.message || error);
         if (!interaction.replied && !interaction.deferred) {

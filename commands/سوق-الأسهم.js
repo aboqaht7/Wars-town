@@ -27,81 +27,89 @@ function trendArrow(change) {
     return '◆';
 }
 
+async function buildMarketEmbed(db) {
+    const listings = await db.getAllStockListings();
+    if (!listings.length) return null;
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+    const embed = new EmbedBuilder()
+        .setColor(0x0A1628)
+        .setTitle('📊 بورصة Fantasy Town')
+        .setDescription(
+            `\`\`\`yaml\n🟢 السوق: مفتوح  |  🕐 آخر تحديث: ${timeStr}  |  📋 ${listings.length} شركة مدرجة\`\`\``
+        );
+
+    for (const s of listings) {
+        const history = await db.getStockHistory(s.company_id, 8);
+        const prevPrice = history.length >= 2 ? parseFloat(history[1].price) : parseFloat(s.ipo_price);
+        const currPrice = parseFloat(s.current_price);
+        const change = currPrice - prevPrice;
+        const changePct = ((change / prevPrice) * 100).toFixed(2);
+        const isUp = change >= 0;
+        const arrow = trendArrow(change);
+        const chart = miniChart(history);
+        const bar = volumeBar(s.avail_shares, s.total_shares);
+        const soldPct = (((s.total_shares - s.avail_shares) / s.total_shares) * 100).toFixed(0);
+
+        const changeDisplay = isUp
+            ? `+${change.toFixed(2)} ريال (+${changePct}%) ${arrow}`
+            : `${change.toFixed(2)} ريال (${changePct}%) ${arrow}`;
+
+        embed.addFields({
+            name: `${isUp ? '🟢' : '🔴'} ${s.company_name}`,
+            value: [
+                `\`\`\``,
+                `السعر   : ${currPrice.toFixed(2)} ريال`,
+                `التغيير : ${changeDisplay}`,
+                `المخطط  : ${chart}`,
+                `التداول : ${bar}  ${soldPct}% مُباع`,
+                `الأسهم  : ${s.avail_shares.toLocaleString()} متاح / ${s.total_shares.toLocaleString()} إجمالي`,
+                `\`\`\``
+            ].join('\n'),
+            inline: false
+        });
+    }
+
+    embed
+        .setFooter({ text: 'بورصة FANTASY • الأسعار تتذبذب تلقائياً كل ساعة بناءً على العرض والطلب' })
+        .setTimestamp();
+
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId('stock_buy_btn')
+            .setLabel('📈 شراء أسهم')
+            .setStyle(ButtonStyle.Success),
+        new ButtonBuilder()
+            .setCustomId('stock_sell_btn')
+            .setLabel('📉 بيع أسهم')
+            .setStyle(ButtonStyle.Danger),
+        new ButtonBuilder()
+            .setCustomId('stock_portfolio_btn')
+            .setLabel('💼 محفظتي')
+            .setStyle(ButtonStyle.Primary),
+    );
+
+    return { embed, row };
+}
+
 module.exports = {
     name: 'سوق-الأسهم',
+    buildMarketEmbed,
     data: new SlashCommandBuilder()
         .setName('سوق-الأسهم')
         .setDescription('عرض بورصة شركات Fantasy Town'),
 
     async slashExecute(interaction, db) {
-        const listings = await db.getAllStockListings();
+        const built = await buildMarketEmbed(db);
 
-        if (!listings.length) {
+        if (!built) {
             await interaction.reply({ content: '\u200b', flags: 64 });
             return interaction.channel.send({ content: '📭 لا توجد شركات مدرجة في البورصة حالياً.' });
         }
 
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: false });
-
-        const embed = new EmbedBuilder()
-            .setColor(0x0A1628)
-            .setTitle('📊 بورصة Fantasy Town')
-            .setDescription(
-                `\`\`\`yaml\n🟢 السوق: مفتوح  |  🕐 آخر تحديث: ${timeStr}  |  📋 ${listings.length} شركة مدرجة\`\`\``
-            );
-
-        for (const s of listings) {
-            const history = await db.getStockHistory(s.company_id, 8);
-            const prevPrice = history.length >= 2 ? parseFloat(history[1].price) : parseFloat(s.ipo_price);
-            const currPrice = parseFloat(s.current_price);
-            const change = currPrice - prevPrice;
-            const changePct = ((change / prevPrice) * 100).toFixed(2);
-            const isUp = change >= 0;
-            const arrow = trendArrow(change);
-            const chart = miniChart(history);
-            const bar = volumeBar(s.avail_shares, s.total_shares);
-            const soldPct = (((s.total_shares - s.avail_shares) / s.total_shares) * 100).toFixed(0);
-
-            const changeDisplay = isUp
-                ? `+${change.toFixed(2)} ريال (+${changePct}%) ${arrow}`
-                : `${change.toFixed(2)} ريال (${changePct}%) ${arrow}`;
-
-            embed.addFields({
-                name: `${isUp ? '🟢' : '🔴'} ${s.company_name}`,
-                value: [
-                    `\`\`\``,
-                    `السعر   : ${currPrice.toFixed(2)} ريال`,
-                    `التغيير : ${changeDisplay}`,
-                    `المخطط  : ${chart}`,
-                    `التداول : ${bar}  ${soldPct}% مُباع`,
-                    `الأسهم  : ${s.avail_shares.toLocaleString()} متاح / ${s.total_shares.toLocaleString()} إجمالي`,
-                    `\`\`\``
-                ].join('\n'),
-                inline: false
-            });
-        }
-
-        embed
-            .setFooter({ text: 'بورصة FANTASY • الأسعار تتذبذب تلقائياً كل ساعة بناءً على العرض والطلب' })
-            .setTimestamp();
-
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('stock_buy_btn')
-                .setLabel('📈 شراء أسهم')
-                .setStyle(ButtonStyle.Success),
-            new ButtonBuilder()
-                .setCustomId('stock_sell_btn')
-                .setLabel('📉 بيع أسهم')
-                .setStyle(ButtonStyle.Danger),
-            new ButtonBuilder()
-                .setCustomId('stock_portfolio_btn')
-                .setLabel('💼 محفظتي')
-                .setStyle(ButtonStyle.Primary),
-        );
-
         await interaction.reply({ content: '\u200b', flags: 64 });
-        return interaction.channel.send({ embeds: [embed], components: [row] });
+        return interaction.channel.send({ embeds: [built.embed], components: [built.row] });
     }
 };
