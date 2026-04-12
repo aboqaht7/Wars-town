@@ -1564,7 +1564,7 @@ module.exports = {
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
     addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
     cuffPlayer, uncuffPlayer, isCuffed,
-    listCompanyOnMarket, getStockListing, getAllStockListings,
+    listCompanyOnMarket, delistCompany, getStockListing, getAllStockListings,
     buyShares, sellShares, getUserPortfolio, getStockHistory, applyRandomFluctuation,
 };
 
@@ -2149,6 +2149,11 @@ async function getPriorityButtons() {
         );
     `);
 })().catch(console.error);
+
+async function delistCompany(companyId) {
+    await pool.query(`DELETE FROM stock_listings WHERE company_id=$1`, [companyId]);
+    await pool.query(`DELETE FROM stock_history  WHERE company_id=$1`, [companyId]);
+}
 
 async function listCompanyOnMarket(companyId, ipoPrice = 100, totalShares = 1000) {
     const res = await pool.query(`
