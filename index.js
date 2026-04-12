@@ -3560,6 +3560,8 @@ client.on('interactionCreate', async interaction => {
 
                 const listings = await db.getAllStockListings();
                 const normInput = normalizeAr(companyInput);
+                console.log('[STOCK SEARCH] المدخل:', JSON.stringify(companyInput), '| بعد التطبيع:', JSON.stringify(normInput));
+                console.log('[STOCK SEARCH] الشركات المتاحة:', listings.map(l => JSON.stringify(l.company_name) + ' => ' + JSON.stringify(normalizeAr(l.company_name))));
                 const match = listings.find(l => normalizeAr(l.company_name).includes(normInput));
                 if (!match) return interaction.editReply({ content: `❌ لم يتم العثور على شركة باسم **${companyInput}** في السوق.\n💡 تأكد من الاسم كما يظهر في \`/سوق-الأسهم\`` });
 
