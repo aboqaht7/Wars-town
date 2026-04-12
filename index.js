@@ -112,6 +112,16 @@ client.once('clientReady', async () => {
             console.error('❌ خطأ في تحديث أسعار الوظائف:', e.message);
         }
     }, 60 * 60 * 1000);
+
+    // ── تذبذب أسعار الأسهم كل ساعة ─────────────────────────────────────
+    setInterval(async () => {
+        try {
+            await db.applyRandomFluctuation();
+            console.log('📈 تم تحديث أسعار الأسهم تلقائياً');
+        } catch (e) {
+            console.error('❌ خطأ في تحديث أسعار الأسهم:', e.message);
+        }
+    }, 60 * 60 * 1000);
 });
 
 const menuHandlers = {
@@ -816,6 +826,14 @@ client.on('interactionCreate', async interaction => {
                     }
 
                     await db.updatePendingCompanyStatus(pendingId, 'approved', interaction.user.id);
+
+                    // ── تسجيل الشركة تلقائياً في سوق الأسهم ──
+                    try {
+                        await db.listCompanyOnMarket(result.company.id, 100, 1000);
+                        console.log(`[STOCK] تم إدراج شركة "${pending.company_name}" (ID: ${result.company.id}) في سوق الأسهم.`);
+                    } catch (stockErr) {
+                        console.error('[STOCK LIST ERROR]', stockErr);
+                    }
 
                     // ── إنشاء رتبة مالك الشركة وتعيينها تلقائياً ──
                     let ownerRoleMention = '';
@@ -1983,6 +2001,64 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+            }
+            return;
+        }
+
+        // ── سوق الأسهم — شراء / بيع / محفظة ────────────────────────────────
+        if (['stock_buy_btn','stock_sell_btn','stock_portfolio_btn'].includes(interaction.customId)) {
+            try {
+                const identity = await db.checkLoginAndIdentity(interaction.user.id);
+                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+
+                if (interaction.customId === 'stock_portfolio_btn') {
+                    const portfolio = await db.getUserPortfolio(interaction.user.id);
+                    if (!portfolio.length)
+                        return interaction.reply({ content: '📭 محفظتك فارغة — ليس لديك أي أسهم حالياً.', flags: 64 });
+                    let totalValue = 0;
+                    let desc = '';
+                    for (const p of portfolio) {
+                        const value = parseFloat(p.current_price) * p.shares;
+                        totalValue += value;
+                        const pl = value - parseFloat(p.ipo_price) * p.shares;
+                        desc += `**🏢 ${p.company_name}** — \`${p.shares}\` سهم × \`${parseFloat(p.current_price).toFixed(0)} ريال\` = **${value.toLocaleString(undefined,{maximumFractionDigits:0})} ريال**  ${pl>=0?`🟢 +${pl.toFixed(0)}`:`🔴 ${pl.toFixed(0)}`} ريال\n`;
+                    }
+                    const embed = new EmbedBuilder()
+                        .setTitle('💼 محفظتك الاستثمارية')
+                        .setColor(0x1B5E20)
+                        .setDescription(desc)
+                        .addFields({ name: '💰 إجمالي القيمة', value: `\`${totalValue.toLocaleString(undefined,{maximumFractionDigits:0})} ريال\`` })
+                        .setFooter({ text: 'سوق الأسهم • بوت FANTASY' }).setTimestamp();
+                    return interaction.reply({ embeds: [embed], flags: 64 });
+                }
+
+                const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+                const isBuy = interaction.customId === 'stock_buy_btn';
+                const modal = new ModalBuilder()
+                    .setCustomId(isBuy ? 'stock_buy_modal' : 'stock_sell_modal')
+                    .setTitle(isBuy ? '📈 شراء أسهم' : '📉 بيع أسهم');
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId('stock_company')
+                            .setLabel('اسم الشركة (كامل أو جزء منه)')
+                            .setStyle(TextInputStyle.Short)
+                            .setPlaceholder('مثال: شركة الفجر')
+                            .setRequired(true)
+                    ),
+                    new ActionRowBuilder().addComponents(
+                        new TextInputBuilder()
+                            .setCustomId('stock_shares')
+                            .setLabel('عدد الأسهم')
+                            .setStyle(TextInputStyle.Short)
+                            .setPlaceholder('مثال: 10')
+                            .setRequired(true)
+                    )
+                );
+                return interaction.showModal(modal);
+            } catch (e) {
+                console.error('[STOCK BTN ERROR]', e);
                 if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
             return;
@@ -3448,6 +3524,58 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply({ embeds: [confirmEmbed] });
             } catch (e) {
                 console.error('[CIA FAKE ID ERROR]', e);
+                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+            }
+            return;
+        }
+
+        // ── سوق الأسهم — شراء ───────────────────────────────────────────────
+        if (interaction.customId === 'stock_buy_modal' || interaction.customId === 'stock_sell_modal') {
+            try {
+                await interaction.deferReply({ flags: 64 });
+                const isBuy = interaction.customId === 'stock_buy_modal';
+
+                const identity = await db.checkLoginAndIdentity(interaction.user.id);
+                if (!identity) return interaction.editReply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال' });
+
+                const companyInput = interaction.fields.getTextInputValue('stock_company').trim();
+                const sharesInput  = interaction.fields.getTextInputValue('stock_shares').trim();
+                const shares = parseInt(sharesInput);
+                if (isNaN(shares) || shares < 1) return interaction.editReply({ content: '❌ عدد الأسهم يجب أن يكون رقماً صحيحاً أكبر من 0.' });
+
+                const listings = await db.getAllStockListings();
+                const match = listings.find(l =>
+                    l.company_name.toLowerCase().includes(companyInput.toLowerCase())
+                );
+                if (!match) return interaction.editReply({ content: `❌ لم يتم العثور على شركة باسم **${companyInput}** في السوق.` });
+
+                const result = isBuy
+                    ? await db.buyShares(interaction.user.id, match.company_id, shares, identity.slot)
+                    : await db.sellShares(interaction.user.id, match.company_id, shares, identity.slot);
+
+                if (result.error) return interaction.editReply({ content: `❌ ${result.error}` });
+
+                const changeStr = isBuy
+                    ? `🟢 +${result.priceIncrease.toFixed(2)} ريال`
+                    : `🔴 -${result.priceDecrease.toFixed(2)} ريال`;
+
+                const embed = new EmbedBuilder()
+                    .setTitle(isBuy ? '📈 تم شراء الأسهم بنجاح' : '📉 تم بيع الأسهم بنجاح')
+                    .setColor(isBuy ? 0x1B5E20 : 0xB71C1C)
+                    .addFields(
+                        { name: '🏢 الشركة', value: match.company_name, inline: true },
+                        { name: '📦 الأسهم', value: `\`${shares}\``, inline: true },
+                        { name: isBuy ? '💸 المبلغ المدفوع' : '💰 المبلغ المكتسب',
+                          value: `\`${(isBuy ? result.totalCost : result.totalEarned).toLocaleString()} ريال\``, inline: true },
+                        { name: '📊 السعر الجديد', value: `\`${parseFloat(result.newPrice).toFixed(2)} ريال\``, inline: true },
+                        { name: '📈 تأثير السعر', value: changeStr, inline: true },
+                    )
+                    .setFooter({ text: 'سوق الأسهم • بوت FANTASY' })
+                    .setTimestamp();
+
+                await interaction.editReply({ embeds: [embed] });
+            } catch (e) {
+                console.error('[STOCK MODAL ERROR]', e);
                 if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
             }
             return;

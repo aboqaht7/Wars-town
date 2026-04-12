@@ -1564,6 +1564,8 @@ module.exports = {
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
     addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
     cuffPlayer, uncuffPlayer, isCuffed,
+    listCompanyOnMarket, getStockListing, getAllStockListings,
+    buyShares, sellShares, getUserPortfolio, getStockHistory, applyRandomFluctuation,
 };
 
 /* ─── نظام الكلبشة ─────────────────────────────────────────────────────── */
@@ -2108,4 +2110,154 @@ async function removePriorityButton(id) {
 async function getPriorityButtons() {
     const res = await pool.query(`SELECT * FROM priority_buttons ORDER BY id`);
     return res.rows;
+}
+
+/* ─── نظام سوق الأسهم ──────────────────────────────────────────────────── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS stock_listings (
+            id            SERIAL PRIMARY KEY,
+            company_id    INT UNIQUE NOT NULL,
+            ipo_price     NUMERIC(12,2) NOT NULL DEFAULT 100,
+            current_price NUMERIC(12,2) NOT NULL DEFAULT 100,
+            total_shares  INT NOT NULL DEFAULT 1000,
+            avail_shares  INT NOT NULL DEFAULT 1000,
+            created_at    TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE TABLE IF NOT EXISTS stock_portfolio (
+            id          SERIAL PRIMARY KEY,
+            discord_id  TEXT NOT NULL,
+            company_id  INT NOT NULL,
+            shares      INT NOT NULL DEFAULT 0,
+            UNIQUE(discord_id, company_id)
+        );
+        CREATE TABLE IF NOT EXISTS stock_history (
+            id          SERIAL PRIMARY KEY,
+            company_id  INT NOT NULL,
+            price       NUMERIC(12,2) NOT NULL,
+            change_amt  NUMERIC(12,2) NOT NULL DEFAULT 0,
+            recorded_at TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+})().catch(console.error);
+
+async function listCompanyOnMarket(companyId, ipoPrice = 100, totalShares = 1000) {
+    const res = await pool.query(`
+        INSERT INTO stock_listings (company_id, ipo_price, current_price, total_shares, avail_shares)
+        VALUES ($1, $2, $2, $3, $3)
+        ON CONFLICT (company_id) DO NOTHING
+        RETURNING *
+    `, [companyId, ipoPrice, totalShares]);
+    if (res.rows[0]) {
+        await pool.query(
+            `INSERT INTO stock_history (company_id, price, change_amt) VALUES ($1, $2, 0)`,
+            [companyId, ipoPrice]
+        );
+    }
+    return res.rows[0] || null;
+}
+
+async function getStockListing(companyId) {
+    const res = await pool.query(
+        `SELECT sl.*, c.name AS company_name, c.owner_discord_id
+         FROM stock_listings sl JOIN companies c ON c.id = sl.company_id
+         WHERE sl.company_id = $1`, [companyId]
+    );
+    return res.rows[0] || null;
+}
+
+async function getAllStockListings() {
+    const res = await pool.query(`
+        SELECT sl.*, c.name AS company_name, c.owner_discord_id
+        FROM stock_listings sl
+        JOIN companies c ON c.id = sl.company_id
+        ORDER BY sl.current_price DESC
+    `);
+    return res.rows;
+}
+
+async function getStockHistory(companyId, limit = 10) {
+    const res = await pool.query(
+        `SELECT * FROM stock_history WHERE company_id=$1 ORDER BY recorded_at DESC LIMIT $2`,
+        [companyId, limit]
+    );
+    return res.rows;
+}
+
+async function getUserPortfolio(discordId) {
+    const res = await pool.query(`
+        SELECT sp.shares, sp.company_id,
+               sl.current_price, sl.ipo_price,
+               c.name AS company_name
+        FROM stock_portfolio sp
+        JOIN stock_listings sl ON sl.company_id = sp.company_id
+        JOIN companies c ON c.id = sp.company_id
+        WHERE sp.discord_id = $1 AND sp.shares > 0
+        ORDER BY c.name
+    `, [discordId]);
+    return res.rows;
+}
+
+async function buyShares(discordId, companyId, sharesToBuy, slot) {
+    const listing = await pool.query(`SELECT * FROM stock_listings WHERE company_id=$1`, [companyId]);
+    if (!listing.rows[0]) return { error: 'الشركة غير مدرجة في السوق.' };
+    const stock = listing.rows[0];
+    if (stock.avail_shares < sharesToBuy) return { error: `الأسهم المتاحة: ${stock.avail_shares} فقط.` };
+
+    const totalCost = Math.ceil(stock.current_price * sharesToBuy);
+
+    const identity = await pool.query(
+        `SELECT balance FROM identities WHERE discord_id=$1 AND slot=$2`, [discordId, slot]
+    );
+    if (!identity.rows[0]) return { error: 'لم يتم العثور على هويتك.' };
+    if (identity.rows[0].balance < totalCost) return { error: `رصيدك غير كافٍ. تحتاج ${totalCost.toLocaleString()} ريال.` };
+
+    await pool.query(`UPDATE identities SET balance = balance - $1 WHERE discord_id=$2 AND slot=$3`, [totalCost, discordId, slot]);
+
+    await pool.query(`
+        INSERT INTO stock_portfolio (discord_id, company_id, shares)
+        VALUES ($1, $2, $3)
+        ON CONFLICT (discord_id, company_id) DO UPDATE SET shares = stock_portfolio.shares + $3
+    `, [discordId, companyId, sharesToBuy]);
+
+    const priceIncrease = parseFloat((sharesToBuy * 0.15).toFixed(2));
+    const newPrice = parseFloat((parseFloat(stock.current_price) + priceIncrease).toFixed(2));
+    await pool.query(`UPDATE stock_listings SET current_price=$1, avail_shares=avail_shares-$2 WHERE company_id=$3`, [newPrice, sharesToBuy, companyId]);
+    await pool.query(`INSERT INTO stock_history (company_id, price, change_amt) VALUES ($1,$2,$3)`, [companyId, newPrice, priceIncrease]);
+
+    return { success: true, totalCost, newPrice, priceIncrease };
+}
+
+async function sellShares(discordId, companyId, sharesToSell, slot) {
+    const portfolio = await pool.query(
+        `SELECT shares FROM stock_portfolio WHERE discord_id=$1 AND company_id=$2`, [discordId, companyId]
+    );
+    if (!portfolio.rows[0] || portfolio.rows[0].shares < sharesToSell)
+        return { error: `لا تملك كافة الأسهم. لديك: ${portfolio.rows[0]?.shares || 0} سهم.` };
+
+    const listing = await pool.query(`SELECT * FROM stock_listings WHERE company_id=$1`, [companyId]);
+    if (!listing.rows[0]) return { error: 'الشركة غير مدرجة في السوق.' };
+    const stock = listing.rows[0];
+
+    const totalEarned = Math.floor(stock.current_price * sharesToSell);
+    await pool.query(`UPDATE identities SET balance = balance + $1 WHERE discord_id=$2 AND slot=$3`, [totalEarned, discordId, slot]);
+    await pool.query(`UPDATE stock_portfolio SET shares = shares - $1 WHERE discord_id=$2 AND company_id=$3`, [sharesToSell, discordId, companyId]);
+
+    const priceDecrease = parseFloat((sharesToSell * 0.1).toFixed(2));
+    const newPrice = Math.max(10, parseFloat((parseFloat(stock.current_price) - priceDecrease).toFixed(2)));
+    await pool.query(`UPDATE stock_listings SET current_price=$1, avail_shares=avail_shares+$2 WHERE company_id=$3`, [newPrice, sharesToSell, companyId]);
+    await pool.query(`INSERT INTO stock_history (company_id, price, change_amt) VALUES ($1,$2,$3)`, [companyId, newPrice, -priceDecrease]);
+
+    return { success: true, totalEarned, newPrice, priceDecrease };
+}
+
+async function applyRandomFluctuation() {
+    const listings = await pool.query(`SELECT * FROM stock_listings`);
+    for (const s of listings.rows) {
+        const pct = (Math.random() * 4 - 1.5) / 100;
+        const change = parseFloat((s.current_price * pct).toFixed(2));
+        const newPrice = Math.max(10, parseFloat((parseFloat(s.current_price) + change).toFixed(2)));
+        await pool.query(`UPDATE stock_listings SET current_price=$1 WHERE id=$2`, [newPrice, s.id]);
+        await pool.query(`INSERT INTO stock_history (company_id, price, change_amt) VALUES ($1,$2,$3)`, [s.company_id, newPrice, change]);
+    }
 }
