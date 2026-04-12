@@ -2221,10 +2221,13 @@ async function buyShares(discordId, companyId, sharesToBuy, slot) {
     const totalCost = Math.ceil(stock.current_price * sharesToBuy);
 
     const identity = await pool.query(
-        `SELECT balance FROM identities WHERE discord_id=$1 AND slot=$2`, [discordId, slot]
+        `SELECT balance, cash FROM identities WHERE discord_id=$1 AND slot=$2`, [discordId, slot]
     );
     if (!identity.rows[0]) return { error: 'لم يتم العثور على هويتك.' };
-    if (identity.rows[0].balance < totalCost) return { error: `رصيدك غير كافٍ. تحتاج ${totalCost.toLocaleString()} ريال.` };
+    const userBalance = Number(identity.rows[0].balance);
+    const userCash    = Number(identity.rows[0].cash);
+    console.log(`[BUY DEBUG] discordId=${discordId} slot=${slot} balance=${userBalance} cash=${userCash} totalCost=${totalCost}`);
+    if (userBalance < totalCost) return { error: `رصيدك البنكي غير كافٍ. رصيدك الحالي: \`${userBalance.toLocaleString()} ريال\` وتحتاج \`${totalCost.toLocaleString()} ريال\`.\n💡 تأكد أن رصيدك في البنك وليس نقداً.` };
 
     await pool.query(`UPDATE identities SET balance = balance - $1 WHERE discord_id=$2 AND slot=$3`, [totalCost, discordId, slot]);
 
