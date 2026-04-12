@@ -2009,8 +2009,8 @@ client.on('interactionCreate', async interaction => {
         // ── سوق الأسهم — شراء / بيع / محفظة ────────────────────────────────
         if (['stock_buy_btn','stock_sell_btn','stock_portfolio_btn'].includes(interaction.customId)) {
             try {
-                const identity = await db.checkLoginAndIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
 
                 if (interaction.customId === 'stock_portfolio_btn') {
                     const portfolio = await db.getUserPortfolio(interaction.user.id);
@@ -3535,8 +3535,10 @@ client.on('interactionCreate', async interaction => {
                 await interaction.deferReply({ flags: 64 });
                 const isBuy = interaction.customId === 'stock_buy_modal';
 
-                const identity = await db.checkLoginAndIdentity(interaction.user.id);
-                if (!identity) return interaction.editReply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال' });
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.editReply({ content: loginErr });
+
+                const activeIdentity = await db.getActiveIdentity(interaction.user.id);
 
                 const companyInput = interaction.fields.getTextInputValue('stock_company').trim();
                 const sharesInput  = interaction.fields.getTextInputValue('stock_shares').trim();
@@ -3550,8 +3552,8 @@ client.on('interactionCreate', async interaction => {
                 if (!match) return interaction.editReply({ content: `❌ لم يتم العثور على شركة باسم **${companyInput}** في السوق.` });
 
                 const result = isBuy
-                    ? await db.buyShares(interaction.user.id, match.company_id, shares, identity.slot)
-                    : await db.sellShares(interaction.user.id, match.company_id, shares, identity.slot);
+                    ? await db.buyShares(interaction.user.id, match.company_id, shares, activeIdentity.slot)
+                    : await db.sellShares(interaction.user.id, match.company_id, shares, activeIdentity.slot);
 
                 if (result.error) return interaction.editReply({ content: `❌ ${result.error}` });
 

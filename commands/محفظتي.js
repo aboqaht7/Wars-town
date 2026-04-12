@@ -13,8 +13,9 @@ module.exports = {
         .setDescription('عرض محفظة أسهمك الاستثمارية'),
 
     async slashExecute(interaction, db) {
-        const identity = await db.checkLoginAndIdentity(interaction.user.id);
-        if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+        const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+        if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
+        const identity = await db.getActiveIdentity(interaction.user.id);
 
         const portfolio = await db.getUserPortfolio(interaction.user.id);
         if (!portfolio.length)
