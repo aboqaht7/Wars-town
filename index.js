@@ -997,7 +997,7 @@ client.on('interactionCreate', async interaction => {
         }
 
         // ── CIA: تسجيل دخول / خروج / كشف مباشرين ────────────────────────────────
-        if (['cia_login_btn','cia_logout_btn','cia_active_btn'].includes(interaction.customId)) {
+        if (['cia_login_btn','cia_logout_btn','cia_active_btn','cia_fake_id_btn'].includes(interaction.customId)) {
             try {
                 const ciaMemberRoleId = await db.getConfig('cia_member_role');
                 const ciaChefRoleId   = await db.getConfig('cia_chef_role');
