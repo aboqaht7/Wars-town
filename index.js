@@ -1,5 +1,18 @@
 const fs = require('fs');
 
+/* ── تطبيع النص العربي للبحث ────────────────────────────────────────────── */
+function normalizeAr(str) {
+    if (!str) return '';
+    return str
+        .trim()
+        .replace(/[أإآ]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/[\u064B-\u065F]/g, '')
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+}
+
 /* ── منع تشغيل أكثر من نسخة واحدة ─────────────────────────────────────── */
 const PID_FILE = '/tmp/fantasy_bot.pid';
 if (fs.existsSync(PID_FILE)) {
@@ -3546,10 +3559,9 @@ client.on('interactionCreate', async interaction => {
                 if (isNaN(shares) || shares < 1) return interaction.editReply({ content: '❌ عدد الأسهم يجب أن يكون رقماً صحيحاً أكبر من 0.' });
 
                 const listings = await db.getAllStockListings();
-                const match = listings.find(l =>
-                    l.company_name.toLowerCase().includes(companyInput.toLowerCase())
-                );
-                if (!match) return interaction.editReply({ content: `❌ لم يتم العثور على شركة باسم **${companyInput}** في السوق.` });
+                const normInput = normalizeAr(companyInput);
+                const match = listings.find(l => normalizeAr(l.company_name).includes(normInput));
+                if (!match) return interaction.editReply({ content: `❌ لم يتم العثور على شركة باسم **${companyInput}** في السوق.\n💡 تأكد من الاسم كما يظهر في \`/سوق-الأسهم\`` });
 
                 const result = isBuy
                     ? await db.buyShares(interaction.user.id, match.company_id, shares, activeIdentity.slot)

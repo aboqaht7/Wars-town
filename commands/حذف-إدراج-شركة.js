@@ -2,6 +2,13 @@ const {
     SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits
 } = require('discord.js');
 
+function normalizeAr(str) {
+    if (!str) return '';
+    return str.trim()
+        .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+        .replace(/[\u064B-\u065F]/g, '').replace(/\s+/g, ' ').toLowerCase();
+}
+
 module.exports = {
     name: 'حذف-إدراج-شركة',
     data: new SlashCommandBuilder()
@@ -24,7 +31,7 @@ module.exports = {
 
         const listings = await db.getAllStockListings();
         const match = listings.find(l =>
-            l.company_name.toLowerCase().includes(nameInput.toLowerCase())
+            normalizeAr(l.company_name).includes(normalizeAr(nameInput))
         );
 
         if (!match)
