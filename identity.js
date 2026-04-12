@@ -5,7 +5,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('identity')
         .setDescription('عرض الهوية'),
-    execute(message, args, db) {
+        m.execute(message, args, db) {
         const embed = new EmbedBuilder()
             .setTitle('الهوية')
             .setDescription('شخصيتك الحالية')
