@@ -45,6 +45,7 @@ module.exports = {
             new ButtonBuilder().setCustomId('comp_paysalaries_btn').setLabel('💰 إيداع الرواتب').setStyle(ButtonStyle.Success),
         );
 
-        return interaction.reply({ embeds: [embed], components: [row1, row2], flags: 64 });
+        await interaction.reply({ content: '\u200b', flags: 64 });
+        return interaction.channel.send({ embeds: [embed], components: [row1, row2] });
     },
 };

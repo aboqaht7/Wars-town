@@ -36,6 +36,7 @@ module.exports = {
             .setFooter({ text: 'سوق الأسهم • بوت FANTASY' })
             .setTimestamp();
 
-        return interaction.reply({ embeds: [embed], flags: 64 });
+        await interaction.reply({ content: '\u200b', flags: 64 });
+        return interaction.channel.send({ embeds: [embed] });
     }
 };

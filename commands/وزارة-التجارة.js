@@ -28,5 +28,6 @@ module.exports = {
 
         await interaction.reply({ content: '\u200b', flags: 64 });
         return interaction.channel.send({ embeds: [embed], components: [row1, row2] });
+
     },
 };
