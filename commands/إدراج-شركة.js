@@ -6,10 +6,10 @@ module.exports = {
     name: 'إدراج-شركة',
     data: new SlashCommandBuilder()
         .setName('إدراج-شركة')
-        .setDescription('إدراج شركة يدوياً في سوق الأسهم (وزارة التجارة فقط)')
+        .setDescription('إدراج شركة في سوق الأسهم يدوياً (وزارة التجارة فقط)')
         .addStringOption(opt =>
             opt.setName('اسم-الشركة')
-                .setDescription('اسم الشركة كما هو مسجل في النظام')
+                .setDescription('اسم الشركة — ستُنشأ تلقائياً إذا لم تكن مسجلة')
                 .setRequired(true)
         )
         .addIntegerOption(opt =>
@@ -33,33 +33,37 @@ module.exports = {
         if (!isAdmin && !hasRole)
             return interaction.reply({ content: '❌ هذا الأمر لمسؤولي وزارة التجارة فقط.', flags: 64 });
 
-        const nameInput  = interaction.options.getString('اسم-الشركة').trim();
-        const ipoPrice   = interaction.options.getInteger('سعر-الإدراج')  ?? 100;
-        const totalShares = interaction.options.getInteger('عدد-الأسهم') ?? 1000;
+        const nameInput   = interaction.options.getString('اسم-الشركة').trim();
+        const ipoPrice    = interaction.options.getInteger('سعر-الإدراج')  ?? 100;
+        const totalShares = interaction.options.getInteger('عدد-الأسهم')   ?? 1000;
 
         const companies = await db.getAllCompanies();
-        const match = companies.find(c =>
+        let company = companies.find(c =>
             c.name.toLowerCase().includes(nameInput.toLowerCase())
         );
 
-        if (!match)
-            return interaction.reply({ content: `❌ لم يتم العثور على شركة باسم **${nameInput}**.\nتأكد أن الشركة مسجلة ومقبولة من الوزارة أولاً.`, flags: 64 });
+        let wasCreated = false;
+        if (!company) {
+            const result = await db.adminCreateCompany(nameInput, interaction.user.id);
+            company = result.company;
+            wasCreated = true;
+        }
 
-        const existing = await db.getStockListing(match.id);
+        const existing = await db.getStockListing(company.id);
         if (existing)
             return interaction.reply({
-                content: `⚠️ شركة **${match.name}** مدرجة بالفعل في السوق بسعر **${parseFloat(existing.current_price).toFixed(2)} ريال**.`,
+                content: `⚠️ شركة **${company.name}** مدرجة بالفعل في السوق بسعر **${parseFloat(existing.current_price).toFixed(2)} ريال**.`,
                 flags: 64
             });
 
-        await db.listCompanyOnMarket(match.id, ipoPrice, totalShares);
+        await db.listCompanyOnMarket(company.id, ipoPrice, totalShares);
 
         const embed = new EmbedBuilder()
             .setTitle('✅ تم إدراج الشركة في سوق الأسهم')
             .setColor(0x1B5E20)
             .addFields(
-                { name: '🏢 الشركة', value: `**${match.name}**`, inline: true },
-                { name: '👑 المالك', value: `<@${match.owner_discord_id}>`, inline: true },
+                { name: '🏢 الشركة', value: `**${company.name}**`, inline: true },
+                { name: '📋 الحالة', value: wasCreated ? '🆕 أُنشئت وأُدرجت' : '✅ أُدرجت من النظام', inline: true },
                 { name: '💰 سعر الإدراج', value: `\`${ipoPrice.toLocaleString()} ريال / سهم\``, inline: true },
                 { name: '📦 إجمالي الأسهم', value: `\`${totalShares.toLocaleString()} سهم\``, inline: true },
                 { name: '💎 القيمة السوقية', value: `\`${(ipoPrice * totalShares).toLocaleString()} ريال\``, inline: true },

@@ -1558,7 +1558,7 @@ module.exports = {
     addTicketType, removeTicketType, getTicketTypes,
     createPendingCompany, getPendingCompany, getAllPendingCompanies, updatePendingCompanyStatus,
     hasTradePermit, grantTradePermit, revokeTradePermit, getAllTradePermits,
-    createCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
+    createCompany, adminCreateCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
     getCompanyMembers, addCompanyMember, removeCompanyMember, updateCompanyMemberRole,
     depositToCompany, withdrawFromCompany, payCompanySalaries, getAllCompanies, dissolveCompany,
     createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
@@ -1906,6 +1906,15 @@ async function createCompany(name, ownerDiscordId) {
     const res = await query(
         `INSERT INTO companies (name, owner_discord_id) VALUES ($1, $2) RETURNING *`,
         [name, ownerDiscordId]
+    );
+    return { company: res.rows[0] };
+}
+async function adminCreateCompany(name, createdBy) {
+    const nameTaken = await query('SELECT id FROM companies WHERE LOWER(name)=LOWER($1)', [name]);
+    if (nameTaken.rows.length > 0) return { company: nameTaken.rows[0] };
+    const res = await query(
+        `INSERT INTO companies (name, owner_discord_id) VALUES ($1, $2) RETURNING *`,
+        [name, createdBy]
     );
     return { company: res.rows[0] };
 }
