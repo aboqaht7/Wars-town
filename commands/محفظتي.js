@@ -1,10 +1,16 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
+function trendArrow(pl) {
+    if (pl > 0) return '▲';
+    if (pl < 0) return '▼';
+    return '◆';
+}
+
 module.exports = {
     name: 'محفظتي',
     data: new SlashCommandBuilder()
         .setName('محفظتي')
-        .setDescription('عرض محفظة أسهمك الشخصية'),
+        .setDescription('عرض محفظة أسهمك الاستثمارية'),
 
     async slashExecute(interaction, db) {
         const identity = await db.checkLoginAndIdentity(interaction.user.id);
@@ -15,25 +21,58 @@ module.exports = {
             return interaction.reply({ content: '📭 محفظتك فارغة — ليس لديك أي أسهم حالياً.', flags: 64 });
 
         let totalValue = 0;
-        let desc = '';
-        for (const p of portfolio) {
-            const value = parseFloat(p.current_price) * p.shares;
-            totalValue += value;
-            const profitLoss = value - (parseFloat(p.ipo_price) * p.shares);
-            const plStr = profitLoss >= 0
-                ? `🟢 +${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال`
-                : `🔴 ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال`;
-            desc += `**🏢 ${p.company_name}**\n`;
-            desc += `📦 الأسهم: \`${p.shares}\` × \`${parseFloat(p.current_price).toFixed(0)} ريال\` = **${value.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال**\n`;
-            desc += `📊 ربح/خسارة: ${plStr}\n\n`;
-        }
+        let totalCost  = 0;
 
         const embed = new EmbedBuilder()
+            .setColor(0x0A1628)
             .setTitle('💼 محفظتك الاستثمارية')
-            .setColor(0x1B5E20)
-            .setDescription(desc)
-            .addFields({ name: '💰 إجمالي قيمة المحفظة', value: `\`${totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال\`` })
-            .setFooter({ text: 'سوق الأسهم • بوت FANTASY' })
+            .setDescription(`\`\`\`yaml\n👤 ${identity.name}  |  🪪 ${identity.iban}\`\`\``);
+
+        for (const p of portfolio) {
+            const curr   = parseFloat(p.current_price);
+            const ipo    = parseFloat(p.ipo_price);
+            const value  = curr * p.shares;
+            const cost   = ipo  * p.shares;
+            const pl     = value - cost;
+            const plPct  = ((pl / cost) * 100).toFixed(2);
+            totalValue  += value;
+            totalCost   += cost;
+
+            const arrow  = trendArrow(pl);
+            const plSign = pl >= 0 ? '+' : '';
+
+            embed.addFields({
+                name: `${pl >= 0 ? '🟢' : '🔴'} ${p.company_name}`,
+                value: [
+                    '```',
+                    `الأسهم  : ${p.shares} سهم`,
+                    `السعر   : ${curr.toFixed(2)} ريال / سهم`,
+                    `القيمة  : ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال`,
+                    `الربح   : ${plSign}${pl.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال  (${plSign}${plPct}%)  ${arrow}`,
+                    '```'
+                ].join('\n'),
+                inline: false
+            });
+        }
+
+        const totalPl    = totalValue - totalCost;
+        const totalPlPct = totalCost > 0 ? ((totalPl / totalCost) * 100).toFixed(2) : '0.00';
+        const totalSign  = totalPl >= 0 ? '+' : '';
+        const totalArrow = trendArrow(totalPl);
+
+        embed.addFields({
+            name: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            value: [
+                '```yaml',
+                `إجمالي القيمة  : ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال`,
+                `إجمالي الربح   : ${totalSign}${totalPl.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال  (${totalSign}${totalPlPct}%)  ${totalArrow}`,
+                '```'
+            ].join('\n'),
+            inline: false
+        });
+
+        embed
+            .setFooter({ text: 'بورصة FANTASY • الأسعار حسب آخر تحديث في السوق' })
             .setTimestamp();
 
         await interaction.reply({ content: '\u200b', flags: 64 });
