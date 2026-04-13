@@ -36,9 +36,9 @@ function build(image) {
     if (image) embed.setImage(image);
 
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('bag_view').setLabel('👀 عرض الحقيبة').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('bag_use').setLabel('✅ استخدام غرض').setStyle(ButtonStyle.Success),
-        new ButtonBuilder().setCustomId('bag_transfer').setLabel('📤 تحويل غرض').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('bag_view').setLabel('عرض الحقيبة').setEmoji('👀').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('bag_use').setLabel('استخدام غرض').setEmoji('✅').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('bag_transfer').setLabel('تحويل غرض').setEmoji('📤').setStyle(ButtonStyle.Secondary),
     );
 
     return { embeds: [embed], components: [row, resetRow('bag')] };

@@ -38,9 +38,9 @@ function build(image, account) {
     if (image) embed.setImage(image);
 
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('x_create_account').setLabel('✨ إنشاء حساب').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('x_send_tweet').setLabel('🐦 إرسال تغريدة').setStyle(ButtonStyle.Success),
-        new ButtonBuilder().setCustomId('x_delete_account').setLabel('🗑️ حذف الحساب').setStyle(ButtonStyle.Danger),
+        new ButtonBuilder().setCustomId('x_create_account').setLabel('إنشاء حساب').setEmoji('✨').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('x_send_tweet').setLabel('إرسال تغريدة').setEmoji('🐦').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('x_delete_account').setLabel('حذف الحساب').setEmoji('🗑️').setStyle(ButtonStyle.Danger),
     );
 
     return { embeds: [embed], components: [row, resetRow('x_platform')] };

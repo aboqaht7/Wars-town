@@ -4,7 +4,8 @@ function resetRow(key) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`reset_${key}`)
-            .setLabel('🔄 Reset Menu')
+            .setLabel('Reset Menu')
+            .setEmoji('🔄')
             .setStyle(ButtonStyle.Secondary)
     );
 }

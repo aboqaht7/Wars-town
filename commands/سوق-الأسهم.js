@@ -79,15 +79,18 @@ async function buildMarketEmbed(db) {
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('stock_buy_btn')
-            .setLabel('📈 شراء أسهم')
+            .setLabel('شراء أسهم')
+            .setEmoji('📈')
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
             .setCustomId('stock_sell_btn')
-            .setLabel('📉 بيع أسهم')
+            .setLabel('بيع أسهم')
+            .setEmoji('📉')
             .setStyle(ButtonStyle.Danger),
         new ButtonBuilder()
             .setCustomId('stock_portfolio_btn')
-            .setLabel('💼 محفظتي')
+            .setLabel('محفظتي')
+            .setEmoji('💼')
             .setStyle(ButtonStyle.Primary),
     );
 

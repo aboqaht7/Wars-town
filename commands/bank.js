@@ -9,10 +9,10 @@ const { resetRow } = require('../utils');
 
 function bankMenu(imageUrl) {
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('bank_balance').setLabel('💰 عرض الأموال').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('bank_deposit').setLabel('📥 إيداع الكاش').setStyle(ButtonStyle.Success),
-        new ButtonBuilder().setCustomId('bank_withdraw').setLabel('💸 صرف الكاش').setStyle(ButtonStyle.Danger),
-        new ButtonBuilder().setCustomId('bank_transfer').setLabel('🔄 تحويل').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('bank_balance').setLabel('عرض الأموال').setEmoji('💰').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('bank_deposit').setLabel('إيداع الكاش').setEmoji('📥').setStyle(ButtonStyle.Success),
+        new ButtonBuilder().setCustomId('bank_withdraw').setLabel('صرف الكاش').setEmoji('💸').setStyle(ButtonStyle.Danger),
+        new ButtonBuilder().setCustomId('bank_transfer').setLabel('تحويل').setEmoji('🔄').setStyle(ButtonStyle.Secondary),
     );
     const embed = new EmbedBuilder()
         .setTitle('🏦 بنك FANTASY')

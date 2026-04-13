@@ -38,7 +38,7 @@ function buildSnap(account, image) {
 
     if (!account) {
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('snap_create').setLabel('✨ إنشاء حساب').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('snap_create').setLabel('إنشاء حساب').setEmoji('✨').setStyle(ButtonStyle.Primary),
         );
         return { embeds: [embed], components: [row, resetRow('سناب')] };
     }

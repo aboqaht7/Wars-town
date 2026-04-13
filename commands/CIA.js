@@ -28,22 +28,26 @@ module.exports = {
         const row1 = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('cia_login_btn')
-                .setLabel('🟢 تسجيل دخول')
+                .setLabel('تسجيل دخول')
+                .setEmoji('🟢')
                 .setStyle(ButtonStyle.Success),
             new ButtonBuilder()
                 .setCustomId('cia_logout_btn')
-                .setLabel('🔴 تسجيل خروج')
+                .setLabel('تسجيل خروج')
+                .setEmoji('🔴')
                 .setStyle(ButtonStyle.Danger),
             new ButtonBuilder()
                 .setCustomId('cia_active_btn')
-                .setLabel('👥 كشف مباشرين')
+                .setLabel('كشف مباشرين')
+                .setEmoji('👥')
                 .setStyle(ButtonStyle.Primary)
         );
 
         const row2 = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('cia_fake_id_btn')
-                .setLabel('🪪 إنشاء هوية مزيفة')
+                .setLabel('إنشاء هوية مزيفة')
+                .setEmoji('🪪')
                 .setStyle(ButtonStyle.Secondary)
         );
 

@@ -265,8 +265,8 @@ async function handleOpenTicket(interaction, typeId) {
             .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
 
         const closeRow = new ARB2().addComponents(
-            new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('📋 استلام التكت').setStyle(BS2.Secondary),
-            new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('🔒 إغلاق التكت').setStyle(BS2.Danger)
+            new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('استلام التكت').setEmoji('📋').setStyle(BS2.Secondary),
+            new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('إغلاق التكت').setEmoji('🔒').setStyle(BS2.Danger)
         );
         const pingContent = type.role_id ? `<@${interaction.user.id}> <@&${type.role_id}>` : `<@${interaction.user.id}>`;
         await ticketChannel.send({ content: pingContent, embeds: [ticketEmbed], components: [closeRow] });
@@ -1029,8 +1029,8 @@ client.on('interactionCreate', async interaction => {
                             .setTimestamp();
 
                         const row = new ActionRowBuilder().addComponents(
-                            new ButtonBuilder().setCustomId(`approve_company_${p.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
-                            new ButtonBuilder().setCustomId(`reject_company_${p.id}`).setLabel('❌ رفض').setStyle(ButtonStyle.Danger),
+                            new ButtonBuilder().setCustomId(`approve_company_${p.id}`).setLabel('قبول').setEmoji('✅').setStyle(ButtonStyle.Success),
+                            new ButtonBuilder().setCustomId(`reject_company_${p.id}`).setLabel('رفض').setEmoji('❌').setStyle(ButtonStyle.Danger),
                         );
                         await interaction.channel.send({ embeds: [embed], components: [row] });
                     }
@@ -1829,12 +1829,12 @@ client.on('interactionCreate', async interaction => {
                 const newRow = new ARB3().addComponents(
                     new BB3()
                         .setCustomId(`claim_ticket_${channelId}`)
-                        .setLabel(`✅ مستلَم بواسطة: ${claimer.username}`)
+                        .setLabel(`مستلَم بواسطة: ${claimer.username}`).setEmoji('✅')
                         .setStyle(BS3.Success)
                         .setDisabled(true),
                     new BB3()
                         .setCustomId(`close_ticket_${channelId}`)
-                        .setLabel('🔒 إغلاق التكت')
+                        .setLabel('إغلاق التكت').setEmoji('🔒')
                         .setStyle(BS3.Danger)
                 );
 
@@ -2156,7 +2156,7 @@ client.on('interactionCreate', async interaction => {
                 if (!userCompany) {
                     const { ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
                     const applyRow = new ARB2().addComponents(
-                        new BB2().setCustomId('company_apply_btn').setLabel('📋 تقديم طلب تأسيس').setStyle(BS2.Success)
+                        new BB2().setCustomId('company_apply_btn').setLabel('تقديم طلب تأسيس').setEmoji('📋').setStyle(BS2.Success)
                     );
                     return interaction.reply({
                         content: '❌ ليس لديك شركة مسجلة. يمكنك تقديم طلب تأسيس شركة من خلال الزر أدناه.',
