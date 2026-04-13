@@ -75,7 +75,7 @@ module.exports = {
             const { ButtonBuilder, ButtonStyle } = require('discord.js');
             const btn = new ButtonBuilder()
                 .setCustomId(`trip_msg_btn_${type}`)
-                .setLabel(`✏️ اكتب رسالة ${labels[type]}`)
+                .setLabel(`اكتب رسالة ${labels[type]}`).setEmoji('✏️')
                 .setStyle(ButtonStyle.Primary);
             const row = new ActionRowBuilder().addComponents(btn);
             await interaction.channel.send({

@@ -98,11 +98,11 @@ async function buildDashboard(db, lawyerId, lawyerName) {
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`lawyer_req_accept_${r.id}`)
-                        .setLabel(`✅ قبول ${r.case_number}`)
+                        .setLabel(`قبول ${r.case_number}`).setEmoji('✅')
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
                         .setCustomId(`lawyer_req_reject_${r.id}`)
-                        .setLabel(`❌ رفض ${r.case_number}`)
+                        .setLabel(`رفض ${r.case_number}`).setEmoji('❌')
                         .setStyle(ButtonStyle.Danger),
                 )
             );

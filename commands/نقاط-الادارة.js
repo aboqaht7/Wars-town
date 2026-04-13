@@ -56,15 +56,15 @@ async function buildPanel(db) {
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('points_check')
-            .setLabel('📋 كشف نقاطي')
+            .setLabel('كشف نقاطي').setEmoji('📋')
             .setStyle(ButtonStyle.Primary),
         new ButtonBuilder()
             .setCustomId('points_add_btn')
-            .setLabel('➕ إضافة نقاط')
+            .setLabel('إضافة نقاط').setEmoji('➕')
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
             .setCustomId('points_deduct_btn')
-            .setLabel('➖ خصم نقاط')
+            .setLabel('خصم نقاط').setEmoji('➖')
             .setStyle(ButtonStyle.Danger),
     );
 

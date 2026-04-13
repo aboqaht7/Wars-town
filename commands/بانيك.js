@@ -28,7 +28,7 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('panic_location_btn')
-                .setLabel('📍 إرسال الموقع')
+                .setLabel('إرسال الموقع').setEmoji('📍')
                 .setStyle(ButtonStyle.Danger)
         );
 

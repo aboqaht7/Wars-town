@@ -33,16 +33,16 @@ module.exports = {
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('💵 إيداع').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId('comp_withdraw_btn').setLabel('💸 سحب').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('📄 تعيين موظف').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('🧾 إقالة موظف').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('📜 حل الشركة').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('إيداع').setEmoji('💵').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('comp_withdraw_btn').setLabel('سحب').setEmoji('💸').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('تعيين موظف').setEmoji('📄').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('إقالة موظف').setEmoji('🧾').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('حل الشركة').setEmoji('📜').setStyle(ButtonStyle.Danger),
         );
 
         const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('comp_promote_btn').setLabel('⬆️ ترقية موظف').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('comp_paysalaries_btn').setLabel('💰 إيداع الرواتب').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('comp_promote_btn').setLabel('ترقية موظف').setEmoji('⬆️').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('comp_paysalaries_btn').setLabel('إيداع الرواتب').setEmoji('💰').setStyle(ButtonStyle.Success),
         );
 
         await interaction.reply({ content: '\u200b', flags: 64 });

@@ -33,9 +33,9 @@ function buildTweetMessage(post, avatarURL) {
         .setTimestamp();
 
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId(`x_like_${post.id}`).setLabel(`❤️ ${post.likes ?? 0}`).setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder().setCustomId(`x_retweet_${post.id}`).setLabel(`🔁 ${post.retweets ?? 0}`).setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder().setCustomId(`x_reply_${post.id}`).setLabel('💬 رد').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(`x_like_${post.id}`).setLabel(`${post.likes ?? 0}`).setEmoji('❤️').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(`x_retweet_${post.id}`).setLabel(`${post.retweets ?? 0}`).setEmoji('🔁').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(`x_reply_${post.id}`).setLabel('رد').setEmoji('💬').setStyle(ButtonStyle.Secondary),
     );
 
     return { embed, row };

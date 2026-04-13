@@ -51,11 +51,11 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('company_apply_btn')
-                .setLabel('📋 تقديم طلب تأسيس')
+                .setLabel('تقديم طلب تأسيس').setEmoji('📋')
                 .setStyle(ButtonStyle.Success),
             new ButtonBuilder()
                 .setCustomId('company_list_btn')
-                .setLabel('📋 قائمة الشركات')
+                .setLabel('قائمة الشركات').setEmoji('📋')
                 .setStyle(ButtonStyle.Secondary),
         );
 

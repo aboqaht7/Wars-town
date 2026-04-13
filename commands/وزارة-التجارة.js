@@ -18,12 +18,12 @@ module.exports = {
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('ministry_login_btn').setLabel('🟢 تسجيل دخول').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId('ministry_logout_btn').setLabel('🔴 تسجيل خروج').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('ministry_login_btn').setLabel('تسجيل دخول').setEmoji('🟢').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('ministry_logout_btn').setLabel('تسجيل خروج').setEmoji('🔴').setStyle(ButtonStyle.Danger),
         );
         const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('ministry_companies_btn').setLabel('🏢 عرض الشركات المسجلة').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('ministry_approve_btn').setLabel('✅ قبول شركة').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('ministry_companies_btn').setLabel('عرض الشركات المسجلة').setEmoji('🏢').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('ministry_approve_btn').setLabel('قبول شركة').setEmoji('✅').setStyle(ButtonStyle.Success),
         );
 
         await interaction.reply({ content: '\u200b', flags: 64 });

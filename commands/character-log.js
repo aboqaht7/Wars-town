@@ -54,11 +54,11 @@ module.exports = {
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`approve_identity_${p.id}`)
-                        .setLabel(`✅ قبول #${p.id}`)
+                        .setLabel(`قبول #${p.id}`).setEmoji('✅')
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
                         .setCustomId(`reject_identity_${p.id}`)
-                        .setLabel(`❌ رفض #${p.id}`)
+                        .setLabel(`رفض #${p.id}`).setEmoji('❌')
                         .setStyle(ButtonStyle.Danger)
                 );
                 components.push(row);
