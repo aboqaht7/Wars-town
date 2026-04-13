@@ -153,6 +153,6 @@ module.exports = {
         }
 
         const payload = await buildCitizenList(db, 0);
-        await interaction.reply({ ...payload, flags: 64 });
+        await interaction.reply(payload);
     },
 };
