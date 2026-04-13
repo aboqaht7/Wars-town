@@ -55,9 +55,15 @@ async function build(db) {
             .setDescription(t.role_id ? 'يستلمه فريق مخصص' : 'انقر للفتح');
         if (t.emoji) {
             const parsed = parseEmoji(t.emoji);
+            console.log(`[TICKET EMOJI] id=${t.id} raw="${t.emoji}" parsed=${JSON.stringify(parsed)}`);
             if (parsed) {
-                // parseEmoji returns a string for unicode, object for custom
-                opt.setEmoji(typeof parsed === 'string' ? { name: parsed } : parsed);
+                try {
+                    const emojiArg = typeof parsed === 'string' ? { name: parsed } : parsed;
+                    opt.setEmoji(emojiArg);
+                    console.log(`[TICKET EMOJI] ✅ setEmoji(${JSON.stringify(emojiArg)}) for "${t.name}"`);
+                } catch (e) {
+                    console.error(`[TICKET EMOJI] ❌ setEmoji failed for "${t.name}": ${e.message}`);
+                }
             }
         }
         return opt;
