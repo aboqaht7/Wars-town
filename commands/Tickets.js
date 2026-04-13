@@ -23,7 +23,7 @@ module.exports = {
             const payload = await build(db);
             return interaction.message.edit(payload);
         }
-        await interaction.deferReply({ flags: 64 });
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await build(db);
         await interaction.channel.send(payload);
         await interaction.deleteReply().catch(() => {});
