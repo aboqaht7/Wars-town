@@ -1,7 +1,8 @@
 const {
     SlashCommandBuilder, EmbedBuilder,
     ActionRowBuilder,
-    StringSelectMenuBuilder
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder
 } = require('discord.js');
 const { resetRow } = require('../utils');
 const { parseEmoji } = require('../btnConfig');
@@ -48,13 +49,17 @@ async function build(db) {
     embed.setDescription('اختر نوع التكت من القائمة أدناه وسيُنشأ لك روم خاص.');
 
     const options = types.slice(0, 25).map(t => {
-        const parsedEmoji = t.emoji ? parseEmoji(t.emoji) : null;
-        const opt = {
-            label: t.name,
-            value: String(t.id),
-            description: t.role_id ? 'يستلمه فريق مخصص' : 'انقر للفتح',
-        };
-        if (parsedEmoji) opt.emoji = parsedEmoji;
+        const opt = new StringSelectMenuOptionBuilder()
+            .setLabel(t.name || 'تكت')
+            .setValue(String(t.id))
+            .setDescription(t.role_id ? 'يستلمه فريق مخصص' : 'انقر للفتح');
+        if (t.emoji) {
+            const parsed = parseEmoji(t.emoji);
+            if (parsed) {
+                // parseEmoji returns a string for unicode, object for custom
+                opt.setEmoji(typeof parsed === 'string' ? { name: parsed } : parsed);
+            }
+        }
         return opt;
     });
 
