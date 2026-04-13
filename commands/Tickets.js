@@ -4,6 +4,7 @@ const {
     StringSelectMenuBuilder
 } = require('discord.js');
 const { resetRow } = require('../utils');
+const { parseEmoji } = require('../btnConfig');
 
 module.exports = {
     name: 'tickets',
@@ -46,11 +47,16 @@ async function build(db) {
 
     embed.setDescription('اختر نوع التكت من القائمة أدناه وسيُنشأ لك روم خاص.');
 
-    const options = types.slice(0, 25).map(t => ({
-        label: `${t.emoji} ${t.name}`,
-        value: String(t.id),
-        description: t.role_id ? 'يستلمه فريق مخصص' : 'انقر للفتح',
-    }));
+    const options = types.slice(0, 25).map(t => {
+        const parsedEmoji = t.emoji ? parseEmoji(t.emoji) : null;
+        const opt = {
+            label: t.name,
+            value: String(t.id),
+            description: t.role_id ? 'يستلمه فريق مخصص' : 'انقر للفتح',
+        };
+        if (parsedEmoji) opt.emoji = parsedEmoji;
+        return opt;
+    });
 
     const menuRow = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()

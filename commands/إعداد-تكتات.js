@@ -1,5 +1,20 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
+async function resolveEmoji(rawEmoji, guild) {
+    if (!rawEmoji) return null;
+    const fullMatch = rawEmoji.match(/^<(a?):(\w+):(\d+)>$/);
+    if (fullMatch) return rawEmoji;
+    const nameOnly = rawEmoji.replace(/^:|:$/g, '').trim();
+    if (nameOnly && guild) {
+        try {
+            const emojis = await guild.emojis.fetch();
+            const found = emojis.find(e => e.name === nameOnly);
+            if (found) return `<${found.animated ? 'a' : ''}:${found.name}:${found.id}>`;
+        } catch (_) {}
+    }
+    return rawEmoji;
+}
+
 module.exports = {
     name: 'إعداد-تكتات',
     data: new SlashCommandBuilder()
@@ -44,7 +59,8 @@ module.exports = {
 
         if (sub === 'إضافة-نوع') {
             const name   = interaction.options.getString('الاسم').trim();
-            const emoji  = interaction.options.getString('الإيموجي')?.trim() || '🎫';
+            const rawEmoji = interaction.options.getString('الإيموجي')?.trim() || '🎫';
+            const emoji  = await resolveEmoji(rawEmoji, interaction.guild);
             const role   = interaction.options.getRole('الرتبة');
             const type   = await db.addTicketType(name, emoji, role?.id || null);
             const fields = [
