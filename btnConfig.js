@@ -13,10 +13,14 @@ const STYLE_MAP = {
 
 function parseEmoji(raw) {
     if (!raw) return null;
-    const full = raw.match(/^<a?:(\w+):(\d+)>$/);
-    if (full) return { name: full[1], id: full[2] };
+    // صيغة كاملة: <:name:id> أو <a:name:id>
+    const full = raw.match(/^<(a?):(\w+):(\d+)>$/);
+    if (full) return { animated: !!full[1], name: full[2], id: full[3] };
+    // صيغة مختصرة: name:id
     const short = raw.match(/^(\w+):(\d+)$/);
     if (short) return { name: short[1], id: short[2] };
+    // إيموجي Unicode أو نص — نتحقق أنه ليس بصيغة :name: بدون ID
+    if (/^:\w+:$/.test(raw)) return null; // :name: بدون ID = غير صالح
     return raw;
 }
 
@@ -99,7 +103,14 @@ function makeBtn(customId, cfg) {
         .setLabel(cfg.label || '—')
         .setStyle(style);
     if (cfg.emoji) {
-        try { btn.setEmoji(parseEmoji(cfg.emoji)); } catch (_) {}
+        const parsed = parseEmoji(cfg.emoji);
+        if (parsed) {
+            try {
+                btn.setEmoji(parsed);
+            } catch (e) {
+                console.warn(`[btnConfig] setEmoji failed for "${cfg.emoji}":`, e.message);
+            }
+        }
     }
     return btn;
 }
@@ -112,10 +123,12 @@ function makeMenuOption(value, cfg) {
     if (cfg.description) opt.description = cfg.description;
     if (cfg.emoji) {
         const parsed = parseEmoji(cfg.emoji);
-        if (typeof parsed === 'string') {
-            opt.emoji = { name: parsed };
-        } else if (parsed) {
-            opt.emoji = parsed;
+        if (parsed) {
+            if (typeof parsed === 'string') {
+                opt.emoji = { name: parsed };
+            } else {
+                opt.emoji = parsed;
+            }
         }
     }
     return opt;

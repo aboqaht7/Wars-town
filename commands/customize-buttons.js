@@ -13,6 +13,29 @@ const SYSTEM_CHOICES = Object.keys(SYSTEM_LABELS).map(k => ({
     value: k,
 }));
 
+async function resolveEmoji(rawEmoji, guild) {
+    if (!rawEmoji) return null;
+
+    // صيغة كاملة: <:name:id> أو <a:name:id>
+    const fullMatch = rawEmoji.match(/^<(a?):(\w+):(\d+)>$/);
+    if (fullMatch) return rawEmoji;
+
+    // اسم فقط أو :name: — نبحث عنه في السيرفر
+    const nameOnly = rawEmoji.replace(/^:|:$/g, '').trim();
+    if (nameOnly && guild) {
+        try {
+            const emojis = await guild.emojis.fetch();
+            const found = emojis.find(e => e.name === nameOnly);
+            if (found) {
+                return `<${found.animated ? 'a' : ''}:${found.name}:${found.id}>`;
+            }
+        } catch (_) {}
+    }
+
+    // إيموجي Unicode عادي (مثل 💰 أو 🗑️)
+    return rawEmoji;
+}
+
 module.exports = {
     name: 'تخصيص-زر',
     data: new SlashCommandBuilder()
@@ -26,21 +49,21 @@ module.exports = {
             .addChoices(...SYSTEM_CHOICES))
         .addStringOption(o => o
             .setName('زر')
-            .setDescription('اختر الزر أو خيار المنيو (سيظهر تلقائياً بعد اختيار النظام)')
+            .setDescription('اختر الزر أو خيار المنيو')
             .setRequired(true)
             .setAutocomplete(true))
         .addStringOption(o => o
             .setName('نص')
-            .setDescription('النص الجديد')
+            .setDescription('النص الجديد للزر')
             .setRequired(false)
             .setMaxLength(80))
         .addStringOption(o => o
             .setName('ايموجي')
-            .setDescription('إيموجي عادي 💰 أو إيموجي سيرفر (اكتب اسمه مع نقطتين مثل :اسم_الايموجي:)')
+            .setDescription('اكتب : ثم اسم الإيموجي واختره من المنسدل — أو الصق <:اسم:ID> مباشرة')
             .setRequired(false))
         .addStringOption(o => o
             .setName('لون')
-            .setDescription('لون الزر (للأزرار فقط، لا ينطبق على المنيو)')
+            .setDescription('لون الزر (للأزرار فقط)')
             .setRequired(false)
             .addChoices(...STYLE_CHOICES))
         .addStringOption(o => o
@@ -53,8 +76,7 @@ module.exports = {
         const system = interaction.options.getString('نظام');
         const focused = interaction.options.getFocused().toLowerCase();
         if (!system || !BTN_LABELS[system]) return interaction.respond([]);
-        const btns = BTN_LABELS[system];
-        const choices = Object.entries(btns)
+        const choices = Object.entries(BTN_LABELS[system])
             .filter(([k, v]) => k.toLowerCase().includes(focused) || v.includes(focused))
             .map(([k, v]) => ({ name: v, value: k }));
         return interaction.respond(choices.slice(0, 25));
@@ -78,40 +100,37 @@ module.exports = {
             });
         }
         if (!newText && !rawEmoji && !newStyle && !newDesc) {
-            return interaction.reply({ content: '❌ يجب تحديد تغيير واحد على الأقل (نص، إيموجي، لون، وصف).', flags: 64 });
+            return interaction.reply({ content: '❌ يجب تحديد تغيير واحد على الأقل.', flags: 64 });
         }
 
         const isMenu = MENU_SYSTEMS.has(system);
 
-        let parsedEmoji = rawEmoji || null;
-        if (rawEmoji) {
-            const colons = rawEmoji.match(/^:(\w+):$/);
-            if (colons) {
-                const guildEmoji = interaction.guild?.emojis?.cache.find(e => e.name === colons[1]);
-                if (guildEmoji) {
-                    parsedEmoji = `<${guildEmoji.animated ? 'a' : ''}:${guildEmoji.name}:${guildEmoji.id}>`;
-                }
-            }
-        }
+        // حل الإيموجي بجميع صيغه
+        const resolvedEmoji = rawEmoji
+            ? await resolveEmoji(rawEmoji, interaction.guild)
+            : null;
 
         const existing = await db.getBtnCfg(system, btnKey) || { ...DEFAULTS[system][btnKey] };
         const updated = {
-            label: newText     || existing.label,
-            emoji: parsedEmoji || existing.emoji,
+            label: newText         || existing.label,
+            emoji: resolvedEmoji   || existing.emoji,
         };
         if (!isMenu) updated.style       = newStyle || existing.style;
         if (isMenu)  updated.description = newDesc  || existing.description;
 
         await db.setBtnCfg(system, btnKey, updated);
 
-        const styleEmoji = { primary: '🔵', secondary: '⚪', success: '🟢', danger: '🔴' };
+        const isCustomEmoji = updated.emoji?.match(/^<a?:\w+:\d+>$/);
+        const emojiDisplay  = isCustomEmoji ? updated.emoji : (updated.emoji || '—');
+        const styleEmoji    = { primary: '🔵', secondary: '⚪', success: '🟢', danger: '🔴' };
+
         const fields = [
-            { name: 'النظام',    value: SYSTEM_LABELS[system] || system,          inline: true },
+            { name: 'النظام',    value: SYSTEM_LABELS[system] || system,        inline: true },
             { name: isMenu ? 'الخيار' : 'الزر',
-                                  value: BTN_LABELS[system]?.[btnKey] || btnKey,    inline: true },
-            { name: '\u200b',    value: '\u200b',                                  inline: true },
-            { name: 'النص',      value: updated.label,                             inline: true },
-            { name: 'الإيموجي', value: updated.emoji   || '—',                   inline: true },
+                                  value: BTN_LABELS[system]?.[btnKey] || btnKey, inline: true },
+            { name: '\u200b',    value: '\u200b',                               inline: true },
+            { name: 'النص',      value: updated.label,                          inline: true },
+            { name: 'الإيموجي', value: emojiDisplay,                           inline: true },
         ];
         if (!isMenu) {
             fields.push({ name: 'اللون', value: `${styleEmoji[updated.style] || ''} ${updated.style}`, inline: true });
