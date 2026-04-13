@@ -1813,6 +1813,30 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
+        // ── ملف المواطن — أزرار التنقل والرجوع ──────────────────────────────────
+        if (interaction.customId.startsWith('citizen_file_back:') ||
+            interaction.customId.startsWith('citizen_file_prev:') ||
+            interaction.customId.startsWith('citizen_file_next:')) {
+            const chefRoleId = await db.getConfig('cia_chef_role');
+            if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId))
+                return interaction.reply({ content: '❌ غير مصرح.', flags: 64 });
+            try {
+                await interaction.deferUpdate();
+                const parts  = interaction.customId.split(':');
+                const action = parts[0];
+                const curPage = parseInt(parts[1]) || 0;
+                let newPage = curPage;
+                if (action === 'citizen_file_prev') newPage = Math.max(0, curPage - 1);
+                if (action === 'citizen_file_next') newPage = curPage + 1;
+                const { buildCitizenList } = require('./commands/citizen-file');
+                const payload = await buildCitizenList(db, newPage);
+                await interaction.editReply(payload);
+            } catch (e) {
+                console.error('[CITIZEN FILE BTN]', e);
+            }
+            return;
+        }
+
         // ── فتح تكت ─────────────────────────────────────────────────────────────
         if (interaction.customId.startsWith('open_ticket_')) {
             const typeId = parseInt(interaction.customId.replace('open_ticket_', ''));
@@ -2620,6 +2644,32 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'tickets_type_menu') {
             const typeId = parseInt(value);
             return handleOpenTicket(interaction, typeId);
+        }
+
+        // ── ملف المواطن — اختيار من القائمة ─────────────────────────────────────
+        if (interaction.customId.startsWith('citizen_file_select:')) {
+            const chefRoleId = await db.getConfig('cia_chef_role');
+            if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId))
+                return interaction.reply({ content: '❌ غير مصرح.', flags: 64 });
+            try {
+                await interaction.deferUpdate();
+                const page = parseInt(interaction.customId.split(':')[1]) || 0;
+                const [discordId, slot] = value.split(':');
+                const { buildCitizenEmbed, buildCitizenList } = require('./commands/citizen-file');
+                const embed = await buildCitizenEmbed(db, discordId, parseInt(slot));
+                if (!embed) return interaction.editReply({ content: '❌ لم يُعثر على بيانات هذا المواطن.', embeds: [], components: [] });
+                const backBtn = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`citizen_file_back:${page}`)
+                        .setLabel('العودة للقائمة')
+                        .setEmoji('◀️')
+                        .setStyle(ButtonStyle.Secondary)
+                );
+                await interaction.editReply({ embeds: [embed], components: [backBtn] });
+            } catch (e) {
+                console.error('[CITIZEN FILE SELECT]', e);
+            }
+            return;
         }
 
         if (interaction.customId === 'robbery_menu') {

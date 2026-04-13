@@ -406,6 +406,33 @@ async function getAllActiveIdentities() {
     return res.rows;
 }
 
+async function getCitizenData(discordId, slot) {
+    const identRes = await query(
+        'SELECT * FROM identities WHERE discord_id=$1 AND slot=$2',
+        [discordId, slot]
+    );
+    const identity = identRes.rows[0];
+    if (!identity) return null;
+
+    const fullName = [identity.character_name, identity.family_name].filter(Boolean).join(' ');
+
+    const [casesRes, violRes] = await Promise.all([
+        query(
+            `SELECT case_number, title, status, verdict, created_at
+             FROM cases
+             WHERE LOWER(defendant) LIKE LOWER($1)
+             ORDER BY created_at DESC LIMIT 10`,
+            [`%${fullName}%`]
+        ),
+        query(
+            `SELECT reason, created_at FROM violations WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10`,
+            [discordId]
+        ),
+    ]);
+
+    return { identity, cases: casesRes.rows, violations: violRes.rows };
+}
+
 async function createXAccount(discordId, xUsername) {
     const existing = await query('SELECT * FROM x_accounts WHERE discord_id = $1', [discordId]);
     if (existing.rows[0]) return { success: false, error: 'لديك حساب X بالفعل.' };
@@ -1543,7 +1570,7 @@ module.exports = {
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,
     getVehicles, addVehicle, removeVehicle,
-    ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban, getAllActiveIdentities,
+    ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban, getAllActiveIdentities, getCitizenData,
     transferMoney, transferItem, useItem, getTransactions, depositCash, withdrawCash,
     adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,
     getImage, setImage,
