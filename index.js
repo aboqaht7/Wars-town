@@ -1822,15 +1822,15 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ content: '❌ غير مصرح.', flags: 64 });
             try {
                 await interaction.deferUpdate();
-                const parts  = interaction.customId.split(':');
-                const action = parts[0];
+                const parts   = interaction.customId.split(':');
+                const action  = parts[0];
                 const curPage = parseInt(parts[1]) || 0;
                 let newPage = curPage;
                 if (action === 'citizen_file_prev') newPage = Math.max(0, curPage - 1);
                 if (action === 'citizen_file_next') newPage = curPage + 1;
                 const { buildCitizenList } = require('./commands/citizen-file');
                 const payload = await buildCitizenList(db, newPage);
-                await interaction.editReply(payload);
+                await interaction.message.edit(payload);
             } catch (e) {
                 console.error('[CITIZEN FILE BTN]', e);
             }
@@ -2655,9 +2655,12 @@ client.on('interactionCreate', async interaction => {
                 await interaction.deferUpdate();
                 const page = parseInt(interaction.customId.split(':')[1]) || 0;
                 const [discordId, slot] = value.split(':');
-                const { buildCitizenEmbed, buildCitizenList } = require('./commands/citizen-file');
+                const { buildCitizenEmbed } = require('./commands/citizen-file');
                 const embed = await buildCitizenEmbed(db, discordId, parseInt(slot));
-                if (!embed) return interaction.editReply({ content: '❌ لم يُعثر على بيانات هذا المواطن.', embeds: [], components: [] });
+                if (!embed) {
+                    await interaction.message.edit({ content: '❌ لم يُعثر على بيانات هذا المواطن.', embeds: [], components: [] });
+                    return;
+                }
                 const backBtn = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`citizen_file_back:${page}`)
@@ -2665,7 +2668,7 @@ client.on('interactionCreate', async interaction => {
                         .setEmoji('◀️')
                         .setStyle(ButtonStyle.Secondary)
                 );
-                await interaction.editReply({ embeds: [embed], components: [backBtn] });
+                await interaction.message.edit({ embeds: [embed], components: [backBtn] });
             } catch (e) {
                 console.error('[CITIZEN FILE SELECT]', e);
             }
