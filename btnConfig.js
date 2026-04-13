@@ -1,0 +1,87 @@
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
+
+const STYLE_MAP = {
+    primary:   ButtonStyle.Primary,
+    secondary: ButtonStyle.Secondary,
+    success:   ButtonStyle.Success,
+    danger:    ButtonStyle.Danger,
+    ازرق:     ButtonStyle.Primary,
+    رمادي:    ButtonStyle.Secondary,
+    اخضر:     ButtonStyle.Success,
+    احمر:     ButtonStyle.Danger,
+};
+
+const DEFAULTS = {
+    bank: {
+        balance:  { label: 'عرض الأموال',       emoji: '💰', style: 'primary'   },
+        deposit:  { label: 'إيداع الكاش',        emoji: '📥', style: 'success'   },
+        withdraw: { label: 'صرف الكاش',          emoji: '💸', style: 'danger'    },
+        transfer: { label: 'تحويل',              emoji: '🔄', style: 'secondary' },
+    },
+    bag: {
+        view:     { label: 'عرض الحقيبة',        emoji: '👀', style: 'primary'   },
+        use:      { label: 'استخدام غرض',        emoji: '✅', style: 'success'   },
+        transfer: { label: 'تحويل غرض',          emoji: '📤', style: 'secondary' },
+    },
+    cia: {
+        login:    { label: 'تسجيل دخول',         emoji: '🟢', style: 'success'   },
+        logout:   { label: 'تسجيل خروج',         emoji: '🔴', style: 'danger'    },
+        active:   { label: 'كشف مباشرين',        emoji: '👥', style: 'primary'   },
+        fake_id:  { label: 'إنشاء هوية مزيفة',  emoji: '🪪', style: 'secondary' },
+    },
+    stock: {
+        buy:       { label: 'شراء أسهم',         emoji: '📈', style: 'success'   },
+        sell:      { label: 'بيع أسهم',           emoji: '📉', style: 'danger'    },
+        portfolio: { label: 'محفظتي',            emoji: '💼', style: 'primary'   },
+    },
+    x: {
+        create: { label: 'إنشاء حساب',           emoji: '✨', style: 'primary'   },
+        tweet:  { label: 'إرسال تغريدة',         emoji: '🐦', style: 'success'   },
+        delete: { label: 'حذف الحساب',           emoji: '🗑️', style: 'danger'    },
+    },
+    snap: {
+        create: { label: 'إنشاء حساب',           emoji: '✨', style: 'primary'   },
+    },
+};
+
+const SYSTEM_LABELS = {
+    bank:  'البنك',
+    bag:   'الحقيبة',
+    cia:   'CIA',
+    stock: 'سوق الأسهم',
+    x:     'منصة X',
+    snap:  'سناب شات',
+};
+
+const BTN_LABELS = {
+    bank:  { balance: 'عرض الأموال', deposit: 'إيداع', withdraw: 'صرف', transfer: 'تحويل' },
+    bag:   { view: 'عرض الحقيبة', use: 'استخدام غرض', transfer: 'تحويل غرض' },
+    cia:   { login: 'دخول', logout: 'خروج', active: 'كشف مباشرين', fake_id: 'هوية مزيفة' },
+    stock: { buy: 'شراء', sell: 'بيع', portfolio: 'محفظتي' },
+    x:     { create: 'إنشاء حساب', tweet: 'تغريدة', delete: 'حذف' },
+    snap:  { create: 'إنشاء حساب' },
+};
+
+async function loadSystemBtns(db, system) {
+    const defaults = DEFAULTS[system] || {};
+    const out = {};
+    for (const key of Object.keys(defaults)) {
+        const override = await db.getBtnCfg(system, key);
+        out[key] = override ? { ...defaults[key], ...override } : { ...defaults[key] };
+    }
+    return out;
+}
+
+function makeBtn(customId, cfg) {
+    const style = STYLE_MAP[(cfg.style || 'primary').toLowerCase()] ?? ButtonStyle.Primary;
+    const btn = new ButtonBuilder()
+        .setCustomId(customId)
+        .setLabel(cfg.label || '—')
+        .setStyle(style);
+    if (cfg.emoji) {
+        try { btn.setEmoji(cfg.emoji); } catch (_) {}
+    }
+    return btn;
+}
+
+module.exports = { DEFAULTS, SYSTEM_LABELS, BTN_LABELS, loadSystemBtns, makeBtn };

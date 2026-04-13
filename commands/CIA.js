@@ -1,10 +1,9 @@
 const {
     SlashCommandBuilder,
     EmbedBuilder,
-    ButtonBuilder,
-    ButtonStyle,
     ActionRowBuilder,
 } = require('discord.js');
+const { loadSystemBtns, makeBtn } = require('../btnConfig');
 
 module.exports = {
     name: 'cia',
@@ -12,6 +11,8 @@ module.exports = {
         .setName('cia')
         .setDescription('لوحة نظام CIA — تسجيل الدخول والخروج وكشف المباشرين'),
     async slashExecute(interaction, db) {
+        const c = await loadSystemBtns(db, 'cia');
+
         const embed = new EmbedBuilder()
             .setTitle('🕵️ CIA — وكالة الاستخبارات')
             .setColor(0x0D1B2A)
@@ -26,29 +27,13 @@ module.exports = {
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('cia_login_btn')
-                .setLabel('تسجيل دخول')
-                .setEmoji('🟢')
-                .setStyle(ButtonStyle.Success),
-            new ButtonBuilder()
-                .setCustomId('cia_logout_btn')
-                .setLabel('تسجيل خروج')
-                .setEmoji('🔴')
-                .setStyle(ButtonStyle.Danger),
-            new ButtonBuilder()
-                .setCustomId('cia_active_btn')
-                .setLabel('كشف مباشرين')
-                .setEmoji('👥')
-                .setStyle(ButtonStyle.Primary)
+            makeBtn('cia_login_btn',  c.login),
+            makeBtn('cia_logout_btn', c.logout),
+            makeBtn('cia_active_btn', c.active),
         );
 
         const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('cia_fake_id_btn')
-                .setLabel('إنشاء هوية مزيفة')
-                .setEmoji('🪪')
-                .setStyle(ButtonStyle.Secondary)
+            makeBtn('cia_fake_id_btn', c.fake_id),
         );
 
         await interaction.reply({ embeds: [embed], components: [row1, row2] });

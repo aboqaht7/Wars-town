@@ -1,18 +1,18 @@
 const {
     EmbedBuilder,
-    ButtonBuilder,
-    ButtonStyle,
     ActionRowBuilder,
     SlashCommandBuilder,
 } = require('discord.js');
 const { resetRow } = require('../utils');
+const { loadSystemBtns, makeBtn } = require('../btnConfig');
 
-function bankMenu(imageUrl) {
+async function bankMenu(imageUrl, db) {
+    const c = await loadSystemBtns(db, 'bank');
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('bank_balance').setLabel('عرض الأموال').setEmoji('💰').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('bank_deposit').setLabel('إيداع الكاش').setEmoji('📥').setStyle(ButtonStyle.Success),
-        new ButtonBuilder().setCustomId('bank_withdraw').setLabel('صرف الكاش').setEmoji('💸').setStyle(ButtonStyle.Danger),
-        new ButtonBuilder().setCustomId('bank_transfer').setLabel('تحويل').setEmoji('🔄').setStyle(ButtonStyle.Secondary),
+        makeBtn('bank_balance',  c.balance),
+        makeBtn('bank_deposit',  c.deposit),
+        makeBtn('bank_withdraw', c.withdraw),
+        makeBtn('bank_transfer', c.transfer),
     );
     const embed = new EmbedBuilder()
         .setTitle('🏦 بنك FANTASY')
@@ -35,7 +35,7 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(message.author.id);
         if (err) return message.reply(err);
         const img = await db.getImage('bank');
-        message.channel.send(bankMenu(img));
+        message.channel.send(await bankMenu(img, db));
     },
 
     async slashExecute(interaction, db) {
@@ -43,7 +43,7 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const img = await db.getImage('bank');
-        const main = bankMenu(img);
+        const main = await bankMenu(img, db);
         if (interaction._isReset) return interaction.message.edit(main);
         await interaction.channel.send(main);
         await interaction.reply({ content: '​', flags: 64 });

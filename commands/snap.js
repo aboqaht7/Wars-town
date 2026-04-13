@@ -3,31 +3,9 @@ const {
     ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder,
 } = require('discord.js');
 const { resetRow } = require('../utils');
+const { loadSystemBtns, makeBtn } = require('../btnConfig');
 
-module.exports = {
-    name: 'سناب',
-    data: new SlashCommandBuilder().setName('سناب').setDescription('سناب شات — الرسائل والأصدقاء'),
-    async execute(message, args, db) {
-        await db.ensureUser(message.author.id, message.author.username);
-        const err = await db.checkLoginAndIdentity(message.author.id);
-        if (err) return message.reply(err);
-        const account = await db.getSnapAccount(message.author.id);
-        const img = await db.getImage('سناب شات');
-        message.channel.send(buildSnap(account, img));
-    },
-    async slashExecute(interaction, db) {
-        await db.ensureUser(interaction.user.id, interaction.user.username);
-        const err = await db.checkLoginAndIdentity(interaction.user.id);
-        if (err) return interaction.reply({ content: err, flags: 64 });
-        const account = await db.getSnapAccount(interaction.user.id);
-        const img = await db.getImage('سناب شات');
-        await interaction.channel.send(buildSnap(account, img));
-        await interaction.reply({ content: '​', flags: 64 });
-    },
-    buildSnap,
-};
-
-function buildSnap(account, image) {
+async function buildSnap(account, image, db) {
     const embed = new EmbedBuilder()
         .setTitle('👻 سناب شات')
         .setColor(0xFFFC00)
@@ -37,8 +15,9 @@ function buildSnap(account, image) {
     if (image) embed.setImage(image);
 
     if (!account) {
+        const c = await loadSystemBtns(db, 'snap');
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('snap_create').setLabel('إنشاء حساب').setEmoji('✨').setStyle(ButtonStyle.Primary),
+            makeBtn('snap_create', c.create),
         );
         return { embeds: [embed], components: [row, resetRow('سناب')] };
     }
@@ -58,3 +37,26 @@ function buildSnap(account, image) {
 
     return { embeds: [embed], components: [menu, resetRow('سناب')] };
 }
+
+module.exports = {
+    name: 'سناب',
+    data: new SlashCommandBuilder().setName('سناب').setDescription('سناب شات — الرسائل والأصدقاء'),
+    async execute(message, args, db) {
+        await db.ensureUser(message.author.id, message.author.username);
+        const err = await db.checkLoginAndIdentity(message.author.id);
+        if (err) return message.reply(err);
+        const account = await db.getSnapAccount(message.author.id);
+        const img = await db.getImage('سناب شات');
+        message.channel.send(await buildSnap(account, img, db));
+    },
+    async slashExecute(interaction, db) {
+        await db.ensureUser(interaction.user.id, interaction.user.username);
+        const err = await db.checkLoginAndIdentity(interaction.user.id);
+        if (err) return interaction.reply({ content: err, flags: 64 });
+        const account = await db.getSnapAccount(interaction.user.id);
+        const img = await db.getImage('سناب شات');
+        await interaction.channel.send(await buildSnap(account, img, db));
+        await interaction.reply({ content: '​', flags: 64 });
+    },
+    buildSnap,
+};

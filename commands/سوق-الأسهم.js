@@ -1,6 +1,6 @@
 const {
     SlashCommandBuilder, EmbedBuilder,
-    ActionRowBuilder, ButtonBuilder, ButtonStyle
+    ActionRowBuilder,
 } = require('discord.js');
 
 const BARS = ['▁','▂','▃','▄','▅','▆','▇','█'];
@@ -76,22 +76,12 @@ async function buildMarketEmbed(db) {
         .setFooter({ text: 'بورصة FANTASY • الأسعار تتذبذب تلقائياً كل ساعة بناءً على العرض والطلب' })
         .setTimestamp();
 
+    const { loadSystemBtns, makeBtn } = require('../btnConfig');
+    const c = await loadSystemBtns(db, 'stock');
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId('stock_buy_btn')
-            .setLabel('شراء أسهم')
-            .setEmoji('📈')
-            .setStyle(ButtonStyle.Success),
-        new ButtonBuilder()
-            .setCustomId('stock_sell_btn')
-            .setLabel('بيع أسهم')
-            .setEmoji('📉')
-            .setStyle(ButtonStyle.Danger),
-        new ButtonBuilder()
-            .setCustomId('stock_portfolio_btn')
-            .setLabel('محفظتي')
-            .setEmoji('💼')
-            .setStyle(ButtonStyle.Primary),
+        makeBtn('stock_buy_btn',       c.buy),
+        makeBtn('stock_sell_btn',      c.sell),
+        makeBtn('stock_portfolio_btn', c.portfolio),
     );
 
     return { embed, row };

@@ -291,6 +291,17 @@ async function setConfig(key, value) {
         [key, value]
     );
 }
+async function getBtnCfg(system, btnKey) {
+    const res = await query('SELECT value FROM server_config WHERE key=$1', [`btncfg:${system}:${btnKey}`]);
+    return res.rows[0] ? JSON.parse(res.rows[0].value) : null;
+}
+async function setBtnCfg(system, btnKey, cfg) {
+    await query(
+        `INSERT INTO server_config (key, value) VALUES ($1, $2)
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
+        [`btncfg:${system}:${btnKey}`, JSON.stringify(cfg)]
+    );
+}
 
 async function logoutAllUsers() {
     await query('UPDATE users SET is_logged_in=FALSE');
@@ -1511,7 +1522,7 @@ module.exports = {
     query, ensureUser, generateIban,
     unlockSlot3, isSlot3Unlocked,
     updateIban,
-    getConfig, setConfig, logoutAllUsers, addCharacterLog, getCharacterLogs,
+    getConfig, setConfig, getBtnCfg, setBtnCfg, logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     setAdminRank, getAdminRank, removeAdminRank, getAllAdminRanks, updateAdminPoints,

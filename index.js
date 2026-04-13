@@ -4206,7 +4206,7 @@ client.on('interactionCreate', async interaction => {
                 const { buildSnap } = require('./commands/snap');
                 const account = await db.getSnapAccount(interaction.user.id);
                 const img = await db.getImage('سناب شات');
-                return interaction.reply(buildSnap(account, img));
+                return interaction.reply(await buildSnap(account, img, db));
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
