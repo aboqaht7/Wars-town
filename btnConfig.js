@@ -11,6 +11,15 @@ const STYLE_MAP = {
     احمر:     ButtonStyle.Danger,
 };
 
+function parseEmoji(raw) {
+    if (!raw) return null;
+    const full = raw.match(/^<a?:(\w+):(\d+)>$/);
+    if (full) return { name: full[1], id: full[2] };
+    const short = raw.match(/^(\w+):(\d+)$/);
+    if (short) return { name: short[1], id: short[2] };
+    return raw;
+}
+
 const DEFAULTS = {
     bank: {
         balance:  { label: 'عرض الأموال',       emoji: '💰', style: 'primary'   },
@@ -42,24 +51,35 @@ const DEFAULTS = {
     snap: {
         create: { label: 'إنشاء حساب',           emoji: '✨', style: 'primary'   },
     },
+    snap_menu: {
+        send:     { label: 'إرسال سناب',     description: 'أرسل سناب لصديق',          emoji: '📸' },
+        inbox:    { label: 'الوارد',          description: 'شوف السنابات اللي وصلتك',  emoji: '📬' },
+        friends:  { label: 'أصدقائي',        description: 'قائمة أصدقائك والستريك',   emoji: '👥' },
+        add:      { label: 'إضافة صديق',     description: 'أضف صديق باسم حساب سناب', emoji: '➕' },
+        requests: { label: 'طلبات الصداقة',  description: 'اقبل طلبات الصداقة',      emoji: '🔔' },
+    },
 };
 
+const MENU_SYSTEMS = new Set(['snap_menu']);
+
 const SYSTEM_LABELS = {
-    bank:  'البنك',
-    bag:   'الحقيبة',
-    cia:   'CIA',
-    stock: 'سوق الأسهم',
-    x:     'منصة X',
-    snap:  'سناب شات',
+    bank:      'البنك',
+    bag:       'الحقيبة',
+    cia:       'CIA',
+    stock:     'سوق الأسهم',
+    x:         'منصة X',
+    snap:      'سناب شات (أزرار)',
+    snap_menu: 'سناب شات (منيو)',
 };
 
 const BTN_LABELS = {
-    bank:  { balance: 'عرض الأموال', deposit: 'إيداع', withdraw: 'صرف', transfer: 'تحويل' },
-    bag:   { view: 'عرض الحقيبة', use: 'استخدام غرض', transfer: 'تحويل غرض' },
-    cia:   { login: 'دخول', logout: 'خروج', active: 'كشف مباشرين', fake_id: 'هوية مزيفة' },
-    stock: { buy: 'شراء', sell: 'بيع', portfolio: 'محفظتي' },
-    x:     { create: 'إنشاء حساب', tweet: 'تغريدة', delete: 'حذف' },
-    snap:  { create: 'إنشاء حساب' },
+    bank:      { balance: 'عرض الأموال', deposit: 'إيداع', withdraw: 'صرف', transfer: 'تحويل' },
+    bag:       { view: 'عرض الحقيبة', use: 'استخدام غرض', transfer: 'تحويل غرض' },
+    cia:       { login: 'دخول', logout: 'خروج', active: 'كشف مباشرين', fake_id: 'هوية مزيفة' },
+    stock:     { buy: 'شراء', sell: 'بيع', portfolio: 'محفظتي' },
+    x:         { create: 'إنشاء حساب', tweet: 'تغريدة', delete: 'حذف' },
+    snap:      { create: 'إنشاء حساب' },
+    snap_menu: { send: 'إرسال سناب', inbox: 'الوارد', friends: 'أصدقائي', add: 'إضافة صديق', requests: 'طلبات الصداقة' },
 };
 
 async function loadSystemBtns(db, system) {
@@ -79,9 +99,29 @@ function makeBtn(customId, cfg) {
         .setLabel(cfg.label || '—')
         .setStyle(style);
     if (cfg.emoji) {
-        try { btn.setEmoji(cfg.emoji); } catch (_) {}
+        try { btn.setEmoji(parseEmoji(cfg.emoji)); } catch (_) {}
     }
     return btn;
 }
 
-module.exports = { DEFAULTS, SYSTEM_LABELS, BTN_LABELS, loadSystemBtns, makeBtn };
+function makeMenuOption(value, cfg) {
+    const opt = {
+        label: cfg.label || value,
+        value,
+    };
+    if (cfg.description) opt.description = cfg.description;
+    if (cfg.emoji) {
+        const parsed = parseEmoji(cfg.emoji);
+        if (typeof parsed === 'string') {
+            opt.emoji = { name: parsed };
+        } else if (parsed) {
+            opt.emoji = parsed;
+        }
+    }
+    return opt;
+}
+
+module.exports = {
+    DEFAULTS, MENU_SYSTEMS, SYSTEM_LABELS, BTN_LABELS,
+    parseEmoji, loadSystemBtns, makeBtn, makeMenuOption,
+};

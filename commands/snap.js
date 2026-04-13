@@ -1,9 +1,9 @@
 const {
     SlashCommandBuilder, EmbedBuilder,
-    ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder,
+    ActionRowBuilder, StringSelectMenuBuilder,
 } = require('discord.js');
 const { resetRow } = require('../utils');
-const { loadSystemBtns, makeBtn } = require('../btnConfig');
+const { loadSystemBtns, makeBtn, makeMenuOption } = require('../btnConfig');
 
 async function buildSnap(account, image, db) {
     const embed = new EmbedBuilder()
@@ -22,16 +22,17 @@ async function buildSnap(account, image, db) {
         return { embeds: [embed], components: [row, resetRow('سناب')] };
     }
 
+    const mc = await loadSystemBtns(db, 'snap_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('snap_menu')
             .setPlaceholder('👻 اختر من القائمة')
             .addOptions([
-                { label: '📸 إرسال سناب',    value: 'snap_send',     description: 'أرسل سناب لصديق' },
-                { label: '📬 الوارد',          value: 'snap_inbox',    description: 'شوف السنابات اللي وصلتك' },
-                { label: '👥 أصدقائي',        value: 'snap_friends',  description: 'قائمة أصدقائك والستريك' },
-                { label: '➕ إضافة صديق',     value: 'snap_add',      description: 'أضف صديق باسم حساب سناب' },
-                { label: '🔔 طلبات الصداقة',  value: 'snap_requests', description: 'اقبل طلبات الصداقة' },
+                makeMenuOption('snap_send',     mc.send),
+                makeMenuOption('snap_inbox',    mc.inbox),
+                makeMenuOption('snap_friends',  mc.friends),
+                makeMenuOption('snap_add',      mc.add),
+                makeMenuOption('snap_requests', mc.requests),
             ])
     );
 
