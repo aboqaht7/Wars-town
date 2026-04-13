@@ -152,8 +152,8 @@ module.exports = {
             return interaction.reply({ content: '❌ هذا الأمر مخصص لـ **CIA Chef** فقط.', flags: 64 });
         }
 
-        await interaction.reply({ content: '✅ جاري فتح ملفات المواطنين...', flags: 64 });
+        await interaction.deferReply();
         const payload = await buildCitizenList(db, 0);
-        await interaction.channel.send(payload);
+        await interaction.editReply(payload);
     },
 };

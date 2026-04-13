@@ -4961,11 +4961,14 @@ client.on('messageCreate', async message => {
         return;
     }
 
-    // حذف رسائل البوت — الإمبيدات والرسائل ذات الأزرار تبقى دائمة، فقط الردود النصية القصيرة تُحذف
+    // حذف رسائل البوت — الإمبيدات والرسائل ذات الأزرار وردود السلاش تبقى دائمة، فقط الردود النصية القصيرة تُحذف
     if (message.author.id === client.user?.id) {
-        const hasEmbeds = message.embeds.length > 0;
+        const hasEmbeds     = message.embeds.length > 0;
         const hasComponents = message.components.length > 0;
-        if (!hasEmbeds && !hasComponents) setTimeout(() => message.delete().catch(() => {}), 60_000);
+        const isInteraction = !!message.interaction || !!message.interactionMetadata;
+        if (!hasEmbeds && !hasComponents && !isInteraction) {
+            setTimeout(() => message.delete().catch(() => {}), 60_000);
+        }
         return;
     }
     if (message.author.bot) return;
