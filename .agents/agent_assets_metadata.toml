@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "tNFvgQ8yYzBaA9AFCLXHE"
+uri = "file://jobs.txt"
+type = "text"
+title = "jobs.js — نظام الوظائف"
