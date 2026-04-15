@@ -18,7 +18,7 @@ module.exports = {
         await db.setConfig('identity_log_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين مسؤولي الهوية')
+            .setTitle('Identity Admins Set')
             .setColor(0x1565C0)
             .addFields(
                 { name: '🛡️ الرتبة المسؤولة', value: `<@&${role.id}> — \`${role.name}\``, inline: true },

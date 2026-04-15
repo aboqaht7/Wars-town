@@ -18,7 +18,7 @@ module.exports = {
         await db.setConfig('activation_log_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين قناة طلبات التفعيل')
+            .setTitle('Activation Channel Set')
             .setColor(0x1565C0)
             .addFields(
                 { name: '📢 القناة', value: `<#${channel.id}>`, inline: true },

@@ -19,7 +19,7 @@ module.exports = {
         await db.setConfig('judge_role_id', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين رتبة القضاة')
+            .setTitle('Judges Role Set')
             .setColor(0x4A148C)
             .setDescription('أعضاء هذه الرتبة سيظهرون عند توكيل قاضٍ لقضية.')
             .addFields(

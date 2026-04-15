@@ -45,7 +45,7 @@ async function buildMain(db) {
     const img = await db.getImage('محاماة');
 
     const embed = new EmbedBuilder()
-        .setTitle('مهام المحامين')
+        .setTitle('Lawyers Tasks')
         .setColor(0x0D47A1)
         .setDescription(
             '> اختر اسمك من القائمة أدناه للوصول إلى لوحة مهامك الخاصة.\n' +
@@ -85,7 +85,7 @@ async function buildPrivate(db, lawyerId, lawyerName) {
     const img         = await db.getImage('محاماة');
 
     const embed = new EmbedBuilder()
-        .setTitle('لوحة مهامي')
+        .setTitle('My Tasks Board')
         .setColor(0x0D47A1)
         .setFooter({ text: `بدل التوكيل: ${RETAINER_FEE.toLocaleString()} ريال • نظام المحاماة • بوت FANTASY` })
         .setTimestamp();

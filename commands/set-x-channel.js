@@ -13,7 +13,7 @@ module.exports = {
         if (!channel) return message.reply('❌ اذكر الروم. مثال: `-x-روم #اسم-الروم`');
         await db.setConfig('x_channel', channel.id);
         const embed = new EmbedBuilder()
-            .setTitle('تم تحديد روم التغريدات')
+            .setTitle('Tweets Channel Set')
             .setColor(0x000000)
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
             .setFooter({ text: 'منصة X • بوت FANTASY' })
@@ -24,7 +24,7 @@ module.exports = {
         const channel = interaction.options.getChannel('روم');
         await db.setConfig('x_channel', channel.id);
         const embed = new EmbedBuilder()
-            .setTitle('تم تحديد روم التغريدات')
+            .setTitle('Tweets Channel Set')
             .setColor(0x000000)
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
             .setFooter({ text: 'منصة X • بوت FANTASY' })

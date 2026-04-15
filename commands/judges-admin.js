@@ -54,7 +54,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('تمت إضافة القاضي')
+                .setTitle('Judge Added')
                 .setColor(0x4A148C)
                 .setDescription(roleStatus || null)
                 .addFields(
@@ -87,7 +87,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('تمت إزالة القاضي')
+                .setTitle('Judge Removed')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
@@ -101,7 +101,7 @@ module.exports = {
             if (!judges.length) return interaction.reply({ content: '📋 لا يوجد قضاة مسجلون حالياً.', flags: 64 });
             const lines = judges.map((j, i) => `**${i + 1}.** ${j.judge_name} — <@${j.discord_id}>`).join('\n');
             const embed = new EmbedBuilder()
-                .setTitle('القضاة المعتمدون')
+                .setTitle('Certified Judges')
                 .setColor(0x4A148C)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${judges.length} قاضٍ`, inline: true })

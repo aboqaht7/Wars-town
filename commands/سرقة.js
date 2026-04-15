@@ -52,7 +52,7 @@ module.exports = {
             : '🎒 أغراض: لا يوجد';
 
         const embed = new EmbedBuilder()
-            .setTitle('تمت السرقة')
+            .setTitle('Robbery Committed')
             .setColor(0x37474F)
             .setDescription(`قام <@${message.author.id}> بسرقة <@${target.id}>`)
             .addFields(

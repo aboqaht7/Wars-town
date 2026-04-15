@@ -24,7 +24,7 @@ module.exports = {
 
 async function build(db) {
     const embed = new EmbedBuilder()
-        .setTitle('نظام الرحلات')
+        .setTitle('Trip System')
         .setColor(0xB71C1C)
         .setDescription(
             '> اختر الإجراء المطلوب من الأزرار أدناه.\n\n' +

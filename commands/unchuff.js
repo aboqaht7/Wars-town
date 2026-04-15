@@ -13,7 +13,7 @@ module.exports = {
         await db.uncuffPlayer(target.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم فك الكلبشة')
+            .setTitle('Handcuffs Removed')
             .setColor(0x2E7D32)
             .addFields(
                 { name: '👮 المنفذ',    value: `<@${message.author.id}>`, inline: true },

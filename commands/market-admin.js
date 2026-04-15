@@ -54,7 +54,7 @@ module.exports = {
             const desc  = interaction.options.getString('الوصف')?.trim() || null;
             const item  = await db.addMarketItem(name, price, desc);
             const embed = new EmbedBuilder()
-                .setTitle('تمت الإضافة للمتجر')
+                .setTitle('Added to Store')
                 .setColor(0xBF360C)
                 .addFields(
                     { name: 'ID',       value: String(item.id),                                inline: true },
@@ -94,7 +94,7 @@ module.exports = {
             });
             if (!item) return interaction.reply({ content: `❌ لا يوجد غرض بـ ID: ${id}`, flags: 64 });
             const embed = new EmbedBuilder()
-                .setTitle('تم التعديل')
+                .setTitle('Updated')
                 .setColor(0xBF360C)
                 .addFields(
                     { name: 'ID',    value: String(item.id),                               inline: true },
@@ -110,7 +110,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const items = await db.getMarketItems();
             const embed = new EmbedBuilder()
-                .setTitle('قائمة المتجر')
+                .setTitle('Store List')
                 .setColor(0xBF360C)
                 .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
             if (!items.length) {

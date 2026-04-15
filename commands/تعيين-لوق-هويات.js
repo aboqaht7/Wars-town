@@ -17,7 +17,7 @@ module.exports = {
         await db.setConfig('identity_log_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين روم لوق الهويات')
+            .setTitle('Identity Log Channel Set')
             .setColor(0x7B1FA2)
             .addFields(
                 { name: '📋 الروم المحدد', value: `<#${channel.id}>`, inline: true },

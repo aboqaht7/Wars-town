@@ -15,7 +15,7 @@ async function bankMenu(imageUrl, db) {
         makeBtn('bank_transfer', c.transfer),
     );
     const embed = new EmbedBuilder()
-        .setTitle('بنك FANTASY')
+        .setTitle('FANTASY Bank')
         .setColor(0x1565C0)
         .setDescription('مرحباً بك في البنك. اختر الخدمة المطلوبة.')
         .setFooter({ text: 'نظام البنك • بوت FANTASY' })

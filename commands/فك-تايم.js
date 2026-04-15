@@ -26,7 +26,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor(0x43A047)
-            .setTitle('تم فك التايم اوت')
+            .setTitle('Timeout Removed')
             .addFields(
                 { name: '👤 العضو',  value: `<@${target.id}>`,         inline: true },
                 { name: '👮 بواسطة', value: `<@${message.author.id}>`, inline: true },

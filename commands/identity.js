@@ -29,7 +29,7 @@ const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الث
 async function buildMain(userId, db) {
     const img = await db.getImage('identity');
     const embed = new EmbedBuilder()
-        .setTitle('نظام الهوية')
+        .setTitle('Identity System')
         .setColor(0x4A148C)
         .setDescription('أنشئ هويتك وسجّل دخولك لبدء رحلتك في عالم FANTASY.')
         .setFooter({ text: 'نظام الهوية • بوت FANTASY' })

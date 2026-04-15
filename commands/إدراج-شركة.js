@@ -66,7 +66,7 @@ module.exports = {
         await db.listCompanyOnMarket(company.id, ipoPrice, totalShares);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم إدراج الشركة في سوق الأسهم')
+            .setTitle('Company Listed in Stock Market')
             .setColor(0x1B5E20)
             .addFields(
                 { name: '🏢 الشركة', value: `**${company.name}**`, inline: true },

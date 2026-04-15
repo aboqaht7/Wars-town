@@ -59,7 +59,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('تمت إضافة المحامي')
+                .setTitle('Lawyer Added')
                 .setColor(0x1B5E20)
                 .setDescription(roleStatus || null)
                 .addFields(
@@ -96,7 +96,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('تمت إزالة المحامي')
+                .setTitle('Lawyer Removed')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
@@ -110,7 +110,7 @@ module.exports = {
             if (!lawyers.length) return interaction.reply({ content: '📋 لا يوجد محامون مسجلون حالياً.', flags: 64 });
             const lines = lawyers.map((l, i) => `**${i + 1}.** ${l.lawyer_name} — <@${l.discord_id}>`).join('\n');
             const embed = new EmbedBuilder()
-                .setTitle('المحامون المعتمدون')
+                .setTitle('Certified Lawyers')
                 .setColor(0x0D47A1)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${lawyers.length} محامٍ`, inline: true })

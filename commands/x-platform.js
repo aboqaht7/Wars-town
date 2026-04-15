@@ -8,7 +8,7 @@ const { loadSystemBtns, makeBtn } = require('../btnConfig');
 async function build(image, account, db) {
     const c = await loadSystemBtns(db, 'x');
     const embed = new EmbedBuilder()
-        .setTitle('𝕏 منصة X')
+        .setTitle('𝕏 Platform')
         .setColor(0x000000)
         .setDescription(account
             ? `مرحباً **@${account.x_username}** — اختر ما تريد فعله.`

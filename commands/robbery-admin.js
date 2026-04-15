@@ -36,7 +36,7 @@ module.exports = {
 
             const row = await db.addRobbery(name, tools, minMoney, maxMoney);
             const embed = new EmbedBuilder()
-                .setTitle('تمت إضافة السرقة')
+                .setTitle('Robbery Added')
                 .setColor(0xB71C1C)
                 .addFields(
                     { name: '🔖 الرقم',            value: `\`${row.id}\``, inline: true },
@@ -68,7 +68,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const robberies = await db.getRobberies();
             const embed = new EmbedBuilder()
-                .setTitle('قائمة السرقات')
+                .setTitle('Robbery List')
                 .setColor(0xB71C1C)
                 .setFooter({ text: `${robberies.length} سرقة • بوت FANTASY` })
                 .setTimestamp();

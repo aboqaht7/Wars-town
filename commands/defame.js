@@ -6,7 +6,7 @@ module.exports = {
         if (!target) return message.reply('❌ يجب ذكر اللاعب المراد تشهيره. مثال: `-تشهير @اللاعب السبب`');
         const { EmbedBuilder } = require('discord.js');
         const embed = new EmbedBuilder()
-            .setTitle('تم تنفيذ التشهير')
+            .setTitle('Defamation Executed')
             .setColor(0x6A1B9A)
             .addFields(
                 { name: '👮 المنفذ', value: `${message.author}`, inline: true },

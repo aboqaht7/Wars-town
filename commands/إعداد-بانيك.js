@@ -20,7 +20,7 @@ module.exports = {
         await db.setConfig('panic_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم إعداد روم البانيك')
+            .setTitle('Panic Room Configured')
             .setColor(0x1B5E20)
             .setDescription(`سيتم إرسال طلبات الاستغاثة إلى <#${channel.id}>`)
             .setFooter({ text: 'إعداد البانيك • بوت FANTASY' })

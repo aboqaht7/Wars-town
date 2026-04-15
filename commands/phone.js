@@ -9,7 +9,7 @@ async function build() {
     const img = await db.getImage('phone');
 
     const embed = new EmbedBuilder()
-        .setTitle('الجوال')
+        .setTitle('Phone')
         .setColor(0x1565C0)
         .setDescription('> اختر الخدمة التي تريدها من القائمة أدناه')
         .setFooter({ text: 'نظام الجوال • بوت FANTASY' })

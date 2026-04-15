@@ -93,7 +93,7 @@ module.exports = {
             const msgRenew   = await db.getConfig('trip_renewal_message');
 
             const embed = new EmbedBuilder()
-                .setTitle('إعدادات نظام الرحلات')
+                .setTitle('Trip System Settings')
                 .setColor(0x37474F)
                 .addFields(
                     { name: '📢 روم البدء',       value: startCh  ? `<#${startCh}>`  : '❌ غير مُعيَّن', inline: true },

@@ -8,7 +8,7 @@ module.exports = {
         const deleted = await db.deletePost(id, message.author.id);
         if (!deleted) return message.reply('❌ لم يتم العثور على المنشور أو ليس لديك صلاحية حذفه.');
         const embed = new EmbedBuilder()
-            .setTitle('تم حذف التغريدة')
+            .setTitle('Tweet Deleted')
             .setColor(0x000000)
             .addFields({ name: '🆔 رقم المنشور', value: `\`#${id}\``, inline: true })
             .setFooter({ text: 'منصة X • بوت FANTASY' })

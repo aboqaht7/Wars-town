@@ -10,7 +10,7 @@ const WEAPONS = [
 
 function buildEmbed() {
     return new EmbedBuilder()
-        .setTitle('نظام التصنيع')
+        .setTitle('Manufacturing System')
         .setDescription('اختر المسدس الذي تريد تصنيعه من القائمة أدناه.')
         .setColor(0xe74c3c);
 }

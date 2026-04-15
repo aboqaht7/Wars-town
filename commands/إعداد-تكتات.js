@@ -69,7 +69,7 @@ module.exports = {
             ];
             if (role) fields.push({ name: '🛡️ الرتبة المستلِمة', value: `<@&${role.id}>`, inline: true });
             const embed = new EmbedBuilder()
-                .setTitle('تمت إضافة نوع التكت')
+                .setTitle('Ticket Type Added')
                 .setColor(0x1565C0)
                 .addFields(...fields)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
@@ -93,7 +93,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const types = await db.getTicketTypes();
             const embed = new EmbedBuilder()
-                .setTitle('أنواع التكتات')
+                .setTitle('Ticket Types')
                 .setColor(0x37474F)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
             if (!types.length) {
@@ -138,7 +138,7 @@ module.exports = {
             const role = interaction.options.getRole('الرتبة');
             await db.setConfig('ticket_admin_role', role.id);
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين رتبة مسؤولي التكتات')
+                .setTitle('Ticket Admins Role Set')
                 .setColor(0x7B1FA2)
                 .addFields(
                     { name: '🛡️ الرتبة', value: `<@&${role.id}>`, inline: true },

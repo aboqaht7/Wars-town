@@ -27,7 +27,7 @@ module.exports = {
 async function build(db) {
     const img = await db.getImage('محاماة');
     const embed = new EmbedBuilder()
-        .setTitle('مكتب المحاماة')
+        .setTitle('Law Office')
         .setColor(0x0D47A1)
         .setDescription('> اختر الخدمة القانونية من القائمة أدناه')
         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })

@@ -15,7 +15,7 @@ module.exports = {
         await db.sendMessage(message.author.id, target.id, content);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم إرسال الرسالة')
+            .setTitle('Message Sent')
             .setColor(0x00838F)
             .addFields(
                 { name: '📤 المُرسِل', value: `${message.author}`, inline: true },

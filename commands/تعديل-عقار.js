@@ -26,7 +26,7 @@ module.exports = {
         const updated = await db.updateProperty(existing.id, { name: newName, price, imageUrl });
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعديل العقار')
+            .setTitle('Property Updated')
             .setColor(0xB71C1C)
             .addFields(
                 { name: '🔖 الرقم',   value: `\`${updated.id}\``, inline: true },

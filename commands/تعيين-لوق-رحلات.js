@@ -17,7 +17,7 @@ module.exports = {
         await db.setConfig('trip_log_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين روم لوق الرحلات')
+            .setTitle('Trip Log Channel Set')
             .setColor(0x1565C0)
             .addFields(
                 { name: '📋 الروم المحدد', value: `<#${channel.id}>`, inline: true },

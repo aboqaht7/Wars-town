@@ -27,7 +27,7 @@ module.exports = {
 
 function build(cars, image) {
     const embed = new EmbedBuilder()
-        .setTitle('معرض السيارات')
+        .setTitle('Car Showroom')
         .setColor(0xB71C1C)
         .setDescription(cars.length
             ? `**${cars.length}** سيارة متوفرة — اختر من القائمة لعرض التفاصيل.`

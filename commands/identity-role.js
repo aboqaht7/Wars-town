@@ -13,7 +13,7 @@ module.exports = {
         await db.setConfig('identity_role', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين رتبة الهوية')
+            .setTitle('Identity Role Set')
             .setColor(0x1565C0)
             .setDescription(`سيحصل كل من تُقبل هويته على رتبة ${role} تلقائياً.`)
             .setFooter({ text: 'نظام الهوية • بوت FANTASY' })

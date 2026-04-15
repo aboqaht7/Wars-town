@@ -35,7 +35,7 @@ module.exports = {
         }
 
         const embed = new EmbedBuilder()
-            .setTitle('نظام الشركات')
+            .setTitle('Company System')
             .setColor(0x1565C0)
             .setDescription(
                 '**مرحباً بك في نظام الشركات!**\n\n' +

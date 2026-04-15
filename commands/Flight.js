@@ -21,7 +21,7 @@ module.exports = {
 
 async function build(db) {
     const embed = new EmbedBuilder()
-        .setTitle('الرحلات والأحداث')
+        .setTitle('Trips & Events')
         .setColor(0x6A1B9A)
         .setDescription('اختر نوع الحدث الذي تريد تفعيله')
         .addFields(

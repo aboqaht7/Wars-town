@@ -18,7 +18,7 @@ module.exports = {
         await db.setConfig('violation_role_id', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين رتبة المبند')
+            .setTitle('Ban Role Set')
             .setColor(0xB71C1C)
             .setDescription('ستُعطى هذه الرتبة تلقائياً عند إصدار أمر `-مخالف`، وتُرفع عند انتهاء المدة أو تنفيذ `-فك-مخالف`.')
             .addFields(

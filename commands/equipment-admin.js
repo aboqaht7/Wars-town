@@ -58,7 +58,7 @@ module.exports = {
                 return message.reply('❌ الاستخدام الصحيح:\n`-إدارة-معدات اضافة اسم المعدة | السعر | الوصف (اختياري)`');
             const item = await db.addEquipmentItem(name, price, desc);
             const embed = new EmbedBuilder()
-                .setTitle('تمت إضافة المعدة')
+                .setTitle('Equipment Added')
                 .setColor(0x4527A0)
                 .addFields(
                     { name: 'ID',    value: String(item.id),                               inline: true },
@@ -87,7 +87,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const items = await db.getEquipmentItems();
             const embed = new EmbedBuilder()
-                .setTitle('قائمة المعدات')
+                .setTitle('Equipment List')
                 .setColor(0x4527A0)
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
             if (!items.length) {
@@ -132,7 +132,7 @@ module.exports = {
             const desc  = interaction.options.getString('الوصف')?.trim() || null;
             const item  = await db.addEquipmentItem(name, price, desc);
             const embed = new EmbedBuilder()
-                .setTitle('تمت إضافة المعدة')
+                .setTitle('Equipment Added')
                 .setColor(0x4527A0)
                 .addFields(
                     { name: 'ID',    value: String(item.id),                               inline: true },
@@ -172,7 +172,7 @@ module.exports = {
             });
             if (!item) return interaction.reply({ content: `❌ لا توجد معدة بـ ID: ${id}`, flags: 64 });
             const embed = new EmbedBuilder()
-                .setTitle('تم التعديل')
+                .setTitle('Updated')
                 .setColor(0x4527A0)
                 .addFields(
                     { name: 'ID',    value: String(item.id),                               inline: true },
@@ -188,7 +188,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const items = await db.getEquipmentItems();
             const embed = new EmbedBuilder()
-                .setTitle('قائمة المعدات')
+                .setTitle('Equipment List')
                 .setColor(0x4527A0)
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
             if (!items.length) {

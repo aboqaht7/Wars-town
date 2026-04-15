@@ -21,7 +21,7 @@ module.exports = {
             const role = interaction.options.getRole('الرتبة');
             await db.setConfig('points_admin_role', role.id);
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين رتبة مسؤولي النقاط')
+                .setTitle('Points Admins Role Set')
                 .setColor(0x1565C0)
                 .addFields(
                     { name: '🛡️ الرتبة',    value: `<@&${role.id}>`, inline: true },

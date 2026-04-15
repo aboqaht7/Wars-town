@@ -15,7 +15,7 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
-            .setTitle('نظام تفعيل الحسابات')
+            .setTitle('Account Activation System')
             .setColor(0x1565C0)
             .setDescription(
                 '**مرحباً بك في نظام التفعيل!**\n\n' +

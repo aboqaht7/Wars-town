@@ -20,7 +20,7 @@ module.exports = {
         await db.setConfig('cia_member_role', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تحديد رتبة أفراد CIA')
+            .setTitle('CIA Members Role Set')
             .setColor(0x0D1B2A)
             .setDescription(`رتبة **${role.name}** هي الآن رتبة أفراد CIA.\n\nأصحاب هذه الرتبة يستطيعون تسجيل الدخول والخروج في لوحة \`/cia\`.`)
             .setFooter({ text: 'CIA • بوت FANTASY' })

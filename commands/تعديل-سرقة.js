@@ -34,7 +34,7 @@ module.exports = {
         const updated = await db.updateRobbery(existing.id, { name: newName, tools, minMoney, maxMoney });
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعديل السرقة')
+            .setTitle('Robbery Updated')
             .setColor(0xB71C1C)
             .addFields(
                 { name: '🔖 الرقم',   value: `\`${updated.id}\``, inline: true },

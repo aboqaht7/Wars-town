@@ -12,7 +12,7 @@ module.exports = {
         await db.setConfig('character_log_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('تم تعيين قناة سجل الشخصيات')
+            .setTitle('Character Log Channel Set')
             .setColor(0x37474F)
             .addFields(
                 { name: '📋 القناة المحددة', value: `<#${channel.id}>`, inline: true },

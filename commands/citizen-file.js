@@ -30,7 +30,7 @@ async function buildCitizenList(db, page = 0) {
     const img = await db.getImage('citizen_file').catch(() => null);
 
     const embed = new EmbedBuilder()
-        .setTitle('ملفات المواطنين — CIA Intelligence')
+        .setTitle('Citizen Files — CIA Intelligence')
         .setColor(0x0D1B2A)
         .setDescription(
             `🔍 اختر مواطناً من القائمة لعرض ملفه الجنائي والقانوني.\n` +

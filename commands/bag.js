@@ -8,7 +8,7 @@ const { loadSystemBtns, makeBtn } = require('../btnConfig');
 async function build(image, db) {
     const c = await loadSystemBtns(db, 'bag');
     const embed = new EmbedBuilder()
-        .setTitle('الحقيبة')
+        .setTitle('Inventory')
         .setColor(0xE65100)
         .setDescription('اختر ما تريد فعله بحقيبتك.')
         .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })

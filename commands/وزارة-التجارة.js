@@ -11,7 +11,7 @@ module.exports = {
 
     async slashExecute(interaction, db) {
         const embed = new EmbedBuilder()
-            .setTitle('وزارة التجارة')
+            .setTitle('Ministry of Commerce')
             .setColor(0x1565C0)
             .setDescription('مرحباً بك في لوحة تحكم وزارة التجارة. اختر أحد الخيارات أدناه.')
             .setFooter({ text: 'وزارة التجارة • بوت FANTASY' })
