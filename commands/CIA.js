@@ -4,6 +4,7 @@ const {
     ActionRowBuilder,
 } = require('discord.js');
 const { loadSystemBtns, makeBtn } = require('../btnConfig');
+const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'cia',
@@ -14,7 +15,6 @@ module.exports = {
         const c = await loadSystemBtns(db, 'cia');
 
         const _img = await db.getImage('admin').catch(() => null);
-
 
         const embed = new EmbedBuilder()
             .setTitle('CIA — Intelligence Agency')
@@ -41,6 +41,12 @@ module.exports = {
 
         if (_img) embed.setImage(_img);
 
-        await interaction.reply({ embeds: [embed], components: [row1, row2] });
+        const payload = { embeds: [embed], components: [row1, row2, resetRow('cia')] };
+
+        if (interaction._isReset) {
+            return interaction.message.edit(payload);
+        }
+        await interaction.channel.send(payload);
+        await interaction.reply({ content: '\u200b', flags: 64 });
     }
 };

@@ -309,6 +309,7 @@ const resetCommandMap = {
     تفعيل: 'تفعيل',
     تجميع: 'تجميع',
     تصنيع: 'تصنيع',
+    cia: 'cia',
 };
 
 client.on('interactionCreate', async interaction => {

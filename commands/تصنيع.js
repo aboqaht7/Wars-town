@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { resetRow } = require('../utils');
 
 const RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
 
@@ -12,7 +13,8 @@ function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Manufacturing System')
         .setDescription('Choose the pistol you want to craft from the list below.')
-        .setColor(0xe74c3c);
+        .setColor(0xe74c3c)
+        .setFooter({ text: 'Manufacturing System • FANTASY Bot' });
 }
 
 function buildRow() {
@@ -38,11 +40,12 @@ module.exports = {
         const identity = await db.getActiveIdentity(interaction.user.id);
         if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
+        const payload = { embeds: [buildEmbed()], components: [buildRow(), resetRow('تصنيع')] };
         if (interaction._isReset) {
-            return interaction.message.edit({ embeds: [buildEmbed()], components: [buildRow()] });
+            return interaction.message.edit(payload);
         }
         await interaction.reply({ content: '\u200b', flags: 65 });
-        await interaction.channel.send({ embeds: [buildEmbed()], components: [buildRow()] });
+        await interaction.channel.send(payload);
     },
 
     RESOURCES,
