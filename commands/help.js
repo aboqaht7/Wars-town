@@ -34,7 +34,7 @@ module.exports = {
 
 function build() {
     const embed = new EmbedBuilder()
-        .setTitle('🤖 بوت FANTASY — قائمة الأنظمة')
+        .setTitle('بوت FANTASY — قائمة الأنظمة')
         .setColor(0xE53935)
         .setDescription('اختر النظام من القائمة أدناه للاطلاع على تفاصيله.')
         .setFooter({ text: 'بوت FANTASY • نظام RP متكامل' })

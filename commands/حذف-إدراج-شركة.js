@@ -43,7 +43,7 @@ module.exports = {
         await db.delistCompany(match.company_id);
 
         const embed = new EmbedBuilder()
-            .setTitle('🗑️ تم حذف الشركة من سوق الأسهم')
+            .setTitle('تم حذف الشركة من سوق الأسهم')
             .setColor(0xB71C1C)
             .addFields(
                 { name: '🏢 الشركة', value: `**${match.company_name}**`, inline: true },

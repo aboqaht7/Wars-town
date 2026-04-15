@@ -38,7 +38,7 @@ async function buildPanel(db) {
     }
 
     const embed = new EmbedBuilder()
-        .setTitle('📊 لوحة نقاط الإدارة')
+        .setTitle('لوحة نقاط الإدارة')
         .setColor(0x1565C0)
         .addFields(
             {

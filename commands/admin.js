@@ -19,7 +19,7 @@ module.exports = {
 
 async function build(db) {
     const embed = new EmbedBuilder()
-        .setTitle('🛡️ نظام الإدارة')
+        .setTitle('نظام الإدارة')
         .setColor(0xF9A825)
         .setDescription('لوحة تحكم الإدارة — اختر من القائمة أدناه.')
         .setFooter({ text: 'نظام الإدارة • بوت FANTASY' })

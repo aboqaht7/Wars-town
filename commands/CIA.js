@@ -14,7 +14,7 @@ module.exports = {
         const c = await loadSystemBtns(db, 'cia');
 
         const embed = new EmbedBuilder()
-            .setTitle('🕵️ CIA — وكالة الاستخبارات')
+            .setTitle('CIA — وكالة الاستخبارات')
             .setColor(0x0D1B2A)
             .setDescription(
                 '**🟢 تسجيل دخول** — سجّل حضورك كعضو CIA\n' +

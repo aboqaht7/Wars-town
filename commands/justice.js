@@ -21,7 +21,7 @@ module.exports = {
 async function build(db) {
     const img = await db.getImage('عدل');
     const embed = new EmbedBuilder()
-        .setTitle('🏛️ نظام العدل')
+        .setTitle('نظام العدل')
         .setColor(0x4A148C)
         .setDescription('> إدارة القضايا المرفوعة — اختر الإجراء من القائمة')
         .setFooter({ text: 'نظام العدل • بوت FANTASY' })

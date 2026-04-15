@@ -8,7 +8,7 @@ module.exports = {
         await db.markMessagesRead(message.author.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('📬 صندوق الرسائل')
+            .setTitle('صندوق الرسائل')
             .setColor(0x00838F)
             .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
             .setTimestamp();

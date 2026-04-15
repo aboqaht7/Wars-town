@@ -34,7 +34,7 @@ module.exports = {
 
         const slotNames = { 1: 'الخانة الأولى', 2: 'الخانة الثانية', 3: 'الخانة الثالثة' };
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم تعديل الإيبان')
+            .setTitle('تم تعديل الإيبان')
             .setColor(0x1B5E20)
             .addFields(
                 { name: '👤 اللاعب',     value: `<@${target.id}>`,   inline: true },
@@ -65,7 +65,7 @@ module.exports = {
 
         const slotNames = { 1: 'الخانة الأولى', 2: 'الخانة الثانية', 3: 'الخانة الثالثة' };
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم تعديل الإيبان')
+            .setTitle('تم تعديل الإيبان')
             .setColor(0x1B5E20)
             .addFields(
                 { name: '👤 اللاعب',         value: `<@${target.id}>`,  inline: true },

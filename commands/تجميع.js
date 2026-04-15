@@ -10,7 +10,7 @@ const RESOURCES = [
 
 function buildEmbed() {
     return new EmbedBuilder()
-        .setTitle('🪛 نظام التجميع')
+        .setTitle('نظام التجميع')
         .setDescription('اضغط على الزر أدناه لجمع موارد عشوائية تُضاف لحقيبتك مباشرة.')
         .setColor(0x2ecc71);
 }

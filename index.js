@@ -276,7 +276,7 @@ async function handleOpenTicket(interaction, typeId) {
             const logCh = await client.channels.fetch(ticketLogId).catch(() => null);
             if (logCh) {
                 const logEmbed = new EmbedBuilder()
-                    .setTitle('🎫 تم فتح تكت جديد').setColor(0x2E7D32)
+                    .setTitle('تم فتح تكت جديد').setColor(0x2E7D32)
                     .addFields(
                         { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
                         { name: '🗂️ النوع',    value: `${type.emoji} ${type.name}`,  inline: true },
@@ -388,7 +388,7 @@ client.on('interactionCreate', async interaction => {
                         if (ch) {
                             if (customMsg) {
                                 const hurricaneEmbed = new EmbedBuilder()
-                                    .setTitle('🌪️ تحذير — إعصار!')
+                                    .setTitle('تحذير — إعصار!')
                                     .setColor(0xB71C1C)
                                     .setDescription(customMsg)
                                     .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
@@ -397,7 +397,7 @@ client.on('interactionCreate', async interaction => {
                                 sendToTripLog(hurricaneEmbed);
                             } else {
                                 const hurricaneEmbed = new EmbedBuilder()
-                                    .setTitle('🌪️ تحذير — إعصار!')
+                                    .setTitle('تحذير — إعصار!')
                                     .setColor(0xB71C1C)
                                     .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
                                     .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
@@ -546,7 +546,7 @@ client.on('interactionCreate', async interaction => {
                 await db.addItem(interaction.user.id, item.name, 1);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تمت عملية الشراء')
+                    .setTitle('تمت عملية الشراء')
                     .setColor(0x1a1a2e)
                     .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
                     .addFields(
@@ -584,7 +584,7 @@ client.on('interactionCreate', async interaction => {
                 await db.addItem(interaction.user.id, item.name, 1);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تمت عملية الشراء')
+                    .setTitle('تمت عملية الشراء')
                     .setColor(0xBF360C)
                     .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
                     .addFields(
@@ -622,7 +622,7 @@ client.on('interactionCreate', async interaction => {
                 await db.addItem(interaction.user.id, item.name, 1);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تمت عملية الشراء')
+                    .setTitle('تمت عملية الشراء')
                     .setColor(0x4527A0)
                     .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
                     .addFields(
@@ -684,7 +684,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const successEmbed = new EmbedBuilder()
-                    .setTitle('✅ تمت عملية الشراء')
+                    .setTitle('تمت عملية الشراء')
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '🏠 العقار', value: prop.name, inline: true },
@@ -710,7 +710,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 await db.deleteAllIdentities();
                 const doneEmbed = new EmbedBuilder()
-                    .setTitle('🗑️ تم حذف جميع الهويات')
+                    .setTitle('تم حذف جميع الهويات')
                     .setColor(0x757575)
                     .setDescription('> تم حذف جميع الهويات والطلبات المعلقة بنجاح، وتم تسجيل الخروج من جميع الحسابات.')
                     .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
@@ -742,7 +742,7 @@ client.on('interactionCreate', async interaction => {
                     await db.addCharacterLog(pending.discord_id, pending.username, 'approved', pending.char_name, pending.slot, `قبله: ${interaction.user.username}`);
 
                     const resultEmbed = new EmbedBuilder()
-                        .setTitle('✅ تم قبول طلب الهوية')
+                        .setTitle('تم قبول طلب الهوية')
                         .setColor(0x2E7D32)
                         .addFields(
                             { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
@@ -767,7 +767,7 @@ client.on('interactionCreate', async interaction => {
                         const user = await client.users.fetch(pending.discord_id);
                         const slotNamesApprove = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                         const approveDmEmbed = new EmbedBuilder()
-                            .setTitle('✅ تم قبول طلب هويتك!')
+                            .setTitle('تم قبول طلب هويتك!')
                             .setColor(0x2E7D32)
                             .setDescription('مبروك! تم قبول هويتك بنجاح. يمكنك الآن تسجيل الدخول.')
                             .addFields(
@@ -787,7 +787,7 @@ client.on('interactionCreate', async interaction => {
                     await db.addCharacterLog(pending.discord_id, pending.username, 'rejected', pending.char_name, pending.slot, `رفضه: ${interaction.user.username}`);
 
                     const resultEmbed = new EmbedBuilder()
-                        .setTitle('❌ تم رفض طلب الهوية')
+                        .setTitle('تم رفض طلب الهوية')
                         .setColor(0xB71C1C)
                         .addFields(
                             { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
@@ -802,7 +802,7 @@ client.on('interactionCreate', async interaction => {
                         const user = await client.users.fetch(pending.discord_id);
                         const slotNamesReject = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                         const dmEmbed = new EmbedBuilder()
-                            .setTitle('❌ تم رفض طلب الهوية')
+                            .setTitle('تم رفض طلب الهوية')
                             .setColor(0xB71C1C)
                             .setDescription('للأسف، تم رفض طلب إنشاء هويتك. يمكنك إعادة المحاولة أو التواصل مع الإدارة.')
                             .addFields(
@@ -843,7 +843,7 @@ client.on('interactionCreate', async interaction => {
                     if (result.error) {
                         await db.updatePendingCompanyStatus(pendingId, 'rejected', interaction.user.id);
                         const failEmbed = new EmbedBuilder()
-                            .setTitle('❌ فشل تأسيس الشركة')
+                            .setTitle('فشل تأسيس الشركة')
                             .setColor(0xB71C1C)
                             .setDescription(`السبب: ${result.error}`)
                             .addFields(
@@ -880,7 +880,7 @@ client.on('interactionCreate', async interaction => {
                     }
 
                     const approveEmbed = new EmbedBuilder()
-                        .setTitle('✅ تم قبول طلب التأسيس')
+                        .setTitle('تم قبول طلب التأسيس')
                         .setColor(0x1B5E20)
                         .addFields(
                             { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
@@ -894,7 +894,7 @@ client.on('interactionCreate', async interaction => {
                     try {
                         const user = await client.users.fetch(pending.discord_id);
                         const dmEmbed = new EmbedBuilder()
-                            .setTitle('🏢 تمت الموافقة على طلب تأسيس شركتك!')
+                            .setTitle('تمت الموافقة على طلب تأسيس شركتك!')
                             .setColor(0x1B5E20)
                             .setDescription(`مبروك أصبحت من تجار Fantasy town وفالك النجاح 🎉\n\nتم تأسيس شركة **${pending.company_name}** بنجاح. يمكنك الآن إدارتها عبر أوامر \`/شركة\`.`)
                             .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
@@ -904,7 +904,7 @@ client.on('interactionCreate', async interaction => {
                     await db.updatePendingCompanyStatus(pendingId, 'rejected', interaction.user.id);
 
                     const rejectEmbed = new EmbedBuilder()
-                        .setTitle('❌ تم رفض طلب التأسيس')
+                        .setTitle('تم رفض طلب التأسيس')
                         .setColor(0xB71C1C)
                         .addFields(
                             { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
@@ -917,7 +917,7 @@ client.on('interactionCreate', async interaction => {
                     try {
                         const user = await client.users.fetch(pending.discord_id);
                         const dmEmbed = new EmbedBuilder()
-                            .setTitle('❌ تم رفض طلب تأسيس شركتك')
+                            .setTitle('تم رفض طلب تأسيس شركتك')
                             .setColor(0xB71C1C)
                             .setDescription(`للأسف، تم رفض طلب تأسيس شركة **${pending.company_name}**.\nيمكنك التواصل مع وزارة التجارة للمزيد من التفاصيل.`)
                             .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
@@ -959,7 +959,7 @@ client.on('interactionCreate', async interaction => {
                         const ch = interaction.guild.channels.cache.get(ministryChId);
                         if (ch) await ch.send({
                             embeds: [new EmbedBuilder()
-                                .setTitle('🟢 تسجيل دخول — وزارة التجارة')
+                                .setTitle('تسجيل دخول — وزارة التجارة')
                                 .setColor(0x1B5E20)
                                 .addFields({ name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true })
                                 .setTimestamp()]
@@ -979,7 +979,7 @@ client.on('interactionCreate', async interaction => {
                         const ch = interaction.guild.channels.cache.get(ministryChId);
                         if (ch) await ch.send({
                             embeds: [new EmbedBuilder()
-                                .setTitle('🔴 تسجيل خروج — وزارة التجارة')
+                                .setTitle('تسجيل خروج — وزارة التجارة')
                                 .setColor(0xB71C1C)
                                 .addFields({ name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true })
                                 .setTimestamp()]
@@ -1061,7 +1061,7 @@ client.on('interactionCreate', async interaction => {
                         return interaction.reply({ content: '⚠️ أنت بالفعل مسجّل دخول.', flags: 64 });
                     await db.setCiaDuty(interaction.user.id, 'on');
                     const embed = new EmbedBuilder()
-                        .setTitle('🟢 CIA — تسجيل دخول')
+                        .setTitle('CIA — تسجيل دخول')
                         .setColor(0x1B5E20)
                         .addFields({ name: '🕵️ العضو', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
@@ -1075,7 +1075,7 @@ client.on('interactionCreate', async interaction => {
                         return interaction.reply({ content: '⚠️ أنت لست مسجّل دخول أصلاً.', flags: 64 });
                     await db.setCiaDuty(interaction.user.id, 'off');
                     const embed = new EmbedBuilder()
-                        .setTitle('🔴 CIA — تسجيل خروج')
+                        .setTitle('CIA — تسجيل خروج')
                         .setColor(0xB71C1C)
                         .addFields({ name: '🕵️ العضو', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
@@ -1090,7 +1090,7 @@ client.on('interactionCreate', async interaction => {
                     const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                     const modal = new ModalBuilder()
                         .setCustomId('cia_fake_id_modal')
-                        .setTitle('🪪 إنشاء هوية مزيفة');
+                        .setTitle('إنشاء هوية مزيفة');
 
                     modal.addComponents(
                         new ActionRowBuilder().addComponents(
@@ -1216,7 +1216,7 @@ client.on('interactionCreate', async interaction => {
             const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
             const modal = new ModalBuilder()
                 .setCustomId('tracking_modal')
-                .setTitle('📡 تراكينق');
+                .setTitle('تراكينق');
             const input = new TextInputBuilder()
                 .setCustomId('tracking_target')
                 .setLabel('منشن الشخص أو الـ ID الخاص فيه')
@@ -1252,7 +1252,7 @@ client.on('interactionCreate', async interaction => {
                     } catch (_) {}
 
                     const approveEmbed = new EmbedBuilder()
-                        .setTitle('✅ تم قبول طلب التفعيل')
+                        .setTitle('تم قبول طلب التفعيل')
                         .setColor(0x2E7D32)
                         .addFields(
                             { name: '👤 اللاعب',       value: `<@${req.user_id}>`,  inline: true },
@@ -1274,7 +1274,7 @@ client.on('interactionCreate', async interaction => {
 
                 } else {
                     const rejectEmbed = new EmbedBuilder()
-                        .setTitle('❌ تم رفض طلب التفعيل')
+                        .setTitle('تم رفض طلب التفعيل')
                         .setColor(0xB71C1C)
                         .addFields(
                             { name: '👤 اللاعب',  value: `<@${req.user_id}>`,         inline: true },
@@ -1314,7 +1314,7 @@ client.on('interactionCreate', async interaction => {
                     const identity = await db.getActiveIdentity(interaction.user.id);
                     const SLOT_NAMES_B = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                     const embed = new EmbedBuilder()
-                        .setTitle('💰 عرض الأموال')
+                        .setTitle('عرض الأموال')
                         .setColor(0x1565C0)
                         .addFields(
                             { name: '👤 الاسم', value: `${identity.character_name || '—'} ${identity.family_name || ''}`, inline: true },
@@ -1333,7 +1333,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'bank_deposit') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
                     if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
-                    const modal = new ModalBuilder().setCustomId('bank_deposit_modal').setTitle('📥 إيداع الكاش في البنك');
+                    const modal = new ModalBuilder().setCustomId('bank_deposit_modal').setTitle('إيداع الكاش في البنك');
                     modal.addComponents(new ARB().addComponents(
                         new TextInputBuilder().setCustomId('deposit_amount').setLabel('المبلغ المراد إيداعه (ريال)').setStyle(TextInputStyle.Short).setRequired(true)
                     ));
@@ -1343,7 +1343,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'bank_withdraw') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
                     if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
-                    const modal = new ModalBuilder().setCustomId('bank_withdraw_modal').setTitle('💸 صرف الكاش من البنك');
+                    const modal = new ModalBuilder().setCustomId('bank_withdraw_modal').setTitle('صرف الكاش من البنك');
                     modal.addComponents(new ARB().addComponents(
                         new TextInputBuilder().setCustomId('withdraw_amount').setLabel('المبلغ المراد صرفه (ريال)').setStyle(TextInputStyle.Short).setRequired(true)
                     ));
@@ -1353,7 +1353,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'bank_transfer') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
                     if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
-                    const modal = new ModalBuilder().setCustomId('bank_transfer_modal').setTitle('🔄 تحويل بنكي');
+                    const modal = new ModalBuilder().setCustomId('bank_transfer_modal').setTitle('تحويل بنكي');
                     modal.addComponents(
                         new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_iban').setLabel('إيبان المستلم (7 أرقام)').setStyle(TextInputStyle.Short).setMinLength(7).setMaxLength(7).setRequired(true)),
                         new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_amount').setLabel('المبلغ (ريال)').setStyle(TextInputStyle.Short).setRequired(true)),
@@ -1375,7 +1375,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'snap_create') {
                 const acc = await db.getSnapAccount(interaction.user.id);
                 if (acc) return interaction.reply({ content: `❌ لديك حساب بالفعل: **${acc.snap_username}**`, flags: 64 });
-                const modal = new MSN().setCustomId('snap_create_modal').setTitle('👻 إنشاء حساب سناب')
+                const modal = new MSN().setCustomId('snap_create_modal').setTitle('إنشاء حساب سناب')
                     .addComponents(new ARSN().addComponents(
                         new TISN().setCustomId('snap_user').setLabel('اسم الحساب')
                             .setStyle(TSSN.Short).setRequired(true).setMinLength(3).setMaxLength(20)
@@ -1405,7 +1405,7 @@ client.on('interactionCreate', async interaction => {
                 if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
                 const msgs = await db.getSnapInbox(interaction.user.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('📬 صندوق السنابات الواردة')
+                    .setTitle('صندوق السنابات الواردة')
                     .setColor(0xFFFC00)
                     .setFooter({ text: 'سناب شات • بوت FANTASY' })
                     .setTimestamp();
@@ -1430,7 +1430,7 @@ client.on('interactionCreate', async interaction => {
                 if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
                 const friends = await db.getSnapFriends(interaction.user.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('👥 أصدقائي على سناب')
+                    .setTitle('أصدقائي على سناب')
                     .setColor(0xFFFC00)
                     .setFooter({ text: `${friends.length} صديق • سناب شات • بوت FANTASY` })
                     .setTimestamp();
@@ -1459,7 +1459,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'snap_add') {
                 const acc = await db.getSnapAccount(interaction.user.id);
                 if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب. أنشئ حساباً أولاً.', flags: 64 });
-                const modal = new MSN().setCustomId('snap_add_modal').setTitle('➕ إضافة صديق')
+                const modal = new MSN().setCustomId('snap_add_modal').setTitle('إضافة صديق')
                     .addComponents(new ARSN().addComponents(
                         new TISN().setCustomId('friend_snap_name').setLabel('اسم حساب سناب الصديق')
                             .setStyle(TSSN.Short).setRequired(true).setMaxLength(20)
@@ -1473,7 +1473,7 @@ client.on('interactionCreate', async interaction => {
                 if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
                 const requests = await db.getPendingSnapRequests(interaction.user.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('🔔 طلبات الصداقة الواردة')
+                    .setTitle('طلبات الصداقة الواردة')
                     .setColor(0xFFFC00)
                     .setFooter({ text: 'سناب شات • بوت FANTASY' })
                     .setTimestamp();
@@ -1502,7 +1502,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'x_create_account') {
                 const existing = await db.getXAccount(interaction.user.id);
                 if (existing) return interaction.reply({ content: `❌ لديك حساب بالفعل: **@${existing.x_username}**`, flags: 64 });
-                const modal = new MBX().setCustomId('x_create_modal').setTitle('✨ إنشاء حساب X')
+                const modal = new MBX().setCustomId('x_create_modal').setTitle('إنشاء حساب X')
                     .addComponents(new ARBX().addComponents(
                         new TIBX().setCustomId('x_username').setLabel('اسم الحساب (بدون @)')
                             .setStyle(TISX.Short).setRequired(true).setMinLength(3).setMaxLength(20)
@@ -1515,7 +1515,7 @@ client.on('interactionCreate', async interaction => {
                 if (!xChannel) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات بعد. تواصل مع المسؤولين.', flags: 64 });
                 const account = await db.getXAccount(interaction.user.id);
                 if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X. أنشئ حساباً أولاً.', flags: 64 });
-                const modal = new MBX().setCustomId('x_tweet_modal').setTitle('🐦 إرسال تغريدة')
+                const modal = new MBX().setCustomId('x_tweet_modal').setTitle('إرسال تغريدة')
                     .addComponents(new ARBX().addComponents(
                         new TIBX().setCustomId('tweet_content').setLabel('نص التغريدة')
                             .setStyle(TISX.Paragraph).setRequired(true).setMaxLength(280)
@@ -1528,7 +1528,7 @@ client.on('interactionCreate', async interaction => {
                 if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
                 await db.deleteXAccount(interaction.user.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('🗑️ تم حذف حسابك')
+                    .setTitle('تم حذف حسابك')
                     .setColor(0xB71C1C)
                     .setDescription(`تم حذف حساب **@${account.x_username}** وجميع تغريداته نهائياً.`)
                     .setFooter({ text: 'منصة X • بوت FANTASY' })
@@ -1545,7 +1545,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'bag_view') {
                 const items = await db.getInventory(interaction.user.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('🎒 محتويات حقيبتك')
+                    .setTitle('محتويات حقيبتك')
                     .setColor(0xE65100)
                     .setFooter({ text: `إجمالي الأغراض: ${items.length} • نظام الحقيبة • بوت FANTASY` })
                     .setTimestamp();
@@ -1584,7 +1584,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'bag_transfer') {
                 const modal = new MB2()
                     .setCustomId('bag_transfer_modal')
-                    .setTitle('📤 تحويل غرض')
+                    .setTitle('تحويل غرض')
                     .addComponents(
                         new ARB2().addComponents(
                             new TIB2().setCustomId('transfer_item_name').setLabel('اسم الغرض')
@@ -1632,7 +1632,7 @@ client.on('interactionCreate', async interaction => {
                         const fullCase = await db.getCaseById(req.case_id);
                         const lawyerUser = await interaction.client.users.fetch(interaction.user.id);
                         const caseEmbed = new EmbedBuilder()
-                            .setTitle('📂 تفاصيل القضية الجديدة')
+                            .setTitle('تفاصيل القضية الجديدة')
                             .setColor(0x0D47A1)
                             .setDescription('لقد قبلت هذا التوكيل. فيما يلي تفاصيل الموكّل والقضية:')
                             .addFields(
@@ -1714,7 +1714,7 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle('💼 تم خصم أتعاب المحاماة')
+                        .setTitle('تم خصم أتعاب المحاماة')
                         .setColor(0xE65100)
                         .addFields(
                             { name: '🔢 رقم القضية', value: c.case_number,              inline: true },
@@ -1923,7 +1923,7 @@ client.on('interactionCreate', async interaction => {
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
                     return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-                const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('📄 تعيين موظف');
+                const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('تعيين موظف');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
@@ -1965,7 +1965,7 @@ client.on('interactionCreate', async interaction => {
                 ).join('\n');
 
                 const embed = new EmbedBuilder()
-                    .setTitle('💰 تم إيداع الرواتب')
+                    .setTitle('تم إيداع الرواتب')
                     .setColor(0x2E7D32)
                     .setDescription(`تم خصم **${res.total.toLocaleString()} ريال** من رصيد الشركة وإيداعها في حسابات الموظفين.`)
                     .addFields(
@@ -1990,7 +1990,7 @@ client.on('interactionCreate', async interaction => {
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
                     return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-                const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('⬆️ ترقية موظف');
+                const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('ترقية موظف');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
@@ -2020,7 +2020,7 @@ client.on('interactionCreate', async interaction => {
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
                     return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-                const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('➖ إقالة موظف');
+                const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('إقالة موظف');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
@@ -2047,7 +2047,7 @@ client.on('interactionCreate', async interaction => {
 
                 await db.dissolveCompany(company.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('🏚️ تم حل الشركة')
+                    .setTitle('تم حل الشركة')
                     .setColor(0xB71C1C)
                     .setDescription(`تم حل شركة **${company.name}** نهائياً وإغلاق جميع سجلاتها.`)
                     .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
@@ -2078,7 +2078,7 @@ client.on('interactionCreate', async interaction => {
                         desc += `**🏢 ${p.company_name}** — \`${p.shares}\` سهم × \`${parseFloat(p.current_price).toFixed(0)} ريال\` = **${value.toLocaleString(undefined,{maximumFractionDigits:0})} ريال**  ${pl>=0?`🟢 +${pl.toFixed(0)}`:`🔴 ${pl.toFixed(0)}`} ريال\n`;
                     }
                     const embed = new EmbedBuilder()
-                        .setTitle('💼 محفظتك الاستثمارية')
+                        .setTitle('محفظتك الاستثمارية')
                         .setColor(0x1B5E20)
                         .setDescription(desc)
                         .addFields({ name: '💰 إجمالي القيمة', value: `\`${totalValue.toLocaleString(undefined,{maximumFractionDigits:0})} ريال\`` })
@@ -2131,7 +2131,7 @@ client.on('interactionCreate', async interaction => {
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder()
                     .setCustomId('company_found_modal')
-                    .setTitle('📋 استبيان تأسيس الشركة');
+                    .setTitle('استبيان تأسيس الشركة');
 
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
@@ -2198,7 +2198,7 @@ client.on('interactionCreate', async interaction => {
                 ).join('\n');
 
                 const embed = new EmbedBuilder()
-                    .setTitle('🏢 قائمة الشركات المسجلة')
+                    .setTitle('قائمة الشركات المسجلة')
                     .setColor(0x1565C0)
                     .setDescription(list)
                     .setFooter({ text: `نظام الشركات • ${companies.length} شركة` })
@@ -2256,7 +2256,7 @@ client.on('interactionCreate', async interaction => {
                     const logCh = await client.channels.fetch(ticketLogId).catch(() => null);
                     if (logCh) {
                         const logEmbed = new EmbedBuilder()
-                            .setTitle('🔒 تم إغلاق تكت')
+                            .setTitle('تم إغلاق تكت')
                             .setColor(0xB71C1C)
                             .addFields(
                                 { name: '👤 صاحب التكت', value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
@@ -2280,7 +2280,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'panic_location_btn') {
             const modal = new ModalBuilder()
                 .setCustomId('panic_location_modal')
-                .setTitle('📍 إرسال موقع الاستغاثة');
+                .setTitle('إرسال موقع الاستغاثة');
             modal.addComponents(
                 new ActionRowBuilder().addComponents(
                     new TextInputBuilder()
@@ -2306,7 +2306,7 @@ client.on('interactionCreate', async interaction => {
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');
             const modal = new ModalBuilder()
                 .setCustomId('activation_sony_modal')
-                .setTitle('🎮 طلب تفعيل الحساب');
+                .setTitle('طلب تفعيل الحساب');
             modal.addComponents(
                 new ARB().addComponents(
                     new TextInputBuilder()
@@ -2515,7 +2515,7 @@ client.on('interactionCreate', async interaction => {
                     await db.logoutIdentity(interaction.user.id);
                     await db.addCharacterLog(interaction.user.id, interaction.user.username, 'logout', activeChar?.character_name || null, status.active_slot);
                     const embedOut = new EmbedBuilder()
-                        .setTitle('🚪 تسجيل الخروج')
+                        .setTitle('تسجيل الخروج')
                         .setColor(0x757575)
                         .addFields(
                             { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
@@ -2701,7 +2701,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (missing.length) {
                     const embed = new EmbedBuilder()
-                        .setTitle('❌ أدوات ناقصة')
+                        .setTitle('أدوات ناقصة')
                         .setColor(0xB71C1C)
                         .setDescription(`لا تملك الأدوات اللازمة لتنفيذ **${rob.name}**:`)
                         .addFields({ name: '🛠️ الأدوات الناقصة', value: missing.map(t => `• \`${t}\``).join('\n'), inline: false })
@@ -2731,7 +2731,7 @@ client.on('interactionCreate', async interaction => {
                     const { ModalBuilder: RM, TextInputBuilder: RT, TextInputStyle: RS, ActionRowBuilder: RA } = require('discord.js');
                     const modal = new RM()
                         .setCustomId(`robbery_report_${robberyId}_${amount}`)
-                        .setTitle('📍 بلاغ موقع السرقة');
+                        .setTitle('بلاغ موقع السرقة');
                     modal.addComponents(
                         new RA().addComponents(
                             new RT().setCustomId('robbery_location').setLabel('وين موقعك؟ (اكتب الموقع)').setStyle(RS.Paragraph).setRequired(true).setMaxLength(500)
@@ -2741,7 +2741,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const embed = new EmbedBuilder()
-                    .setTitle('💰 تمت السرقة بنجاح!')
+                    .setTitle('تمت السرقة بنجاح!')
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '🔫 نوع السرقة', value: rob.name, inline: true },
@@ -2782,7 +2782,7 @@ client.on('interactionCreate', async interaction => {
                 if (value === 'snap_inbox') {
                     const msgs = await db.getSnapInbox(interaction.user.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('📬 صندوق السنابات الواردة')
+                        .setTitle('صندوق السنابات الواردة')
                         .setColor(0xFFFC00)
                         .setFooter({ text: 'سناب شات • بوت FANTASY' })
                         .setTimestamp();
@@ -2804,7 +2804,7 @@ client.on('interactionCreate', async interaction => {
                 if (value === 'snap_friends') {
                     const friends = await db.getSnapFriends(interaction.user.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('👥 أصدقائي على سناب')
+                        .setTitle('أصدقائي على سناب')
                         .setColor(0xFFFC00)
                         .setFooter({ text: `${friends.length} صديق • سناب شات • بوت FANTASY` })
                         .setTimestamp();
@@ -2833,7 +2833,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 if (value === 'snap_add') {
-                    const modal = new MN().setCustomId('snap_add_modal').setTitle('➕ إضافة صديق')
+                    const modal = new MN().setCustomId('snap_add_modal').setTitle('إضافة صديق')
                         .addComponents(new ARN().addComponents(
                             new TIN().setCustomId('friend_snap_name').setLabel('اسم حساب سناب الصديق')
                                 .setStyle(TSN.Short).setRequired(true).setMaxLength(20)
@@ -2845,7 +2845,7 @@ client.on('interactionCreate', async interaction => {
                 if (value === 'snap_requests') {
                     const requests = await db.getPendingSnapRequests(interaction.user.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('🔔 طلبات الصداقة الواردة')
+                        .setTitle('طلبات الصداقة الواردة')
                         .setColor(0xFFFC00)
                         .setFooter({ text: 'سناب شات • بوت FANTASY' })
                         .setTimestamp();
@@ -2931,7 +2931,7 @@ client.on('interactionCreate', async interaction => {
                 const done = await db.acceptSnapFriend(interaction.user.id, requesterId);
                 if (!done) return interaction.reply({ content: '❌ لم يُعثر على الطلب.', flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تم قبول طلب الصداقة')
+                    .setTitle('تم قبول طلب الصداقة')
                     .setColor(0xFFFC00)
                     .setDescription(`أنتما الآن أصدقاء مع **${requesterAcc?.snap_username || requesterId}** 👻`)
                     .setFooter({ text: 'سناب شات • بوت FANTASY' })
@@ -2950,7 +2950,7 @@ client.on('interactionCreate', async interaction => {
                 const result = await db.useItem(interaction.user.id, itemName);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تم استخدام الغرض')
+                    .setTitle('تم استخدام الغرض')
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
@@ -2971,7 +2971,7 @@ client.on('interactionCreate', async interaction => {
                     await db.ensureUser(interaction.user.id, interaction.user.username);
                     const cars = await db.getVehicles(interaction.user.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('🚗 سياراتي المسجلة')
+                        .setTitle('سياراتي المسجلة')
                         .setColor(0x37474F)
                         .setDescription(cars.length
                             ? cars.map(c => `🚗 **${c.car_name}** — لوحة: \`${c.plate}\``).join('\n')
@@ -3053,7 +3053,7 @@ client.on('interactionCreate', async interaction => {
                 const myAcc = await db.getXAccount(interaction.user.id);
                 if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
                 const { ModalBuilder: MBR, TextInputBuilder: TIBR, TextInputStyle: TISR, ActionRowBuilder: ARBR } = require('discord.js');
-                const modal = new MBR().setCustomId(`x_reply_modal_${postId}`).setTitle('💬 الرد على التغريدة')
+                const modal = new MBR().setCustomId(`x_reply_modal_${postId}`).setTitle('الرد على التغريدة')
                     .addComponents(new ARBR().addComponents(
                         new TIBR().setCustomId('reply_content').setLabel('نص ردك')
                             .setStyle(TISR.Paragraph).setRequired(true).setMaxLength(280)
@@ -3071,7 +3071,7 @@ client.on('interactionCreate', async interaction => {
                 if (err) return interaction.reply({ content: err, flags: 64 });
 
                 if (value === 'new_case') {
-                    const modal = new ModalBuilder().setCustomId('new_case_modal').setTitle('📁 رفع قضية جديدة');
+                    const modal = new ModalBuilder().setCustomId('new_case_modal').setTitle('رفع قضية جديدة');
                     modal.addComponents(
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_title').setLabel('عنوان القضية').setStyle(TextInputStyle.Short).setRequired(true)),
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_defendant').setLabel('المدعى عليه').setStyle(TextInputStyle.Short).setRequired(true)),
@@ -3089,7 +3089,7 @@ client.on('interactionCreate', async interaction => {
                         `**[${c.case_number}]** ${c.title}\n> ضد: ${c.defendant} • الحالة: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • المحامي: ${c.lawyer_name}` : ''}${c.judge_name ? ` • القاضي: ${c.judge_name}` : ''}`
                     ).join('\n\n');
                     const embed = new EmbedBuilder()
-                        .setTitle('📋 قضاياي')
+                        .setTitle('قضاياي')
                         .setColor(0x0D47A1)
                         .setDescription(lines.slice(0, 4000))
                         .setFooter({ text: `إجمالي القضايا: ${cases.length} • بوت FANTASY` })
@@ -3147,7 +3147,7 @@ client.on('interactionCreate', async interaction => {
                 if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
                 await db.acceptCase(c.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تم قبول القضية')
+                    .setTitle('تم قبول القضية')
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '📁 رقم القضية', value: c.case_number,          inline: true },
@@ -3161,7 +3161,7 @@ client.on('interactionCreate', async interaction => {
                 // DM المدعي
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('✅ تم قبول قضيتك').setColor(0x2E7D32)
+                    const dmEmbed = new EmbedBuilder().setTitle('تم قبول قضيتك').setColor(0x2E7D32)
                         .setDescription(`**${c.case_number} — ${c.title}**\n\nتم قبول قضيتك وستتم معالجتها قريباً.`)
                         .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
@@ -3245,7 +3245,7 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const lawyerUser = await interaction.client.users.fetch(lawyerId);
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle('📨 طلب توكيل جديد')
+                        .setTitle('طلب توكيل جديد')
                         .setColor(0x0D47A1)
                         .setDescription('> لديك طلب توكيل جديد — استخدم `/محامي` للقبول أو الرفض')
                         .addFields(
@@ -3258,7 +3258,7 @@ client.on('interactionCreate', async interaction => {
                 } catch (_) {}
 
                 const embed = new EmbedBuilder()
-                    .setTitle('📨 تم إرسال طلب التوكيل')
+                    .setTitle('تم إرسال طلب التوكيل')
                     .setColor(0x0D47A1)
                     .setDescription(`> تم إرسال طلب التوكيل إلى **${lawyer.lawyer_name}**\nسيُخطَر عبر الرسائل الخاصة، وبإمكانه القبول أو الرفض عبر \`/محامي\``)
                     .addFields(
@@ -3525,7 +3525,7 @@ client.on('interactionCreate', async interaction => {
                         const ch = await client.channels.fetch(interaction.channelId).catch(() => null);
                         if (ch) {
                             const doneEmbed = new EmbedBuilder()
-                                .setTitle('📡 اكتمل التراكينق')
+                                .setTitle('اكتمل التراكينق')
                                 .setColor(0x43A047)
                                 .setDescription(
                                     `✅ تم تتبع ${targetMember} لمدة 20 ثانية بنجاح.\n` +
@@ -3547,7 +3547,7 @@ client.on('interactionCreate', async interaction => {
                 });
 
                 const startEmbed = new EmbedBuilder()
-                    .setTitle('📡 بدأ التراكينق')
+                    .setTitle('بدأ التراكينق')
                     .setColor(0xE53935)
                     .setDescription(
                         `🎯 يتم الآن تتبع ${targetMember} لمدة **20 ثانية**\n` +
@@ -3602,7 +3602,7 @@ client.on('interactionCreate', async interaction => {
 
                 // إرسال الهوية للشخص عبر DM
                 const dmEmbed = new EmbedBuilder()
-                    .setTitle('🪪 هوية مزيفة — سرية للغاية')
+                    .setTitle('هوية مزيفة — سرية للغاية')
                     .setColor(0x0D1B2A)
                     .setDescription('تم تزويدك بهوية مزيفة من وكالة CIA. لا تشارك هذه المعلومات مع أحد.')
                     .addFields(
@@ -3619,7 +3619,7 @@ client.on('interactionCreate', async interaction => {
 
                 // تأكيد للمصدر
                 const confirmEmbed = new EmbedBuilder()
-                    .setTitle('✅ تم إصدار الهوية المزيفة')
+                    .setTitle('تم إصدار الهوية المزيفة')
                     .setColor(0x1B5E20)
                     .addFields(
                         { name: '🎯 الشخص', value: `<@${targetId}>`, inline: true },
@@ -3713,7 +3713,7 @@ client.on('interactionCreate', async interaction => {
                     const ch = await client.channels.fetch(reportChannelId).catch(() => null);
                     if (ch) {
                         const reportEmbed = new EmbedBuilder()
-                            .setTitle('🚨 بلاغ سرقة')
+                            .setTitle('بلاغ سرقة')
                             .setColor(0xD32F2F)
                             .addFields(
                                 { name: '👤 السارق', value: `<@${interaction.user.id}>`, inline: true },
@@ -3729,7 +3729,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const embed = new EmbedBuilder()
-                    .setTitle('💰 تمت السرقة بنجاح!')
+                    .setTitle('تمت السرقة بنجاح!')
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '🔫 نوع السرقة', value: robName, inline: true },
@@ -3835,7 +3835,7 @@ client.on('interactionCreate', async interaction => {
                 );
 
                 const reqEmbed = new EmbedBuilder()
-                    .setTitle('🎮 طلب تفعيل جديد')
+                    .setTitle('طلب تفعيل جديد')
                     .setColor(0x1565C0)
                     .addFields(
                         { name: '👤 اللاعب',          value: `<@${interaction.user.id}> (${interaction.user.username})`, inline: false },
@@ -3886,7 +3886,7 @@ client.on('interactionCreate', async interaction => {
                 const newCase = await db.createCase(interaction.user.id, identity.full_name || interaction.user.username, defendant, title, desc, evidence, lawyerFee);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('📁 تم رفع القضية')
+                    .setTitle('تم رفع القضية')
                     .setColor(0x0D47A1)
                     .addFields(
                         { name: '🔢 رقم القضية',    value: newCase.case_number,                inline: true },
@@ -3931,7 +3931,7 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle('⚠️ تخلّى المحامي عن قضيتك')
+                        .setTitle('تخلّى المحامي عن قضيتك')
                         .setColor(0xB71C1C)
                         .setDescription(`تخلّى المحامي **${c.lawyer_name}** عن تمثيلك في القضية.`)
                         .addFields(
@@ -3962,7 +3962,7 @@ client.on('interactionCreate', async interaction => {
                 await db.rejectCase(caseId, reason, interaction.user.id);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('❌ تم رفض القضية')
+                    .setTitle('تم رفض القضية')
                     .setColor(0xB71C1C)
                     .addFields(
                         { name: '🔢 رقم القضية',  value: c.case_number,                inline: true },
@@ -3976,7 +3976,7 @@ client.on('interactionCreate', async interaction => {
                 // DM المدعي بالرفض
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('❌ تم رفض قضيتك').setColor(0xB71C1C)
+                    const dmEmbed = new EmbedBuilder().setTitle('تم رفض قضيتك').setColor(0xB71C1C)
                         .addFields(
                             { name: '🔢 رقم القضية', value: c.case_number, inline: true },
                             { name: '📌 العنوان',     value: c.title,       inline: true },
@@ -4004,7 +4004,7 @@ client.on('interactionCreate', async interaction => {
                 await db.assignJudge(caseId, judgeId, judgeName);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('👨‍⚖️ تم تعيين القاضي')
+                    .setTitle('تم تعيين القاضي')
                     .setColor(0x4A148C)
                     .addFields(
                         { name: '🔢 رقم القضية',   value: c.case_number,           inline: true },
@@ -4030,7 +4030,7 @@ client.on('interactionCreate', async interaction => {
                 await db.issueVerdict(caseId, verdict, interaction.user.id);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('📜 صدر الحكم')
+                    .setTitle('صدر الحكم')
                     .setColor(0x1B5E20)
                     .addFields(
                         { name: '🔢 رقم القضية',   value: c.case_number,          inline: true },
@@ -4047,7 +4047,7 @@ client.on('interactionCreate', async interaction => {
                 // DM المدعي بالحكم
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('📜 صدر حكم في قضيتك').setColor(0x1B5E20)
+                    const dmEmbed = new EmbedBuilder().setTitle('صدر حكم في قضيتك').setColor(0x1B5E20)
                         .addFields(
                             { name: '🔢 رقم القضية', value: c.case_number,               inline: true },
                             { name: '📌 العنوان',     value: c.title,                    inline: true },
@@ -4080,7 +4080,7 @@ client.on('interactionCreate', async interaction => {
                 await db.assignLawyer(caseId, null, lawyerName);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('👨‍⚖️ طلب توكيل محامٍ')
+                    .setTitle('طلب توكيل محامٍ')
                     .setColor(0xE65100)
                     .addFields(
                         { name: '🔢 رقم القضية',    value: c.case_number,           inline: true },
@@ -4149,7 +4149,7 @@ client.on('interactionCreate', async interaction => {
                 const result = await db.depositCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('📥 تم إيداع الكاش في البنك')
+                    .setTitle('تم إيداع الكاش في البنك')
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '💵 الكاش المودَع', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
@@ -4175,7 +4175,7 @@ client.on('interactionCreate', async interaction => {
                 const result = await db.withdrawCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('💸 تم صرف الكاش من البنك')
+                    .setTitle('تم صرف الكاش من البنك')
                     .setColor(0xB71C1C)
                     .addFields(
                         { name: '💵 الكاش المصروف', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
@@ -4208,7 +4208,7 @@ client.on('interactionCreate', async interaction => {
 
                 const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تم التحويل بنجاح')
+                    .setTitle('تم التحويل بنجاح')
                     .setColor(0x1565C0)
                     .addFields(
                         { name: '👤 المرسِل', value: `${result.sender.character_name} ${result.sender.family_name || ''} (${SLOT_NAMES[result.sender.slot] || `شخصية ${result.sender.slot}`})`, inline: false },
@@ -4236,7 +4236,7 @@ client.on('interactionCreate', async interaction => {
                 const result = await db.createXAccount(interaction.user.id, xUsername);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تم إنشاء حسابك على منصة X')
+                    .setTitle('تم إنشاء حسابك على منصة X')
                     .setColor(0x000000)
                     .addFields({ name: '👤 اسم الحساب', value: `**@${xUsername}**`, inline: true })
                     .setFooter({ text: 'منصة X • بوت FANTASY' })
@@ -4280,7 +4280,7 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const targetUser = await client.users.fetch(friendAcc.discord_id);
                     const notif = new EmbedBuilder()
-                        .setTitle('👻 طلب صداقة جديد على سناب!')
+                        .setTitle('طلب صداقة جديد على سناب!')
                         .setColor(0xFFFC00)
                         .setDescription(`**@${myAcc.snap_username}** يريد إضافتك كصديق على سناب شات!\nاستخدم **زر الطلبات 🔔** لقبول الطلب.`)
                         .setFooter({ text: 'سناب شات • بوت FANTASY' })
@@ -4288,7 +4288,7 @@ client.on('interactionCreate', async interaction => {
                     await targetUser.send({ embeds: [notif] });
                 } catch (_) {}
                 const embed = new EmbedBuilder()
-                    .setTitle('✅ تم إرسال طلب الصداقة')
+                    .setTitle('تم إرسال طلب الصداقة')
                     .setColor(0xFFFC00)
                     .setDescription(`أُرسل طلب صداقة لـ **@${friendAcc.snap_username}** 👻\nسيتم إشعاره وعليه قبول الطلب.`)
                     .setFooter({ text: 'سناب شات • بوت FANTASY' })
@@ -4312,7 +4312,7 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const targetUser = await client.users.fetch(receiverId);
                     const notif = new EmbedBuilder()
-                        .setTitle('📸 سناب جديد وصلك!')
+                        .setTitle('سناب جديد وصلك!')
                         .setColor(0xFFFC00)
                         .setDescription(`**@${myAcc.snap_username}** أرسل لك سناباً!\nافتح سناب شات لمشاهدته 👻`)
                         .setFooter({ text: 'سناب شات • بوت FANTASY' })
@@ -4320,7 +4320,7 @@ client.on('interactionCreate', async interaction => {
                     await targetUser.send({ embeds: [notif] });
                 } catch (_) {}
                 const embed = new EmbedBuilder()
-                    .setTitle('📸 تم إرسال السناب!')
+                    .setTitle('تم إرسال السناب!')
                     .setColor(0xFFFC00)
                     .setDescription(`أُرسل سناب لـ **@${receiverAcc.snap_username}** بنجاح 👻`)
                     .setFooter({ text: 'سناب شات • بوت FANTASY' })
@@ -4394,7 +4394,7 @@ client.on('interactionCreate', async interaction => {
                 const result = await db.transferItem(interaction.user.id, receiver.discord_id, itemName);
                 if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'الغرض غير موجود في حقيبتك أو الكمية صفر.'}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('📤 تم تحويل الغرض بنجاح')
+                    .setTitle('تم تحويل الغرض بنجاح')
                     .setColor(0x6A1B9A)
                     .addFields(
                         { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
@@ -4442,7 +4442,7 @@ client.on('interactionCreate', async interaction => {
                                 .replace(/\{وقت\}/g,    tripTime)
                                 .replace(/\{منظم\}/g,   `<@${interaction.user.id}>`);
                             const embed = new EmbedBuilder()
-                                .setTitle('✈️ بدء رحلة جديدة!')
+                                .setTitle('بدء رحلة جديدة!')
                                 .setColor(0x2E7D32)
                                 .setDescription(filled)
                                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
@@ -4452,7 +4452,7 @@ client.on('interactionCreate', async interaction => {
                             sendToTripLog(embed);
                         } else {
                             const embed = new EmbedBuilder()
-                                .setTitle('✈️ بدء رحلة جديدة!')
+                                .setTitle('بدء رحلة جديدة!')
                                 .setColor(0x2E7D32)
                                 .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
                                 .addFields(
@@ -4503,7 +4503,7 @@ client.on('interactionCreate', async interaction => {
                                 .replace(/\{هوست\}/g,  hostId)
                                 .replace(/\{منظم\}/g,  `<@${interaction.user.id}>`);
                             const embed = new EmbedBuilder()
-                                .setTitle('🔄 تجديد الرحلة')
+                                .setTitle('تجديد الرحلة')
                                 .setColor(0x1565C0)
                                 .setDescription(filled)
                                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
@@ -4512,7 +4512,7 @@ client.on('interactionCreate', async interaction => {
                             sendToTripLog(embed);
                         } else {
                             const embed = new EmbedBuilder()
-                                .setTitle('🔄 تجديد الرحلة')
+                                .setTitle('تجديد الرحلة')
                                 .setColor(0x1565C0)
                                 .setDescription('🔄 **تم تجديد الرحلة!**')
                                 .addFields(
@@ -4544,7 +4544,7 @@ client.on('interactionCreate', async interaction => {
                 const alertText = interaction.fields.getTextInputValue('alert_text').trim();
 
                 const embed = new EmbedBuilder()
-                    .setTitle('📣 تنبيه')
+                    .setTitle('تنبيه')
                     .setColor(0xF57F17)
                     .setDescription(alertText)
                     .addFields({ name: '🔧 أرسله', value: `<@${interaction.user.id}>`, inline: true })
@@ -4579,7 +4579,7 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ content: '❌ الروم غير موجود أو البوت لا يملك صلاحية الوصول إليه.', flags: 64 });
 
                 const embed = new EmbedBuilder()
-                    .setTitle('🆘 نداء استغاثة — بانيك')
+                    .setTitle('نداء استغاثة — بانيك')
                     .setColor(0xD32F2F)
                     .setThumbnail(interaction.user.displayAvatarURL())
                     .addFields(
@@ -4625,7 +4625,7 @@ client.on('interactionCreate', async interaction => {
                         const logChannel = await client.channels.fetch(logChannelId);
                         if (logChannel) {
                             const logEmbed = new EmbedBuilder()
-                                .setTitle('📋 طلب هوية جديد — بانتظار المراجعة')
+                                .setTitle('طلب هوية جديد — بانتظار المراجعة')
                                 .setColor(0xF57F17)
                                 .setThumbnail(interaction.user.displayAvatarURL())
                                 .addFields(
@@ -4694,7 +4694,7 @@ client.on('interactionCreate', async interaction => {
                     if (result.error) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                     const updated = await db.getCompanyById(company.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('📥 تم الإيداع في حساب الشركة')
+                        .setTitle('تم الإيداع في حساب الشركة')
                         .setColor(0x1B5E20)
                         .addFields(
                             { name: '🏢 الشركة', value: company.name, inline: true },
@@ -4709,7 +4709,7 @@ client.on('interactionCreate', async interaction => {
                     if (result.error) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                     const updated = await db.getCompanyById(company.id);
                     const embed = new EmbedBuilder()
-                        .setTitle('💸 تم السحب من حساب الشركة')
+                        .setTitle('تم السحب من حساب الشركة')
                         .setColor(0xF57F17)
                         .addFields(
                             { name: '🏢 الشركة', value: company.name, inline: true },
@@ -4751,7 +4751,7 @@ client.on('interactionCreate', async interaction => {
                 const res = await db.addCompanyMember(company.id, userId, role, salary);
                 if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
 
-                const embed = new EmbedBuilder().setTitle('✅ تم تعيين الموظف').setColor(0x1B5E20)
+                const embed = new EmbedBuilder().setTitle('تم تعيين الموظف').setColor(0x1B5E20)
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
                         { name: '🏷️ الرتبة', value: `**${role}**`, inline: true },
@@ -4788,7 +4788,7 @@ client.on('interactionCreate', async interaction => {
 
                 await db.updateCompanyMemberRole(company.id, userId, role, salary);
 
-                const embed = new EmbedBuilder().setTitle('⬆️ تم ترقية الموظف').setColor(0x6A1B9A)
+                const embed = new EmbedBuilder().setTitle('تم ترقية الموظف').setColor(0x6A1B9A)
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
                         { name: '🏷️ الرتبة السابقة', value: `**${member.role}**`, inline: true },
@@ -4819,7 +4819,7 @@ client.on('interactionCreate', async interaction => {
                 if (!removed)
                     return interaction.reply({ content: '❌ هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
 
-                const embed = new EmbedBuilder().setTitle('🚫 تم الإقالة').setColor(0xB71C1C)
+                const embed = new EmbedBuilder().setTitle('تم الإقالة').setColor(0xB71C1C)
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
                         { name: '🏢 الشركة', value: company.name, inline: true },
@@ -4947,7 +4947,7 @@ client.on('messageCreate', async message => {
                 const ch = await client.channels.fetch(session.channelId).catch(() => null);
                 if (ch) {
                     const cancelEmbed = new EmbedBuilder()
-                        .setTitle('📡 تم إلغاء التراكينق')
+                        .setTitle('تم إلغاء التراكينق')
                         .setColor(0xFF8F00)
                         .setDescription(
                             `🚫 قام <@${message.author.id}> بإلغاء التراكينق عن طريق كتابة الكود الصحيح.\n` +
@@ -5018,7 +5018,7 @@ client.on('messageDelete', async (message) => {
 
         const restoreEmbed = new EmbedBuilder()
             .setColor(0xE53935)
-            .setTitle('🚫 حذف غير مصرح')
+            .setTitle('حذف غير مصرح')
             .setDescription(`**${executor.displayName}** حذف رسالة بدون صلاحية — تم استعادتها:`)
             .addFields(
                 { name: '👤 صاحب الرسالة', value: `<@${message.author.id}>`, inline: true },

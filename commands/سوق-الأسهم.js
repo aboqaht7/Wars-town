@@ -36,7 +36,7 @@ async function buildMarketEmbed(db) {
 
     const embed = new EmbedBuilder()
         .setColor(0x0A1628)
-        .setTitle('📊 بورصة Fantasy Town')
+        .setTitle('بورصة Fantasy Town')
         .setDescription(
             `\`\`\`yaml\n🟢 السوق: مفتوح  |  🕐 آخر تحديث: ${timeStr}  |  📋 ${listings.length} شركة مدرجة\`\`\``
         );

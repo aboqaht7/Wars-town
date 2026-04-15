@@ -59,7 +59,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('✅ تمت إضافة المحامي')
+                .setTitle('تمت إضافة المحامي')
                 .setColor(0x1B5E20)
                 .setDescription(roleStatus || null)
                 .addFields(
@@ -96,7 +96,7 @@ module.exports = {
             }
 
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ تمت إزالة المحامي')
+                .setTitle('تمت إزالة المحامي')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
@@ -110,7 +110,7 @@ module.exports = {
             if (!lawyers.length) return interaction.reply({ content: '📋 لا يوجد محامون مسجلون حالياً.', flags: 64 });
             const lines = lawyers.map((l, i) => `**${i + 1}.** ${l.lawyer_name} — <@${l.discord_id}>`).join('\n');
             const embed = new EmbedBuilder()
-                .setTitle('👨‍⚖️ المحامون المعتمدون')
+                .setTitle('المحامون المعتمدون')
                 .setColor(0x0D47A1)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${lawyers.length} محامٍ`, inline: true })
@@ -123,7 +123,7 @@ module.exports = {
             const channel = interaction.options.getChannel('الروم');
             await db.setConfig('lawyer_tasks_channel', channel.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين روم مهام المحامين')
+                .setTitle('تم تعيين روم مهام المحامين')
                 .setColor(0x0D47A1)
                 .setDescription(`سيتم إرسال مهام المحامين في <#${channel.id}> تلقائياً`)
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();

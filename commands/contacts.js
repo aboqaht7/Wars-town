@@ -11,7 +11,7 @@ module.exports = {
             await db.ensureUser(target.id, target.user.username);
             await db.addContact(message.author.id, target.id, nickname);
             const embed = new EmbedBuilder()
-                .setTitle('📒 تم إضافة جهة الاتصال')
+                .setTitle('تم إضافة جهة الاتصال')
                 .setColor(0x00838F)
                 .addFields(
                     { name: '👤 الجهة', value: `${target}`, inline: true },
@@ -25,7 +25,7 @@ module.exports = {
         await db.ensureUser(message.author.id, message.author.username);
         const contacts = await db.getContacts(message.author.id);
         const embed = new EmbedBuilder()
-            .setTitle('📒 جهات الاتصال')
+            .setTitle('جهات الاتصال')
             .setColor(0x00838F)
             .setDescription(contacts.length
                 ? contacts.map(c => `• ${c.nickname || c.username} — \`<@${c.contact_id}>\``).join('\n')

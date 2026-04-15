@@ -24,7 +24,7 @@ module.exports = {
         await db.cuffPlayer(target.id, message.author.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('🔗 تم تنفيذ الكلبشة')
+            .setTitle('تم تنفيذ الكلبشة')
             .setColor(0xB71C1C)
             .setDescription(`تم تكبيل <@${target.id}> بنجاح.\n⚠️ المكبّل لا يستطيع القيام بأي إجراء.`)
             .addFields(

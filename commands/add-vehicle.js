@@ -21,7 +21,7 @@ module.exports = {
             return message.reply(`❌ ${result.error}`);
         }
         const embed = new EmbedBuilder()
-            .setTitle('🚗 تم تسجيل السيارة')
+            .setTitle('تم تسجيل السيارة')
             .setColor(0x37474F)
             .addFields(
                 { name: '👤 المالك', value: `${target}`, inline: true },
@@ -43,7 +43,7 @@ module.exports = {
             return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
         }
         const embed = new EmbedBuilder()
-            .setTitle('🚗 تم تسجيل السيارة')
+            .setTitle('تم تسجيل السيارة')
             .setColor(0x37474F)
             .addFields(
                 { name: '👤 المالك', value: `<@${target.id}>`, inline: true },

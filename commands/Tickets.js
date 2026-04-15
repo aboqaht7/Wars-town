@@ -35,7 +35,7 @@ async function build(db) {
     const img   = await db.getImage('tickets').catch(() => null);
 
     const embed = new EmbedBuilder()
-        .setTitle('🎫 نظام التكتات')
+        .setTitle('نظام التكتات')
         .setColor(0x1565C0)
         .setFooter({ text: 'نظام التكتات • بوت FANTASY' })
         .setTimestamp();

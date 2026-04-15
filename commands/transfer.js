@@ -17,7 +17,7 @@ module.exports = {
             return message.reply(`❌ ${result.error}`);
         }
         const embed = new EmbedBuilder()
-            .setTitle('💸 تم التحويل بنجاح')
+            .setTitle('تم التحويل بنجاح')
             .setColor(0x2E7D32)
             .addFields(
                 { name: '👤 المُرسِل', value: `${message.author} — شخصية ${result.sender.slot}`, inline: true },

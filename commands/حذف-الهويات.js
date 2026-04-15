@@ -9,7 +9,7 @@ module.exports = {
         }
 
         const embed = new EmbedBuilder()
-            .setTitle('⚠️ تأكيد الحذف الكامل')
+            .setTitle('تأكيد الحذف الكامل')
             .setColor(0xB71C1C)
             .setDescription(
                 '> هل أنت متأكد من **حذف جميع الهويات**؟\n\n' +

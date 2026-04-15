@@ -33,7 +33,7 @@ async function buildMarket(db) {
     const img   = await db.getImage('market');
 
     const embed = new EmbedBuilder()
-        .setTitle('🛒 المتجر')
+        .setTitle('المتجر')
         .setColor(0xBF360C)
         .setDescription(items.length
             ? 'اختر الغرض الذي تريد شراءه من القائمة.'

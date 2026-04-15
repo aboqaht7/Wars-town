@@ -69,7 +69,7 @@ module.exports = {
             ];
             if (role) fields.push({ name: '🛡️ الرتبة المستلِمة', value: `<@&${role.id}>`, inline: true });
             const embed = new EmbedBuilder()
-                .setTitle('✅ تمت إضافة نوع التكت')
+                .setTitle('تمت إضافة نوع التكت')
                 .setColor(0x1565C0)
                 .addFields(...fields)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
@@ -82,7 +82,7 @@ module.exports = {
             const deleted = await db.removeTicketType(id);
             if (!deleted) return interaction.reply({ content: `❌ لا يوجد نوع برقم \`${id}\`.`, flags: 64 });
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ تم حذف نوع التكت')
+                .setTitle('تم حذف نوع التكت')
                 .setColor(0xB71C1C)
                 .setDescription(`تم حذف نوع **${deleted.emoji} ${deleted.name}** بنجاح.`)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
@@ -93,7 +93,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const types = await db.getTicketTypes();
             const embed = new EmbedBuilder()
-                .setTitle('🎫 أنواع التكتات')
+                .setTitle('أنواع التكتات')
                 .setColor(0x37474F)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
             if (!types.length) {
@@ -114,7 +114,7 @@ module.exports = {
             const cat = interaction.options.getChannel('الفئة');
             await db.setConfig('ticket_category_id', cat.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين فئة التكتات')
+                .setTitle('تم تعيين فئة التكتات')
                 .setColor(0x1565C0)
                 .addFields({ name: '📁 الفئة', value: `**${cat.name}**`, inline: true })
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
@@ -126,7 +126,7 @@ module.exports = {
             const ch = interaction.options.getChannel('الروم');
             await db.setConfig('ticket_log_channel', ch.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين روم لوق التكتات')
+                .setTitle('تم تعيين روم لوق التكتات')
                 .setColor(0x1565C0)
                 .addFields({ name: '📋 الروم', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
@@ -138,7 +138,7 @@ module.exports = {
             const role = interaction.options.getRole('الرتبة');
             await db.setConfig('ticket_admin_role', role.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين رتبة مسؤولي التكتات')
+                .setTitle('تم تعيين رتبة مسؤولي التكتات')
                 .setColor(0x7B1FA2)
                 .addFields(
                     { name: '🛡️ الرتبة', value: `<@&${role.id}>`, inline: true },

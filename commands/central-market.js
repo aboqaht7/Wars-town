@@ -33,7 +33,7 @@ async function buildMarket(db) {
     const fmt = (name) => `${(prices[name] || 0).toLocaleString()} ريال`;
 
     const embed = new EmbedBuilder()
-        .setTitle('🏪 السوق المركزي')
+        .setTitle('السوق المركزي')
         .setColor(0x00796B)
         .setDescription('> اختر الفئة التي تريد بيعها من القائمة\n> الأسعار تتجدد كل ساعة تلقائياً\n\u200B')
         .addFields(

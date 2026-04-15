@@ -20,7 +20,7 @@ module.exports = {
         await db.setConfig('investor_role', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('💼 تم تحديد رتبة المستثمر')
+            .setTitle('تم تحديد رتبة المستثمر')
             .setColor(0x1565C0)
             .setDescription(`رتبة **${role.name}** هي الآن رتبة المستثمر.\n\nأصحاب هذه الرتبة يستطيعون استخدام أمر \`/إدارة-شركة\` لإدارة شركاتهم.`)
             .setFooter({ text: 'نظام الشركات • بوت FANTASY' })

@@ -77,7 +77,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor(0xE53935)
-            .setTitle('🔇 تم تطبيق التايم اوت')
+            .setTitle('تم تطبيق التايم اوت')
             .addFields(
                 { name: '👤 العضو',      value: `<@${target.id}>`,          inline: true },
                 { name: '⏱️ المدة',      value: formatDuration(durationMs),  inline: true },

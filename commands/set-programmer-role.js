@@ -15,7 +15,7 @@ module.exports = {
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('programmer_role_id', role.id);
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم تعيين رتبة المبرمج')
+            .setTitle('تم تعيين رتبة المبرمج')
             .setColor(0x6A1B9A)
             .setDescription(`أصحاب رتبة <@&${role.id}> يمتلكون الآن صلاحية الوصول لجميع الأوامر الإدارية.`)
             .setFooter({ text: 'إعدادات البوت • FANTASY' }).setTimestamp();

@@ -50,7 +50,7 @@ module.exports = {
             const price = interaction.options.getInteger('السعر');
             const item  = await db.addBlackMarketItem(name, price);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تمت الإضافة')
+                .setTitle('تمت الإضافة')
                 .setColor(0x1a1a2e)
                 .addFields(
                     { name: 'ID',      value: String(item.id),                              inline: true },
@@ -84,7 +84,7 @@ module.exports = {
             const item = await db.updateBlackMarketItem(id, { name, price });
             if (!item) return interaction.reply({ content: `❌ لا يوجد غرض بـ ID: ${id}`, flags: 64 });
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم التعديل')
+                .setTitle('تم التعديل')
                 .setColor(0x1a1a2e)
                 .addFields(
                     { name: 'ID',      value: String(item.id),                              inline: true },
@@ -100,7 +100,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const items = await db.getBlackMarketItems();
             const embed = new EmbedBuilder()
-                .setTitle('🔫 قائمة البلاك ماركت')
+                .setTitle('قائمة البلاك ماركت')
                 .setColor(0x1a1a2e)
                 .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
                 .setTimestamp();

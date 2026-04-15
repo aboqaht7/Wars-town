@@ -22,7 +22,7 @@ module.exports = {
             return message.reply(`❌ ${result.error}`);
         }
         const embed = new EmbedBuilder()
-            .setTitle('📦 تم نقل الغرض')
+            .setTitle('تم نقل الغرض')
             .setColor(0xE65100)
             .addFields(
                 { name: '👤 المُرسِل', value: `${message.author}`, inline: true },

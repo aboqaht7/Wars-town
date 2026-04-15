@@ -33,7 +33,7 @@ async function buildEquipment(db) {
     const img   = await db.getImage('معدات');
 
     const embed = new EmbedBuilder()
-        .setTitle('🔨 متجر المعدات')
+        .setTitle('متجر المعدات')
         .setColor(0x4527A0)
         .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
         .setTimestamp();

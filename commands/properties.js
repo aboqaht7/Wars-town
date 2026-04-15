@@ -27,7 +27,7 @@ module.exports = {
 async function build(db) {
     const props = await db.getProperties();
     const embed = new EmbedBuilder()
-        .setTitle('🏠 معرض العقارات')
+        .setTitle('معرض العقارات')
         .setColor(0xB71C1C)
         .setDescription(props.length
             ? 'اختر العقار الذي تريد الاستفسار عنه أو شراؤه من القائمة.'

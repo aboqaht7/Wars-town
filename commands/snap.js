@@ -7,7 +7,7 @@ const { loadSystemBtns, makeBtn, makeMenuOption } = require('../btnConfig');
 
 async function buildSnap(account, image, db) {
     const embed = new EmbedBuilder()
-        .setTitle('👻 سناب شات')
+        .setTitle('سناب شات')
         .setColor(0xFFFC00)
         .setDescription('أرسل سنابات وتواصل مع أصدقائك.')
         .setFooter({ text: 'سناب شات • بوت FANTASY' })

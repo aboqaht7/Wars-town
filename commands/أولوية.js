@@ -4,7 +4,7 @@ const STYLE_MAP = { Primary: BS.Primary, Secondary: BS.Secondary, Success: BS.Su
 
 function buildEmbed() {
     return new EmbedBuilder()
-        .setTitle('🚨 نظام الأولوية')
+        .setTitle('نظام الأولوية')
         .setDescription('اختر مستوى الأولوية بالضغط على الزر المناسب.')
         .setColor(0xF57C00)
         .setFooter({ text: 'نظام الأولوية • بوت FANTASY' })

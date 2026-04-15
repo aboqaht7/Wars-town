@@ -69,7 +69,7 @@ module.exports = {
         }
 
         const logEmbed = new EmbedBuilder()
-            .setTitle('📋 سجل الشخصيات')
+            .setTitle('سجل الشخصيات')
             .setColor(0x37474F)
             .setFooter({ text: `بوت FANTASY • آخر ${limit} سجل` })
             .setTimestamp();

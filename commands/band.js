@@ -6,7 +6,7 @@ module.exports = {
         if (!target) return message.reply('❌ يجب ذكر اللاعب المراد باند. مثال: `-باند @اللاعب السبب`');
         const { EmbedBuilder } = require('discord.js');
         const embed = new EmbedBuilder()
-            .setTitle('🚫 تم تنفيذ الباند')
+            .setTitle('تم تنفيذ الباند')
             .setColor(0xB71C1C)
             .addFields(
                 { name: '👮 المنفذ', value: `${message.author}`, inline: true },

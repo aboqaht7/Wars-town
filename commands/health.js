@@ -19,7 +19,7 @@ module.exports = {
 
 async function build(db) {
     const embed = new EmbedBuilder()
-        .setTitle('🏥 وزارة الصحة')
+        .setTitle('وزارة الصحة')
         .setColor(0x1B5E20)
         .setDescription('اختر الخدمة الطبية التي تحتاجها.')
         .setFooter({ text: 'نظام الصحة • بوت FANTASY' })

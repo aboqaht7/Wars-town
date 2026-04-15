@@ -29,7 +29,7 @@ module.exports = {
         if (sub === 'شرطة') {
             await db.setConfig('police_reports_channel', channel.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم الإعداد')
+                .setTitle('تم الإعداد')
                 .setColor(0x1B5E20)
                 .setDescription(`روم بلاغات الشرطة: <#${channel.id}>`)
                 .setFooter({ text: 'إعداد البلاغات • بوت FANTASY' })
@@ -41,7 +41,7 @@ module.exports = {
         if (sub === 'إسعاف') {
             await db.setConfig('ambulance_reports_channel', channel.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم الإعداد')
+                .setTitle('تم الإعداد')
                 .setColor(0x1B5E20)
                 .setDescription(`روم بلاغات الإسعاف: <#${channel.id}>`)
                 .setFooter({ text: 'إعداد البلاغات • بوت FANTASY' })

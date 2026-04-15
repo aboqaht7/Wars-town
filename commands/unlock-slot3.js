@@ -18,7 +18,7 @@ module.exports = {
         await db.unlockSlot3(target.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('🔓 تم فتح الشخصية الثالثة')
+            .setTitle('تم فتح الشخصية الثالثة')
             .setColor(0x6A1B9A)
             .setDescription(`تم فتح **الشخصية الثالثة** للاعب <@${target.id}>`)
             .addFields(

@@ -31,7 +31,7 @@ async function buildJobs(db) {
     const img = await db.getImage('jobs');
 
     const embed = new EmbedBuilder()
-        .setTitle('💼 الوظائف الحرة')
+        .setTitle('الوظائف الحرة')
         .setColor(0xF57F17)
         .setDescription('> اختر وظيفتك من القائمة أدناه')
         .setFooter({ text: `نظام الوظائف • بوت FANTASY • كولداون ${COOLDOWN_SECONDS} ثوان بين كل وظيفة` })

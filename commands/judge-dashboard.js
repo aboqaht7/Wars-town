@@ -29,7 +29,7 @@ async function buildMain(db) {
     const img    = await db.getImage('عدل');
 
     const embed = new EmbedBuilder()
-        .setTitle('🏛️ القضاة المعتمدون')
+        .setTitle('القضاة المعتمدون')
         .setColor(0x4A148C)
         .setFooter({ text: 'نظام العدل • بوت FANTASY' })
         .setTimestamp();
@@ -72,7 +72,7 @@ async function buildJudgeDashboard(db, judgeId, judgeName) {
     const img   = await db.getImage('عدل');
 
     const embed = new EmbedBuilder()
-        .setTitle('🏛️ لوحة القاضي')
+        .setTitle('لوحة القاضي')
         .setColor(0x4A148C)
         .setAuthor({ name: `القاضي: ${judgeName}` })
         .setFooter({ text: 'نظام العدل • بوت FANTASY' })

@@ -18,7 +18,7 @@ module.exports = {
         await db.setConfig('activation_role_id', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم تعيين رتبة التفعيل')
+            .setTitle('تم تعيين رتبة التفعيل')
             .setColor(0x2E7D32)
             .addFields(
                 { name: '🎖️ الرتبة',       value: `<@&${role.id}>`, inline: true },

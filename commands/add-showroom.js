@@ -23,7 +23,7 @@ module.exports = {
         await db.addShowroomCar(carName, carType, price, color, interaction.user.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم إضافة السيارة للمعرض')
+            .setTitle('تم إضافة السيارة للمعرض')
             .setColor(0x2E7D32)
             .addFields(
                 { name: '🚗 اسم السيارة', value: `\`${carName}\``, inline: true },

@@ -75,7 +75,7 @@ module.exports = {
             await db.addItem(target.id, itemName, qty);
 
             const embed = new EmbedBuilder()
-                .setTitle('🎒 تمت إضافة غرض للحقيبة')
+                .setTitle('تمت إضافة غرض للحقيبة')
                 .setColor(0x1565C0)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(

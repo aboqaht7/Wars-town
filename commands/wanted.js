@@ -12,7 +12,7 @@ module.exports = {
 
         if (!items.length) {
             const emptyEmbed = new EmbedBuilder()
-                .setTitle('🔍 تفتيش اللاعب المكلبش')
+                .setTitle('تفتيش اللاعب المكلبش')
                 .setColor(0xFF6F00)
                 .setDescription(`تم تفتيش **${target.displayName}** — الحقيبة فارغة!`)
                 .addFields(
@@ -38,7 +38,7 @@ module.exports = {
         }
 
         const embed = new EmbedBuilder()
-            .setTitle('🔍 تفتيش وسرقة اللاعب المكلبش')
+            .setTitle('تفتيش وسرقة اللاعب المكلبش')
             .setColor(0xFF6F00)
             .addFields(
                 { name: '👮 الضابط', value: `${message.author}`, inline: true },

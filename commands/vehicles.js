@@ -19,7 +19,7 @@ module.exports = {
 
 function build(image) {
     const embed = new EmbedBuilder()
-        .setTitle('🚗 سياراتي المسجلة')
+        .setTitle('سياراتي المسجلة')
         .setColor(0x37474F)
         .setDescription('اعرض سياراتك المسجلة في نظام FANTASY.')
         .setFooter({ text: 'نظام السيارات • بوت FANTASY' })

@@ -49,7 +49,7 @@ module.exports = {
             const ch = interaction.options.getChannel('الروم');
             await db.setConfig('trips_start_channel', ch.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين روم بدء الرحلة')
+                .setTitle('تم تعيين روم بدء الرحلة')
                 .setColor(0x1565C0)
                 .addFields({ name: '📢 الروم', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
@@ -61,7 +61,7 @@ module.exports = {
             const ch = interaction.options.getChannel('الروم');
             await db.setConfig('trips_alerts_channel', ch.id);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تعيين روم تنبيهات الرحلة')
+                .setTitle('تم تعيين روم تنبيهات الرحلة')
                 .setColor(0x1565C0)
                 .addFields({ name: '📢 الروم', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
@@ -93,7 +93,7 @@ module.exports = {
             const msgRenew   = await db.getConfig('trip_renewal_message');
 
             const embed = new EmbedBuilder()
-                .setTitle('⚙️ إعدادات نظام الرحلات')
+                .setTitle('إعدادات نظام الرحلات')
                 .setColor(0x37474F)
                 .addFields(
                     { name: '📢 روم البدء',       value: startCh  ? `<#${startCh}>`  : '❌ غير مُعيَّن', inline: true },

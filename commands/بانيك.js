@@ -15,7 +15,7 @@ module.exports = {
             return interaction.reply({ content: '❌ لم يتم تحديد روم الاستغاثة بعد. استخدم `/إعداد-بانيك` أولاً.', flags: 64 });
 
         const embed = new EmbedBuilder()
-            .setTitle('🆘 نداء استغاثة — بانيك')
+            .setTitle('نداء استغاثة — بانيك')
             .setColor(0xD32F2F)
             .setDescription(
                 '**أنت في خطر؟**\n\n' +

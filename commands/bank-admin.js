@@ -41,7 +41,7 @@ module.exports = {
             if (!result.success) return message.reply(`❌ ${result.error}`);
 
             const embed = new EmbedBuilder()
-                .setTitle('✅ تمت إضافة الرصيد')
+                .setTitle('تمت إضافة الرصيد')
                 .setColor(0x2E7D32)
                 .addFields(
                     { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
@@ -66,7 +66,7 @@ module.exports = {
             if (!result.success) return message.reply(`❌ ${result.error}`);
 
             const embed = new EmbedBuilder()
-                .setTitle('🔻 تم سحب الرصيد')
+                .setTitle('تم سحب الرصيد')
                 .setColor(0xB71C1C)
                 .addFields(
                     { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
@@ -88,7 +88,7 @@ module.exports = {
             if (!char) return message.reply(`❌ لا يوجد حساب بالإيبان \`${iban}\``);
 
             const embed = new EmbedBuilder()
-                .setTitle('❄️ تم تجميد الحساب')
+                .setTitle('تم تجميد الحساب')
                 .setColor(0x0288D1)
                 .addFields(
                     { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
@@ -107,7 +107,7 @@ module.exports = {
             if (!char) return message.reply(`❌ لا يوجد حساب بالإيبان \`${iban}\``);
 
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم فك تجميد الحساب')
+                .setTitle('تم فك تجميد الحساب')
                 .setColor(0x2E7D32)
                 .addFields(
                     { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },

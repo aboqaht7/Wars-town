@@ -15,7 +15,7 @@ module.exports = {
         await db.sendMessage(message.author.id, target.id, content);
 
         const embed = new EmbedBuilder()
-            .setTitle('📱 تم إرسال الرسالة')
+            .setTitle('تم إرسال الرسالة')
             .setColor(0x00838F)
             .addFields(
                 { name: '📤 المُرسِل', value: `${message.author}`, inline: true },
@@ -27,7 +27,7 @@ module.exports = {
         message.channel.send({ embeds: [embed] });
 
         const notif = new EmbedBuilder()
-            .setTitle('📩 رسالة جديدة وصلتك!')
+            .setTitle('رسالة جديدة وصلتك!')
             .setColor(0x00838F)
             .addFields(
                 { name: '📤 من', value: `${message.author}`, inline: true },

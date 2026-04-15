@@ -26,7 +26,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor(0x0A1628)
-            .setTitle('💼 محفظتك الاستثمارية')
+            .setTitle('محفظتك الاستثمارية')
             .setDescription(`\`\`\`yaml\n👤 ${identity.name}  |  🪪 ${identity.iban}\`\`\``);
 
         for (const p of portfolio) {

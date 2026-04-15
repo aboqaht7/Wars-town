@@ -27,7 +27,7 @@ module.exports = {
         await db.setConfig('trade_ministry_channel', channel.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('🏛️ تم إعداد وزارة التجارة')
+            .setTitle('تم إعداد وزارة التجارة')
             .setColor(0x1565C0)
             .addFields(
                 { name: '👔 رتبة المسؤولين', value: `<@&${role.id}>`, inline: true },

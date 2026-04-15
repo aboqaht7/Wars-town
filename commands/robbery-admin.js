@@ -36,7 +36,7 @@ module.exports = {
 
             const row = await db.addRobbery(name, tools, minMoney, maxMoney);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تمت إضافة السرقة')
+                .setTitle('تمت إضافة السرقة')
                 .setColor(0xB71C1C)
                 .addFields(
                     { name: '🔖 الرقم',            value: `\`${row.id}\``, inline: true },
@@ -56,7 +56,7 @@ module.exports = {
             if (!rob) return interaction.reply({ content: `❌ لا توجد سرقة برقم \`${id}\`.`, flags: 64 });
             await db.deleteRobbery(id);
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ تم حذف السرقة')
+                .setTitle('تم حذف السرقة')
                 .setColor(0x757575)
                 .setDescription(`تم حذف سرقة **${rob.name}** بنجاح.`)
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
@@ -68,7 +68,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const robberies = await db.getRobberies();
             const embed = new EmbedBuilder()
-                .setTitle('📋 قائمة السرقات')
+                .setTitle('قائمة السرقات')
                 .setColor(0xB71C1C)
                 .setFooter({ text: `${robberies.length} سرقة • بوت FANTASY` })
                 .setTimestamp();

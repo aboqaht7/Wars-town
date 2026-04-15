@@ -19,7 +19,7 @@ module.exports = {
         await db.setConfig('lawyer_role_id', role.id);
 
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم تعيين رتبة المحامين')
+            .setTitle('تم تعيين رتبة المحامين')
             .setColor(0x1565C0)
             .setDescription('أعضاء هذه الرتبة سيظهرون في قائمة المحامين عند توكيل محامٍ.')
             .addFields(

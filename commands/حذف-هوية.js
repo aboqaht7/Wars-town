@@ -52,7 +52,7 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
     await db.deleteIdentity(targetId, slot);
 
     const embed = new EmbedBuilder()
-        .setTitle('🗑️ تم حذف الهوية')
+        .setTitle('تم حذف الهوية')
         .setColor(0x757575)
         .addFields(
             { name: '👤 اللاعب',       value: `<@${targetId}>`, inline: true },

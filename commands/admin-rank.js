@@ -69,7 +69,7 @@ module.exports = {
             await db.addRankType(name, '', position);
 
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم إضافة الرتبة')
+                .setTitle('تم إضافة الرتبة')
                 .setColor(0x5865F2)
                 .addFields(
                     { name: 'الاسم',    value: name,          inline: true },
@@ -87,7 +87,7 @@ module.exports = {
             if (!deleted) return interaction.reply({ content: `❌ الرتبة **${name}** غير موجودة.`, flags: 64 });
 
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ تم حذف الرتبة')
+                .setTitle('تم حذف الرتبة')
                 .setColor(0x888888)
                 .setDescription(`تم حذف رتبة **${deleted.name}** من القائمة.`)
                 .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
@@ -101,7 +101,7 @@ module.exports = {
             if (!ranks.length) return interaction.reply({ content: '📋 لا توجد رتب مضافة. استخدم `/تعيين-رتبة-ادارة إضافة-رتبة` لإضافة رتبة.', flags: 64 });
 
             const embed = new EmbedBuilder()
-                .setTitle('📋 أنواع الرتب المتاحة')
+                .setTitle('أنواع الرتب المتاحة')
                 .setColor(0x5865F2)
                 .setDescription(ranks.map((r, i) => `\`${i + 1}\` **${r.name}**`).join('\n'))
                 .addFields({ name: 'العدد الكلي', value: `${ranks.length} رتبة`, inline: true })
@@ -119,7 +119,7 @@ module.exports = {
             await db.setAdminRank(target.id, target.username, rankName, interaction.user.id);
 
             const embed = new EmbedBuilder()
-                .setTitle('📋 تعيين رتبة إدارية')
+                .setTitle('تعيين رتبة إدارية')
                 .setColor(0x5865F2)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
@@ -142,7 +142,7 @@ module.exports = {
             if (!removed) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
 
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ إزالة رتبة إدارية')
+                .setTitle('إزالة رتبة إدارية')
                 .setColor(0x888888)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
@@ -220,7 +220,7 @@ module.exports = {
             const lines = all.map(r => `**${r.rank_name}** — <@${r.discord_id}> · ${r.points} نقطة`);
 
             const embed = new EmbedBuilder()
-                .setTitle('📋 قائمة الإداريين')
+                .setTitle('قائمة الإداريين')
                 .setColor(0x5865F2)
                 .setDescription(lines.join('\n'))
                 .addFields({ name: 'الإجمالي', value: `${all.length} إداري`, inline: true })

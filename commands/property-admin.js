@@ -42,7 +42,7 @@ module.exports = {
 
             const row = await db.addProperty(name, price, imageUrl);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تمت إضافة العقار')
+                .setTitle('تمت إضافة العقار')
                 .setColor(0xB71C1C)
                 .addFields(
                     { name: '🔖 الرقم',    value: `\`${row.id}\``, inline: true },
@@ -64,7 +64,7 @@ module.exports = {
             if (!prop) return interaction.reply({ content: `❌ لا يوجد عقار برقم \`${id}\`.`, flags: 64 });
             await db.updatePropertyImage(id, imageUrl);
             const embed = new EmbedBuilder()
-                .setTitle('✅ تم تحديث صورة العقار')
+                .setTitle('تم تحديث صورة العقار')
                 .setColor(0xB71C1C)
                 .addFields(
                     { name: '🏠 العقار', value: prop.name, inline: true },
@@ -83,7 +83,7 @@ module.exports = {
             if (!prop) return interaction.reply({ content: `❌ لا يوجد عقار برقم \`${id}\`.`, flags: 64 });
             await db.deleteProperty(id);
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ تم حذف العقار')
+                .setTitle('تم حذف العقار')
                 .setColor(0x757575)
                 .setDescription(`تم حذف عقار **${prop.name}** بنجاح.`)
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
@@ -95,7 +95,7 @@ module.exports = {
         if (sub === 'حذف-الكل') {
             await db.deleteAllProperties();
             const embed = new EmbedBuilder()
-                .setTitle('🗑️ تم حذف جميع العقارات')
+                .setTitle('تم حذف جميع العقارات')
                 .setColor(0x757575)
                 .setDescription('> تم مسح جميع العقارات من القائمة.')
                 .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
@@ -107,7 +107,7 @@ module.exports = {
         if (sub === 'قائمة') {
             const props = await db.getProperties();
             const embed = new EmbedBuilder()
-                .setTitle('📋 قائمة العقارات')
+                .setTitle('قائمة العقارات')
                 .setColor(0xB71C1C)
                 .setFooter({ text: `${props.length} عقار • بوت FANTASY` })
                 .setTimestamp();

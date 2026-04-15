@@ -18,7 +18,7 @@ module.exports = {
             return interaction.reply({ content: `❌ لم يتم العثور على سيارة برقم \`${id}\``, flags: 64 });
 
         const embed = new EmbedBuilder()
-            .setTitle('🗑️ تم حذف السيارة من المعرض')
+            .setTitle('تم حذف السيارة من المعرض')
             .setColor(0xB71C1C)
             .addFields(
                 { name: '🔢 رقم السيارة', value: `\`${id}\``, inline: true },
