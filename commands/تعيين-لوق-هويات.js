@@ -26,7 +26,7 @@ module.exports = {
                 { name: '📋 الروم المحدد', value: `<#${channel.id}>`, inline: true },
                 { name: 'ℹ️ ما يُسجل تلقائياً', value: '🪪 كل طلبات إنشاء الهويات تصل هنا مع أزرار القبول والرفض', inline: false },
             )
-            .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+            .setFooter({ text: 'Identity System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

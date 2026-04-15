@@ -50,7 +50,7 @@ module.exports = {
                     { name: '💰 السعر',    value: `\`${price.toLocaleString()} ريال\``, inline: true },
                     { name: '🖼️ الصورة',  value: imageUrl ? `[رابط](${imageUrl})` : '`لم يتم تحديدها`', inline: false },
                 )
-                .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             if (imageUrl) embed.setThumbnail(imageUrl);
             await interaction.channel.send({ embeds: [embed] });
@@ -71,7 +71,7 @@ module.exports = {
                     { name: '🖼️ الصورة الجديدة', value: `[رابط](${imageUrl})`, inline: false },
                 )
                 .setImage(imageUrl)
-                .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -86,7 +86,7 @@ module.exports = {
                 .setTitle('Property Deleted')
                 .setColor(0x757575)
                 .setDescription(`تم حذف عقار **${prop.name}** بنجاح.`)
-                .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -98,7 +98,7 @@ module.exports = {
                 .setTitle('All Properties Deleted')
                 .setColor(0x757575)
                 .setDescription('> تم مسح جميع العقارات من القائمة.')
-                .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -109,7 +109,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Properties List')
                 .setColor(0xB71C1C)
-                .setFooter({ text: `${props.length} عقار • بوت FANTASY` })
+                .setFooter({ text: `${props.length} عقار • FANTASY Bot` })
                 .setTimestamp();
             if (!props.length) {
                 embed.setDescription('> لا توجد عقارات مضافة بعد.');

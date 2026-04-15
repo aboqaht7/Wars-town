@@ -9,14 +9,14 @@ module.exports = {
         .setDescription('إدارة قائمة القضاة المعتمدين')
         .addSubcommand(s => s
             .setName('إضافة')
-            .setDescription('إضافة قاضٍ للقائمة ومنحه الرتبة تلقائياً')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .setDescription('إضافة قاضٍ للقائمة ومنحه الRank تلقائياً')
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
             .addStringOption(o => o.setName('الاسم').setDescription('اسم القاضي كما سيظهر').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('حذف')
             .setDescription('حذف قاضٍ من القائمة وإزالة رتبته')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('قائمة')
@@ -44,13 +44,13 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.add(judgeRoleId);
-                        roleStatus = `\n✅ تم منح رتبة <@&${judgeRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ تم منح Rank <@&${judgeRoleId}> تلقائياً`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من منح الرتبة (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ لم أتمكن من منح الRank (تحقق من صلاحيات البوت)';
                 }
             } else {
-                roleStatus = '\n⚠️ لم يتم تحديد رتبة القضاة — استخدم `/تعيين-رتبة-قاضي`';
+                roleStatus = '\n⚠️ لم يتم تحديد Rank القضاة — استخدم `/تعيين-Rank-قاضي`';
             }
 
             const _img = await db.getImage('عدل').catch(() => null);
@@ -61,10 +61,10 @@ module.exports = {
                 .setColor(0x4A148C)
                 .setDescription(roleStatus || null)
                 .addFields(
-                    { name: '👤 العضو',  value: `<@${user.id}>`, inline: true },
+                    { name: '👤 Member',  value: `<@${user.id}>`, inline: true },
                     { name: '📛 الاسم', value: name,              inline: true },
                 )
-                .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -73,7 +73,7 @@ module.exports = {
         if (sub === 'حذف') {
             const user    = interaction.options.getUser('العضو');
             const deleted = await db.removeJudge(user.id);
-            if (!deleted) return interaction.reply({ content: '❌ هذا العضو غير مسجل كقاضٍ.', flags: 64 });
+            if (!deleted) return interaction.reply({ content: '❌ هذا Member غير مسجل كقاضٍ.', flags: 64 });
 
             let roleStatus = '';
             const judgeRoleId = await db.getConfig('judge_role_id');
@@ -83,10 +83,10 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.remove(judgeRoleId);
-                        roleStatus = `\n✅ تمت إزالة رتبة <@&${judgeRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ تمت إزالة Rank <@&${judgeRoleId}> تلقائياً`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من إزالة الرتبة (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ لم أتمكن من إزالة الRank (تحقق من صلاحيات البوت)';
                 }
             }
 
@@ -97,8 +97,8 @@ module.exports = {
                 .setTitle('Judge Removed')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
-                .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
-                .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+                .addFields({ name: '👤 Member', value: `<@${user.id}>`, inline: true })
+                .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -115,7 +115,7 @@ module.exports = {
                 .setColor(0x4A148C)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${judges.length} قاضٍ`, inline: true })
-                .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });
             return interaction.reply({ content: '​', flags: 64 });

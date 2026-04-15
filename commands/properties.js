@@ -3,7 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'properties',
-    data: new SlashCommandBuilder().setName('properties').setDescription('عرض العقارات المتاحة للشراء'),
+    data: new SlashCommandBuilder().setName('properties').setDescription('View available properties for purchase'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
@@ -30,9 +30,9 @@ async function build(db) {
         .setTitle('Real Estate Gallery')
         .setColor(0xB71C1C)
         .setDescription(props.length
-            ? 'اختر العقار الذي تريد الاستفسار عنه أو شراؤه من القائمة.'
-            : '> لا توجد عقارات متاحة حالياً. انتظر الإدارة.')
-        .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+            ? 'Choose the property you want to inquire about or purchase from the list.'
+            : '> No properties available right now. Wait for the admin.')
+        .setFooter({ text: 'Properties System • FANTASY Bot' })
         .setTimestamp();
     const img = await db.getImage('properties');
     if (img) embed.setImage(img);
@@ -48,7 +48,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('properties_menu')
-            .setPlaceholder('🏠 اختر العقار')
+            .setPlaceholder('🏠 Choose a property')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu, resetRow('properties')] };

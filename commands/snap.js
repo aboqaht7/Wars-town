@@ -7,10 +7,10 @@ const { loadSystemBtns, makeBtn, makeMenuOption } = require('../btnConfig');
 
 async function buildSnap(account, image, db) {
     const embed = new EmbedBuilder()
-        .setTitle('سناب شات')
+        .setTitle('Snapchat')
         .setColor(0xFFFC00)
-        .setDescription('أرسل سنابات وتواصل مع أصدقائك.')
-        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+        .setDescription('Send snaps and connect with your friends.')
+        .setFooter({ text: 'Snapchat • FANTASY Bot' })
         .setTimestamp();
     if (image) embed.setImage(image);
 
@@ -26,7 +26,7 @@ async function buildSnap(account, image, db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('snap_menu')
-            .setPlaceholder('👻 اختر من القائمة')
+            .setPlaceholder('👻 Choose from the menu')
             .addOptions([
                 makeMenuOption('snap_send',     mc.send),
                 makeMenuOption('snap_inbox',    mc.inbox),
@@ -41,13 +41,13 @@ async function buildSnap(account, image, db) {
 
 module.exports = {
     name: 'سناب',
-    data: new SlashCommandBuilder().setName('سناب').setDescription('سناب شات — الرسائل والأصدقاء'),
+    data: new SlashCommandBuilder().setName('سناب').setDescription('Snapchat — Messages والأصدقاء'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);
         if (err) return message.reply(err);
         const account = await db.getSnapAccount(message.author.id);
-        const img = await db.getImage('سناب شات');
+        const img = await db.getImage('Snapchat');
         message.channel.send(await buildSnap(account, img, db));
     },
     async slashExecute(interaction, db) {
@@ -55,7 +55,7 @@ module.exports = {
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
         const account = await db.getSnapAccount(interaction.user.id);
-        const img = await db.getImage('سناب شات');
+        const img = await db.getImage('Snapchat');
         await interaction.channel.send(await buildSnap(account, img, db));
         await interaction.reply({ content: '​', flags: 64 });
     },

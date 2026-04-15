@@ -22,12 +22,12 @@ module.exports = {
             .setTitle('Transfer Successful')
             .setColor(0x2E7D32)
             .addFields(
-                { name: '👤 المُرسِل', value: `${message.author} — شخصية ${result.sender.slot}`, inline: true },
-                { name: '🏦 المُستلِم', value: `الإيبان: \`${iban}\``, inline: true },
-                { name: '💰 المبلغ المحوّل', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                { name: '📊 رصيدك بعد التحويل', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
+                { name: '👤 Sender', value: `${message.author} — شخصية ${result.sender.slot}`, inline: true },
+                { name: '🏦 Recipient', value: `الإيبان: \`${iban}\``, inline: true },
+                { name: '💰 Amount Transferred', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
+                { name: '📊 Your Balance After Transfer', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
             )
-            .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+            .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

@@ -10,8 +10,8 @@ async function build(image, db) {
     const embed = new EmbedBuilder()
         .setTitle('Inventory')
         .setColor(0xE65100)
-        .setDescription('اختر ما تريد فعله بحقيبتك.')
-        .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+        .setDescription('Select what you want to do with your bag.')
+        .setFooter({ text: 'Bag System • FANTASY Bot' })
         .setTimestamp();
     if (image) embed.setImage(image);
 
@@ -26,7 +26,7 @@ async function build(image, db) {
 
 module.exports = {
     name: 'bag',
-    data: new SlashCommandBuilder().setName('bag').setDescription('عرض الحقيبة والأغراض'),
+    data: new SlashCommandBuilder().setName('bag').setDescription('View bag and items'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);

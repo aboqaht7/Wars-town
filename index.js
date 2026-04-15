@@ -108,7 +108,7 @@ client.once('clientReady', async () => {
 || @everyone ||`);
 
         await db.setConfig('trip_renewal_message',
-`بدء الرحلة  — يوجد تجديد رحلة 
+`بدء الرحلة  — يوجد Renew رحلة 
 الرجاء من الجميع وضع خيار { LAST LOCATION } 
 و الخروج من الرحلة و الدخول على الرحلة الجديدة 
 
@@ -118,7 +118,7 @@ client.once('clientReady', async () => {
 || @everyone ||`);
 
         await db.setConfig('trip_hurricane_message',
-`التجديد اشعار اعصار 
+`الRenew اشعار اعصار 
 
 ⚠️— يوجد اعصار في المدينة يجب على جميع اللاعبين 
 المغادرة من الرحلة و انتظار الرحلات القادمة 
@@ -157,23 +157,23 @@ const menuHandlers = {
     help_menu: {
         identity: '🪪 **الهوية** — اكتب `/identity` لعرض شخصيتك والإيبان الخاص بها.',
         phone: '📱 **الجوال** — اكتب `/phone` لإرسال بلاغ شرطة 🚨 أو بلاغ إسعاف 🚑.',
-        bag: '🎒 **الحقيبة** — اكتب `/bag` لعرض أغراضك. لنقل غرض: `-نقل [غرض] @مستخدم`',
-        bank: '🏦 **البنك** — اكتب `/bank` لعرض رصيدك وإيبانك. لتحويل مال: `-تحويل [إيبان] [مبلغ]`',
-        trips: '✈️ **الرحلات** — اكتب `/الرحلات` لفتح رحلة أو إرسال تنبيه.',
+        bag: '🎒 **Bag** — اكتب `/bag` لعرض أغراضك. لنقل غرض: `-نقل [غرض] @مستخدم`',
+        bank: '🏦 **Bank** — اكتب `/bank` لعرض رصيدك وإيبانك. لتحويل مال: `-تحويل [إيبان] [مبلغ]`',
+        trips: '✈️ **الرحلات** — اكتب `/الرحلات` لفتح رحلة أو إرسال Alert.',
         jobs: '💼 **الوظائف** — اكتب `/jobs` لاختيار وظيفتك (صيد، تكسي، صيد حيوانات، منجم).',
-        market: '🛒 **سوق الأدوات** — اكتب `/market` لشراء السنارة والفأس وأدوات المنجم.',
-        law: '⚖️ **المحاماة** — اكتب `/law` لفتح قضية أو إدارة القضايا.',
-        admin: '🛡️ **الإدارة** — اكتب `/admin` لعرض لوحة الإدارة.',
-        crime: '🔫 **الجرائم** — اكتب `/crime` لتنفيذ جريمة.',
-        tickets: '🎫 **التكتات** — اكتب `/tickets` لفتح تكت (شكوى، اقتراح، بلاغ).',
-        vehicles: '🚗 **السيارات والمعرض**\n• `/سيارات` — سياراتك المسجلة\n• `/معارض` — عرض المعرض\n• `/اضافة-معرض` — إضافة سيارة للمعرض',
-        sms: '💬 **الرسائل**\n• `-رسالة @مستخدم [نص]` — إرسال رسالة\n• `-صندوق` — عرض صندوق الرسائل\n• `-جهات @مستخدم [اسم]` — إضافة جهة اتصال\n• `-جهات` — عرض جهات الاتصال',
-        x_platform: '𝕏 **منصة X**\n• `-تغريد [نص]` — نشر تغريدة\n• `/منصة-x` — عرض المنشورات\n• `-حذف-تغريدة [رقم]` — حذف تغريدتك',
+        market: '🛒 **Tools Market** — اكتب `/market` لشراء السنارة والفأس وأدوات المنجم.',
+        law: '⚖️ **Law** — اكتب `/law` لفتح قضية أو إدارة القضايا.',
+        admin: '🛡️ **Admin** — اكتب `/admin` لعرض لوحة Admin.',
+        crime: '🔫 **Crimes** — اكتب `/crime` لتنفيذ جريمة.',
+        tickets: '🎫 **Tickets** — اكتب `/tickets` لفتح تكت (شكوى، اقتراح، بلاغ).',
+        vehicles: '🚗 **Cars & Showroom**\n• `/سيارات` — سياراتك المسجلة\n• `/معارض` — عرض المعرض\n• `/اضافة-معرض` — إضافة سيارة للمعرض',
+        sms: '💬 **Messages**\n• `-رسالة @مستخدم [نص]` — إرسال رسالة\n• `-صندوق` — عرض صندوق Messages\n• `-جهات @مستخدم [اسم]` — إضافة جهة اتصال\n• `-جهات` — عرض جهات الاتصال',
+        x_platform: '𝕏 **X Platform**\n• `-تغريد [نص]` — نشر تغريدة\n• `/منصة-x` — عرض المنشورات\n• `-حذف-تغريدة [رقم]` — حذف تغريدتك',
     },
     admin_menu: {
-        ranks: '🏅 **عرض الرتب** — تواصل مع الإدارة لعرض رتبتك الحالية.',
-        points: '⭐ **نقاط الإدارة** — تواصل مع الإدارة لمعرفة نقاطك.',
-        manage: '👥 **إدارة اللاعبين** — صلاحية خاصة بالإدارة فقط.',
+        ranks: '🏅 **عرض الرتب** — تواصل مع Admin لعرض رتبتك الحالية.',
+        points: '⭐ **نقاط Admin** — تواصل مع Admin لمعرفة نقاطك.',
+        manage: '👥 **إدارة اللاعبين** — صلاحية خاصة بAdmin فقط.',
         logs: '📋 **سجل الإجراءات** — سجل جميع الإجراءات الإدارية.',
     },
     jobs_menu: {
@@ -183,20 +183,20 @@ const menuHandlers = {
         mining: '⛏️ **منجم** — توجه للمنجم وابدأ استخراج المعادن.',
     },
     law_menu: {
-        new_case: '📁 **فتح قضية** — تواصل مع الإدارة لفتح قضية جديدة.',
-        view_cases: '📋 **عرض القضايا** — تواصل مع الإدارة لعرض قضاياك.',
-        hire_lawyer: '👨‍⚖️ **توكيل محامٍ** — تواصل مع الإدارة لتوكيل محامٍ.',
-        legal_process: '⚖️ **الإجراءات القانونية** — تواصل مع الإدارة لمعرفة الإجراءات.',
+        new_case: '📁 **فتح قضية** — تواصل مع Admin لفتح قضية جديدة.',
+        view_cases: '📋 **عرض القضايا** — تواصل مع Admin لعرض قضاياك.',
+        hire_lawyer: '👨‍⚖️ **توكيل محامٍ** — تواصل مع Admin لتوكيل محامٍ.',
+        legal_process: '⚖️ **الإجراءات القانونية** — تواصل مع Admin لمعرفة الإجراءات.',
     },
     market_menu: {
-        fishing_rod: '🎣 **سنارة صيد** — تواصل مع الإدارة لشراء سنارة الصيد.',
-        axe: '🪓 **فأس** — تواصل مع الإدارة لشراء فأس للحطب.',
-        mining_tools: '⛏️ **أدوات منجم** — تواصل مع الإدارة لشراء أدوات المنجم.',
-        auction: '🔨 **مزاد** — تواصل مع الإدارة لحضور مزاد السيارات والعقارات.',
+        fishing_rod: '🎣 **سنارة صيد** — تواصل مع Admin لشراء سنارة الصيد.',
+        axe: '🪓 **فأس** — تواصل مع Admin لشراء فأس للحطب.',
+        mining_tools: '⛏️ **أدوات منجم** — تواصل مع Admin لشراء أدوات المنجم.',
+        auction: '🔨 **مزاد** — تواصل مع Admin لحضور مزاد السيارات والعقارات.',
     },
     health_menu: {
         hospital_resuscitation: '🏥 **إنعاش مستشفى** — تواصل مع طاقم المستشفى لإنعاشك.',
-        decay: '💀 **تحلل** — شخصيتك في وضع التحلل، تواصل مع الإدارة.',
+        decay: '💀 **تحلل** — شخصيتك في وضع التحلل، تواصل مع Admin.',
         witch_resuscitation: '🧙 **إنعاش ساحرة** — تواصل مع الساحرة للحصول على الإنعاش.',
     },
     ticket_menu: {
@@ -262,7 +262,7 @@ async function handleOpenTicket(interaction, typeId) {
             .setColor(0x1565C0)
             .setDescription(`مرحباً <@${interaction.user.id}>!\n\nتم فتح تكت **${type.emoji} ${type.name}** بنجاح.${receiverLine}\n\nعند الانتهاء اضغط زر **إغلاق التكت**.`)
             .addFields({ name: '👤 صاحب التكت', value: `<@${interaction.user.id}>`, inline: true })
-            .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
 
         const closeRow = new ARB2().addComponents(
             new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('استلام التكت').setEmoji('📋').setStyle(BS2.Secondary),
@@ -343,7 +343,7 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId.startsWith('trip_msg_btn_')) {
             const type   = interaction.customId.replace('trip_msg_btn_', '');
-            const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
+            const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الHurricane', trip_renewal: 'الRenew' };
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB_TM } = require('discord.js');
             const placeholders = {
                 trip_start:    'المتغيرات: {هوست} {نائب} {رقابي} {وقت} {منظم}\nاتركها فارغة لإعادة الرسالة الافتراضية',
@@ -375,12 +375,12 @@ client.on('interactionCreate', async interaction => {
                 try { await interaction.deferReply({ flags: 64 }); } catch { return; }
                 try {
                     const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                    if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.' });
+                    if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم الAlertات. استخدم `/إعداد-رحلات` أولاً.' });
 
                     await db.setConfig('hurricane_active', 'true');
                     await db.setConfig('trip_open', 'false');
                     await db.logoutAllUsers();
-                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'إعصار — خروج تلقائي لجميع اللاعبين');
+                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'Hurricane — خروج تلقائي لجميع اللاعبين');
 
                     const customMsg = await db.getConfig('trip_hurricane_message');
                     try {
@@ -391,7 +391,7 @@ client.on('interactionCreate', async interaction => {
                                     .setTitle('Warning — Hurricane!')
                                     .setColor(0xB71C1C)
                                     .setDescription(customMsg)
-                                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                    .setFooter({ text: 'Trip System • FANTASY Bot' })
                                     .setTimestamp();
                                 await ch.send({ embeds: [hurricaneEmbed] });
                                 sendToTripLog(hurricaneEmbed);
@@ -399,16 +399,16 @@ client.on('interactionCreate', async interaction => {
                                 const hurricaneEmbed = new EmbedBuilder()
                                     .setTitle('Warning — Hurricane!')
                                     .setColor(0xB71C1C)
-                                    .setDescription('⚠️ **تم تفعيل حدث الإعصار!**\n\n🚪 تم تسجيل خروج **جميع اللاعبين** تلقائياً.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
+                                    .setDescription('⚠️ **تم تفعيل حدث الHurricane!**\n\n🚪 تم Logout **جميع اللاعبين** automatically.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
                                     .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
-                                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                    .setFooter({ text: 'Trip System • FANTASY Bot' })
                                     .setTimestamp();
                                 await ch.send({ embeds: [hurricaneEmbed] });
                                 sendToTripLog(hurricaneEmbed);
                             }
                         }
                     } catch (sendErr) { console.error('[hurricane] send error:', sendErr?.message); }
-                    return interaction.editReply({ content: '✅ تم إرسال تحذير الإعصار.' });
+                    return interaction.editReply({ content: '✅ تم إرسال تحذير الHurricane.' });
                 } catch (e) {
                     console.error('[hurricane] error:', e?.message);
                     return interaction.editReply({ content: '❌ حدث خطأ.' });
@@ -433,11 +433,11 @@ client.on('interactionCreate', async interaction => {
                 const hurricaneActive = await db.getConfig('hurricane_active');
 
                 if (hurricaneActive === 'true') {
-                    return interaction.reply({ content: '⚠️ يوجد إعصار نشط — لا يمكن التجديد. يجب فتح رحلة جديدة أولاً عبر زر **بدء رحلة**.', flags: 64 });
+                    return interaction.reply({ content: '⚠️ يوجد Hurricane نشط — لا يمكن الRenew. يجب فتح رحلة جديدة أولاً عبر زر **Start Trip**.', flags: 64 });
                 }
 
                 if (tripOpen !== 'true') {
-                    return interaction.reply({ content: '❌ لا توجد رحلة مفتوحة حالياً — يجب بدء رحلة أولاً قبل التجديد.', flags: 64 });
+                    return interaction.reply({ content: '❌ لا توجد رحلة مفتوحة حالياً — يجب Start Trip أولاً قبل الRenew.', flags: 64 });
                 }
 
                 const modal = new ModalBuilder().setCustomId('trip_renewal_modal').setTitle('Trip Renewal');
@@ -450,7 +450,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'trip_alert') {
                 const modal = new ModalBuilder().setCustomId('trip_alert_modal').setTitle('Send Alert');
                 modal.addComponents(
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص التنبيه').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص الAlert').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                 );
                 return interaction.showModal(modal).catch(() => {});
             }
@@ -465,9 +465,9 @@ client.on('interactionCreate', async interaction => {
 
                 const jobKey = interaction.customId.replace('do_job_', '');
                 const JOBS = {
-                    fishing:     { label: '🎣 صيد السمك',   req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
-                    woodcutting: { label: '🪓 تقطيع الخشب', req: 'فأس',      items: ['خشب'],                            weights: [100],       color: 0x4E342E },
-                    mining:      { label: '⛏️ المنجم',       req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],     weights: [5,20,35,40], color: 0x546E7A },
+                    fishing:     { label: '🎣 Fishing',   req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 Woodcutting', req: 'فأس',      items: ['خشب'],                            weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ Mining',       req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],     weights: [5,20,35,40], color: 0x546E7A },
                 };
                 const job = JOBS[jobKey];
                 if (!job) return;
@@ -517,7 +517,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '🎒 تُضاف إلى',         value: 'حقيبتك',                             inline: true },
                         { name: '⏳ الكولداون',          value: `10 ثوان`,                             inline: true },
                     )
-                    .setFooter({ text: 'نظام الوظائف • بوت FANTASY — بيع مكاسبك عبر قائمة الوظائف' })
+                    .setFooter({ text: 'Jobs System • FANTASY Bot — بيع مكاسبك عبر قائمة الوظائف' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -537,10 +537,10 @@ client.on('interactionCreate', async interaction => {
                 if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const cash = Number(identity.cash);
-                if (cash < item.price) return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString('en-US')}$** ولديك **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
+                if (cash < item.price) return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString('en-US')}$** وYou have **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -554,7 +554,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💸 المبلغ المدفوع', value: `${Number(item.price).toLocaleString('en-US')}$`,           inline: true },
                         { name: '💰 رصيدك المتبقي',  value: `${(cash - item.price).toLocaleString('en-US')}$`,          inline: true },
                     )
-                    .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
+                    .setFooter({ text: 'Black Market • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -574,11 +574,11 @@ client.on('interactionCreate', async interaction => {
                 if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
-                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** ولديك **${cash.toLocaleString()} ريال**.`, flags: 64 });
+                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** وYou have **${cash.toLocaleString()} ريال**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -592,7 +592,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💸 المبلغ المدفوع',  value: `${Number(item.price).toLocaleString()} ريال`,    inline: true },
                         { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
                     )
-                    .setFooter({ text: 'نظام المتجر • بوت FANTASY' })
+                    .setFooter({ text: 'Store System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -612,11 +612,11 @@ client.on('interactionCreate', async interaction => {
                 if (!item) return interaction.reply({ content: '❌ هذه المعدة لم تعد متاحة.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
-                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** ولديك **${cash.toLocaleString()} ريال**.`, flags: 64 });
+                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** وYou have **${cash.toLocaleString()} ريال**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -630,7 +630,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💸 المبلغ المدفوع',  value: `${Number(item.price).toLocaleString()} ريال`,    inline: true },
                         { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
                     )
-                    .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
+                    .setFooter({ text: 'Equipment Store • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -672,7 +672,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💰 السعر المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
                     )
                     .setDescription('> تهانينا! تم شراء عقارك بنجاح. احتفظ بهذه الرسالة كوثيقة ملكية.')
-                    .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                    .setFooter({ text: 'Properties System • FANTASY Bot' })
                     .setTimestamp();
                 if (prop.image_url) dmEmbed.setImage(prop.image_url);
 
@@ -688,10 +688,10 @@ client.on('interactionCreate', async interaction => {
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '🏠 العقار', value: prop.name, inline: true },
-                        { name: '💰 المبلغ المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
+                        { name: '💰 Amount المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
                     )
                     .setDescription('> تم خصم المبلغ من كاشك وإرسال وثيقة الملكية في خاصك.')
-                    .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                    .setFooter({ text: 'Properties System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.update({ embeds: [successEmbed], components: [] });
             } catch (e) {
@@ -748,13 +748,13 @@ client.on('interactionCreate', async interaction => {
                             { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
                             { name: '📋 الشخصية', value: `شخصية ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
                             { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
-                            { name: '🏦 الإيبان', value: `\`${char.iban}\``, inline: true },
+                            { name: '🏦 IBAN', value: `\`${char.iban}\``, inline: true },
                         )
-                        .setFooter({ text: 'نظام الهوية • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Identity System • FANTASY Bot' }).setTimestamp();
                     sendToCharLog(resultEmbed);
                     await interaction.update({ embeds: [resultEmbed], components: [] });
 
-                    // منح رتبة الهوية تلقائياً
+                    // منح Rank الهوية تلقائياً
                     try {
                         const identityRoleId = await db.getConfig('identity_role');
                         if (identityRoleId) {
@@ -776,9 +776,9 @@ client.on('interactionCreate', async interaction => {
                                 { name: '⚧ الجنس', value: pending.gender || '—', inline: true },
                                 { name: '📅 تاريخ الميلاد', value: pending.birth_date || '—', inline: true },
                                 { name: '📍 مكان الولادة', value: pending.birth_place || '—', inline: true },
-                                { name: '🏦 الإيبان الخاص بك', value: `\`${char.iban}\``, inline: true },
+                                { name: '🏦 IBAN الخاص بك', value: `\`${char.iban}\``, inline: true },
                             )
-                            .setFooter({ text: 'بوت FANTASY • نظام الهوية' })
+                            .setFooter({ text: 'بوت FANTASY • Identity System' })
                             .setTimestamp();
                         await user.send({ embeds: [approveDmEmbed] });
                     } catch {}
@@ -794,7 +794,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '📋 الشخصية', value: `شخصية ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
                             { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
                         )
-                        .setFooter({ text: 'نظام الهوية • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Identity System • FANTASY Bot' }).setTimestamp();
                     sendToCharLog(resultEmbed);
                     await interaction.update({ embeds: [resultEmbed], components: [] });
 
@@ -804,13 +804,13 @@ client.on('interactionCreate', async interaction => {
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Identity Request Rejected')
                             .setColor(0xB71C1C)
-                            .setDescription('للأسف، تم رفض طلب إنشاء هويتك. يمكنك إعادة المحاولة أو التواصل مع الإدارة.')
+                            .setDescription('للأسف، تم رفض طلب إنشاء هويتك. يمكنك إعادة المحاولة أو التواصل مع Admin.')
                             .addFields(
                                 { name: '📌 الشخصية', value: slotNamesReject[pending.slot] || `شخصية ${pending.slot}`, inline: true },
                                 { name: '🪪 الاسم المقدّم', value: `${pending.char_name} ${pending.family_name}`, inline: true },
                                 { name: '❌ رفضه', value: interaction.user.username, inline: true },
                             )
-                            .setFooter({ text: 'بوت FANTASY • نظام الهوية' })
+                            .setFooter({ text: 'بوت FANTASY • Identity System' })
                             .setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
@@ -850,7 +850,7 @@ client.on('interactionCreate', async interaction => {
                                 { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
                                 { name: '🏢 الشركة', value: pending.company_name, inline: true },
                             )
-                            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                            .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         return interaction.update({ embeds: [failEmbed], components: [] });
                     }
 
@@ -864,7 +864,7 @@ client.on('interactionCreate', async interaction => {
                         console.error('[STOCK LIST ERROR]', stockErr);
                     }
 
-                    // ── إنشاء رتبة مالك الشركة وتعيينها تلقائياً ──
+                    // ── إنشاء Rank مالك الشركة وتعيينها تلقائياً ──
                     let ownerRoleMention = '';
                     try {
                         const ownerRole = await interaction.guild.roles.create({
@@ -874,7 +874,7 @@ client.on('interactionCreate', async interaction => {
                         });
                         const ownerMember = await interaction.guild.members.fetch(pending.discord_id);
                         await ownerMember.roles.add(ownerRole);
-                        ownerRoleMention = ` — رتبة ${ownerRole} مُعيّنة`;
+                        ownerRoleMention = ` — Rank ${ownerRole} مُعيّنة`;
                     } catch (roleErr) {
                         console.error('[OWNER ROLE CREATE ERROR]', roleErr);
                     }
@@ -888,7 +888,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
                         )
                         .setDescription(ownerRoleMention || null)
-                        .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                     await interaction.update({ embeds: [approveEmbed], components: [] });
 
                     try {
@@ -897,7 +897,7 @@ client.on('interactionCreate', async interaction => {
                             .setTitle('Company Establishment Approved!')
                             .setColor(0x1B5E20)
                             .setDescription(`مبروك أصبحت من تجار Fantasy town وفالك النجاح 🎉\n\nتم تأسيس شركة **${pending.company_name}** بنجاح. يمكنك الآن إدارتها عبر أوامر \`/شركة\`.`)
-                            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                            .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
                 } else {
@@ -911,7 +911,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '🏢 الشركة', value: pending.company_name, inline: true },
                             { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
                         )
-                        .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                     await interaction.update({ embeds: [rejectEmbed], components: [] });
 
                     try {
@@ -920,7 +920,7 @@ client.on('interactionCreate', async interaction => {
                             .setTitle('Your Company Establishment Request Rejected')
                             .setColor(0xB71C1C)
                             .setDescription(`للأسف، تم رفض طلب تأسيس شركة **${pending.company_name}**.\nيمكنك التواصل مع وزارة التجارة للمزيد من التفاصيل.`)
-                            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' }).setTimestamp();
+                            .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
                 }
@@ -938,17 +938,17 @@ client.on('interactionCreate', async interaction => {
                 const isAdminUser = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
 
-                // تسجيل الدخول والخروج: رتبة الوزارة فقط بدون استثناء الأدمن
+                // تسجيل الدخول والخروج: Rank الوزارة فقط بدون استثناء الأدمن
                 if (['ministry_login_btn', 'ministry_logout_btn'].includes(interaction.customId)) {
                     if (!hasMinistryRole)
                         return interaction.reply({ content: '❌ تسجيل الدخول والخروج لمسؤولي وزارة التجارة فقط.', flags: 64 });
                 } else {
-                    // باقي الأزرار: أدمن أو رتبة الوزارة
+                    // باقي الأزرار: أدمن أو Rank الوزارة
                     if (!isAdminUser && !hasMinistryRole)
                         return interaction.reply({ content: '❌ هذا الإجراء لمسؤولي وزارة التجارة فقط.', flags: 64 });
                 }
 
-                // ─── تسجيل دخول ───────────────────────────────────────────────
+                // ─── Login ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_login_btn') {
                     const duty = await db.getMinistryDuty(interaction.user.id);
                     if (duty?.status === 'on')
@@ -965,10 +965,10 @@ client.on('interactionCreate', async interaction => {
                                 .setTimestamp()]
                         });
                     }
-                    return interaction.reply({ content: '✅ تم تسجيل دخولك بنجاح.', flags: 64 });
+                    return interaction.reply({ content: '✅ تم Loginك بنجاح.', flags: 64 });
                 }
 
-                // ─── تسجيل خروج ───────────────────────────────────────────────
+                // ─── Logout ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_logout_btn') {
                     const duty = await db.getMinistryDuty(interaction.user.id);
                     if (!duty || duty.status === 'off')
@@ -985,10 +985,10 @@ client.on('interactionCreate', async interaction => {
                                 .setTimestamp()]
                         });
                     }
-                    return interaction.reply({ content: '✅ تم تسجيل خروجك بنجاح.', flags: 64 });
+                    return interaction.reply({ content: '✅ تم Logoutك بنجاح.', flags: 64 });
                 }
 
-                // ─── عرض الشركات المسجلة ──────────────────────────────────────
+                // ─── View Registered Companies ──────────────────────────────────────
                 if (interaction.customId === 'ministry_companies_btn') {
                     const companies = await db.getAllCompanies();
                     if (!companies.length)
@@ -1002,12 +1002,12 @@ client.on('interactionCreate', async interaction => {
                         .setTitle(`🏢 الشركات المسجلة (${companies.length})`)
                         .setColor(0x1565C0)
                         .setDescription(list)
-                        .setFooter({ text: 'وزارة التجارة • بوت FANTASY' })
+                        .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
-                // ─── قبول شركة — عرض الطلبات المعلقة ─────────────────────────
+                // ─── Approve Company — عرض الطلبات المعلقة ─────────────────────────
                 if (interaction.customId === 'ministry_approve_btn') {
                     const pending = await db.getAllPendingCompanies();
                     if (!pending.length)
@@ -1022,10 +1022,10 @@ client.on('interactionCreate', async interaction => {
                                 { name: '🏢 اسم الشركة', value: p.company_name, inline: true },
                                 { name: '📝 معلومات شخصية', value: p.personal_info || '—', inline: false },
                                 { name: '🏗️ تفاصيل الشركة', value: p.company_details || '—', inline: false },
-                                { name: '📊 خطة الإدارة', value: p.management_plan || '—', inline: false },
+                                { name: '📊 خطة Admin', value: p.management_plan || '—', inline: false },
                                 { name: '💰 المعلومات المالية', value: p.financial_info || '—', inline: false },
                             )
-                            .setFooter({ text: `وزارة التجارة • بوت FANTASY` })
+                            .setFooter({ text: `Ministry of Commerce • FANTASY Bot` })
                             .setTimestamp();
 
                         const row = new ActionRowBuilder().addComponents(
@@ -1043,7 +1043,7 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
-        // ── CIA: تسجيل دخول / خروج / كشف مباشرين ────────────────────────────────
+        // ── CIA: Login / خروج / كشف مباشرين ────────────────────────────────
         if (['cia_login_btn','cia_logout_btn','cia_active_btn','cia_fake_id_btn'].includes(interaction.customId)) {
             try {
                 const ciaMemberRoleId = await db.getConfig('cia_member_role');
@@ -1054,7 +1054,7 @@ client.on('interactionCreate', async interaction => {
                 if (!hasCiaAccess)
                     return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
 
-                // ─── تسجيل دخول ──────────────────────────────────────────────
+                // ─── Login ──────────────────────────────────────────────
                 if (interaction.customId === 'cia_login_btn') {
                     const duty = await db.getCiaDuty(interaction.user.id);
                     if (duty?.status === 'on')
@@ -1063,12 +1063,12 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Login')
                         .setColor(0x1B5E20)
-                        .addFields({ name: '🕵️ العضو', value: `<@${interaction.user.id}>`, inline: true })
+                        .addFields({ name: '🕵️ Member', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
-                // ─── تسجيل خروج ──────────────────────────────────────────────
+                // ─── Logout ──────────────────────────────────────────────
                 if (interaction.customId === 'cia_logout_btn') {
                     const duty = await db.getCiaDuty(interaction.user.id);
                     if (!duty || duty.status === 'off')
@@ -1077,7 +1077,7 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Logout')
                         .setColor(0xB71C1C)
-                        .addFields({ name: '🕵️ العضو', value: `<@${interaction.user.id}>`, inline: true })
+                        .addFields({ name: '🕵️ Member', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
@@ -1241,7 +1241,7 @@ client.on('interactionCreate', async interaction => {
                 if (!req) return interaction.update({ content: '❌ الطلب غير موجود أو تمت معالجته.', embeds: [], components: [] });
 
                 if (isApprove) {
-                    // منح رتبة التفعيل وتعيين النيك نيم بـ ID سوني
+                    // منح Rank التفعيل وتعيين النيك نيم بـ ID سوني
                     try {
                         const roleId = await db.getConfig('activation_role_id');
                         const member = await interaction.guild.members.fetch(req.user_id).catch(() => null);
@@ -1259,7 +1259,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '🎮 ID سوني',       value: `\`${req.sony_id}\``, inline: true },
                             { name: '✅ قبله',           value: `<@${interaction.user.id}>`, inline: true },
                         )
-                        .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
                     await interaction.update({ embeds: [approveEmbed], components: [] });
 
@@ -1281,7 +1281,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '🎮 ID سوني', value: `\`${req.sony_id}\``,         inline: true },
                             { name: '❌ رفضه',    value: `<@${interaction.user.id}>`,  inline: true },
                         )
-                        .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
                     await interaction.update({ embeds: [rejectEmbed], components: [] });
 
@@ -1289,7 +1289,7 @@ client.on('interactionCreate', async interaction => {
                         const user = await client.users.fetch(req.user_id);
                         await user.send(
                             `❌ **تم رفض طلب تفعيلك في سيرفر ${interaction.guild.name}.**\n` +
-                            `> تواصل مع الإدارة لمعرفة السبب أو إعادة المحاولة.`
+                            `> تواصل مع Admin لمعرفة السبب أو إعادة المحاولة.`
                         );
                     } catch (_) {}
                 }
@@ -1320,12 +1320,12 @@ client.on('interactionCreate', async interaction => {
                             { name: '👤 الاسم', value: `${identity.character_name || '—'} ${identity.family_name || ''}`, inline: true },
                             { name: '📌 الشخصية', value: SLOT_NAMES_B[identity.slot] || `شخصية ${identity.slot}`, inline: true },
                             { name: '\u200b', value: '\u200b', inline: true },
-                            { name: '🏦 رصيد البنك', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
+                            { name: '🏦 رصيد Bank', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
                             { name: '💵 الكاش', value: `\`${Number(identity.cash || 0).toLocaleString()} ريال\``, inline: true },
-                            { name: '🏦 الإيبان', value: `\`${identity.iban}\``, inline: true },
-                            { name: '🔒 الحالة', value: identity.frozen ? '❄️ مجمّد' : '✅ نشط', inline: true },
+                            { name: '🏦 IBAN', value: `\`${identity.iban}\``, inline: true },
+                            { name: '🔒 الحالة', value: identity.frozen ? '❄️ مجمّد' : '✅ Active', inline: true },
                         )
-                        .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+                        .setFooter({ text: 'Bank System • FANTASY Bot' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
@@ -1335,7 +1335,7 @@ client.on('interactionCreate', async interaction => {
                     if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_deposit_modal').setTitle('Deposit Cash to Bank');
                     modal.addComponents(new ARB().addComponents(
-                        new TextInputBuilder().setCustomId('deposit_amount').setLabel('المبلغ المراد إيداعه (ريال)').setStyle(TextInputStyle.Short).setRequired(true)
+                        new TextInputBuilder().setCustomId('deposit_amount').setLabel('المبلغ المراد Depositه (ريال)').setStyle(TextInputStyle.Short).setRequired(true)
                     ));
                     return interaction.showModal(modal);
                 }
@@ -1407,7 +1407,7 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Snap Inbox')
                     .setColor(0xFFFC00)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 if (!msgs.length) {
                     embed.setDescription('> 📭 لا توجد سنابات واردة');
@@ -1432,7 +1432,7 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('My Snap Friends')
                     .setColor(0xFFFC00)
-                    .setFooter({ text: `${friends.length} صديق • سناب شات • بوت FANTASY` })
+                    .setFooter({ text: `${friends.length} صديق • Snapchat • FANTASY Bot` })
                     .setTimestamp();
                 if (!friends.length) {
                     embed.setDescription('> لا يوجد أصدقاء بعد. استخدم **➕ إضافة صديق**');
@@ -1475,7 +1475,7 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Incoming Friend Requests')
                     .setColor(0xFFFC00)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 if (!requests.length) {
                     embed.setDescription('> لا توجد طلبات صداقة معلّقة.');
@@ -1514,7 +1514,7 @@ client.on('interactionCreate', async interaction => {
                 const xChannel = await db.getConfig('x_channel');
                 if (!xChannel) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات بعد. تواصل مع المسؤولين.', flags: 64 });
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X. أنشئ حساباً أولاً.', flags: 64 });
+                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform. أنشئ حساباً أولاً.', flags: 64 });
                 const modal = new MBX().setCustomId('x_tweet_modal').setTitle('Send Tweet')
                     .addComponents(new ARBX().addComponents(
                         new TIBX().setCustomId('tweet_content').setLabel('نص التغريدة')
@@ -1525,13 +1525,13 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_delete_account') {
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
                 await db.deleteXAccount(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Account Deleted')
                     .setColor(0xB71C1C)
                     .setDescription(`تم حذف حساب **@${account.x_username}** وجميع تغريداته نهائياً.`)
-                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             }
@@ -1547,7 +1547,7 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Your Inventory')
                     .setColor(0xE65100)
-                    .setFooter({ text: `إجمالي الأغراض: ${items.length} • نظام الحقيبة • بوت FANTASY` })
+                    .setFooter({ text: `إجمالي الأغراض: ${items.length} • Bag System • FANTASY Bot` })
                     .setTimestamp();
 
                 if (!items.length) {
@@ -1587,7 +1587,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Transfer Item')
                     .addComponents(
                         new ARB2().addComponents(
-                            new TIB2().setCustomId('transfer_item_name').setLabel('اسم الغرض')
+                            new TIB2().setCustomId('transfer_item_name').setLabel('Item name')
                                 .setStyle(TIS2.Short).setRequired(true).setMaxLength(50)
                         ),
                         new ARB2().addComponents(
@@ -1634,7 +1634,7 @@ client.on('interactionCreate', async interaction => {
                         const caseEmbed = new EmbedBuilder()
                             .setTitle('New Case Details')
                             .setColor(0x0D47A1)
-                            .setDescription('لقد قبلت هذا التوكيل. فيما يلي تفاصيل الموكّل والقضية:')
+                            .setDescription('لقد Accepted هذا التوكيل. فيما يلي تفاصيل الموكّل والقضية:')
                             .addFields(
                                 { name: '🔢 رقم القضية', value: fullCase?.case_number || req.case_number, inline: true },
                                 { name: '📌 عنوان القضية', value: fullCase?.title || req.case_title, inline: true },
@@ -1644,7 +1644,7 @@ client.on('interactionCreate', async interaction => {
                                 { name: '📋 وصف القضية', value: fullCase?.description || '—', inline: false },
                                 { name: '🗂️ الأدلة', value: fullCase?.evidence || '—', inline: false },
                             )
-                            .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+                            .setFooter({ text: 'Law System • FANTASY Bot' })
                             .setTimestamp();
                         await lawyerUser.send({ embeds: [caseEmbed] });
                     } catch (_) {}
@@ -1672,7 +1672,7 @@ client.on('interactionCreate', async interaction => {
                         .setTitle(isAccept ? '✅ تم قبول طلب التوكيل' : '❌ تم رفض طلب التوكيل')
                         .setColor(isAccept ? 0x1B5E20 : 0xB71C1C)
                         .addFields(...dmFields)
-                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
@@ -1714,15 +1714,15 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle('تم خصم أتعاب المحاماة')
+                        .setTitle('تم خصم أتعاب Law')
                         .setColor(0xE65100)
                         .addFields(
                             { name: '🔢 رقم القضية', value: c.case_number,              inline: true },
                             { name: '📌 العنوان',     value: c.title,                   inline: true },
                             { name: '👨‍⚖️ المحامي',   value: c.lawyer_name || '—',     inline: true },
-                            { name: '💰 المبلغ المخصوم', value: `**${ATAB_FEE.toLocaleString()} ريال**`, inline: false },
+                            { name: '💰 Amount المخصوم', value: `**${ATAB_FEE.toLocaleString()} ريال**`, inline: false },
                         )
-                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
@@ -1787,7 +1787,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'gather_resources') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 await interaction.deferUpdate();
                 const RESOURCES = [
@@ -1870,7 +1870,7 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
-        // ── كشف نقاط الإدارة ────────────────────────────────────────────────────
+        // ── كشف نقاط Admin ────────────────────────────────────────────────────
         if (interaction.customId === 'points_check') {
             const data  = await db.getStaffActivity(interaction.user.id);
             const trips   = data.trips_count   || 0;
@@ -1889,7 +1889,7 @@ client.on('interactionCreate', async interaction => {
                     { name: '✏️ نقاط مضافة يدوياً', value: `**${manual} نقطة**`,                           inline: false },
                     { name: '─────────────────', value: `🏆 **الإجمالي: ${total} نقطة**`,               inline: false },
                 )
-                .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Admin Points System • FANTASY Bot' }).setTimestamp();
             return interaction.reply({ embeds: [embed], flags: 64 });
         }
 
@@ -1898,12 +1898,12 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const isDeposit = interaction.customId === 'comp_deposit_btn';
                 const modal = new ModalBuilder()
                     .setCustomId(isDeposit ? 'comp_deposit_modal' : 'comp_withdraw_modal')
-                    .setTitle(isDeposit ? '📥 إيداع في حساب الشركة' : '💸 سحب من حساب الشركة');
+                    .setTitle(isDeposit ? '📥 Deposit في حساب الشركة' : '💸 سحب من حساب الشركة');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('amount').setLabel('المبلغ')
@@ -1921,7 +1921,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('Assign Employee');
                 modal.addComponents(
@@ -1931,7 +1931,7 @@ client.on('interactionCreate', async interaction => {
                             .setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('role').setLabel('الرتبة (مدير / محاسب / موظف)')
+                        new TextInputBuilder().setCustomId('role').setLabel('الRank (مدير / محاسب / موظف)')
                             .setStyle(TextInputStyle.Short).setPlaceholder('موظف')
                             .setRequired(true).setMaxLength(20)
                     ),
@@ -1951,7 +1951,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
                     return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
@@ -1967,13 +1967,13 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Salaries Deposited')
                     .setColor(0x2E7D32)
-                    .setDescription(`تم خصم **${res.total.toLocaleString()} ريال** من رصيد الشركة وإيداعها في حسابات الموظفين.`)
+                    .setDescription(`تم خصم **${res.total.toLocaleString()} ريال** من رصيد الشركة وDepositها في حسابات الموظفين.`)
                     .addFields(
                         { name: `👥 الموظفون (${res.members.length})`, value: salaryLines, inline: false },
                         { name: '🏢 الشركة', value: company.name, inline: true },
                         { name: '💳 إجمالي المدفوع', value: `\`${res.total.toLocaleString()} ريال\``, inline: true },
                     )
-                    .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+                    .setFooter({ text: 'Company System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
@@ -1988,7 +1988,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('Promote Employee');
                 modal.addComponents(
@@ -1998,7 +1998,7 @@ client.on('interactionCreate', async interaction => {
                             .setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('role').setLabel('الرتبة الجديدة (مدير / محاسب / موظف)')
+                        new TextInputBuilder().setCustomId('role').setLabel('الRank الجديدة (مدير / محاسب / موظف)')
                             .setStyle(TextInputStyle.Short).setPlaceholder('مدير')
                             .setRequired(true).setMaxLength(20)
                     ),
@@ -2018,7 +2018,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('Fire Employee');
                 modal.addComponents(
@@ -2038,19 +2038,19 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب رتبة **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
                     return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
                 if (company.balance > 0)
-                    return interaction.reply({ content: `❌ لا يمكن حل الشركة ورصيدها **${company.balance.toLocaleString()} ريال**. اسحب الرصيد أولاً.`, flags: 64 });
+                    return interaction.reply({ content: `❌ لا يمكن Dissolve Company ورصيدها **${company.balance.toLocaleString()} ريال**. اسحب الرصيد أولاً.`, flags: 64 });
 
                 await db.dissolveCompany(company.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('تم حل الشركة')
+                    .setTitle('تم Dissolve Company')
                     .setColor(0xB71C1C)
                     .setDescription(`تم حل شركة **${company.name}** نهائياً وإغلاق جميع سجلاتها.`)
-                    .setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
@@ -2082,7 +2082,7 @@ client.on('interactionCreate', async interaction => {
                         .setColor(0x1B5E20)
                         .setDescription(desc)
                         .addFields({ name: '💰 إجمالي القيمة', value: `\`${totalValue.toLocaleString(undefined,{maximumFractionDigits:0})} ريال\`` })
-                        .setFooter({ text: 'سوق الأسهم • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'سوق الأسهم • FANTASY Bot' }).setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
@@ -2100,7 +2100,7 @@ client.on('interactionCreate', async interaction => {
                 );
                 const selectMenu = new StringSelectMenuBuilder()
                     .setCustomId(isBuy ? 'stock_company_select:buy' : 'stock_company_select:sell')
-                    .setPlaceholder(isBuy ? '📈 اختر الشركة للشراء' : '📉 اختر الشركة للبيع')
+                    .setPlaceholder(isBuy ? '📈 Choose a company to buy from' : '📉 Choose a company to sell')
                     .addOptions(options);
                 return interaction.reply({
                     content: isBuy ? '📈 **اختر الشركة التي تريد شراء أسهمها:**' : '📉 **اختر الشركة التي تريد بيع أسهمها:**',
@@ -2118,7 +2118,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
-                    return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                    return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const hasPerm = await db.hasTradePermit(interaction.user.id);
                 if (!hasPerm)
@@ -2153,7 +2153,7 @@ client.on('interactionCreate', async interaction => {
                             .setRequired(true).setMaxLength(800)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('cf_management').setLabel('خطة الإدارة والتوظيف')
+                        new TextInputBuilder().setCustomId('cf_management').setLabel('خطة Admin والتوظيف')
                             .setStyle(TextInputStyle.Paragraph)
                             .setPlaceholder('كيف تدير الشركة / خبرة سابقة / عدد الموظفين / كيف توظف')
                             .setRequired(true).setMaxLength(800)
@@ -2180,10 +2180,10 @@ client.on('interactionCreate', async interaction => {
                 if (!userCompany) {
                     const { ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
                     const applyRow = new ARB2().addComponents(
-                        new BB2().setCustomId('company_apply_btn').setLabel('تقديم طلب تأسيس').setEmoji('📋').setStyle(BS2.Success)
+                        new BB2().setCustomId('company_apply_btn').setLabel('Submit Establishment Request').setEmoji('📋').setStyle(BS2.Success)
                     );
                     return interaction.reply({
-                        content: '❌ ليس لديك شركة مسجلة. يمكنك تقديم طلب تأسيس شركة من خلال الزر أدناه.',
+                        content: '❌ ليس لديك شركة مسجلة. يمكنك Submit Establishment Request شركة من خلال الزر أدناه.',
                         components: [applyRow],
                         flags: 64
                     });
@@ -2201,7 +2201,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Registered Companies List')
                     .setColor(0x1565C0)
                     .setDescription(list)
-                    .setFooter({ text: `نظام الشركات • ${companies.length} شركة` })
+                    .setFooter({ text: `Company System • ${companies.length} شركة` })
                     .setTimestamp();
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
@@ -2212,7 +2212,7 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
-        // ── إضافة / خصم نقاط (مسؤولين فقط) ─────────────────────────────────────
+        // ── إضافة / Deduct Points (مسؤولين فقط) ─────────────────────────────────────
         if (interaction.customId === 'points_add_btn' || interaction.customId === 'points_deduct_btn') {
             const isAdd = interaction.customId === 'points_add_btn';
             const pointsAdminRole = await db.getConfig('points_admin_role');
@@ -2224,7 +2224,7 @@ client.on('interactionCreate', async interaction => {
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB4 } = require('discord.js');
             const modal = new ModalBuilder()
                 .setCustomId(isAdd ? 'points_add_modal' : 'points_deduct_modal')
-                .setTitle(isAdd ? '➕ إضافة نقاط' : '➖ خصم نقاط');
+                .setTitle(isAdd ? '➕ Add Points' : '➖ Deduct Points');
             modal.addComponents(
                 new ARB4().addComponents(
                     new TextInputBuilder().setCustomId('target_id').setLabel('ID الديسكورد للشخص').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 123456789012345678')
@@ -2248,7 +2248,7 @@ client.on('interactionCreate', async interaction => {
                     ? interaction.member.roles.cache.has(ticketAdminRole)
                     : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 if (!hasRole) {
-                    return interaction.reply({ content: '❌ فقط مسؤولو التكتات يقدرون يغلقون التكت.', flags: 64 });
+                    return interaction.reply({ content: '❌ فقط مسؤولو Tickets يقدرون يغلقون التكت.', flags: 64 });
                 }
 
                 const ticketLogId = await db.getConfig('ticket_log_channel');
@@ -2335,10 +2335,10 @@ client.on('interactionCreate', async interaction => {
                         { name: '🏷️ النوع', value: car.car_type ? `\`${car.car_type}\`` : '`غير محدد`', inline: true },
                         { name: '🎨 اللون', value: car.color ? `\`${car.color}\`` : '`غير محدد`', inline: true },
                         { name: '💰 السعر', value: `\`${Number(car.price).toLocaleString()} ريال\``, inline: true },
-                        { name: '📋 الحالة', value: '`متاحة للبيع`', inline: true },
-                        { name: '📩 للشراء', value: 'تواصل مع الإدارة لإتمام عملية الشراء', inline: false },
+                        { name: '📋 Status', value: '`متاحة للبيع`', inline: true },
+                        { name: '📩 للشراء', value: 'تواصل مع Admin لإتمام عملية الشراء', inline: false },
                     )
-                    .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
+                    .setFooter({ text: 'Showroom System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -2363,7 +2363,7 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '💰 السعر', value: `**${Number(item.price).toLocaleString('en-US')}$**`, inline: true },
                     )
-                    .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
+                    .setFooter({ text: 'Black Market • FANTASY Bot' })
                     .setTimestamp();
 
                 const buyBtn = new ButtonBuilder()
@@ -2398,7 +2398,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💰 السعر',      value: `**${Number(item.price).toLocaleString()} ريال**`, inline: true },
                         { name: '💵 كاشك الحالي', value: `${cash.toLocaleString()} ريال`,                  inline: true },
                     )
-                    .setFooter({ text: 'نظام المتجر • بوت FANTASY' })
+                    .setFooter({ text: 'Store System • FANTASY Bot' })
                     .setTimestamp();
 
                 if (item.description) embed.setDescription(`> ${item.description}`);
@@ -2436,7 +2436,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💰 السعر',       value: `**${Number(item.price).toLocaleString()} ريال**`, inline: true },
                         { name: '💵 كاشك الحالي', value: `${cash.toLocaleString()} ريال`,                  inline: true },
                     )
-                    .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
+                    .setFooter({ text: 'Equipment Store • FANTASY Bot' })
                     .setTimestamp();
 
                 if (item.description) embed.setDescription(`> ${item.description}`);
@@ -2521,7 +2521,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
                             { name: '🪪 الشخصية', value: `${slotNamesOut[status.active_slot] || `شخصية ${status.active_slot}`}: **${activeChar?.character_name || '—'} ${activeChar?.family_name || ''}**`, inline: true },
                         )
-                        .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                        .setFooter({ text: 'Identity System • FANTASY Bot' })
                         .setTimestamp();
                     sendToCharLog(embedOut);
                     return interaction.reply({ embeds: [embedOut], flags: 64 });
@@ -2547,7 +2547,7 @@ client.on('interactionCreate', async interaction => {
             const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
             const modal = new ModalBuilder()
                 .setCustomId(`create_char_${slot}`)
-                .setTitle(`✏️ إنشاء هوية — ${slotNames[slot]}`)
+                .setTitle(`✏️ Create Identity — ${slotNames[slot]}`)
                 .addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('char_name').setLabel('اسم الشخصية')
@@ -2592,7 +2592,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '📍 مكان الولادة', value: char.birth_place || '—', inline: true },
                         { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
                     )
-                    .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                    .setFooter({ text: 'Identity System • FANTASY Bot' })
                     .setTimestamp();
                 sendToCharLog(embed);
                 return interaction.reply({ embeds: [embed], flags: 64 });
@@ -2619,7 +2619,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💰 السعر', value: `\`${Number(prop.price).toLocaleString()} ريال\``, inline: true },
                     )
                     .setDescription('هل تريد شراء هذا العقار؟ اضغط على زر الشراء أدناه.\n> سيتم خصم المبلغ من كاشك وإرسال تفاصيل العقار في خاصك.')
-                    .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+                    .setFooter({ text: 'Properties System • FANTASY Bot' })
                     .setTimestamp();
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
@@ -2705,7 +2705,7 @@ client.on('interactionCreate', async interaction => {
                         .setColor(0xB71C1C)
                         .setDescription(`لا تملك الأدوات اللازمة لتنفيذ **${rob.name}**:`)
                         .addFields({ name: '🛠️ الأدوات الناقصة', value: missing.map(t => `• \`${t}\``).join('\n'), inline: false })
-                        .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                        .setFooter({ text: 'Robbery System • FANTASY Bot' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
@@ -2748,7 +2748,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💵 المبلغ المسروق', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
                         { name: '🛠️ الأدوات المستخدمة', value: toolsList ? toolsList.map(t => `\`${t}\``).join(', ') : '`لا يوجد`', inline: false },
                     )
-                    .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                    .setFooter({ text: 'Robbery System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
@@ -2784,7 +2784,7 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('Snap Inbox')
                         .setColor(0xFFFC00)
-                        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                        .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     if (!msgs.length) {
                         embed.setDescription('> 📭 لا توجد سنابات واردة');
@@ -2806,7 +2806,7 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('My Snap Friends')
                         .setColor(0xFFFC00)
-                        .setFooter({ text: `${friends.length} صديق • سناب شات • بوت FANTASY` })
+                        .setFooter({ text: `${friends.length} صديق • Snapchat • FANTASY Bot` })
                         .setTimestamp();
                     if (!friends.length) {
                         embed.setDescription('> لا يوجد أصدقاء بعد. اختر **➕ إضافة صديق**');
@@ -2847,7 +2847,7 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('Incoming Friend Requests')
                         .setColor(0xFFFC00)
-                        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                        .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     if (!requests.length) {
                         embed.setDescription('> لا توجد طلبات صداقة معلّقة.');
@@ -2882,7 +2882,7 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle(`💬 محادثتك مع @${friendAcc.snap_username}`)
                     .setColor(0xFFFC00)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
 
                 if (!msgs.length) {
@@ -2934,7 +2934,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('تم قبول طلب الصداقة')
                     .setColor(0xFFFC00)
                     .setDescription(`أنتما الآن أصدقاء مع **${requesterAcc?.snap_username || requesterId}** 👻`)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -2956,7 +2956,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
                         { name: '📦 الكمية المتبقية', value: `\`${result.remainingQty}\``, inline: true },
                     )
-                    .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                    .setFooter({ text: 'Bag System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -2977,7 +2977,7 @@ client.on('interactionCreate', async interaction => {
                             ? cars.map(c => `🚗 **${c.car_name}** — لوحة: \`${c.plate}\``).join('\n')
                             : '> لا توجد سيارات مسجلة بعد')
                         .addFields({ name: '🔢 عدد السيارات', value: `\`${cars.length}\``, inline: true })
-                        .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
+                        .setFooter({ text: 'Vehicles System • FANTASY Bot' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 } catch (e) {
@@ -2988,7 +2988,7 @@ client.on('interactionCreate', async interaction => {
         }
 
 
-        // ── أزرار منصة X (إعجاب / رتويت / رد) ─────────────────────────────────
+        // ── أزرار X Platform (إعجاب / رتويت / رد) ─────────────────────────────────
         if (interaction.customId.startsWith('x_like_')) {
             try {
                 const postId = parseInt(interaction.customId.replace('x_like_', ''));
@@ -3013,7 +3013,7 @@ client.on('interactionCreate', async interaction => {
                 const postId = parseInt(interaction.customId.replace('x_retweet_', ''));
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
                 if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات.', flags: 64 });
                 const orig = await db.getPostById(postId);
@@ -3027,7 +3027,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '↩️ رتويت من', value: `@${orig.x_username}`, inline: true },
                         { name: '🆔 رقم المنشور', value: `\`#${rt.id}\``, inline: true },
                     )
-                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [embed] });
@@ -3051,7 +3051,7 @@ client.on('interactionCreate', async interaction => {
                 const postId = parseInt(interaction.customId.replace('x_reply_', ''));
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
                 const { ModalBuilder: MBR, TextInputBuilder: TIBR, TextInputStyle: TISR, ActionRowBuilder: ARBR } = require('discord.js');
                 const modal = new MBR().setCustomId(`x_reply_modal_${postId}`).setTitle('Reply to Tweet')
                     .addComponents(new ARBR().addComponents(
@@ -3063,7 +3063,7 @@ client.on('interactionCreate', async interaction => {
         }
 
 
-        // ── المحاماة ──────────────────────────────────────────────────────────
+        // ── Law ──────────────────────────────────────────────────────────
         if (interaction.customId === 'law_menu') {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
@@ -3077,7 +3077,7 @@ client.on('interactionCreate', async interaction => {
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_defendant').setLabel('المدعى عليه').setStyle(TextInputStyle.Short).setRequired(true)),
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_desc').setLabel('وصف القضية').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                         new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_evidence').setLabel('الأدلة (اختياري)').setStyle(TextInputStyle.Paragraph).setRequired(false)),
-                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_lawyer_fee').setLabel('بدل المحاماة (اختياري)').setStyle(TextInputStyle.Short).setRequired(false).setPlaceholder('مثال: 5000$')),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_lawyer_fee').setLabel('بدل Law (اختياري)').setStyle(TextInputStyle.Short).setRequired(false).setPlaceholder('مثال: 5000$')),
                     );
                     return interaction.showModal(modal);
                 }
@@ -3086,20 +3086,20 @@ client.on('interactionCreate', async interaction => {
                     const cases = await db.getCasesByPlaintiff(interaction.user.id);
                     if (!cases.length) return interaction.reply({ content: '📋 لا توجد قضايا مرفوعة باسمك.', flags: 64 });
                     const lines = cases.map(c =>
-                        `**[${c.case_number}]** ${c.title}\n> ضد: ${c.defendant} • الحالة: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • المحامي: ${c.lawyer_name}` : ''}${c.judge_name ? ` • القاضي: ${c.judge_name}` : ''}`
+                        `**[${c.case_number}]** ${c.title}\n> ضد: ${c.defendant} • الحالة: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • Lawyer: ${c.lawyer_name}` : ''}${c.judge_name ? ` • Judge: ${c.judge_name}` : ''}`
                     ).join('\n\n');
                     const embed = new EmbedBuilder()
                         .setTitle('My Cases')
                         .setColor(0x0D47A1)
                         .setDescription(lines.slice(0, 4000))
-                        .setFooter({ text: `إجمالي القضايا: ${cases.length} • بوت FANTASY` })
+                        .setFooter({ text: `إجمالي القضايا: ${cases.length} • FANTASY Bot` })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
                 if (value === 'hire_lawyer') {
                     const lawyers = await db.getLawyers();
-                    if (!lawyers.length) return interaction.reply({ content: '❌ لا يوجد محامون معتمدون حالياً. تواصل مع الإدارة.', flags: 64 });
+                    if (!lawyers.length) return interaction.reply({ content: '❌ لا يوجد محامون معتمدون حالياً. تواصل مع Admin.', flags: 64 });
                     const cases = await db.getCasesByPlaintiff(interaction.user.id);
                     const eligible = cases.filter(c => ['pending','accepted','in_progress'].includes(c.status));
                     if (!eligible.length) return interaction.reply({ content: '❌ لا توجد قضايا مفتوحة باسمك.', flags: 64 });
@@ -3155,7 +3155,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '👤 المدعي',     value: `<@${c.plaintiff_id}>`, inline: true },
                         { name: '⚔️ المدعى عليه', value: c.defendant,           inline: true },
                     )
-                    .setFooter({ text: `قُبلت بواسطة: ${interaction.user.username} • بوت FANTASY` })
+                    .setFooter({ text: `قُبلت بواسطة: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
 
                 // DM المدعي
@@ -3163,7 +3163,7 @@ client.on('interactionCreate', async interaction => {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder().setTitle('تم قبول قضيتك').setColor(0x2E7D32)
                         .setDescription(`**${c.case_number} — ${c.title}**\n\nتم قبول قضيتك وستتم معالجتها قريباً.`)
-                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
                 return interaction.reply({ embeds: [embed], flags: 64 });
@@ -3253,19 +3253,19 @@ client.on('interactionCreate', async interaction => {
                             { name: '📌 العنوان',     value: c.title,                inline: true },
                             { name: '👤 الموكّل',     value: c.plaintiff_name,       inline: true },
                         )
-                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await lawyerUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
                 const embed = new EmbedBuilder()
                     .setTitle('Power of Attorney Sent')
                     .setColor(0x0D47A1)
-                    .setDescription(`> تم إرسال طلب التوكيل إلى **${lawyer.lawyer_name}**\nسيُخطَر عبر الرسائل الخاصة، وبإمكانه القبول أو الرفض عبر \`/محامي\``)
+                    .setDescription(`> تم إرسال طلب التوكيل إلى **${lawyer.lawyer_name}**\nسيُخطَر عبر Messages الخاصة، وبإمكانه القبول أو الرفض عبر \`/محامي\``)
                     .addFields(
                         { name: '🔢 رقم القضية', value: c.case_number, inline: true },
                         { name: '📌 العنوان',     value: c.title,       inline: true },
                     )
-                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
         }
@@ -3299,7 +3299,7 @@ client.on('interactionCreate', async interaction => {
                 const isPolice = value === 'report_police';
                 const modal = new ModalBuilder()
                     .setCustomId(isPolice ? 'report_police_modal' : 'report_ambulance_modal')
-                    .setTitle(isPolice ? '🚨 بلاغ شرطة' : '🚑 بلاغ إسعاف');
+                    .setTitle(isPolice ? '🚨 Police Report' : '🚑 Ambulance Report');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder().setCustomId('report_location').setLabel('الموقع').setStyle(TextInputStyle.Short).setRequired(true)
@@ -3322,7 +3322,7 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 let result;
                 if (value === 'all') {
@@ -3348,7 +3348,7 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '💵 الإجمالي المُحصَّل', value: `**${totalValue.toLocaleString()} ريال**`, inline: false },
                     )
-                    .setFooter({ text: 'السوق المركزي • بوت FANTASY' })
+                    .setFooter({ text: 'السوق المركزي • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -3366,9 +3366,9 @@ client.on('interactionCreate', async interaction => {
                 const prices = await db.getJobPrices();
 
                 const jobMap = {
-                    fishing:     { label: '🎣 صيد السمك',    req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
-                    woodcutting: { label: '🪓 تقطيع الخشب',  req: 'فأس',      items: ['خشب'],                             weights: [100],       color: 0x4E342E },
-                    mining:      { label: '⛏️ المنجم',        req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],      weights: [5,20,35,40], color: 0x546E7A },
+                    fishing:     { label: '🎣 Fishing',    req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 Woodcutting',  req: 'فأس',      items: ['خشب'],                             weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ Mining',        req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],      weights: [5,20,35,40], color: 0x546E7A },
                 };
 
                 const job = jobMap[value];
@@ -3383,7 +3383,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '📦 الكمية',         value: '١ – ١٠ عشوائي', inline: true },
                         { name: '💹 الأسعار الحالية', value: priceLines, inline: false },
                     )
-                    .setFooter({ text: 'نظام الوظائف • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Jobs System • FANTASY Bot' }).setTimestamp();
 
                 const startBtn  = new ButtonBuilder().setCustomId(`do_job_${value}`).setLabel('▶️ ابدأ').setStyle(ButtonStyle.Success);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(startBtn)], flags: 64 });
@@ -3397,7 +3397,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'craft_weapon') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const CRAFT_RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
                 const CRAFT_WEAPONS = {
@@ -3412,7 +3412,7 @@ client.on('interactionCreate', async interaction => {
                 const missing = [];
                 for (const res of CRAFT_RESOURCES) {
                     const qty = await db.getItemQty(interaction.user.id, res);
-                    if (qty < weapon.req) missing.push(`> ${res}: لديك **${qty}** / تحتاج **${weapon.req}**`);
+                    if (qty < weapon.req) missing.push(`> ${res}: You have **${qty}** / تحتاج **${weapon.req}**`);
                 }
 
                 if (missing.length) {
@@ -3508,7 +3508,7 @@ client.on('interactionCreate', async interaction => {
                 let dmSent = true;
                 try {
                     await targetMember.send(
-                        `⚠️ **تنبيه أمني — يتم تتبعك!**\n\n` +
+                        `⚠️ **Alert أمني — يتم تتبعك!**\n\n` +
                         `تم رصد عملية تتبع عليك من داخل سيرفر **${interaction.guild.name}**.\n\n` +
                         `لإلغاء التراكينق اكتب هذا الكود هنا خلال **20 ثانية**:\n\n` +
                         `\`\`\`${code}\`\`\``
@@ -3610,7 +3610,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '🔢 رقم الهوية', value: `\`${fakeIban}\``, inline: true },
                         { name: '⏳ تنتهي', value: `<t:${expireTs}:F> (<t:${expireTs}:R>)`, inline: false }
                     )
-                    .setFooter({ text: 'CIA • بوت FANTASY — هذه المعلومات سرية' })
+                    .setFooter({ text: 'CIA • FANTASY Bot — هذه المعلومات سرية' })
                     .setTimestamp();
 
                 let dmSent = true;
@@ -3677,12 +3677,12 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '🏢 الشركة', value: match.company_name, inline: true },
                         { name: '📦 الأسهم', value: `\`${shares}\``, inline: true },
-                        { name: isBuy ? '💸 المبلغ المدفوع' : '💰 المبلغ المكتسب',
+                        { name: isBuy ? '💸 المبلغ المدفوع' : '💰 Amount المكتسب',
                           value: `\`${(isBuy ? result.totalCost : result.totalEarned).toLocaleString()} ريال\``, inline: true },
                         { name: '📊 السعر الجديد', value: `\`${parseFloat(result.newPrice).toFixed(2)} ريال\``, inline: true },
                         { name: '📈 تأثير السعر', value: changeStr, inline: true },
                     )
-                    .setFooter({ text: 'سوق الأسهم • بوت FANTASY' })
+                    .setFooter({ text: 'سوق الأسهم • FANTASY Bot' })
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [embed] });
@@ -3720,9 +3720,9 @@ client.on('interactionCreate', async interaction => {
                                 { name: '🏷️ الاسم', value: displayName, inline: true },
                                 { name: '🔫 نوع السرقة', value: robName, inline: true },
                                 { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                                { name: '📍 الموقع', value: location, inline: false },
+                                { name: '📍 Location', value: location, inline: false },
                             )
-                            .setFooter({ text: 'بلاغات السرقة • بوت FANTASY' })
+                            .setFooter({ text: 'بلاغات السرقة • FANTASY Bot' })
                             .setTimestamp();
                         await ch.send({ embeds: [reportEmbed] });
                     }
@@ -3734,9 +3734,9 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '🔫 نوع السرقة', value: robName, inline: true },
                         { name: '💵 المبلغ المسروق', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '📍 الموقع المبلّغ', value: location, inline: false },
+                        { name: '📍 Location المبلّغ', value: location, inline: false },
                     )
-                    .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                    .setFooter({ text: 'Robbery System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -3745,7 +3745,7 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
-        // ── إضافة / خصم نقاط يدوية ──────────────────────────────────────────────
+        // ── إضافة / Deduct Points يدوية ──────────────────────────────────────────────
         if (interaction.customId === 'points_add_modal' || interaction.customId === 'points_deduct_modal') {
             try {
                 const isAdd     = interaction.customId === 'points_add_modal';
@@ -3765,9 +3765,9 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '👤 الشخص',    value: target ? `<@${targetId}>` : targetId, inline: true },
                         { name: '📊 العملية',  value: `${isAdd ? '+' : '-'}${amount} نقطة`,    inline: true },
-                        { name: '🔧 بواسطة',   value: `<@${interaction.user.id}>`,             inline: true },
+                        { name: '🔧 By',   value: `<@${interaction.user.id}>`,             inline: true },
                     )
-                    .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Admin Points System • FANTASY Bot' }).setTimestamp();
 
                 await interaction.channel.send({ embeds: [embed] });
                 return interaction.reply({ content: '​', flags: 64 });
@@ -3782,7 +3782,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const type   = interaction.customId.replace('set_trip_msg_', '');
                 const text   = interaction.fields.getTextInputValue('trip_msg_text').trim();
-                const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
+                const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الHurricane', trip_renewal: 'الRenew' };
                 if (text) {
                     await db.setConfig(`${type}_message`, text);
                     await interaction.reply({ content: `✅ تم حفظ رسالة **${labels[type]}** المخصصة.`, flags: 64 });
@@ -3822,11 +3822,11 @@ client.on('interactionCreate', async interaction => {
 
                 const logChannelId = await db.getConfig('activation_log_channel');
                 if (!logChannelId)
-                    return interaction.reply({ content: '❌ لم يتم تعيين قناة التفعيل بعد. تواصل مع الإدارة.', flags: 64 });
+                    return interaction.reply({ content: '❌ لم يتم تعيين قناة التفعيل بعد. تواصل مع Admin.', flags: 64 });
 
                 const logChannel = interaction.guild.channels.cache.get(logChannelId);
                 if (!logChannel)
-                    return interaction.reply({ content: '❌ قناة التفعيل غير موجودة. تواصل مع الإدارة.', flags: 64 });
+                    return interaction.reply({ content: '❌ قناة التفعيل غير موجودة. تواصل مع Admin.', flags: 64 });
 
                 const req = await db.createActivationRequest(
                     interaction.user.id,
@@ -3843,7 +3843,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '🆔 Discord ID',      value: `\`${interaction.user.id}\``, inline: true },
                     )
                     .setThumbnail(interaction.user.displayAvatarURL())
-                    .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
                 const approveBtn = new ButtonBuilder()
                     .setCustomId(`activate_approve_${req.id}`)
@@ -3861,7 +3861,7 @@ client.on('interactionCreate', async interaction => {
                 });
 
                 return interaction.reply({
-                    content: `✅ **تم إرسال طلب تفعيلك بنجاح!**\n> 🎮 **ID سوني:** \`${sonyId}\`\n> انتظر موافقة الإدارة.`,
+                    content: `✅ **تم إرسال طلب تفعيلك بنجاح!**\n> 🎮 **ID سوني:** \`${sonyId}\`\n> Wait for admin approval.`,
                     flags: 64
                 });
             } catch (e) {
@@ -3875,7 +3875,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const title      = interaction.fields.getTextInputValue('case_title').trim();
                 const defendant  = interaction.fields.getTextInputValue('case_defendant').trim();
@@ -3894,10 +3894,10 @@ client.on('interactionCreate', async interaction => {
                         { name: '⚔️ المدعى عليه',   value: defendant,                           inline: true },
                         { name: '📝 الوصف',          value: desc.slice(0, 300),                 inline: false },
                         { name: '🔍 الأدلة',         value: evidence || 'لا توجد أدلة',         inline: false },
-                        { name: '💰 بدل المحاماة',   value: lawyerFee || 'غير محدد',            inline: true },
-                        { name: '⏳ الحالة',          value: '⏳ معلقة — بانتظار الإدارة',       inline: true },
+                        { name: '💰 بدل Law',   value: lawyerFee || 'غير محدد',            inline: true },
+                        { name: '⏳ الحالة',          value: '⏳ معلقة — بانتظار Admin',       inline: true },
                     )
-                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+                    .setFooter({ text: 'Law System • FANTASY Bot' })
                     .setTimestamp();
 
                 // إشعار روم القضايا إن وُجد
@@ -3942,7 +3942,7 @@ client.on('interactionCreate', async interaction => {
                               value: `✅ تم إعادة **${ABANDON_FEE.toLocaleString()} ريال** إلى رصيدك`,
                               inline: false },
                         )
-                        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                        .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
@@ -3970,7 +3970,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '👤 المدعي',       value: `<@${c.plaintiff_id}>`,      inline: true },
                         { name: '❌ سبب الرفض',   value: reason,                       inline: false },
                     )
-                    .setFooter({ text: `رُفضت بواسطة: ${interaction.user.username} • بوت FANTASY` })
+                    .setFooter({ text: `رُفضت بواسطة: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
 
                 // DM المدعي بالرفض
@@ -3981,7 +3981,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '🔢 رقم القضية', value: c.case_number, inline: true },
                             { name: '📌 العنوان',     value: c.title,       inline: true },
                             { name: '❌ سبب الرفض',  value: reason,         inline: false },
-                        ).setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                        ).setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
                 return interaction.reply({ embeds: [embed], flags: 64 });
@@ -4013,7 +4013,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '👨‍⚖️ القاضي',     value: judgeId ? `<@${judgeId}>` : judgeName, inline: true },
                         { name: '⚖️ الحالة',        value: '⚖️ جارية',             inline: true },
                     )
-                    .setFooter({ text: `عُيِّن بواسطة: ${interaction.user.username} • بوت FANTASY` })
+                    .setFooter({ text: `عُيِّن بواسطة: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
@@ -4041,7 +4041,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '📜 الحكم',         value: verdict,                inline: false },
                         { name: '🔒 الحالة',        value: '🔒 مغلقة',             inline: true },
                     )
-                    .setFooter({ text: `أصدره: ${interaction.user.username} • بوت FANTASY` })
+                    .setFooter({ text: `أصدره: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
 
                 // DM المدعي بالحكم
@@ -4053,7 +4053,7 @@ client.on('interactionCreate', async interaction => {
                             { name: '📌 العنوان',     value: c.title,                    inline: true },
                             { name: '👨‍⚖️ القاضي',   value: c.judge_name || 'غير محدد', inline: true },
                             { name: '📜 الحكم',       value: verdict,                    inline: false },
-                        ).setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+                        ).setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
@@ -4089,7 +4089,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '👨‍⚖️ المحامي المطلوب', value: lawyerName,           inline: true },
                         { name: '📝 سبب الطلب',      value: reason,                  inline: false },
                     )
-                    .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+                    .setFooter({ text: 'Law System • FANTASY Bot' })
                     .setTimestamp();
 
                 // إشعار روم القضايا إن وُجد
@@ -4110,20 +4110,20 @@ client.on('interactionCreate', async interaction => {
                 const details    = interaction.fields.getTextInputValue('report_details').trim();
                 const configKey  = isPolice ? 'police_reports_channel' : 'ambulance_reports_channel';
                 const channelId  = await db.getConfig(configKey);
-                if (!channelId) return interaction.reply({ content: `❌ لم يتم تحديد روم البلاغات. تواصل مع الإدارة.`, flags: 64 });
+                if (!channelId) return interaction.reply({ content: `❌ لم يتم تحديد روم البلاغات. تواصل مع Admin.`, flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const charName = identity ? (identity.character_name || interaction.user.username) : interaction.user.username;
 
                 const embed = new EmbedBuilder()
-                    .setTitle(isPolice ? '🚨 بلاغ شرطة' : '🚑 بلاغ إسعاف')
+                    .setTitle(isPolice ? '🚨 Police Report' : '🚑 Ambulance Report')
                     .setColor(isPolice ? 0xB71C1C : 0x1565C0)
                     .addFields(
                         { name: '👤 المُبلِّغ',        value: `<@${interaction.user.id}> — \`${charName}\``, inline: false },
-                        { name: '📍 الموقع',            value: location,  inline: true },
+                        { name: '📍 Location',            value: location,  inline: true },
                         { name: '📋 تفاصيل البلاغ',    value: details,   inline: false },
                     )
-                    .setFooter({ text: `نظام البلاغات • بوت FANTASY` })
+                    .setFooter({ text: `نظام البلاغات • FANTASY Bot` })
                     .setTimestamp();
 
                 try {
@@ -4153,10 +4153,10 @@ client.on('interactionCreate', async interaction => {
                     .setColor(0x2E7D32)
                     .addFields(
                         { name: '💵 الكاش المودَع', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '🏦 رصيد البنك الجديد', value: `\`${(Number(result.sender.balance) + amount).toLocaleString()} ريال\``, inline: true },
+                        { name: '🏦 رصيد Bank الجديد', value: `\`${(Number(result.sender.balance) + amount).toLocaleString()} ريال\``, inline: true },
                         { name: '💵 الكاش المتبقي', value: `\`${(Number(result.sender.cash) - amount).toLocaleString()} ريال\``, inline: true },
                     )
-                    .setFooter({ text: 'نظام البنك • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Bank System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
@@ -4175,14 +4175,14 @@ client.on('interactionCreate', async interaction => {
                 const result = await db.withdrawCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('تم صرف الكاش من البنك')
+                    .setTitle('تم صرف الكاش من Bank')
                     .setColor(0xB71C1C)
                     .addFields(
                         { name: '💵 الكاش المصروف', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '🏦 رصيد البنك الجديد', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
+                        { name: '🏦 رصيد Bank الجديد', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
                         { name: '💵 الكاش الجديد', value: `\`${(Number(result.sender.cash) + amount).toLocaleString()} ريال\``, inline: true },
                     )
-                    .setFooter({ text: 'نظام البنك • بوت FANTASY' }).setTimestamp();
+                    .setFooter({ text: 'Bank System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
@@ -4220,7 +4220,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '💸 المبلغ المحوَّل', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
                         { name: '📝 ملاحظة', value: note || '—', inline: false },
                     )
-                    .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+                    .setFooter({ text: 'Bank System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
@@ -4239,7 +4239,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('X Account Created')
                     .setColor(0x000000)
                     .addFields({ name: '👤 اسم الحساب', value: `**@${xUsername}**`, inline: true })
-                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -4258,7 +4258,7 @@ client.on('interactionCreate', async interaction => {
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const { buildSnap } = require('./commands/snap');
                 const account = await db.getSnapAccount(interaction.user.id);
-                const img = await db.getImage('سناب شات');
+                const img = await db.getImage('Snapchat');
                 return interaction.reply(await buildSnap(account, img, db));
             } catch (e) {
                 console.error(e);
@@ -4282,8 +4282,8 @@ client.on('interactionCreate', async interaction => {
                     const notif = new EmbedBuilder()
                         .setTitle('New Snap Friend Request!')
                         .setColor(0xFFFC00)
-                        .setDescription(`**@${myAcc.snap_username}** يريد إضافتك كصديق على سناب شات!\nاستخدم **زر الطلبات 🔔** لقبول الطلب.`)
-                        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                        .setDescription(`**@${myAcc.snap_username}** يريد إضافتك كصديق على Snapchat!\nاستخدم **زر الطلبات 🔔** لقبول الطلب.`)
+                        .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     await targetUser.send({ embeds: [notif] });
                 } catch (_) {}
@@ -4291,7 +4291,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Friend Request Sent')
                     .setColor(0xFFFC00)
                     .setDescription(`أُرسل طلب صداقة لـ **@${friendAcc.snap_username}** 👻\nسيتم إشعاره وعليه قبول الطلب.`)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -4314,8 +4314,8 @@ client.on('interactionCreate', async interaction => {
                     const notif = new EmbedBuilder()
                         .setTitle('سناب جديد وصلك!')
                         .setColor(0xFFFC00)
-                        .setDescription(`**@${myAcc.snap_username}** أرسل لك سناباً!\nافتح سناب شات لمشاهدته 👻`)
-                        .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                        .setDescription(`**@${myAcc.snap_username}** أرسل لك سناباً!\nافتح Snapchat لمشاهدته 👻`)
+                        .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     await targetUser.send({ embeds: [notif] });
                 } catch (_) {}
@@ -4323,7 +4323,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Snap Sent!')
                     .setColor(0xFFFC00)
                     .setDescription(`أُرسل سناب لـ **@${receiverAcc.snap_username}** بنجاح 👻`)
-                    .setFooter({ text: 'سناب شات • بوت FANTASY' })
+                    .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
@@ -4337,7 +4337,7 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const content = interaction.fields.getTextInputValue('tweet_content').trim();
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
                 if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات. تواصل مع المسؤولين.', flags: 64 });
                 const post = await db.postTweet(interaction.user.id, content);
@@ -4358,7 +4358,7 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const content = interaction.fields.getTextInputValue('reply_content').trim();
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على منصة X.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
                 if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات.', flags: 64 });
                 const orig = await db.getPostById(postId);
@@ -4372,7 +4372,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '↩️ رداً على', value: `@${orig.x_username} • #${postId}`, inline: true },
                         { name: '🆔 رقم الرد', value: `\`#${reply.id}\``, inline: true },
                     )
-                    .setFooter({ text: 'منصة X • بوت FANTASY' })
+                    .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [embed] });
@@ -4401,7 +4401,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '📨 المستلِم', value: `${receiver.character_name} ${receiver.family_name || ''}`, inline: true },
                         { name: '🏦 إيبان المستلِم', value: `\`${toIban}\``, inline: true },
                     )
-                    .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+                    .setFooter({ text: 'Bag System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
@@ -4445,7 +4445,7 @@ client.on('interactionCreate', async interaction => {
                                 .setTitle('Start New Trip!')
                                 .setColor(0x2E7D32)
                                 .setDescription(filled)
-                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
                             sendToCharLog(embed);
@@ -4462,7 +4462,7 @@ client.on('interactionCreate', async interaction => {
                                     { name: '🕐 وقت الرحلة', value: tripTime,          inline: true },
                                     { name: '🔧 بدأها',        value: `<@${interaction.user.id}>`, inline: true },
                                 )
-                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
                             sendToCharLog(embed);
@@ -4489,7 +4489,7 @@ client.on('interactionCreate', async interaction => {
             }
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.' });
+                if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم الAlertات. استخدم `/إعداد-رحلات` أولاً.' });
 
                 const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim() || '—';
 
@@ -4506,7 +4506,7 @@ client.on('interactionCreate', async interaction => {
                                 .setTitle('Trip Renewal')
                                 .setColor(0x1565C0)
                                 .setDescription(filled)
-                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
                             sendToTripLog(embed);
@@ -4514,12 +4514,12 @@ client.on('interactionCreate', async interaction => {
                             const embed = new EmbedBuilder()
                                 .setTitle('Trip Renewal')
                                 .setColor(0x1565C0)
-                                .setDescription('🔄 **تم تجديد الرحلة!**')
+                                .setDescription('🔄 **تم Renew الرحلة!**')
                                 .addFields(
                                     { name: '🎤 ID الهوست', value: `\`${hostId}\``, inline: true },
                                     { name: '🔧 جدّدها',     value: `<@${interaction.user.id}>`, inline: true },
                                 )
-                                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                                .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
                             await ch.send({ embeds: [embed] });
                             sendToTripLog(embed);
@@ -4529,7 +4529,7 @@ client.on('interactionCreate', async interaction => {
                 } catch (sendErr) {
                     console.error('[trip_renewal] channel send error:', sendErr?.message);
                 }
-                return interaction.editReply({ content: sent ? '✅ تم إرسال إشعار التجديد.' : '⚠️ تم تسجيل التجديد لكن تعذّر الإرسال — تحقق من صلاحيات البوت في الروم.' });
+                return interaction.editReply({ content: sent ? '✅ تم إرسال إشعار الRenew.' : '⚠️ تم تسجيل الRenew لكن تعذّر الإرسال — تحقق من صلاحيات البوت في الروم.' });
             } catch (e) {
                 console.error('[trip_renewal_modal] error:', e?.message, e);
                 return interaction.editReply({ content: '❌ حدث خطأ: ' + (e?.message || e) });
@@ -4539,16 +4539,16 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'trip_alert_modal') {
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التنبيهات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم الAlertات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
 
                 const alertText = interaction.fields.getTextInputValue('alert_text').trim();
 
                 const embed = new EmbedBuilder()
-                    .setTitle('تنبيه')
+                    .setTitle('Alert')
                     .setColor(0xF57F17)
                     .setDescription(alertText)
                     .addFields({ name: '🔧 أرسله', value: `<@${interaction.user.id}>`, inline: true })
-                    .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+                    .setFooter({ text: 'Trip System • FANTASY Bot' })
                     .setTimestamp();
 
                 try {
@@ -4556,7 +4556,7 @@ client.on('interactionCreate', async interaction => {
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
                 sendToTripLog(embed);
-                return interaction.reply({ content: '✅ تم إرسال التنبيه.', flags: 64 });
+                return interaction.reply({ content: '✅ تم إرسال الAlert.', flags: 64 });
             } catch (e) {
                 console.error(e);
                 return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
@@ -4572,7 +4572,7 @@ client.on('interactionCreate', async interaction => {
 
                 const panicChannelId = await db.getConfig('panic_channel');
                 if (!panicChannelId)
-                    return interaction.reply({ content: '❌ لم يتم إعداد روم الاستغاثة. تواصل مع الإدارة.', flags: 64 });
+                    return interaction.reply({ content: '❌ لم يتم إعداد روم الاستغاثة. تواصل مع Admin.', flags: 64 });
 
                 const ch = await client.channels.fetch(panicChannelId).catch(() => null);
                 if (!ch)
@@ -4585,9 +4585,9 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '👤 المستغيث', value: `<@${interaction.user.id}>`, inline: true },
                         { name: '🏷️ الاسم', value: displayName, inline: true },
-                        { name: '📍 الموقع', value: location, inline: false },
+                        { name: '📍 Location', value: location, inline: false },
                     )
-                    .setFooter({ text: 'نظام الاستغاثة • بوت FANTASY' })
+                    .setFooter({ text: 'نظام الاستغاثة • FANTASY Bot' })
                     .setTimestamp();
 
                 await ch.send({ content: '@here', embeds: [embed] });
@@ -4638,7 +4638,7 @@ client.on('interactionCreate', async interaction => {
                                     { name: '📍 مكان الولادة',    value: birthPlace, inline: true },
                                     { name: '🆔 رقم الطلب',       value: `\`#${pending.id}\``, inline: true },
                                 )
-                                .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                                .setFooter({ text: 'Identity System • FANTASY Bot' })
                                 .setTimestamp();
                             const btnRow = new ActionRowBuilder().addComponents(
                                 new ButtonBuilder().setCustomId(`approve_identity_${pending.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
@@ -4659,7 +4659,7 @@ client.on('interactionCreate', async interaction => {
                         { name: '🪪 الاسم', value: `${charName} ${familyName}`, inline: true },
                         { name: '🆔 رقم الطلب', value: `\`#${pending.id}\``, inline: true },
                     )
-                    .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+                    .setFooter({ text: 'Identity System • FANTASY Bot' })
                     .setTimestamp();
                 sendToCharLog(pendingLogEmbed);
 
@@ -4683,7 +4683,7 @@ client.on('interactionCreate', async interaction => {
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
-                    return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                    return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const company = await db.getUserCompany(interaction.user.id);
                 if (!company)
@@ -4699,8 +4699,8 @@ client.on('interactionCreate', async interaction => {
                         .addFields(
                             { name: '🏢 الشركة', value: company.name, inline: true },
                             { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                            { name: '💰 رصيد الشركة', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
-                        ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                            { name: '💰 Company Balance', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
+                        ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 } else {
                     if (company.userRole !== 'مالك' && company.userRole !== 'مدير')
@@ -4714,8 +4714,8 @@ client.on('interactionCreate', async interaction => {
                         .addFields(
                             { name: '🏢 الشركة', value: company.name, inline: true },
                             { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                            { name: '💰 رصيد الشركة', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
-                        ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                            { name: '💰 Company Balance', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
+                        ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
             } catch (e) {
@@ -4733,7 +4733,7 @@ client.on('interactionCreate', async interaction => {
                 const salary  = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
-                    return interaction.reply({ content: '❌ الرتبة غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+                    return interaction.reply({ content: '❌ الRank غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
                 if (isNaN(salary) || salary < 0)
                     return interaction.reply({ content: '❌ الراتب غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
 
@@ -4746,7 +4746,7 @@ client.on('interactionCreate', async interaction => {
 
                 const existing = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
                 if (existing)
-                    return interaction.reply({ content: '❌ هذا اللاعب موظف بالفعل. استخدم زر **ترقية موظف** لتعديل رتبته وراتبه.', flags: 64 });
+                    return interaction.reply({ content: '❌ هذا اللاعب موظف بالفعل. استخدم زر **Promote Employee** لتعديل رتبته وراتبه.', flags: 64 });
 
                 const res = await db.addCompanyMember(company.id, userId, role, salary);
                 if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
@@ -4754,10 +4754,10 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder().setTitle('Employee Assigned').setColor(0x1B5E20)
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
-                        { name: '🏷️ الرتبة', value: `**${role}**`, inline: true },
+                        { name: '🏷️ الRank', value: `**${role}**`, inline: true },
                         { name: '💵 الراتب', value: `\`${salary.toLocaleString()} ريال\``, inline: true },
                         { name: '🏢 الشركة', value: company.name, inline: true },
-                    ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                    ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP HIRE ERROR]', e);
@@ -4774,7 +4774,7 @@ client.on('interactionCreate', async interaction => {
                 const salary    = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
-                    return interaction.reply({ content: '❌ الرتبة غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+                    return interaction.reply({ content: '❌ الRank غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
                 if (isNaN(salary) || salary < 0)
                     return interaction.reply({ content: '❌ الراتب غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
 
@@ -4791,11 +4791,11 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder().setTitle('Employee Promoted').setColor(0x6A1B9A)
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
-                        { name: '🏷️ الرتبة السابقة', value: `**${member.role}**`, inline: true },
-                        { name: '🏷️ الرتبة الجديدة', value: `**${role}**`, inline: true },
+                        { name: '🏷️ الRank السابقة', value: `**${member.role}**`, inline: true },
+                        { name: '🏷️ الRank الجديدة', value: `**${role}**`, inline: true },
                         { name: '💵 الراتب الجديد', value: `\`${salary.toLocaleString()} ريال\``, inline: true },
                         { name: '🏢 الشركة', value: company.name, inline: true },
-                    ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                    ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP PROMOTE ERROR]', e);
@@ -4823,7 +4823,7 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
                         { name: '🏢 الشركة', value: company.name, inline: true },
-                    ).setFooter({ text: 'نظام الشركات • بوت FANTASY' }).setTimestamp();
+                    ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP FIRE ERROR]', e);
@@ -4842,7 +4842,7 @@ client.on('interactionCreate', async interaction => {
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
-                    return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+                    return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const hasPerm = await db.hasTradePermit(interaction.user.id);
                 if (!hasPerm)
@@ -4854,7 +4854,7 @@ client.on('interactionCreate', async interaction => {
 
                 const ministryChId = await db.getConfig('trade_ministry_channel');
                 if (!ministryChId)
-                    return interaction.reply({ content: '❌ لم يتم تحديد قناة وزارة التجارة بعد. تواصل مع الإدارة.', flags: 64 });
+                    return interaction.reply({ content: '❌ لم يتم تحديد قناة وزارة التجارة بعد. تواصل مع Admin.', flags: 64 });
 
                 const pending = await db.createPendingCompany({
                     discordId: interaction.user.id,
@@ -4881,11 +4881,11 @@ client.on('interactionCreate', async interaction => {
                             .addFields(
                                 { name: '👤 المتقدم', value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
                                 { name: '🏷️ الهوية', value: identity.character_name || '—', inline: true },
-                                { name: '💰 رصيد البنك', value: `\`${(identity.balance || 0).toLocaleString()} ريال\``, inline: true },
+                                { name: '💰 رصيد Bank', value: `\`${(identity.balance || 0).toLocaleString()} ريال\``, inline: true },
                                 { name: '🏢 اسم الشركة', value: `**${compName}**`, inline: true },
                                 { name: '👤 المعلومات الشخصية', value: `\`\`\`${personal}\`\`\``, inline: false },
                                 { name: '🏪 تفاصيل الشركة', value: `\`\`\`${details}\`\`\``, inline: false },
-                                { name: '📊 الإدارة والتوظيف', value: `\`\`\`${management}\`\`\``, inline: false },
+                                { name: '📊 Admin والتوظيف', value: `\`\`\`${management}\`\`\``, inline: false },
                                 { name: '💰 المالية والالتزام', value: `\`\`\`${financial}\`\`\``, inline: false },
                             )
                             .setFooter({ text: `طلب #${pending.id} • بانتظار المراجعة` })
@@ -4961,7 +4961,7 @@ client.on('messageCreate', async message => {
         return;
     }
 
-    // حذف رسائل البوت — الإمبيدات والرسائل ذات الأزرار وردود السلاش تبقى دائمة، فقط الردود النصية القصيرة تُحذف
+    // حذف رسائل البوت — الإمبيدات وMessages ذات الأزرار وردود السلاش تبقى دائمة، فقط الردود النصية القصيرة تُحذف
     if (message.author.id === client.user?.id) {
         const hasEmbeds     = message.embeds.length > 0;
         const hasComponents = message.components.length > 0;
@@ -4988,7 +4988,7 @@ client.on('messageCreate', async message => {
     }
 });
 
-// ── حماية حذف الرسائل — فقط أصحاب رتبة الحذف يقدرون يحذفون ──────────
+// ── حماية حذف Messages — فقط أصحاب Rank الحذف يقدرون يحذفون ──────────
 client.on('messageDelete', async (message) => {
     try {
         if (!message.guild) return;
@@ -5024,7 +5024,7 @@ client.on('messageDelete', async (message) => {
                 { name: '👤 صاحب الرسالة', value: `<@${message.author.id}>`, inline: true },
                 { name: '🗑️ من حذفها', value: `<@${executor.id}>`, inline: true },
             )
-            .setFooter({ text: 'نظام حماية الحذف • بوت FANTASY' })
+            .setFooter({ text: 'نظام حماية الحذف • FANTASY Bot' })
             .setTimestamp();
 
         if (content) restoreEmbed.addFields({ name: '📝 الرسالة', value: content.slice(0, 1024) });
@@ -5068,7 +5068,7 @@ setInterval(async () => {
                     if (identityRoleId)   rolesToRestore.add(identityRoleId);
                     if (banRoleId)        rolesToRestore.delete(banRoleId);
 
-                    // إزالة رتبة الباند
+                    // إزالة Rank الباند
                     if (banRoleId) {
                         const banRole = guild.roles.cache.get(banRoleId);
                         if (banRole) await member.roles.remove(banRole).catch(() => {});
@@ -5086,7 +5086,7 @@ setInterval(async () => {
                 // إشعار اللاعب
                 try {
                     const user = await client.users.fetch(v.user_id);
-                    await user.send(`✅ **انتهت مدة مخالفتك في سيرفر ${guild?.name || 'السيرفر'} — تم رفع الباند وإعادة جميع رتبك تلقائياً.**`);
+                    await user.send(`✅ **انتهت مدة مخالفتك في سيرفر ${guild?.name || 'السيرفر'} — تم رفع الباند وإعادة جميع رتبك automatically.**`);
                 } catch (_) {}
             } catch (e) { console.error('violation cleanup error:', e); }
         }

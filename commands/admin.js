@@ -3,7 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'admin',
-    data: new SlashCommandBuilder().setName('admin').setDescription('نظام الإدارة ونقاط الإدارة'),
+    data: new SlashCommandBuilder().setName('admin').setDescription('Admin System & Admin Points'),
     async execute(message, args, db) {
         const { embed, menu } = await build(db);
         message.channel.send({ embeds: [embed], components: [menu, resetRow('admin')] });
@@ -21,20 +21,20 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Admin System')
         .setColor(0xF9A825)
-        .setDescription('لوحة تحكم الإدارة — اختر من القائمة أدناه.')
-        .setFooter({ text: 'نظام الإدارة • بوت FANTASY' })
+        .setDescription('Admin control panel — choose from the menu below.')
+        .setFooter({ text: 'Admin System • FANTASY Bot' })
         .setTimestamp();
     const img = await db.getImage('admin');
     if (img) embed.setImage(img);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('admin_menu')
-            .setPlaceholder('اختر خيار')
+            .setPlaceholder('Choose an option')
             .addOptions([
-                { label: '🏅 عرض الرتب', value: 'ranks' },
-                { label: '⭐ نقاط الإدارة', value: 'points' },
-                { label: '👥 إدارة اللاعبين', value: 'manage' },
-                { label: '📋 سجل الإجراءات', value: 'logs' },
+                { label: '🏅 View Ranks', value: 'ranks' },
+                { label: '⭐ Admin Points', value: 'points' },
+                { label: '👥 Manage Players', value: 'manage' },
+                { label: '📋 Action Log', value: 'logs' },
             ])
     );
     return { embed, menu };

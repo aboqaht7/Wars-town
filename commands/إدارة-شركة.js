@@ -7,7 +7,7 @@ module.exports = {
     name: 'إدارة-شركة',
     data: new SlashCommandBuilder()
         .setName('إدارة-شركة')
-        .setDescription('لوحة إدارة شركتك (يتطلب رتبة مستثمر)'),
+        .setDescription('Your company management panel (requires investor rank)'),
 
     async slashExecute(interaction, db) {
         const company = await db.getUserCompany(interaction.user.id);
@@ -17,7 +17,7 @@ module.exports = {
         const members = await db.getCompanyMembers(company.id);
         const memberList = members.length
             ? members.map(m => `<@${m.discord_id}> — **${m.role}** — راتب: \`${(m.salary || 0).toLocaleString()} ريال\``).join('\n')
-            : '_لا يوجد موظفون_';
+            : '_No employees_';
 
         const _img = await db.getImage('market').catch(() => null);
 
@@ -26,26 +26,26 @@ module.exports = {
             .setTitle(`🏢 إدارة شركة ${company.name}`)
             .setColor(0x1565C0)
             .addFields(
-                { name: '👑 المالك', value: `<@${company.owner_discord_id}>`, inline: true },
-                { name: '💰 رصيد الشركة', value: `\`${(company.balance || 0).toLocaleString()} ريال\``, inline: true },
-                { name: '🏷️ رتبتك', value: `**${company.userRole}**`, inline: true },
+                { name: '👑 Owner', value: `<@${company.owner_discord_id}>`, inline: true },
+                { name: '💰 Company Balance', value: `\`${(company.balance || 0).toLocaleString()} ريال\``, inline: true },
+                { name: '🏷️ Your Rank', value: `**${company.userRole}**`, inline: true },
                 { name: `👥 الموظفون (${members.length})`, value: memberList, inline: false },
             )
-            .setDescription('اختر أحد الخيارات أدناه لإدارة شركتك.')
-            .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+            .setDescription('Choose one of the options below to manage your company.')
+            .setFooter({ text: 'Company System • FANTASY Bot' })
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('إيداع').setEmoji('💵').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('comp_deposit_btn').setLabel('Deposit').setEmoji('💵').setStyle(ButtonStyle.Success),
             new ButtonBuilder().setCustomId('comp_withdraw_btn').setLabel('سحب').setEmoji('💸').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('تعيين موظف').setEmoji('📄').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('إقالة موظف').setEmoji('🧾').setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('حل الشركة').setEmoji('📜').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('comp_hire_btn').setLabel('Hire Employee').setEmoji('📄').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_fire_btn').setLabel('Fire Employee').setEmoji('🧾').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('comp_dissolve_btn').setLabel('Dissolve Company').setEmoji('📜').setStyle(ButtonStyle.Danger),
         );
 
         const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('comp_promote_btn').setLabel('ترقية موظف').setEmoji('⬆️').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('comp_paysalaries_btn').setLabel('إيداع الرواتب').setEmoji('💰').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('comp_promote_btn').setLabel('Promote Employee').setEmoji('⬆️').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('comp_paysalaries_btn').setLabel('Pay Salaries').setEmoji('💰').setStyle(ButtonStyle.Success),
         );
 
         await interaction.reply({ content: '\u200b', flags: 64 });

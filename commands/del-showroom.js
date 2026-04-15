@@ -27,7 +27,7 @@ module.exports = {
                 { name: '🔢 رقم السيارة', value: `\`${id}\``, inline: true },
                 { name: '👤 نفذها',        value: `${interaction.user}`, inline: true },
             )
-            .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
+            .setFooter({ text: 'Showroom System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -61,7 +61,7 @@ module.exports = {
             .addFields(
                 { name: '💰 المسروقات', value: `${cashLine}\n${itemsLine}`, inline: false },
             )
-            .setFooter({ text: 'نظام الجرائم • بوت FANTASY' })
+            .setFooter({ text: 'نظام Crimes • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

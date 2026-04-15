@@ -19,7 +19,7 @@ module.exports = {
             .setColor(0x37474F)
             .addFields(
                 { name: '📋 القناة المحددة', value: `<#${channel.id}>`, inline: true },
-                { name: 'ℹ️ ما يُرسل تلقائياً', value: 'تسجيل دخول • تسجيل خروج • إعصار\nطلب هوية • قبول هوية • رفض هوية', inline: false },
+                { name: 'ℹ️ ما يُرسل تلقائياً', value: 'Login • Logout • Hurricane\nطلب هوية • قبول هوية • رفض هوية', inline: false },
             )
             .setFooter({ text: 'بوت FANTASY' })
             .setTimestamp();

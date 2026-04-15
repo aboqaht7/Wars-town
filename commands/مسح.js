@@ -3,7 +3,7 @@ module.exports = {
     async execute(message, args, db) {
         const deleteRoleId = await db.getConfig('delete_role_id');
         if (!deleteRoleId)
-            return message.reply('❌ لم يتم تعيين رتبة مسؤولي الحذف بعد.');
+            return message.reply('❌ لم يتم تعيين Rank مسؤولي الحذف بعد.');
         if (!message.member.roles.cache.has(deleteRoleId))
             return message.reply('❌ ليس لديك صلاحية تنفيذ أمر الحذف.');
 
@@ -13,7 +13,7 @@ module.exports = {
 
         await message.delete().catch(() => {});
         const deleted = await message.channel.bulkDelete(amount, true).catch(() => null);
-        if (!deleted) return message.channel.send('❌ فشل الحذف — قد تكون الرسائل أقدم من 14 يوم.').then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
+        if (!deleted) return message.channel.send('❌ فشل الحذف — قد تكون Messages أقدم من 14 يوم.').then(m => setTimeout(() => m.delete().catch(() => {}), 5000));
 
         const notice = await message.channel.send(`🗑️ تم حذف **${deleted.size}** رسالة.`);
         setTimeout(() => notice.delete().catch(() => {}), 4000);

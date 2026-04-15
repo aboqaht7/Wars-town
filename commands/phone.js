@@ -11,8 +11,8 @@ async function build() {
     const embed = new EmbedBuilder()
         .setTitle('Phone')
         .setColor(0x1565C0)
-        .setDescription('> اختر الخدمة التي تريدها من القائمة أدناه')
-        .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+        .setDescription('> Choose the service you want from the menu below')
+        .setFooter({ text: 'Phone System • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setImage(img);
@@ -20,17 +20,17 @@ async function build() {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('phone_menu')
-            .setPlaceholder('📱 اختر الخدمة')
+            .setPlaceholder('📱 Choose a service')
             .addOptions([
                 {
-                    label: '🚨 بلاغ شرطة',
+                    label: '🚨 Police Report',
                     value: 'report_police',
-                    description: 'إرسال بلاغ لفريق الشرطة',
+                    description: 'Send a report to the police team',
                 },
                 {
-                    label: '🚑 بلاغ إسعاف',
+                    label: '🚑 Ambulance Report',
                     value: 'report_ambulance',
-                    description: 'إرسال بلاغ لفريق الإسعاف',
+                    description: 'Send a report to the ambulance team',
                 },
             ])
     );
@@ -40,7 +40,7 @@ async function build() {
 
 module.exports = {
     name: 'phone',
-    data: new SlashCommandBuilder().setName('phone').setDescription('📱 الجوال'),
+    data: new SlashCommandBuilder().setName('phone').setDescription('📱 Phone'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);

@@ -16,10 +16,10 @@ module.exports = {
                 .setTitle('Contact Added')
                 .setColor(0x00838F)
                 .addFields(
-                    { name: '👤 الجهة', value: `${target}`, inline: true },
-                    { name: '🏷️ الاسم المحفوظ', value: `\`${nickname}\``, inline: true },
+                    { name: '👤 Contact', value: `${target}`, inline: true },
+                    { name: '🏷️ Saved Name', value: `\`${nickname}\``, inline: true },
                 )
-                .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+                .setFooter({ text: 'Phone System • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
@@ -34,9 +34,9 @@ module.exports = {
             .setColor(0x00838F)
             .setDescription(contacts.length
                 ? contacts.map(c => `• ${c.nickname || c.username} — \`<@${c.contact_id}>\``).join('\n')
-                : '> لا توجد جهات اتصال. استخدم `-جهات @مستخدم [الاسم]` لإضافة جهة')
-            .addFields({ name: '📊 العدد', value: `\`${contacts.length}\``, inline: true })
-            .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+                : '> No contacts. Use `-contacts @user [name]` to add one')
+            .addFields({ name: '📊 Count', value: `\`${contacts.length}\``, inline: true })
+            .setFooter({ text: 'Phone System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

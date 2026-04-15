@@ -4,9 +4,9 @@ module.exports = {
     name: 'تعيين-رتبة-مبند',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-مبند')
-        .setDescription('🔧 تحديد رتبة المبند التي تُعطى عند إصدار مخالفة')
+        .setDescription('🔧 تحديد Rank المبند التي تُعطى عند إصدار مخالفة')
         .addRoleOption(o =>
-            o.setName('الرتبة').setDescription('الرتبة التي تمثل المبند').setRequired(true)
+            o.setName('الرتبة').setDescription('الRank التي تمثل المبند').setRequired(true)
         ),
 
     async slashExecute(interaction, db) {
@@ -23,12 +23,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Ban Role Set')
             .setColor(0xB71C1C)
-            .setDescription('ستُعطى هذه الرتبة تلقائياً عند إصدار أمر `-مخالف`، وتُرفع عند انتهاء المدة أو تنفيذ `-فك-مخالف`.')
+            .setDescription('ستُعطى هذه الRank تلقائياً عند إصدار أمر `-مخالف`، وتُرفع عند انتهاء المدة أو تنفيذ `-فك-مخالف`.')
             .addFields(
-                { name: '🚫 الرتبة',       value: `<@&${role.id}>`, inline: true },
-                { name: '🆔 معرّف الرتبة', value: role.id,          inline: true },
+                { name: '🚫 الRank',       value: `<@&${role.id}>`, inline: true },
+                { name: '🆔 معرّف الRank', value: role.id,          inline: true },
             )
-            .setFooter({ text: 'نظام المخالفات • بوت FANTASY' })
+            .setFooter({ text: 'نظام المخالفات • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

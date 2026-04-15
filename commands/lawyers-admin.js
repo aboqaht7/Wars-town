@@ -11,13 +11,13 @@ module.exports = {
         .addSubcommand(s => s
             .setName('إضافة')
             .setDescription('إضافة محامٍ للقائمة')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
             .addStringOption(o => o.setName('الاسم').setDescription('اسم المحامي كما سيظهر').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('حذف')
             .setDescription('حذف محامٍ من القائمة')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('قائمة')
@@ -49,13 +49,13 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.add(lawyerRoleId);
-                        roleStatus = `\n✅ تم منح رتبة <@&${lawyerRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ تم منح Rank <@&${lawyerRoleId}> تلقائياً`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من منح الرتبة (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ لم أتمكن من منح الRank (تحقق من صلاحيات البوت)';
                 }
             } else {
-                roleStatus = '\n⚠️ لم يتم تحديد رتبة المحامين — استخدم `/تعيين-رتبة-محامي`';
+                roleStatus = '\n⚠️ لم يتم تحديد Rank المحامين — استخدم `/تعيين-Rank-محامي`';
             }
 
             const _img = await db.getImage('محاماة').catch(() => null);
@@ -66,10 +66,10 @@ module.exports = {
                 .setColor(0x1B5E20)
                 .setDescription(roleStatus || null)
                 .addFields(
-                    { name: '👤 العضو',    value: `<@${user.id}>`, inline: true },
+                    { name: '👤 Member',    value: `<@${user.id}>`, inline: true },
                     { name: '📛 الاسم',    value: name,             inline: true },
                 )
-                .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             // أرسل مهام المحامي الجديد للروم المحدد تلقائياً
@@ -82,7 +82,7 @@ module.exports = {
         if (sub === 'حذف') {
             const user    = interaction.options.getUser('العضو');
             const deleted = await db.removeLawyer(user.id);
-            if (!deleted) return interaction.reply({ content: '❌ هذا العضو غير مسجل كمحامٍ.', flags: 64 });
+            if (!deleted) return interaction.reply({ content: '❌ هذا Member غير مسجل كمحامٍ.', flags: 64 });
 
             let roleStatus = '';
             const lawyerRoleId = await db.getConfig('lawyer_role_id');
@@ -92,10 +92,10 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.remove(lawyerRoleId);
-                        roleStatus = `\n✅ تمت إزالة رتبة <@&${lawyerRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ تمت إزالة Rank <@&${lawyerRoleId}> تلقائياً`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من إزالة الرتبة (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ لم أتمكن من إزالة الRank (تحقق من صلاحيات البوت)';
                 }
             }
 
@@ -106,8 +106,8 @@ module.exports = {
                 .setTitle('Lawyer Removed')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
-                .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
-                .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                .addFields({ name: '👤 Member', value: `<@${user.id}>`, inline: true })
+                .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -124,7 +124,7 @@ module.exports = {
                 .setColor(0x0D47A1)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${lawyers.length} محامٍ`, inline: true })
-                .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '\u200b', flags: 64 });
@@ -139,7 +139,7 @@ module.exports = {
                 .setTitle('تم تعيين روم مهام المحامين')
                 .setColor(0x0D47A1)
                 .setDescription(`سيتم إرسال مهام المحامين في <#${channel.id}> تلقائياً`)
-                .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '\u200b', flags: 64 });

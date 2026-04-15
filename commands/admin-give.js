@@ -8,21 +8,21 @@ module.exports = {
     name: 'admin-give',
     data: new SlashCommandBuilder()
         .setName('admin-give')
-        .setDescription('أوامر إدارية: منح أموال أو أغراض للاعبين')
+        .setDescription('Admin commands: grant money or items to players')
         .addSubcommand(s => s
             .setName('اموال')
-            .setDescription('أضف أموالاً لشخصية لاعب')
-            .addUserOption(o => o.setName('اللاعب').setDescription('اختر اللاعب').setRequired(true))
+            .setDescription('Add money to a player character')
+            .addUserOption(o => o.setName('اللاعب').setDescription('Choose the player').setRequired(true))
             .addIntegerOption(o => o.setName('المبلغ').setDescription('المبلغ بالريال (يمكن أن يكون سالباً لخصم أموال)').setRequired(true))
-            .addStringOption(o => o.setName('السبب').setDescription('سبب الإضافة (اختياري)').setRequired(false))
+            .addStringOption(o => o.setName('السبب').setDescription('Reason for addition (optional)').setRequired(false))
         )
         .addSubcommand(s => s
             .setName('غرض')
-            .setDescription('أضف غرضاً لحقيبة لاعب')
-            .addUserOption(o => o.setName('اللاعب').setDescription('اختر اللاعب').setRequired(true))
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم الغرض').setRequired(true))
-            .addIntegerOption(o => o.setName('الكمية').setDescription('الكمية (افتراضي: 1)').setRequired(false).setMinValue(1).setMaxValue(999))
-            .addStringOption(o => o.setName('السبب').setDescription('سبب الإضافة (اختياري)').setRequired(false))
+            .setDescription('Add an item to a player bag')
+            .addUserOption(o => o.setName('اللاعب').setDescription('Choose the player').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('Item name').setRequired(true))
+            .addIntegerOption(o => o.setName('الكمية').setDescription('Quantity (default: 1)').setRequired(false).setMinValue(1).setMaxValue(999))
+            .addStringOption(o => o.setName('السبب').setDescription('Reason for addition (optional)').setRequired(false))
         ),
 
     async slashExecute(interaction) {
@@ -47,7 +47,7 @@ module.exports = {
             const cashAfter  = cashBefore + amount;
 
             const embed = new EmbedBuilder()
-                .setTitle(amount >= 0 ? '💰 تمت إضافة أموال' : '💸 تم خصم أموال')
+                .setTitle(amount >= 0 ? '💰 Money Added' : '💸 Money Deducted')
                 .setColor(amount >= 0 ? 0x2E7D32 : 0xC62828)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
@@ -58,9 +58,9 @@ module.exports = {
                     { name: amount >= 0 ? '➕ المضاف' : '➖ المخصوم',
                                                    value: `${Math.abs(amount).toLocaleString()} ريال`,          inline: true },
                     { name: '💵 بعد',             value: `${cashAfter.toLocaleString()} ريال`,                 inline: true },
-                    { name: '📝 السبب',           value: reason,                                                inline: false },
+                    { name: '📝 Reason',           value: reason,                                                inline: false },
                 )
-                .setFooter({ text: `بواسطة ${interaction.user.username} • بوت FANTASY` })
+                .setFooter({ text: `By ${interaction.user.username} • FANTASY Bot` })
                 .setTimestamp();
 
             await interaction.channel.send({ embeds: [embed], components: [row] });
@@ -82,9 +82,9 @@ module.exports = {
                     { name: '👤 اللاعب',  value: `${target}`,                    inline: true },
                     { name: '📦 الغرض',   value: itemName,                        inline: true },
                     { name: '🔢 الكمية',  value: String(qty),                     inline: true },
-                    { name: '📝 السبب',   value: reason,                          inline: false },
+                    { name: '📝 Reason',   value: reason,                          inline: false },
                 )
-                .setFooter({ text: `بواسطة ${interaction.user.username} • بوت FANTASY` })
+                .setFooter({ text: `By ${interaction.user.username} • FANTASY Bot` })
                 .setTimestamp();
 
             await interaction.channel.send({ embeds: [embed], components: [row] });

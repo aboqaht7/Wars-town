@@ -3,7 +3,7 @@ module.exports = {
     async execute(message, args, db) {
         const deleteRoleId = await db.getConfig('delete_role_id');
         if (!deleteRoleId)
-            return message.reply('❌ لم يتم تعيين رتبة مسؤولي الحذف بعد.');
+            return message.reply('❌ لم يتم تعيين Rank مسؤولي الحذف بعد.');
         if (!message.member.roles.cache.has(deleteRoleId))
             return message.reply('❌ ليس لديك صلاحية تنفيذ أمر الحذف.');
 

@@ -3,7 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'health',
-    data: new SlashCommandBuilder().setName('health').setDescription('نظام وزارة الصحة'),
+    data: new SlashCommandBuilder().setName('health').setDescription('Ministry of Health System'),
     async execute(message, args, db) {
         const { embed, menu } = await build(db);
         message.channel.send({ embeds: [embed], components: [menu, resetRow('health')] });
@@ -21,19 +21,19 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Ministry of Health')
         .setColor(0x1B5E20)
-        .setDescription('اختر الخدمة الطبية التي تحتاجها.')
-        .setFooter({ text: 'نظام الصحة • بوت FANTASY' })
+        .setDescription('Choose the medical service you need.')
+        .setFooter({ text: 'Health System • FANTASY Bot' })
         .setTimestamp();
     const img = await db.getImage('health');
     if (img) embed.setImage(img);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('health_menu')
-            .setPlaceholder('اختر الخدمة الطبية')
+            .setPlaceholder('Choose a medical service')
             .addOptions([
-                { label: '🏥 إنعاش مستشفى', value: 'hospital_resuscitation' },
-                { label: '💀 تحلل', value: 'decay' },
-                { label: '🧙 إنعاش ساحرة', value: 'witch_resuscitation' },
+                { label: '🏥 Hospital Resuscitation', value: 'hospital_resuscitation' },
+                { label: '💀 Decay', value: 'decay' },
+                { label: '🧙 Witch Resuscitation', value: 'witch_resuscitation' },
             ])
     );
     return { embed, menu };

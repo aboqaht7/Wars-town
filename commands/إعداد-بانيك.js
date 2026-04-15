@@ -26,7 +26,7 @@ module.exports = {
             .setTitle('Panic Room Configured')
             .setColor(0x1B5E20)
             .setDescription(`سيتم إرسال طلبات الاستغاثة إلى <#${channel.id}>`)
-            .setFooter({ text: 'إعداد البانيك • بوت FANTASY' })
+            .setFooter({ text: 'إعداد البانيك • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -8,7 +8,7 @@ module.exports = {
     name: 'identity',
     data: new SlashCommandBuilder()
         .setName('identity')
-        .setDescription('نظام الهوية'),
+        .setDescription('Identity System'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const { embed, menu } = await buildMain(message.author.id, db);
@@ -31,19 +31,19 @@ async function buildMain(userId, db) {
     const embed = new EmbedBuilder()
         .setTitle('Identity System')
         .setColor(0x4A148C)
-        .setDescription('أنشئ هويتك وسجّل دخولك لبدء رحلتك في عالم FANTASY.')
-        .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+        .setDescription('Create your identity and log in to start your journey in the world of FANTASY.')
+        .setFooter({ text: 'Identity System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('identity_menu')
-            .setPlaceholder('اختر خيار')
+            .setPlaceholder('Choose an option')
             .addOptions([
-                { label: '✏️ إنشاء هوية', value: 'create_identity', description: 'أنشئ شخصية جديدة في إحدى الخانات الفارغة' },
-                { label: '✅ تسجيل دخول', value: 'login_identity', description: 'سجّل دخول بشخصية موجودة' },
-                { label: '🚪 تسجيل خروج', value: 'logout_identity', description: 'سجّل خروج من الشخصية الحالية' },
+                { label: '✏️ Create Identity', value: 'create_identity', description: 'Create a new character in an empty slot' },
+                { label: '✅ Login', value: 'login_identity', description: 'Login with an existing character' },
+                { label: '🚪 Logout', value: 'logout_identity', description: 'Logout from the current character' },
             ])
     );
     return { embed, menu };

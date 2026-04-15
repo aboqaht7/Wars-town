@@ -21,7 +21,7 @@ module.exports = {
         const validSubs = ['إضافة', 'سحب', 'تجميد', 'فك-تجميد', 'حساب'];
         if (!sub || !validSubs.includes(sub)) {
             return message.reply(
-                '**أوامر أدمن البنك:**\n' +
+                '**أوامر أدمن Bank:**\n' +
                 '`-بنك-أدمن إضافة [إيبان] [المبلغ] [ملاحظة اختيارية]`\n' +
                 '`-بنك-أدمن سحب [إيبان] [المبلغ] [ملاحظة اختيارية]`\n' +
                 '`-بنك-أدمن تجميد [إيبان]`\n' +
@@ -47,14 +47,14 @@ module.exports = {
                 .setTitle('Balance Added')
                 .setColor(0x2E7D32)
                 .addFields(
-                    { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
-                    { name: '👤 الشخصية', value: `${result.char.character_name} ${result.char.family_name || ''}`, inline: true },
-                    { name: '💰 المبلغ المضاف', value: `${amount.toLocaleString()} ريال`, inline: true },
-                    { name: '💼 الرصيد الجديد', value: `${Number(result.newBalance).toLocaleString()} ريال`, inline: true },
-                    { name: '🔧 بواسطة', value: `<@${message.author.id}>`, inline: true },
+                    { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
+                    { name: '👤 Character', value: `${result.char.character_name} ${result.char.family_name || ''}`, inline: true },
+                    { name: '💰 Amount Added', value: `${amount.toLocaleString()} ريال`, inline: true },
+                    { name: '💼 New Balance', value: `${Number(result.newBalance).toLocaleString()} ريال`, inline: true },
+                    { name: '🔧 By', value: `<@${message.author.id}>`, inline: true },
                     { name: '📝 ملاحظة', value: note || '—', inline: true },
                 )
-                .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
@@ -76,14 +76,14 @@ module.exports = {
                 .setTitle('Balance Withdrawn')
                 .setColor(0xB71C1C)
                 .addFields(
-                    { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
-                    { name: '👤 الشخصية', value: `${result.char.character_name} ${result.char.family_name || ''}`, inline: true },
-                    { name: '💰 المبلغ المسحوب', value: `${amount.toLocaleString()} ريال`, inline: true },
-                    { name: '💼 الرصيد الجديد', value: `${Number(result.newBalance).toLocaleString()} ريال`, inline: true },
-                    { name: '🔧 بواسطة', value: `<@${message.author.id}>`, inline: true },
+                    { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
+                    { name: '👤 Character', value: `${result.char.character_name} ${result.char.family_name || ''}`, inline: true },
+                    { name: '💰 Amount Withdrawn', value: `${amount.toLocaleString()} ريال`, inline: true },
+                    { name: '💼 New Balance', value: `${Number(result.newBalance).toLocaleString()} ريال`, inline: true },
+                    { name: '🔧 By', value: `<@${message.author.id}>`, inline: true },
                     { name: '📝 ملاحظة', value: note || '—', inline: true },
                 )
-                .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
@@ -102,11 +102,11 @@ module.exports = {
                 .setTitle('Account Frozen')
                 .setColor(0x0288D1)
                 .addFields(
-                    { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
-                    { name: '👤 الشخصية', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
-                    { name: '🔧 بواسطة', value: `<@${message.author.id}>`, inline: true },
+                    { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
+                    { name: '👤 Character', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
+                    { name: '🔧 By', value: `<@${message.author.id}>`, inline: true },
                 )
-                .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
@@ -125,11 +125,11 @@ module.exports = {
                 .setTitle('Account Unfrozen')
                 .setColor(0x2E7D32)
                 .addFields(
-                    { name: '🏦 الإيبان', value: `\`${iban}\``, inline: true },
-                    { name: '👤 الشخصية', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
-                    { name: '🔧 بواسطة', value: `<@${message.author.id}>`, inline: true },
+                    { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
+                    { name: '👤 Character', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
+                    { name: '🔧 By', value: `<@${message.author.id}>`, inline: true },
                 )
-                .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
@@ -156,12 +156,12 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle(`🏦 حسابات ${mentioned ? mentioned.username : chars[0].character_name}`)
                 .setColor(0x1565C0)
-                .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
 
             for (const c of chars) {
                 embed.addFields({
                     name: `${SLOT_NAMES[c.slot] || `شخصية ${c.slot}`} — ${c.character_name} ${c.family_name || ''}`,
-                    value: `🏦 إيبان: \`${c.iban}\`\n💰 الرصيد: \`${Number(c.balance).toLocaleString()} ريال\`\n${c.frozen ? '❄️ **مجمّد**' : '✅ نشط'}`,
+                    value: `🏦 إيبان: \`${c.iban}\`\n💰 الرصيد: \`${Number(c.balance).toLocaleString()} ريال\`\n${c.frozen ? '❄️ **Frozen**' : '✅ Active'}`,
                     inline: false,
                 });
             }

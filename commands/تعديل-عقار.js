@@ -34,7 +34,7 @@ module.exports = {
                 { name: '💰 السعر',   value: `\`${Number(updated.price).toLocaleString()} ريال\``, inline: true },
                 { name: '🖼️ الصورة', value: updated.image_url ? `[رابط](${updated.image_url})` : '`لا توجد صورة`', inline: false },
             )
-            .setFooter({ text: 'نظام العقارات • بوت FANTASY' })
+            .setFooter({ text: 'Properties System • FANTASY Bot' })
             .setTimestamp();
         if (updated.image_url) embed.setThumbnail(updated.image_url);
         await interaction.channel.send({ embeds: [embed] });

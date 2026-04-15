@@ -6,7 +6,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'محامي',
-    data: new SlashCommandBuilder().setName('محامي').setDescription('⚖️ قائمة المحامين المعتمدين'),
+    data: new SlashCommandBuilder().setName('محامي').setDescription('⚖️ Certified Lawyers List'),
 
     async execute(message, args, db) {
         message.channel.send(await buildMain(db));
@@ -31,7 +31,7 @@ async function buildMain(db) {
     const embed = new EmbedBuilder()
         .setTitle('Certified Lawyers')
         .setColor(0x0D47A1)
-        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setFooter({ text: 'Law System • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
@@ -74,8 +74,8 @@ async function buildDashboard(db, lawyerId, lawyerName) {
     const embed = new EmbedBuilder()
         .setTitle('Lawyer Dashboard')
         .setColor(0x1B5E20)
-        .setAuthor({ name: `المحامي: ${lawyerName}` })
-        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setAuthor({ name: `Lawyer: ${lawyerName}` })
+        .setFooter({ text: 'Law System • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
@@ -85,7 +85,7 @@ async function buildDashboard(db, lawyerId, lawyerName) {
     if (!requests.length) {
         embed.setDescription('> 📭 لا توجد طلبات توكيل معلقة حالياً');
     } else {
-        embed.setDescription(`> 📬 لديك **${requests.length}** طلب توكيل معلق`);
+        embed.setDescription(`> 📬 You have **${requests.length}** طلب توكيل معلق`);
         embed.addFields(
             requests.slice(0, 8).map(r => ({
                 name: `📁 ${r.case_number} — ${r.case_title}`,

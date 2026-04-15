@@ -11,12 +11,12 @@ module.exports = {
             .setTitle('Defamation Executed')
             .setColor(0x6A1B9A)
             .addFields(
-                { name: '👮 المنفذ', value: `${message.author}`, inline: true },
-                { name: '🎯 المستهدف', value: `${target}`, inline: true },
-                { name: '📋 الحالة', value: '`مشهّر`', inline: true },
-                { name: '📝 السبب', value: reason, inline: false },
+                { name: '👮 Executed By', value: `${message.author}`, inline: true },
+                { name: '🎯 Target', value: `${target}`, inline: true },
+                { name: '📋 Status', value: '`Defamed`', inline: true },
+                { name: '📝 Reason', value: reason, inline: false },
             )
-            .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
+            .setFooter({ text: 'Police System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

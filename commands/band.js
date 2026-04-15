@@ -11,12 +11,12 @@ module.exports = {
             .setTitle('Ban Executed')
             .setColor(0xB71C1C)
             .addFields(
-                { name: '👮 المنفذ', value: `${message.author}`, inline: true },
-                { name: '🎯 المستهدف', value: `${target}`, inline: true },
-                { name: '📋 الحالة', value: '`محظور`', inline: true },
-                { name: '📝 السبب', value: reason, inline: false },
+                { name: '👮 Executed By', value: `${message.author}`, inline: true },
+                { name: '🎯 Target', value: `${target}`, inline: true },
+                { name: '📋 Status', value: '`Banned`', inline: true },
+                { name: '📝 Reason', value: reason, inline: false },
             )
-            .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
+            .setFooter({ text: 'Police System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

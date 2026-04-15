@@ -11,7 +11,7 @@ module.exports = {
         .addSubcommand(s => s
             .setName('اضافة')
             .setDescription('أضف غرضاً جديداً')
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم الغرض').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('Item name').setRequired(true))
             .addIntegerOption(o => o.setName('السعر').setDescription('السعر بالدولار').setRequired(true).setMinValue(1))
         )
         .addSubcommand(s => s
@@ -59,7 +59,7 @@ module.exports = {
                     { name: 'الاسم',   value: item.name,                                    inline: true },
                     { name: 'السعر',   value: `${Number(item.price).toLocaleString('en-US')}$`, inline: true },
                 )
-                .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
+                .setFooter({ text: 'إدارة Black Market • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
@@ -96,7 +96,7 @@ module.exports = {
                     { name: 'الاسم',   value: item.name,                                    inline: true },
                     { name: 'السعر',   value: `${Number(item.price).toLocaleString('en-US')}$`, inline: true },
                 )
-                .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
+                .setFooter({ text: 'إدارة Black Market • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
@@ -110,7 +110,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Black Market List')
                 .setColor(0x1a1a2e)
-                .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
+                .setFooter({ text: 'إدارة Black Market • FANTASY Bot' })
                 .setTimestamp();
             if (!items.length) {
                 embed.setDescription('لا توجد أغراض مضافة.');

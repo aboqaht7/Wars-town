@@ -7,7 +7,7 @@ module.exports = {
     name: 'نقاط-الادارة',
     data: new SlashCommandBuilder()
         .setName('نقاط-الادارة')
-        .setDescription('بانل نقاط الإدارة العام'),
+        .setDescription('بانل نقاط Admin العام'),
 
     async execute(message, args, db) {
         const payload = await buildPanel(db);
@@ -28,7 +28,7 @@ async function buildPanel(db) {
     let leaderboard = '';
 
     if (!all.length) {
-        leaderboard = '> لا توجد بيانات بعد.';
+        leaderboard = '> No data yet.';
     } else {
         leaderboard = all.slice(0, 10).map((row, i) => {
             const total = Number(row.total) || 0;
@@ -42,12 +42,12 @@ async function buildPanel(db) {
         .setColor(0x1565C0)
         .addFields(
             {
-                name: '🏆 ترتيب الموظفين',
+                name: '🏆 Staff Leaderboard',
                 value: leaderboard,
                 inline: false
             }
         )
-        .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' })
+        .setFooter({ text: 'Admin Points System • FANTASY Bot' })
         .setTimestamp();
 
     const img = await db.getImage('نقاط-الادارة');
@@ -56,15 +56,15 @@ async function buildPanel(db) {
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('points_check')
-            .setLabel('كشف نقاطي').setEmoji('📋')
+            .setLabel('My Points').setEmoji('📋')
             .setStyle(ButtonStyle.Primary),
         new ButtonBuilder()
             .setCustomId('points_add_btn')
-            .setLabel('إضافة نقاط').setEmoji('➕')
+            .setLabel('Add Points').setEmoji('➕')
             .setStyle(ButtonStyle.Success),
         new ButtonBuilder()
             .setCustomId('points_deduct_btn')
-            .setLabel('خصم نقاط').setEmoji('➖')
+            .setLabel('Deduct Points').setEmoji('➖')
             .setStyle(ButtonStyle.Danger),
     );
 

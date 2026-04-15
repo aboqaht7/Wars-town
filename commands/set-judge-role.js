@@ -7,8 +7,8 @@ module.exports = {
     name: 'تعيين-رتبة-قاضي',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-قاضي')
-        .setDescription('🔧 تحديد رتبة الديسكورد الخاصة بالقضاة')
-        .addRoleOption(o => o.setName('الرتبة').setDescription('الرتبة التي تمثل القضاة').setRequired(true)),
+        .setDescription('🔧 تحديد Rank الديسكورد الخاصة بالقضاة')
+        .addRoleOption(o => o.setName('الرتبة').setDescription('الRank التي تمثل القضاة').setRequired(true)),
 
     async slashExecute(interaction, db) {
         const { isAdmin } = require('../utils');
@@ -24,12 +24,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Judges Role Set')
             .setColor(0x4A148C)
-            .setDescription('أعضاء هذه الرتبة سيظهرون عند توكيل قاضٍ لقضية.')
+            .setDescription('أعضاء هذه الRank سيظهرون عند توكيل قاضٍ لقضية.')
             .addFields(
-                { name: '⚖️ الرتبة',        value: `<@&${role.id}>`, inline: true },
-                { name: '🆔 معرّف الرتبة',  value: role.id,          inline: true },
+                { name: '⚖️ الRank',        value: `<@&${role.id}>`, inline: true },
+                { name: '🆔 معرّف الRank',  value: role.id,          inline: true },
             )
-            .setFooter({ text: 'نظام العدل • بوت FANTASY' })
+            .setFooter({ text: 'Justice System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

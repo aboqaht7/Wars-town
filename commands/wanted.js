@@ -14,14 +14,14 @@ module.exports = {
             const emptyEmbed = new EmbedBuilder()
                 .setTitle('Inspect Handcuffed Player')
                 .setColor(0xFF6F00)
-                .setDescription(`تم تفتيش **${target.displayName}** — الحقيبة فارغة!`)
+                .setDescription(`تم تفتيش **${target.displayName}** — Bag فارغة!`)
                 .addFields(
                     { name: '👮 الضابط', value: `${message.author}`, inline: true },
                     { name: '🎯 المفتَّش', value: `${target}`, inline: true },
-                    { name: '🏦 رصيد البنك', value: `\`${Number(targetIdentity.balance).toLocaleString()} ريال\``, inline: true },
-                    { name: '📦 محتوى الحقيبة', value: '> الحقيبة فارغة', inline: false },
+                    { name: '🏦 رصيد Bank', value: `\`${Number(targetIdentity.balance).toLocaleString()} ريال\``, inline: true },
+                    { name: '📦 محتوى Bag', value: '> Bag فارغة', inline: false },
                 )
-                .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
+                .setFooter({ text: 'Police System • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [emptyEmbed] });
@@ -47,11 +47,11 @@ module.exports = {
             .addFields(
                 { name: '👮 الضابط', value: `${message.author}`, inline: true },
                 { name: '🎯 المفتَّش', value: `${target}`, inline: true },
-                { name: '🏦 رصيد البنك', value: `\`${Number(targetIdentity.balance).toLocaleString()} ريال\``, inline: true },
+                { name: '🏦 رصيد Bank', value: `\`${Number(targetIdentity.balance).toLocaleString()} ريال\``, inline: true },
                 { name: '📦 الأغراض المضبوطة', value: stolenList, inline: false },
-                { name: '📋 الحالة', value: '`تم نقل جميع الأغراض لحقيبة الضابط`', inline: false },
+                { name: '📋 Status', value: '`تم نقل جميع الأغراض لحقيبة الضابط`', inline: false },
             )
-            .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
+            .setFooter({ text: 'Police System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

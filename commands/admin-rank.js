@@ -6,47 +6,47 @@ module.exports = {
     name: 'تعيين-رتبة-ادارة',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-ادارة')
-        .setDescription('إدارة رتب الإداريين في السيرفر')
+        .setDescription('Manage admin ranks in the server')
         .addSubcommand(s => s
             .setName('تعيين')
-            .setDescription('تعيين أو تغيير رتبة إداري')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
-            .addStringOption(o => o.setName('الرتبة').setDescription('اختر الرتبة').setRequired(true).setAutocomplete(true))
+            .setDescription('Set or change an admin rank')
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
+            .addStringOption(o => o.setName('الرتبة').setDescription('Choose the rank').setRequired(true).setAutocomplete(true))
         )
         .addSubcommand(s => s
             .setName('إزالة')
-            .setDescription('إزالة الرتبة من إداري')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .setDescription('Remove rank from an admin')
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('نقاط')
-            .setDescription('إضافة أو خصم نقاط من إداري')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
-            .addIntegerOption(o => o.setName('القيمة').setDescription('موجبة للإضافة، سالبة للخصم').setRequired(true))
+            .setDescription('Add or deduct points from an admin')
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
+            .addIntegerOption(o => o.setName('القيمة').setDescription('Positive to add, negative to deduct').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('عرض')
-            .setDescription('عرض بطاقة إداري')
-            .addUserOption(o => o.setName('العضو').setDescription('العضو').setRequired(true))
+            .setDescription('View admin card')
+            .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('قائمة')
-            .setDescription('عرض جميع الإداريين مرتبين')
+            .setDescription('View all admins ranked')
         )
         .addSubcommand(s => s
             .setName('إضافة-رتبة')
-            .setDescription('أضف نوع رتبة جديدة')
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم الرتبة').setRequired(true))
-            .addIntegerOption(o => o.setName('الترتيب').setDescription('رقم الترتيب (كلما قل كان أعلى)').setRequired(false))
+            .setDescription('Add a new rank type')
+            .addStringOption(o => o.setName('الاسم').setDescription('Rank name').setRequired(true))
+            .addIntegerOption(o => o.setName('الترتيب').setDescription('Sort number (lower = higher rank)').setRequired(false))
         )
         .addSubcommand(s => s
             .setName('حذف-رتبة')
-            .setDescription('احذف نوع رتبة')
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم الرتبة').setRequired(true).setAutocomplete(true))
+            .setDescription('Delete a rank type')
+            .addStringOption(o => o.setName('الاسم').setDescription('Rank name').setRequired(true).setAutocomplete(true))
         )
         .addSubcommand(s => s
             .setName('الرتب')
-            .setDescription('عرض جميع أنواع الرتب المتاحة')
+            .setDescription('View all available rank types')
         ),
 
     async autocomplete(interaction, db) {
@@ -75,7 +75,7 @@ module.exports = {
                     { name: 'الاسم',    value: name,          inline: true },
                     { name: 'الترتيب', value: `${position}`,  inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -84,13 +84,13 @@ module.exports = {
         if (sub === 'حذف-رتبة') {
             const name    = interaction.options.getString('الاسم');
             const deleted = await db.deleteRankType(name);
-            if (!deleted) return interaction.reply({ content: `❌ الرتبة **${name}** غير موجودة.`, flags: 64 });
+            if (!deleted) return interaction.reply({ content: `❌ الRank **${name}** غير موجودة.`, flags: 64 });
 
             const embed = new EmbedBuilder()
-                .setTitle('تم حذف الرتبة')
+                .setTitle('Rank Deleted')
                 .setColor(0x888888)
-                .setDescription(`تم حذف رتبة **${deleted.name}** من القائمة.`)
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setDescription(`Rank **${deleted.name}** has been deleted.`)
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -98,14 +98,14 @@ module.exports = {
 
         if (sub === 'الرتب') {
             const ranks = await db.getRankTypes();
-            if (!ranks.length) return interaction.reply({ content: '📋 لا توجد رتب مضافة. استخدم `/تعيين-رتبة-ادارة إضافة-رتبة` لإضافة رتبة.', flags: 64 });
+            if (!ranks.length) return interaction.reply({ content: '📋 لا توجد رتب مضافة. استخدم `/تعيين-Rank-ادارة إضافة-Rank` لإضافة Rank.', flags: 64 });
 
             const embed = new EmbedBuilder()
                 .setTitle('Available Rank Types')
                 .setColor(0x5865F2)
                 .setDescription(ranks.map((r, i) => `\`${i + 1}\` **${r.name}**`).join('\n'))
-                .addFields({ name: 'العدد الكلي', value: `${ranks.length} رتبة`, inline: true })
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .addFields({ name: 'العدد الكلي', value: `${ranks.length} Rank`, inline: true })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -123,14 +123,14 @@ module.exports = {
                 .setColor(0x5865F2)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'العضو',        value: `<@${target.id}>`,          inline: true },
-                    { name: 'الرتبة الجديدة', value: `**${rankName}**`,          inline: true },
+                    { name: 'Member',        value: `<@${target.id}>`,          inline: true },
+                    { name: 'الRank الجديدة', value: `**${rankName}**`,          inline: true },
                     { name: 'تم بواسطة',   value: `<@${interaction.user.id}>`, inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
 
-            if (prev) embed.addFields({ name: 'الرتبة السابقة', value: prev.rank_name, inline: true });
+            if (prev) embed.addFields({ name: 'الRank السابقة', value: prev.rank_name, inline: true });
 
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -139,18 +139,18 @@ module.exports = {
         if (sub === 'إزالة') {
             const target  = interaction.options.getUser('العضو');
             const removed = await db.removeAdminRank(target.id);
-            if (!removed) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
+            if (!removed) return interaction.reply({ content: `❌ **${target.username}** ليس لديه Rank إدارية مسجلة.`, flags: 64 });
 
             const embed = new EmbedBuilder()
                 .setTitle('Remove Admin Rank')
                 .setColor(0x888888)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'العضو',       value: `<@${target.id}>`,          inline: true },
-                    { name: 'الرتبة المُزالة', value: removed.rank_name,       inline: true },
+                    { name: 'Member',       value: `<@${target.id}>`,          inline: true },
+                    { name: 'الRank المُزالة', value: removed.rank_name,       inline: true },
                     { name: 'تم بواسطة',  value: `<@${interaction.user.id}>`, inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -160,22 +160,22 @@ module.exports = {
             const target = interaction.options.getUser('العضو');
             const delta  = interaction.options.getInteger('القيمة');
             const exists = await db.getAdminRank(target.id);
-            if (!exists) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة. عيّن له رتبة أولاً.`, flags: 64 });
+            if (!exists) return interaction.reply({ content: `❌ **${target.username}** ليس لديه Rank. عيّن له Rank أولاً.`, flags: 64 });
 
             const updated = await db.updateAdminPoints(target.id, delta);
 
             const embed = new EmbedBuilder()
-                .setTitle(delta >= 0 ? '⬆️ إضافة نقاط' : '⬇️ خصم نقاط')
+                .setTitle(delta >= 0 ? '⬆️ Add Points' : '⬇️ Deduct Points')
                 .setColor(delta >= 0 ? 0x00CC66 : 0xFF4444)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'العضو',     value: `<@${target.id}>`,            inline: true },
+                    { name: 'Member',     value: `<@${target.id}>`,            inline: true },
                     { name: 'الرتبة',    value: updated.rank_name,             inline: true },
                     { name: delta >= 0 ? 'نقاط أضيفت' : 'نقاط خُصمت', value: `${Math.abs(delta)} نقطة`, inline: true },
                     { name: 'المجموع الكلي', value: `**${updated.points} نقطة**`, inline: true },
                     { name: 'تم بواسطة',    value: `<@${interaction.user.id}>`,  inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -184,7 +184,7 @@ module.exports = {
         if (sub === 'عرض') {
             const target   = interaction.options.getUser('العضو');
             const rankData = await db.getAdminRank(target.id);
-            if (!rankData) return interaction.reply({ content: `❌ **${target.username}** ليس لديه رتبة إدارية مسجلة.`, flags: 64 });
+            if (!rankData) return interaction.reply({ content: `❌ **${target.username}** ليس لديه Rank إدارية مسجلة.`, flags: 64 });
 
             const date = new Date(rankData.assigned_at).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -193,13 +193,13 @@ module.exports = {
                 .setColor(0x5865F2)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'العضو',         value: `<@${target.id}>`,                                              inline: true },
+                    { name: 'Member',         value: `<@${target.id}>`,                                              inline: true },
                     { name: 'الرتبة',         value: `**${rankData.rank_name}**`,                                    inline: true },
                     { name: 'النقاط',         value: `**${rankData.points}** نقطة`,                                  inline: true },
                     { name: 'عيّنه',          value: rankData.assigned_by ? `<@${rankData.assigned_by}>` : 'غير معروف', inline: true },
                     { name: 'تاريخ التعيين', value: date,                                                            inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -224,7 +224,7 @@ module.exports = {
                 .setColor(0x5865F2)
                 .setDescription(lines.join('\n'))
                 .addFields({ name: 'الإجمالي', value: `${all.length} إداري`, inline: true })
-                .setFooter({ text: 'نظام الرتب الإدارية • بوت FANTASY' })
+                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });

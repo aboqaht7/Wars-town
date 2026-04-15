@@ -25,7 +25,7 @@ module.exports = {
                 'اضغط على الزر أدناه، أدخل موقعك، وسيصل طلب الاستغاثة فوراً للجهات المختصة.\n\n' +
                 '> ⚠️ يُستخدم هذا النظام في الحالات الطارئة فقط.'
             )
-            .setFooter({ text: 'نظام الاستغاثة • بوت FANTASY' })
+            .setFooter({ text: 'نظام الاستغاثة • FANTASY Bot' })
             .setTimestamp();
 
         const row = new ActionRowBuilder().addComponents(

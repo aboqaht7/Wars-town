@@ -11,7 +11,7 @@ const RESOURCES = [
 function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Crafting System')
-        .setDescription('اضغط على الزر أدناه لجمع موارد عشوائية تُضاف لحقيبتك مباشرة.')
+        .setDescription('Press the button below to gather random resources added directly to your bag.')
         .setColor(0x2ecc71);
 }
 
@@ -19,7 +19,7 @@ function buildRow() {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('gather_resources')
-            .setLabel('🪛 جمّع الموارد')
+            .setLabel('🪛 Gather Resources')
             .setStyle(ButtonStyle.Success)
     );
 }
@@ -28,11 +28,11 @@ module.exports = {
     name: 'تجميع',
     data: new SlashCommandBuilder()
         .setName('تجميع')
-        .setDescription('اجمع موارد عشوائية لاستخدامها في التصنيع'),
+        .setDescription('Gather random resources for crafting'),
 
     async slashExecute(interaction, db) {
         const identity = await db.getActiveIdentity(interaction.user.id);
-        if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+        if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
         if (interaction._isReset) {
             return interaction.message.edit({ embeds: [buildEmbed()], components: [buildRow()] });

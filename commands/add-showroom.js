@@ -5,11 +5,11 @@ module.exports = {
     name: 'اضافة-معرض',
     data: new SlashCommandBuilder()
         .setName('اضافة-معرض')
-        .setDescription('إضافة سيارة إلى معرض السيارات')
-        .addStringOption(opt => opt.setName('اسم').setDescription('اسم السيارة').setRequired(true))
-        .addIntegerOption(opt => opt.setName('سعر').setDescription('سعر السيارة بالريال').setRequired(true))
-        .addStringOption(opt => opt.setName('نوع').setDescription('نوع السيارة (سيدان، SUV، رياضية...)').setRequired(false))
-        .addStringOption(opt => opt.setName('لون').setDescription('لون السيارة').setRequired(false)),
+        .setDescription('Add a car to the showroom')
+        .addStringOption(opt => opt.setName('اسم').setDescription('Car name').setRequired(true))
+        .addIntegerOption(opt => opt.setName('سعر').setDescription('Car price in SAR').setRequired(true))
+        .addStringOption(opt => opt.setName('نوع').setDescription('Car type (sedan, SUV, sports...)').setRequired(false))
+        .addStringOption(opt => opt.setName('لون').setDescription('Car color').setRequired(false)),
 
     async slashExecute(interaction, db) {
         if (!(await isAdmin(interaction.member, db)))
@@ -29,13 +29,13 @@ module.exports = {
             .setTitle('Car Added to Showroom')
             .setColor(0x2E7D32)
             .addFields(
-                { name: '🚗 اسم السيارة', value: `\`${carName}\``, inline: true },
+                { name: '🚗 Car name', value: `\`${carName}\``, inline: true },
                 { name: '💰 السعر',       value: `\`${price.toLocaleString()} ريال\``, inline: true },
                 { name: '🏷️ النوع',       value: carType ? `\`${carType}\`` : '`غير محدد`', inline: true },
                 { name: '🎨 اللون',        value: color   ? `\`${color}\``   : '`غير محدد`', inline: true },
                 { name: '👤 أضافها',       value: `${interaction.user}`, inline: true },
             )
-            .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
+            .setFooter({ text: 'Showroom System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

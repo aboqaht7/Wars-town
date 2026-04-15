@@ -3,7 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'crime',
-    data: new SlashCommandBuilder().setName('crime').setDescription('نظام السرقات'),
+    data: new SlashCommandBuilder().setName('crime').setDescription('Robbery System'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);
@@ -28,9 +28,9 @@ async function build(db) {
         .setTitle('Robbery System')
         .setColor(0xB71C1C)
         .setDescription(robberies.length
-            ? 'اختر السرقة التي تريد تنفيذها من القائمة.'
-            : '> لا توجد سرقات متاحة حالياً. انتظر الإدارة.')
-        .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+            ? 'Choose the robbery you want to execute from the list.'
+            : '> No robberies available right now. Wait for the admin.')
+        .setFooter({ text: 'Robbery System • FANTASY Bot' })
         .setTimestamp();
     const img = await db.getImage('crime');
     if (img) embed.setImage(img);
@@ -46,7 +46,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('robbery_menu')
-            .setPlaceholder('⛓️ اختر السرقة')
+            .setPlaceholder('⛓️ Choose a robbery')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu, resetRow('crime')] };

@@ -26,13 +26,13 @@ module.exports = {
 
         const roleId = await db.getConfig('violation_role_id');
         if (!roleId)
-            return message.reply('❌ لم يتم تعيين رتبة المبند بعد. استخدم `/تعيين-رتبة-مبند` أولاً.');
+            return message.reply('❌ لم يتم Set ban role بعد. استخدم `/تعيين-Rank-مبند` أولاً.');
 
         const role = message.guild.roles.cache.get(roleId);
         if (!role)
-            return message.reply('❌ الرتبة المحفوظة غير موجودة في السيرفر. أعد تعيينها.');
+            return message.reply('❌ الRank المحفوظة غير موجودة في السيرفر. أعد تعيينها.');
 
-        // حفظ جميع رتب اللاعب الحالية (ما عدا @everyone ورتبة الباند)
+        // حفظ جميع رتب اللاعب الحالية (ما عدا @everyone وRank الباند)
         const savedRoles = target.roles.cache
             .filter(r => r.id !== message.guild.id && r.id !== roleId)
             .map(r => r.id);
@@ -40,7 +40,7 @@ module.exports = {
         const expiresAt = new Date(Date.now() + parsed.ms);
         await db.addViolation(target.id, message.author.id, reason, expiresAt, savedRoles);
 
-        // إزالة كل الرتب وإعطاء رتبة الباند فقط
+        // إزالة كل الرتب وإعطاء Rank الباند فقط
         await target.roles.set([role]).catch(() => {});
 
         const expiresFormatted = expiresAt.toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });

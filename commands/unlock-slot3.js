@@ -28,7 +28,7 @@ module.exports = {
                 { name: '👤 اللاعب', value: `<@${target.id}> — \`${target.username}\``, inline: true },
                 { name: '✅ الحالة', value: 'الشخصية الثالثة متاحة الآن للإنشاء', inline: true },
             )
-            .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+            .setFooter({ text: 'Identity System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -4,16 +4,16 @@ module.exports = {
     name: 'اضافة-سيارة',
     data: new SlashCommandBuilder()
         .setName('اضافة-سيارة')
-        .setDescription('إضافة سيارة جديدة للاعب')
-        .addUserOption(opt => opt.setName('لاعب').setDescription('اللاعب المراد إضافة السيارة له').setRequired(true))
-        .addStringOption(opt => opt.setName('اسم-السيارة').setDescription('اسم السيارة ونوعها').setRequired(true))
-        .addStringOption(opt => opt.setName('لوحة').setDescription('رقم لوحة السيارة').setRequired(true)),
+        .setDescription('Add a new car to a player')
+        .addUserOption(opt => opt.setName('لاعب').setDescription('The player to add the car to').setRequired(true))
+        .addStringOption(opt => opt.setName('اسم-السيارة').setDescription('Car name ونوعها').setRequired(true))
+        .addStringOption(opt => opt.setName('لوحة').setDescription('Car license plate number').setRequired(true)),
     async execute(message, args, db) {
         const target = message.mentions.members?.first();
         const carName = args.filter(a => !a.startsWith('<@')).slice(0, -1).join(' ') || args.filter(a => !a.startsWith('<@'))[0];
         const plate = args[args.length - 1];
         if (!target || !carName || !plate) {
-            return message.reply('❌ استخدم: `-اضافة-سيارة @اللاعب [اسم السيارة] [رقم اللوحة]`\nمثال: `-اضافة-سيارة @اللاعب كامري ABC123`');
+            return message.reply('❌ استخدم: `-اضافة-سيارة @اللاعب [Car name] [رقم اللوحة]`\nمثال: `-اضافة-سيارة @اللاعب كامري ABC123`');
         }
         await db.ensureUser(target.id, target.user.username);
         const result = await db.addVehicle(target.id, carName, plate);
@@ -27,11 +27,11 @@ module.exports = {
             .setColor(0x37474F)
             .addFields(
                 { name: '👤 المالك', value: `${target}`, inline: true },
-                { name: '🚗 اسم السيارة', value: `\`${carName}\``, inline: true },
+                { name: '🚗 Car name', value: `\`${carName}\``, inline: true },
                 { name: '🔖 رقم اللوحة', value: `\`${plate}\``, inline: true },
                 { name: '👮 أضافها', value: `${message.author}`, inline: true },
             )
-            .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
+            .setFooter({ text: 'Vehicles System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
@@ -52,11 +52,11 @@ module.exports = {
             .setColor(0x37474F)
             .addFields(
                 { name: '👤 المالك', value: `<@${target.id}>`, inline: true },
-                { name: '🚗 اسم السيارة', value: `\`${carName}\``, inline: true },
+                { name: '🚗 Car name', value: `\`${carName}\``, inline: true },
                 { name: '🔖 رقم اللوحة', value: `\`${plate}\``, inline: true },
                 { name: '👮 أضافها', value: `${interaction.user}`, inline: true },
             )
-            .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
+            .setFooter({ text: 'Vehicles System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

@@ -3,7 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'معارض',
-    data: new SlashCommandBuilder().setName('معارض').setDescription('عرض المعرض — السيارات المتاحة للبيع'),
+    data: new SlashCommandBuilder().setName('معارض').setDescription('View showroom — cars available for sale'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);
@@ -30,9 +30,9 @@ function build(cars, image) {
         .setTitle('Car Showroom')
         .setColor(0xB71C1C)
         .setDescription(cars.length
-            ? `**${cars.length}** سيارة متوفرة — اختر من القائمة لعرض التفاصيل.`
-            : '> لا توجد سيارات متاحة في المعرض حالياً')
-        .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
+            ? `**${cars.length}** cars available — choose from the menu to view details.`
+            : '> No cars available in the showroom right now')
+        .setFooter({ text: 'Showroom System • FANTASY Bot' })
         .setTimestamp();
     if (image) embed.setImage(image);
 
@@ -46,7 +46,7 @@ function build(cars, image) {
         components.unshift(new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('showroom_menu')
-                .setPlaceholder('اختر سيارة للاستفسار')
+                .setPlaceholder('Choose a car to inquire about')
                 .addOptions(options)
         ));
     }

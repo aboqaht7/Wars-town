@@ -6,7 +6,7 @@ module.exports = {
     name: 'تعيين-رتبة-مبرمج',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-مبرمج')
-        .setDescription('تعيين رتبة المبرمج التي تتيح الوصول لجميع الأوامر')
+        .setDescription('تعيين Rank المبرمج التي تتيح الوصول لجميع الأوامر')
         .addRoleOption(o => o.setName('الرتبة').setDescription('الرتبة').setRequired(true)),
 
     async slashExecute(interaction, db) {
@@ -19,7 +19,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Programmer Role Set')
             .setColor(0x6A1B9A)
-            .setDescription(`أصحاب رتبة <@&${role.id}> يمتلكون الآن صلاحية الوصول لجميع الأوامر الإدارية.`)
+            .setDescription(`أصحاب Rank <@&${role.id}> يمتلكون الآن صلاحية الوصول لجميع الأوامر الإدارية.`)
             .setFooter({ text: 'إعدادات البوت • FANTASY' }).setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed], components: [resetRow] });

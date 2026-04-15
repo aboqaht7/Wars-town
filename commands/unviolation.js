@@ -26,13 +26,13 @@ module.exports = {
             } catch (_) {}
         }
 
-        // رتبة التفعيل ورتبة الهوية دائماً
+        // Rank التفعيل وRank الهوية دائماً
         const activationRoleId = await db.getConfig('activation_role_id');
         const identityRoleId   = await db.getConfig('identity_role');
         if (activationRoleId) rolesToRestore.add(activationRoleId);
         if (identityRoleId)   rolesToRestore.add(identityRoleId);
 
-        // رتبة الباند — نحذفها من القائمة إن وُجدت
+        // Rank الباند — نحذفها من القائمة إن وُجدت
         const banRoleId = await db.getConfig('violation_role_id');
         if (banRoleId) rolesToRestore.delete(banRoleId);
 
@@ -42,7 +42,7 @@ module.exports = {
             if (role) await target.roles.add(role).catch(() => {});
         }
 
-        // إزالة رتبة الباند
+        // إزالة Rank الباند
         if (banRoleId) {
             const banRole = message.guild.roles.cache.get(banRoleId);
             if (banRole) await target.roles.remove(banRole).catch(() => {});

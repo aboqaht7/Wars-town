@@ -29,13 +29,13 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Handcuffed')
             .setColor(0xB71C1C)
-            .setDescription(`تم تكبيل <@${target.id}> بنجاح.\n⚠️ المكبّل لا يستطيع القيام بأي إجراء.`)
+            .setDescription(`Successfully handcuffed <@${target.id}> بنجاح.\n⚠️ The handcuffed player cannot perform any actions.`)
             .addFields(
-                { name: '👮 المنفذ',    value: `<@${message.author.id}>`, inline: true },
-                { name: '🎯 المستهدف', value: `<@${target.id}>`,         inline: true },
-                { name: '📋 الحالة',   value: '`مكبّل 🔗`',              inline: true },
+                { name: '👮 Executed By',    value: `<@${message.author.id}>`, inline: true },
+                { name: '🎯 Target', value: `<@${target.id}>`,         inline: true },
+                { name: '📋 Status',   value: '`Handcuffed 🔗`',              inline: true },
             )
-            .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
+            .setFooter({ text: 'Police System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -5,7 +5,7 @@ module.exports = {
     name: 'معدات',
     data: new SlashCommandBuilder()
         .setName('معدات')
-        .setDescription('🔨 متجر المعدات — اشترِ معداتك'),
+        .setDescription('🔨 Equipment Store — Buy your equipment'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
@@ -35,16 +35,16 @@ async function buildEquipment(db) {
     const embed = new EmbedBuilder()
         .setTitle('Equipment Store')
         .setColor(0x4527A0)
-        .setFooter({ text: 'متجر المعدات • بوت FANTASY' })
+        .setFooter({ text: 'Equipment Store • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     if (!items.length) {
-        embed.setDescription('> لا توجد معدات متاحة حالياً. انتظر الإدارة.');
+        embed.setDescription('> No equipment available right now. Wait for the admin.');
         return { embeds: [embed], components: [resetRow('معدات')] };
     }
 
-    embed.setDescription('اختر المعدة من القائمة أدناه.');
+    embed.setDescription('Choose equipment from the list below.');
 
     const options = items.slice(0, 25).map(it => ({
         label: it.name,
@@ -56,7 +56,7 @@ async function buildEquipment(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('equipment_item_select')
-            .setPlaceholder('🔨 اختر معدة')
+            .setPlaceholder('🔨 Choose equipment')
             .addOptions(options)
     );
 

@@ -11,7 +11,7 @@ module.exports = {
         const target = message.mentions.members?.first() || message.guild?.members.cache.get(args[0]);
         if (!target) return message.reply('❌ حدد اللاعب المراد طرده. مثال: `-شقلب @اللاعب`');
         const username = target.user.username;
-        await target.ban({ reason: `تشهير نهائي — بواسطة ${message.author.username}`, deleteMessageSeconds: 0 });
+        await target.ban({ reason: `تشهير نهائي — By ${message.author.username}`, deleteMessageSeconds: 0 });
         await message.channel.send(`🚫 تم طرد الحثالة **${username}** من السيرفر نهائياً.`);
     }
 };

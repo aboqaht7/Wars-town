@@ -8,8 +8,8 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor(0x1565C0)
-            .setDescription(`✅ احسنت <@${message.author.id}>!\nتمت إضافة **8 نقاط** للرقابة.`)
-            .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' })
+            .setDescription(`✅ Well done <@${message.author.id}>!\n**8 points** added for supervision.`)
+            .setFooter({ text: 'Admin Points System • FANTASY Bot' })
             .setTimestamp();
 
         await message.channel.send({ embeds: [embed] });

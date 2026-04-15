@@ -73,7 +73,7 @@ module.exports = {
             .setColor(0x1B5E20)
             .addFields(
                 { name: '🏢 الشركة', value: `**${company.name}**`, inline: true },
-                { name: '📋 الحالة', value: wasCreated ? '🆕 أُنشئت وأُدرجت' : '✅ أُدرجت من النظام', inline: true },
+                { name: '📋 Status', value: wasCreated ? '🆕 أُنشئت وأُدرجت' : '✅ أُدرجت من النظام', inline: true },
                 { name: '💰 سعر الإدراج', value: `\`${ipoPrice.toLocaleString()} ريال / سهم\``, inline: true },
                 { name: '📦 إجمالي الأسهم', value: `\`${totalShares.toLocaleString()} سهم\``, inline: true },
                 { name: '💎 القيمة السوقية', value: `\`${(ipoPrice * totalShares).toLocaleString()} ريال\``, inline: true },

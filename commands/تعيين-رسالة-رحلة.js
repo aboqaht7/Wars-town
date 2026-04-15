@@ -4,7 +4,7 @@ module.exports = {
     name: 'تعيين-رسالة-رحلة',
     data: new SlashCommandBuilder()
         .setName('تعيين-رسالة-رحلة')
-        .setDescription('تحديد نص رسالة بدء الرحلة أو الإعصار أو التجديد')
+        .setDescription('تحديد نص رسالة بدء الرحلة أو الHurricane أو الRenew')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption(opt =>
             opt.setName('النوع')
@@ -12,14 +12,14 @@ module.exports = {
                 .setRequired(true)
                 .addChoices(
                     { name: '✈️ بدء الرحلة', value: 'trip_start' },
-                    { name: '🌪️ الإعصار', value: 'trip_hurricane' },
-                    { name: '🔄 التجديد', value: 'trip_renewal' },
+                    { name: '🌪️ الHurricane', value: 'trip_hurricane' },
+                    { name: '🔄 الRenew', value: 'trip_renewal' },
                 )
         ),
 
     async slashExecute(interaction, db) {
         const type = interaction.options.getString('النوع');
-        const titles = { trip_start: 'رسالة بدء الرحلة', trip_hurricane: 'رسالة الإعصار', trip_renewal: 'رسالة التجديد' };
+        const titles = { trip_start: 'رسالة بدء الرحلة', trip_hurricane: 'رسالة الHurricane', trip_renewal: 'رسالة الRenew' };
 
         const modal = new ModalBuilder()
             .setCustomId(`set_trip_msg_${type}`)

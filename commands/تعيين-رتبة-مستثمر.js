@@ -5,10 +5,10 @@ module.exports = {
     name: 'تعيين-رتبة-مستثمر',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-مستثمر')
-        .setDescription('تحديد رتبة المستثمر لإدارة الشركات (أدمن فقط)')
+        .setDescription('تحديد Rank المستثمر لإدارة الشركات (أدمن فقط)')
         .addRoleOption(o =>
             o.setName('الرتبة')
-             .setDescription('الرتبة المخصصة للمستثمرين')
+             .setDescription('الRank المخصصة للمستثمرين')
              .setRequired(true)
         ),
 
@@ -25,8 +25,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Investor Role Set')
             .setColor(0x1565C0)
-            .setDescription(`رتبة **${role.name}** هي الآن رتبة المستثمر.\n\nأصحاب هذه الرتبة يستطيعون استخدام أمر \`/إدارة-شركة\` لإدارة شركاتهم.`)
-            .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+            .setDescription(`Rank **${role.name}** هي الآن Rank المستثمر.\n\nأصحاب هذه الRank يستطيعون استخدام أمر \`/إدارة-شركة\` لإدارة شركاتهم.`)
+            .setFooter({ text: 'Company System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -21,24 +21,24 @@ module.exports = {
             .setTitle('Message Sent')
             .setColor(0x00838F)
             .addFields(
-                { name: '📤 المُرسِل', value: `${message.author}`, inline: true },
-                { name: '📥 المستلم', value: `${target}`, inline: true },
-                { name: '💬 الرسالة', value: `> ${content}`, inline: false },
+                { name: '📤 Sender', value: `${message.author}`, inline: true },
+                { name: '📥 Recipient', value: `${target}`, inline: true },
+                { name: '💬 Message', value: `> ${content}`, inline: false },
             )
-            .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+            .setFooter({ text: 'Phone System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
 
         const notif = new EmbedBuilder()
-            .setTitle('رسالة جديدة وصلتك!')
+            .setTitle('New Message Received!')
             .setColor(0x00838F)
             .addFields(
-                { name: '📤 من', value: `${message.author}`, inline: true },
-                { name: '💬 الرسالة', value: `> ${content}`, inline: false },
-                { name: '↩️ للرد', value: `\`-رسالة @${message.author.username} [ردك]\``, inline: false },
+                { name: '📤 From', value: `${message.author}`, inline: true },
+                { name: '💬 Message', value: `> ${content}`, inline: false },
+                { name: '↩️ To Reply', value: `\`-رسالة @${message.author.username} [ردك]\``, inline: false },
             )
-            .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+            .setFooter({ text: 'Phone System • FANTASY Bot' })
             .setTimestamp();
         try {
             if (_img) notif.setImage(_img);

@@ -8,9 +8,9 @@ async function build() {
         .setTitle('Black Market')
         .setColor(0xB71C1C)
         .setDescription(items.length
-            ? 'اختر الغرض الذي تريد شراؤه من القائمة.'
-            : '> لا توجد أغراض متاحة حالياً. انتظر الإدارة.')
-        .setFooter({ text: 'البلاك ماركت • بوت FANTASY' })
+            ? 'Choose the item you want to buy from the list.'
+            : '> No items available right now. Wait for the admin.')
+        .setFooter({ text: 'Black Market • FANTASY Bot' })
         .setTimestamp();
 
     const img = await db.getImage('بلاك ماركت');
@@ -27,7 +27,7 @@ async function build() {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('black_market_menu')
-            .setPlaceholder('🔫 اختر الغرض')
+            .setPlaceholder('🔫 Choose an item')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu, resetRow('بلاك-ماركت')] };
@@ -38,7 +38,7 @@ module.exports = {
     buildPublic: build,
     data: new SlashCommandBuilder()
         .setName('بلاك-ماركت')
-        .setDescription('افتح البلاك ماركت لشراء الأغراض'),
+        .setDescription('Open the black market to buy items'),
 
     async slashExecute(interaction) {
         await db.ensureUser(interaction.user.id, interaction.user.username);

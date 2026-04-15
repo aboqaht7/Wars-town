@@ -4,7 +4,7 @@ module.exports = {
     name: 'تعيين-لوق-رحلات',
     data: new SlashCommandBuilder()
         .setName('تعيين-لوق-رحلات')
-        .setDescription('تعيين روم تسجيل أحداث الرحلات (بدء، إعصار، تجديد، تنبيه)')
+        .setDescription('تعيين روم تسجيل أحداث الرحلات (بدء، Hurricane، Renew، Alert)')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addChannelOption(opt =>
             opt.setName('الروم')
@@ -24,9 +24,9 @@ module.exports = {
             .setColor(0x1565C0)
             .addFields(
                 { name: '📋 الروم المحدد', value: `<#${channel.id}>`, inline: true },
-                { name: 'ℹ️ ما يُسجل تلقائياً', value: '✈️ بدء رحلة • 🌪️ إعصار\n🔄 تجديد رحلة • 📢 تنبيه', inline: false },
+                { name: 'ℹ️ ما يُسجل تلقائياً', value: '✈️ Start Trip • 🌪️ Hurricane\n🔄 Renew رحلة • 📢 Alert', inline: false },
             )
-            .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+            .setFooter({ text: 'Trip System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

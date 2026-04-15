@@ -3,7 +3,7 @@ const { resetRow, isAdmin } = require('../utils');
 
 module.exports = {
     name: 'عدل',
-    data: new SlashCommandBuilder().setName('عدل').setDescription('🏛️ نظام العدل — إدارة القضايا'),
+    data: new SlashCommandBuilder().setName('عدل').setDescription('🏛️ Justice System — Case Management'),
 
     async execute(message, args, db) {
         if (!(await isAdmin(message.member, db))) return message.reply('❌ هذا الأمر للإدارة فقط.');
@@ -23,20 +23,20 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Justice System')
         .setColor(0x4A148C)
-        .setDescription('> إدارة القضايا المرفوعة — اختر الإجراء من القائمة')
-        .setFooter({ text: 'نظام العدل • بوت FANTASY' })
+        .setDescription('> Manage filed cases — choose an action from the menu')
+        .setFooter({ text: 'Justice System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('justice_menu')
-            .setPlaceholder('🏛️ اختر إجراء')
+            .setPlaceholder('🏛️ Choose an action')
             .addOptions([
-                { label: '✅ قبول قضية',       value: 'accept_case',   description: 'قبول قضية معلقة' },
-                { label: '❌ رفض قضية',        value: 'reject_case',   description: 'رفض قضية مع ذكر السبب' },
-                { label: '👨‍⚖️ توكيل قاضي',   value: 'assign_judge',  description: 'تعيين قاضٍ لقضية مقبولة' },
-                { label: '📜 إصدار حكم',       value: 'issue_verdict', description: 'إصدار الحكم النهائي لقضية جارية' },
+                { label: '✅ Accept Case',       value: 'accept_case',   description: 'Accept a pending case' },
+                { label: '❌ Reject Case',        value: 'reject_case',   description: 'Reject a case with reason' },
+                { label: '👨‍⚖️ Assign Judge',   value: 'assign_judge',  description: 'Assign a judge to an accepted case' },
+                { label: '📜 Issue Verdict',       value: 'issue_verdict', description: 'Issue the final verdict for an ongoing case' },
             ])
     );
     return { embeds: [embed], components: [menu, resetRow('عدل')] };

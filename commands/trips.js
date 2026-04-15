@@ -5,7 +5,7 @@ module.exports = {
     name: 'الرحلات',
     data: new SlashCommandBuilder()
         .setName('الرحلات')
-        .setDescription('نظام الرحلات'),
+        .setDescription('Trip System'),
 
     async execute(message, args, db) {
         if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) return message.reply('❌ هذا الأمر للمسؤولين فقط.');
@@ -27,23 +27,23 @@ async function build(db) {
         .setTitle('Trip System')
         .setColor(0xB71C1C)
         .setDescription(
-            '> اختر الإجراء المطلوب من الأزرار أدناه.\n\n' +
-            '✈️ **بدء رحلة** — فتح رحلة جديدة وإرسال الإشعار\n' +
-            '🌪️ **إعصار** — إنهاء الرحلة وإرسال تحذير الإعصار\n' +
-            '🔄 **تجديد** — تجديد رحلة بمعرف الهوست\n' +
-            '📣 **تنبيه** — إرسال تنبيه مخصص لروم التنبيهات'
+            '> Choose the required action from the buttons below.\n\n' +
+            '✈️ **Start Trip** — Open a new trip and send the notification\n' +
+            '🌪️ **Hurricane** — End the trip and send the hurricane warning\n' +
+            '🔄 **Renew** — Renew a trip with the host ID\n' +
+            '📣 **Alert** — Send a custom alert to the alerts channel'
         )
-        .setFooter({ text: 'نظام الرحلات • بوت FANTASY' })
+        .setFooter({ text: 'Trip System • FANTASY Bot' })
         .setTimestamp();
 
     const img = await db.getImage('الرحلات');
     if (img) embed.setImage(img);
 
     const row = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('trip_start').setLabel('بدء رحلة').setStyle(ButtonStyle.Success).setEmoji('✈️'),
-        new ButtonBuilder().setCustomId('trip_hurricane').setLabel('إعصار').setStyle(ButtonStyle.Danger).setEmoji('🌪️'),
-        new ButtonBuilder().setCustomId('trip_renewal').setLabel('تجديد').setStyle(ButtonStyle.Primary).setEmoji('🔄'),
-        new ButtonBuilder().setCustomId('trip_alert').setLabel('تنبيه').setStyle(ButtonStyle.Secondary).setEmoji('📣'),
+        new ButtonBuilder().setCustomId('trip_start').setLabel('Start Trip').setStyle(ButtonStyle.Success).setEmoji('✈️'),
+        new ButtonBuilder().setCustomId('trip_hurricane').setLabel('Hurricane').setStyle(ButtonStyle.Danger).setEmoji('🌪️'),
+        new ButtonBuilder().setCustomId('trip_renewal').setLabel('Renew').setStyle(ButtonStyle.Primary).setEmoji('🔄'),
+        new ButtonBuilder().setCustomId('trip_alert').setLabel('Alert').setStyle(ButtonStyle.Secondary).setEmoji('📣'),
     );
 
     return { embeds: [embed], components: [row, resetRow('الرحلات')] };

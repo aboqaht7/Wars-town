@@ -10,7 +10,7 @@ module.exports = {
     name: 'محفظتي',
     data: new SlashCommandBuilder()
         .setName('محفظتي')
-        .setDescription('عرض محفظة أسهمك الاستثمارية'),
+        .setDescription('View your investment stock portfolio'),
 
     async slashExecute(interaction, db) {
         const loginErr = await db.checkLoginAndIdentity(interaction.user.id);

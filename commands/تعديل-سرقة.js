@@ -45,7 +45,7 @@ module.exports = {
                 { name: '🛠️ الأدوات', value: `\`${updated.tools}\``, inline: false },
                 { name: '💵 المبلغ',  value: `\`${Number(updated.min_money).toLocaleString()}\` — \`${Number(updated.max_money).toLocaleString()}\` ريال`, inline: true },
             )
-            .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+            .setFooter({ text: 'Robbery System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

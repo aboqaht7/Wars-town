@@ -8,7 +8,7 @@ module.exports = {
         if (content.length > 280) return message.reply('❌ التغريدة طويلة جداً (الحد 280 حرف).');
         await db.ensureUser(message.author.id, message.author.username);
         const account = await db.getXAccount(message.author.id);
-        if (!account) return message.reply('❌ ليس لديك حساب على منصة X. استخدم `/منصة-x` وأنشئ حساباً أولاً.');
+        if (!account) return message.reply('❌ ليس لديك حساب على X Platform. استخدم `/منصة-x` وأنشئ حساباً أولاً.');
         const xChannelId = await db.getConfig('x_channel');
         if (!xChannelId) return message.reply('❌ لم يتم تحديد روم التغريدات بعد.');
         const post = await db.postTweet(message.author.id, content);
@@ -31,7 +31,7 @@ async function buildTweetMessage(post, avatarURL, db) {
             { name: '❤️', value: `\`${post.likes ?? 0}\``, inline: true },
             { name: '🔁', value: `\`${post.retweets ?? 0}\``, inline: true },
         )
-        .setFooter({ text: 'منصة X • بوت FANTASY' })
+        .setFooter({ text: 'X Platform • FANTASY Bot' })
         .setTimestamp();
     if (_img) embed.setImage(_img);
 

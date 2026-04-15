@@ -11,7 +11,7 @@ module.exports = {
     name: 'تفعيل',
     data: new SlashCommandBuilder()
         .setName('تفعيل')
-        .setDescription('إرسال لوحة تفعيل الحسابات'),
+        .setDescription('Send account activation panel'),
 
     async slashExecute(interaction, db) {
         const _img = await db.getImage('identity').catch(() => null);
@@ -20,20 +20,20 @@ module.exports = {
             .setTitle('Account Activation System')
             .setColor(0x1565C0)
             .setDescription(
-                '**مرحباً بك في نظام التفعيل!**\n\n' +
-                'لتفعيل حسابك في السيرفر اتبع الخطوات التالية:\n\n' +
-                '**1️⃣** اختر **تفعيل** من القائمة أدناه\n' +
-                '**2️⃣** أدخل **ID سوني (PSN)** الخاص بك\n' +
-                '**3️⃣** انتظر موافقة الإدارة\n\n' +
-                '> ⚠️ تأكد من إدخال الـ ID بشكل صحيح'
+                '**Welcome to the Activation System!**\n\n' +
+                'To activate your account in the server, follow these steps:\n\n' +
+                '**1️⃣** Choose **Activate** from the menu below\n' +
+                '**2️⃣** Enter your **PlayStation ID (PSN)**\n' +
+                '**3️⃣** Wait for admin approval\n\n' +
+                '> ⚠️ Make sure to enter the ID correctly'
             )
-            .setFooter({ text: 'نظام التفعيل • بوت FANTASY' })
+            .setFooter({ text: 'Activation System • FANTASY Bot' })
             .setTimestamp();
 
         const menu = new StringSelectMenuBuilder()
             .setCustomId('activation_menu')
-            .setPlaceholder('اختر من هنا...')
-            .addOptions({ label: '🎮 تفعيل', description: 'ادخل ID سوني الخاص بك للتفعيل', value: 'activate_now' });
+            .setPlaceholder('Select here...')
+            .addOptions({ label: '🎮 Activate', description: 'Enter your PlayStation ID to activate', value: 'activate_now' });
 
         const resetBtn = new ButtonBuilder()
             .setCustomId('reset_menu')

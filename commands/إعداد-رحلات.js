@@ -7,39 +7,39 @@ module.exports = {
     name: 'إعداد-رحلات',
     data: new SlashCommandBuilder()
         .setName('إعداد-رحلات')
-        .setDescription('إعداد نظام الرحلات')
+        .setDescription('Trip system setup')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(sub =>
             sub.setName('روم-البدء')
-                .setDescription('تعيين روم إعلانات بدء الرحلة')
+                .setDescription('Set the trip start announcements channel')
                 .addChannelOption(o =>
-                    o.setName('الروم').setDescription('الروم الذي تُرسل فيه إعلانات بدء الرحلة').setRequired(true)
+                    o.setName('الروم').setDescription('The channel where trip start announcements are sent').setRequired(true)
                 )
         )
         .addSubcommand(sub =>
             sub.setName('روم-التنبيهات')
-                .setDescription('تعيين روم تنبيهات الرحلة (إعصار / تجديد)')
+                .setDescription('Set the alerts channel for trips (Hurricane / Renew)')
                 .addChannelOption(o =>
-                    o.setName('الروم').setDescription('الروم الذي تُرسل فيه تنبيهات الرحلة').setRequired(true)
+                    o.setName('الروم').setDescription('The channel where trip alerts are sent').setRequired(true)
                 )
         )
         .addSubcommand(sub =>
             sub.setName('رسالة')
-                .setDescription('تعيين رسالة نصية مخصصة لحدث معين')
+                .setDescription('Set a custom text message for a specific event')
                 .addStringOption(o =>
                     o.setName('الحدث')
-                        .setDescription('الحدث الذي تريد تخصيص رسالته')
+                        .setDescription('The event you want to customize the message for')
                         .setRequired(true)
                         .addChoices(
-                            { name: '🚀 بدء الرحلة',  value: 'trip_start'    },
-                            { name: '🌀 الإعصار',      value: 'trip_hurricane' },
-                            { name: '🔄 التجديد',      value: 'trip_renewal'  }
+                            { name: '🚀 Trip Start',   value: 'trip_start'    },
+                            { name: '🌀 Hurricane',    value: 'trip_hurricane' },
+                            { name: '🔄 Renew',        value: 'trip_renewal'  }
                         )
                 )
         )
         .addSubcommand(sub =>
             sub.setName('معلومات')
-                .setDescription('عرض الإعدادات الحالية لنظام الرحلات')
+                .setDescription('View current trip system settings')
         ),
 
     async slashExecute(interaction, db) {
@@ -51,10 +51,10 @@ module.exports = {
             const _img = await db.getImage('events').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين روم بدء الرحلة')
+                .setTitle('Trip Start Channel Set')
                 .setColor(0x1565C0)
-                .addFields({ name: '📢 الروم', value: `<#${ch.id}>`, inline: true })
-                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
+                .addFields({ name: '📢 Channel', value: `<#${ch.id}>`, inline: true })
+                .setFooter({ text: 'Trip System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -66,10 +66,10 @@ module.exports = {
             const _img = await db.getImage('events').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين روم تنبيهات الرحلة')
+                .setTitle('Trip Alerts Channel Set')
                 .setColor(0x1565C0)
-                .addFields({ name: '📢 الروم', value: `<#${ch.id}>`, inline: true })
-                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
+                .addFields({ name: '📢 Channel', value: `<#${ch.id}>`, inline: true })
+                .setFooter({ text: 'Trip System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -77,15 +77,15 @@ module.exports = {
 
         if (sub === 'رسالة') {
             const type   = interaction.options.getString('الحدث');
-            const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الإعصار', trip_renewal: 'التجديد' };
+            const labels = { trip_start: 'Trip Start', trip_hurricane: 'Hurricane', trip_renewal: 'Renew' };
             const { ButtonBuilder, ButtonStyle } = require('discord.js');
             const btn = new ButtonBuilder()
                 .setCustomId(`trip_msg_btn_${type}`)
-                .setLabel(`اكتب رسالة ${labels[type]}`).setEmoji('✏️')
+                .setLabel(`Write ${labels[type]} message`).setEmoji('✏️')
                 .setStyle(ButtonStyle.Primary);
             const row = new ActionRowBuilder().addComponents(btn);
             await interaction.channel.send({
-                content: `<@${interaction.user.id}> اضغط الزر لكتابة رسالة **${labels[type]}** المخصصة:`,
+                content: `<@${interaction.user.id}> Press the button to write a custom **${labels[type]}** message:`,
                 components: [row]
             });
             return interaction.reply({ content: '\u200b', flags: 64 });
@@ -100,18 +100,17 @@ module.exports = {
 
             const _img = await db.getImage('events').catch(() => null);
 
-
             const embed = new EmbedBuilder()
                 .setTitle('Trip System Settings')
                 .setColor(0x37474F)
                 .addFields(
-                    { name: '📢 روم البدء',       value: startCh  ? `<#${startCh}>`  : '❌ غير مُعيَّن', inline: true },
-                    { name: '📢 روم التنبيهات',    value: alertsCh ? `<#${alertsCh}>` : '❌ غير مُعيَّن', inline: true },
-                    { name: '🚀 رسالة بدء الرحلة', value: msgStart   ? '✅ مخصصة'  : '⬜ افتراضية', inline: true },
-                    { name: '🌀 رسالة الإعصار',    value: msgHurr    ? '✅ مخصصة'  : '⬜ افتراضية', inline: true },
-                    { name: '🔄 رسالة التجديد',    value: msgRenew   ? '✅ مخصصة'  : '⬜ افتراضية', inline: true },
+                    { name: '📢 Start Channel',      value: startCh  ? `<#${startCh}>`  : '❌ Not set', inline: true },
+                    { name: '📢 Alerts Channel',     value: alertsCh ? `<#${alertsCh}>` : '❌ Not set', inline: true },
+                    { name: '🚀 Trip Start Message', value: msgStart  ? '✅ Custom'  : '⬜ Default', inline: true },
+                    { name: '🌀 Hurricane Message',  value: msgHurr   ? '✅ Custom'  : '⬜ Default', inline: true },
+                    { name: '🔄 Renew Message',      value: msgRenew  ? '✅ Custom'  : '⬜ Default', inline: true },
                 )
-                .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Trip System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });

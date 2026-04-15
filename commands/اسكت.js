@@ -51,14 +51,14 @@ module.exports = {
 
         const target = message.mentions.members?.first();
         if (!target) {
-            return message.reply('❌ **الاستخدام:** `-اسكت @العضو [المدة]`\n> مثال: `-اسكت @فلان 10م` أو `-اسكت @فلان 1س` أو `-اسكت @فلان 1ي`');
+            return message.reply('❌ **الاستخدام:** `-اسكت @Member [المدة]`\n> مثال: `-اسكت @فلان 10م` أو `-اسكت @فلان 1س` أو `-اسكت @فلان 1ي`');
         }
 
         if (target.id === message.author.id) return message.reply('❌ لا تقدر تسكت نفسك.');
         if (target.user.bot)                  return message.reply('❌ لا تقدر تسكت بوت.');
 
         if (!target.moderatable) {
-            return message.reply('❌ لا أستطيع تطبيق التايم اوت على هذا العضو (رتبته أعلى مني).');
+            return message.reply('❌ لا أستطيع تطبيق التايم اوت على هذا Member (رتبته أعلى مني).');
         }
 
         const durationArg = args.find(a => !a.startsWith('<'));
@@ -69,7 +69,7 @@ module.exports = {
         }
 
         try {
-            await target.timeout(durationMs, `تايم اوت بواسطة ${message.author.tag}`);
+            await target.timeout(durationMs, `تايم اوت By ${message.author.tag}`);
         } catch (err) {
             console.error('[اسكت] timeout error:', err);
             return message.reply('❌ فشل تطبيق التايم اوت. تأكد من أن البوت لديه الصلاحيات الكافية.');
@@ -82,11 +82,11 @@ module.exports = {
             .setColor(0xE53935)
             .setTitle('Timeout Applied')
             .addFields(
-                { name: '👤 العضو',      value: `<@${target.id}>`,          inline: true },
-                { name: '⏱️ المدة',      value: formatDuration(durationMs),  inline: true },
-                { name: '👮 بواسطة',     value: `<@${message.author.id}>`,  inline: true },
+                { name: '👤 Member',      value: `<@${target.id}>`,          inline: true },
+                { name: '⏱️ Duration',      value: formatDuration(durationMs),  inline: true },
+                { name: '👮 By',     value: `<@${message.author.id}>`,  inline: true },
             )
-            .setFooter({ text: 'نظام التايم اوت • بوت FANTASY' })
+            .setFooter({ text: 'Timeout System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -1,15 +1,15 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
-    name: 'رتبة-مسؤولين-البنك',
+    name: 'رتبة-مسؤولين-بنك',
     data: new SlashCommandBuilder()
-        .setName('رتبة-مسؤولين-البنك')
-        .setDescription('تعيين رتبة مسؤولي البنك')
+        .setName('رتبة-مسؤولين-بنك')
+        .setDescription('Set bank admin role')
         .addRoleOption(opt =>
-            opt.setName('رتبة').setDescription('الرتبة التي تملك صلاحيات أدمن البنك').setRequired(true)),
+            opt.setName('الرتبة').setDescription('The role with bank admin permissions').setRequired(true)),
 
     async slashExecute(interaction, db) {
-        const role = interaction.options.getRole('رتبة');
+        const role = interaction.options.getRole('الرتبة');
         await db.setConfig('bank_admin_role', role.id);
 
         const _img = await db.getImage('bank').catch(() => null);
@@ -19,10 +19,10 @@ module.exports = {
             .setTitle('Bank Admins Role Set')
             .setColor(0x1565C0)
             .addFields(
-                { name: '🛡️ الرتبة المسؤولة', value: `<@&${role.id}> — \`${role.name}\``, inline: true },
+                { name: '🛡️ الRank المسؤولة', value: `<@&${role.id}> — \`${role.name}\``, inline: true },
                 { name: 'ℹ️ الصلاحيات', value: 'إضافة رصيد • سحب رصيد • تجميد حسابات • فك تجميد • عرض أي حساب', inline: false },
             )
-            .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+            .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

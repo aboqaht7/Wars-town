@@ -11,9 +11,9 @@ async function build(image, account, db) {
         .setTitle('𝕏 Platform')
         .setColor(0x000000)
         .setDescription(account
-            ? `مرحباً **@${account.x_username}** — اختر ما تريد فعله.`
-            : 'أنشئ حسابك على منصة X وابدأ التغريد.')
-        .setFooter({ text: 'منصة X • بوت FANTASY' })
+            ? `Welcome **@${account.x_username}** — choose what you want to do.`
+            : 'Create your X platform account and start tweeting.')
+        .setFooter({ text: 'X Platform • FANTASY Bot' })
         .setTimestamp();
     if (image) embed.setImage(image);
 
@@ -28,7 +28,7 @@ async function build(image, account, db) {
 
 module.exports = {
     name: 'منصة-x',
-    data: new SlashCommandBuilder().setName('منصة-x').setDescription('منصة 𝕏'),
+    data: new SlashCommandBuilder().setName('منصة-x').setDescription('𝕏 Platform'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);

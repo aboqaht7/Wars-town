@@ -5,27 +5,27 @@ const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('Rese
 
 const SYSTEMS = [
     { name: 'الهوية',        value: 'identity'    },
-    { name: 'البنك',         value: 'bank'        },
-    { name: 'الحقيبة',       value: 'bag'         },
+    { name: 'Bank',         value: 'bank'        },
+    { name: 'Bag',       value: 'bag'         },
     { name: 'الجوال',        value: 'phone'       },
-    { name: 'سناب شات',      value: 'سناب شات'   },
-    { name: 'الجرائم',       value: 'crime'       },
+    { name: 'Snapchat',      value: 'Snapchat'   },
+    { name: 'Crimes',       value: 'crime'       },
     { name: 'العقارات',      value: 'properties'  },
     { name: 'البلاك ماركت',  value: 'بلاك ماركت' },
     { name: 'الرحلات',       value: 'الرحلات'    },
     { name: 'الشرطة',        value: 'police'      },
     { name: 'الصحة',         value: 'health'      },
     { name: 'الوظائف',       value: 'jobs'        },
-    { name: 'المحاماة',      value: 'law'         },
-    { name: 'الإدارة',       value: 'admin'       },
+    { name: 'Law',      value: 'law'         },
+    { name: 'Admin',       value: 'admin'       },
     { name: 'السوق',         value: 'market'      },
     { name: 'المعدات',       value: 'معدات'       },
     { name: 'السوق المركزي', value: 'سوق-مركزي'  },
-    { name: 'المحاماة',      value: 'محاماة'      },
+    { name: 'Law',      value: 'محاماة'      },
     { name: 'العدل',         value: 'عدل'         },
     { name: 'المعرض',        value: 'showroom'    },
     { name: 'السيارات',      value: 'vehicles'    },
-    { name: 'منصة X',        value: 'x_platform'  },
+    { name: 'X Platform',        value: 'x_platform'  },
 ];
 
 module.exports = {
@@ -63,7 +63,7 @@ module.exports = {
             .setColor(0x1B5E20)
             .setDescription(`تم حفظ الصورة الجديدة بنجاح.`)
             .setImage(url)
-            .setFooter({ text: 'إدارة الصور • بوت FANTASY' })
+            .setFooter({ text: 'إدارة الصور • FANTASY Bot' })
             .setTimestamp();
 
         await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });

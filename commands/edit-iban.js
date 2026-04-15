@@ -41,9 +41,9 @@ module.exports = {
             .addFields(
                 { name: '👤 اللاعب',     value: `<@${target.id}>`,   inline: true },
                 { name: '📌 الخانة',     value: slotNames[slot],      inline: true },
-                { name: '🏦 الإيبان الجديد', value: `\`${newIban}\``, inline: true },
+                { name: '🏦 IBAN الجديد', value: `\`${newIban}\``, inline: true },
             )
-            .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+            .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);
@@ -75,9 +75,9 @@ module.exports = {
             .addFields(
                 { name: '👤 اللاعب',         value: `<@${target.id}>`,  inline: true },
                 { name: '📌 الخانة',         value: slotNames[slot],     inline: true },
-                { name: '🏦 الإيبان الجديد', value: `\`${newIban}\``,    inline: true },
+                { name: '🏦 IBAN الجديد', value: `\`${newIban}\``,    inline: true },
             )
-            .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+            .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

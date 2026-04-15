@@ -17,8 +17,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Tweets Channel Set')
             .setColor(0x000000)
-            .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
-            .setFooter({ text: 'منصة X • بوت FANTASY' })
+            .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> automatically.`)
+            .setFooter({ text: 'X Platform • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
@@ -31,8 +31,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Tweets Channel Set')
             .setColor(0x000000)
-            .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
-            .setFooter({ text: 'منصة X • بوت FANTASY' })
+            .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> automatically.`)
+            .setFooter({ text: 'X Platform • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

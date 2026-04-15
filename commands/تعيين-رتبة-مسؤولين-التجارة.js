@@ -5,10 +5,10 @@ module.exports = {
     name: 'تعيين-رتبة-مسؤولين-التجارة',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-مسؤولين-التجارة')
-        .setDescription('تحديد رتبة وقناة وزارة التجارة (أدمن فقط)')
+        .setDescription('تحديد Rank وقناة وزارة التجارة (أدمن فقط)')
         .addRoleOption(o =>
             o.setName('الرتبة')
-             .setDescription('الرتبة المخصصة لمسؤولي وزارة التجارة')
+             .setDescription('الRank المخصصة لمسؤولي وزارة التجارة')
              .setRequired(true)
         )
         .addChannelOption(o =>
@@ -33,11 +33,11 @@ module.exports = {
             .setTitle('Ministry of Commerce Configured')
             .setColor(0x1565C0)
             .addFields(
-                { name: '👔 رتبة المسؤولين', value: `<@&${role.id}>`, inline: true },
+                { name: '👔 Rank المسؤولين', value: `<@&${role.id}>`, inline: true },
                 { name: '📋 قناة الطلبات', value: `<#${channel.id}>`, inline: true },
             )
-            .setDescription('أصحاب هذه الرتبة يستطيعون منح وسحب التصاريح عبر `/وزارة-التجارة`.\n\nطلبات تأسيس الشركات ستُرسل للقناة المحددة مع أزرار قبول/رفض.')
-            .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
+            .setDescription('أصحاب هذه الRank يستطيعون منح وسحب التصاريح عبر `/وزارة-التجارة`.\n\nطلبات تأسيس الشركات ستُرسل للقناة المحددة مع أزرار قبول/رفض.')
+            .setFooter({ text: 'Company System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

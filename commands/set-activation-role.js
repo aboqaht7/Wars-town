@@ -4,9 +4,9 @@ module.exports = {
     name: 'تعيين-رتبة-تفعيل',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-تفعيل')
-        .setDescription('🔧 تحديد الرتبة التي تُعطى عند قبول طلب التفعيل')
+        .setDescription('🔧 تحديد الRank التي تُعطى عند قبول طلب التفعيل')
         .addRoleOption(o =>
-            o.setName('الرتبة').setDescription('رتبة المفعّلين').setRequired(true)
+            o.setName('الرتبة').setDescription('Rank المفعّلين').setRequired(true)
         ),
 
     async slashExecute(interaction, db) {
@@ -24,10 +24,10 @@ module.exports = {
             .setTitle('Activation Role Set')
             .setColor(0x2E7D32)
             .addFields(
-                { name: '🎖️ الرتبة',       value: `<@&${role.id}>`, inline: true },
-                { name: '🆔 معرّف الرتبة', value: role.id,          inline: true },
+                { name: '🎖️ الRank',       value: `<@&${role.id}>`, inline: true },
+                { name: '🆔 معرّف الRank', value: role.id,          inline: true },
             )
-            .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+            .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

@@ -19,14 +19,14 @@ module.exports = {
     name: 'إعداد-تكتات',
     data: new SlashCommandBuilder()
         .setName('إعداد-تكتات')
-        .setDescription('إدارة نظام التكتات')
+        .setDescription('إدارة Ticket System')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(sub =>
             sub.setName('إضافة-نوع')
                 .setDescription('إضافة نوع تكت جديد')
                 .addStringOption(o => o.setName('الاسم').setDescription('اسم النوع (مثال: شكوى)').setRequired(true))
                 .addStringOption(o => o.setName('الإيموجي').setDescription('إيموجي النوع (مثال: 📝)').setRequired(false))
-                .addRoleOption(o => o.setName('الرتبة').setDescription('الرتبة التي تستلم هذا التكت (اختياري)').setRequired(false))
+                .addRoleOption(o => o.setName('الرتبة').setDescription('الRank التي تستلم هذا التكت (اختياري)').setRequired(false))
         )
         .addSubcommand(sub =>
             sub.setName('حذف-نوع')
@@ -35,22 +35,22 @@ module.exports = {
         )
         .addSubcommand(sub =>
             sub.setName('قائمة')
-                .setDescription('عرض جميع أنواع التكتات')
+                .setDescription('عرض جميع أنواع Tickets')
         )
         .addSubcommand(sub =>
             sub.setName('فئة')
-                .setDescription('تعيين فئة الروم لإنشاء التكتات فيها')
+                .setDescription('تعيين فئة الروم لإنشاء Tickets فيها')
                 .addChannelOption(o => o.setName('الفئة').setDescription('فئة الروم (Category)').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('لوق')
-                .setDescription('تعيين روم تسجيل أحداث التكتات')
+                .setDescription('تعيين روم تسجيل أحداث Tickets')
                 .addChannelOption(o => o.setName('الروم').setDescription('روم اللوق').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('مسؤولين')
-                .setDescription('تعيين رتبة مسؤولين التكتات (الوحيدون القادرون على الإغلاق)')
-                .addRoleOption(o => o.setName('الرتبة').setDescription('رتبة مسؤولي التكتات').setRequired(true))
+                .setDescription('تعيين Rank مسؤولين Tickets (الوحيدون القادرون على الإغلاق)')
+                .addRoleOption(o => o.setName('الرتبة').setDescription('Rank مسؤولي Tickets').setRequired(true))
         )
         ,
 
@@ -67,14 +67,14 @@ module.exports = {
                 { name: '🆔 الرقم', value: `\`${type.id}\``, inline: true },
                 { name: '🎫 الاسم', value: `${type.emoji} ${type.name}`, inline: true },
             ];
-            if (role) fields.push({ name: '🛡️ الرتبة المستلِمة', value: `<@&${role.id}>`, inline: true });
+            if (role) fields.push({ name: '🛡️ الRank المستلِمة', value: `<@&${role.id}>`, inline: true });
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
                 .setTitle('Ticket Type Added')
                 .setColor(0x1565C0)
                 .addFields(...fields)
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -90,7 +90,7 @@ module.exports = {
                 .setTitle('تم حذف نوع التكت')
                 .setColor(0xB71C1C)
                 .setDescription(`تم حذف نوع **${deleted.emoji} ${deleted.name}** بنجاح.`)
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -103,7 +103,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Ticket Types')
                 .setColor(0x37474F)
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (!types.length) {
                 embed.setDescription('> لا توجد أنواع. استخدم `/إعداد-تكتات إضافة-نوع` لإضافة نوع.');
             } else {
@@ -125,10 +125,10 @@ module.exports = {
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين فئة التكتات')
+                .setTitle('تم تعيين فئة Tickets')
                 .setColor(0x1565C0)
                 .addFields({ name: '📁 الفئة', value: `**${cat.name}**`, inline: true })
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -140,10 +140,10 @@ module.exports = {
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين روم لوق التكتات')
+                .setTitle('تم تعيين روم لوق Tickets')
                 .setColor(0x1565C0)
                 .addFields({ name: '📋 الروم', value: `<#${ch.id}>`, inline: true })
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -158,10 +158,10 @@ module.exports = {
                 .setTitle('Ticket Admins Role Set')
                 .setColor(0x7B1FA2)
                 .addFields(
-                    { name: '🛡️ الرتبة', value: `<@&${role.id}>`, inline: true },
-                    { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الرتبة يقدرون يغلقون التكتات', inline: false },
+                    { name: '🛡️ الRank', value: `<@&${role.id}>`, inline: true },
+                    { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الRank يقدرون يغلقون Tickets', inline: false },
                 )
-                .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });

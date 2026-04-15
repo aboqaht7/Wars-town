@@ -5,7 +5,7 @@ module.exports = {
     name: 'events',
     data: new SlashCommandBuilder()
         .setName('events')
-        .setDescription('عرض الرحلات والأحداث'),
+        .setDescription('View Trips & Events'),
     async execute(message, args, db) {
         const { embed, menu } = await build(db);
         message.channel.send({ embeds: [embed], components: [menu, resetRow('events')] });
@@ -23,23 +23,23 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Trips & Events')
         .setColor(0x6A1B9A)
-        .setDescription('اختر نوع الحدث الذي تريد تفعيله')
+        .setDescription('Choose the event type you want to activate')
         .addFields(
-            { name: '📍 الموقع', value: 'تواصل مع الإدارة لمعرفة موقع الحدث', inline: true },
-            { name: '⏰ التوقيت', value: 'يحدده المشرف المسؤول', inline: true },
+            { name: '📍 Location', value: 'Contact the admin to find the event location', inline: true },
+            { name: '⏰ Time', value: 'Determined by the responsible supervisor', inline: true },
         )
         .setImage(await db.getImage('events') || null)
-        .setFooter({ text: 'نظام الأحداث • بوت FANTASY' })
+        .setFooter({ text: 'Events System • FANTASY Bot' })
         .setTimestamp();
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('events_menu')
-            .setPlaceholder('اختر نوع الحدث')
+            .setPlaceholder('Choose event type')
             .addOptions([
-                { label: '✈️ فتح رحلة', value: 'open_flight' },
-                { label: '🌪️ إعصار', value: 'hurricane' },
-                { label: '📣 تنبيه عام', value: 'alert' },
-                { label: '🎉 حدث خاص', value: 'special_event' },
+                { label: '✈️ Open a Trip', value: 'open_flight' },
+                { label: '🌪️ Hurricane', value: 'hurricane' },
+                { label: '📣 General Alert', value: 'alert' },
+                { label: '🎉 Special Event', value: 'special_event' },
             ])
     );
     return { embed, menu };

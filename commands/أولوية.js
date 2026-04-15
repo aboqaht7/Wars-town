@@ -7,7 +7,7 @@ function buildEmbed() {
         .setTitle('Priority System')
         .setDescription('اختر مستوى الأولوية بالضغط على الزر المناسب.')
         .setColor(0xF57C00)
-        .setFooter({ text: 'نظام الأولوية • بوت FANTASY' })
+        .setFooter({ text: 'نظام الأولوية • FANTASY Bot' })
         .setTimestamp();
 }
 

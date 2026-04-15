@@ -63,7 +63,7 @@ async function buildMarket(db) {
                 inline: true,
             },
         )
-        .setFooter({ text: 'السوق المركزي • بوت FANTASY' })
+        .setFooter({ text: 'السوق المركزي • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setImage(img);

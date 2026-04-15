@@ -26,7 +26,7 @@ module.exports = {
             .addFields(
                 { name: '📢 القناة', value: `<#${channel.id}>`, inline: true },
             )
-            .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
+            .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

@@ -14,7 +14,7 @@ module.exports = {
         try { target = await message.guild.members.fetch(mentionId); } catch { target = null; }
         if (!target) return message.reply('❌ اللاعب غير موجود في السيرفر.');
         const username = target.user.username;
-        await target.ban({ reason: `تشهير نهائي — بواسطة ${message.author.username}`, deleteMessageSeconds: 0 });
+        await target.ban({ reason: `تشهير نهائي — By ${message.author.username}`, deleteMessageSeconds: 0 });
         await message.channel.send(`🚫 تم طرد الحثالة **${username}** من السيرفر نهائياً.`);
     }
 };

@@ -7,24 +7,24 @@ module.exports = {
         const msgs = await db.getMessages(message.author.id, 10);
         await db.markMessagesRead(message.author.id);
 
-        const _img = await db.getImage('سناب شات').catch(() => null);
+        const _img = await db.getImage('Snapchat').catch(() => null);
 
 
         const embed = new EmbedBuilder()
             .setTitle('Inbox')
             .setColor(0x00838F)
-            .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
+            .setFooter({ text: 'Phone System • FANTASY Bot' })
             .setTimestamp();
 
         if (!msgs.length) {
-            embed.setDescription('> لا توجد رسائل في صندوقك');
+            embed.setDescription('> No messages in your inbox');
         } else {
             for (const m of msgs) {
-                const dir = m.sender_id === message.author.id ? '📤 أرسلت لـ' : '📥 من';
+                const dir = m.sender_id === message.author.id ? '📤 Sent to' : '📥 From';
                 const name = m.sender_id === message.author.id ? m.receiver_name : m.sender_name;
                 const time = new Date(m.created_at).toLocaleString('ar-SA');
                 embed.addFields({
-                    name: `${dir} @${name || 'مجهول'}  •  ${time}`,
+                    name: `${dir} @${name || 'Unknown'}  •  ${time}`,
                     value: `> ${m.content}`,
                     inline: false,
                 });

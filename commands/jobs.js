@@ -6,7 +6,7 @@ const COOLDOWN_MINUTES = COOLDOWN_SECONDS / 60;
 
 module.exports = {
     name: 'jobs',
-    data: new SlashCommandBuilder().setName('jobs').setDescription('💼 الوظائف الحرة'),
+    data: new SlashCommandBuilder().setName('jobs').setDescription('💼 Free Jobs'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);
@@ -33,19 +33,19 @@ async function buildJobs(db) {
     const embed = new EmbedBuilder()
         .setTitle('Free Jobs')
         .setColor(0xF57F17)
-        .setDescription('> اختر وظيفتك من القائمة أدناه')
-        .setFooter({ text: `نظام الوظائف • بوت FANTASY • كولداون ${COOLDOWN_SECONDS} ثوان بين كل وظيفة` })
+        .setDescription('> Choose your job from the menu below')
+        .setFooter({ text: `Jobs System • FANTASY Bot • كولداون ${COOLDOWN_SECONDS} ثوان بين كل وظيفة` })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('jobs_menu')
-            .setPlaceholder('اختر وظيفتك')
+            .setPlaceholder('Choose your job')
             .addOptions([
-                { label: '🎣 صيد السمك',      value: 'fishing',     description: 'يتطلب: سنارة' },
-                { label: '🪓 تقطيع الخشب',    value: 'woodcutting', description: 'يتطلب: فأس' },
-                { label: '⛏️ المنجم',          value: 'mining',      description: 'يتطلب: أدوات المنجم' },
+                { label: '🎣 Fishing',      value: 'fishing',     description: 'Requires: Fishing Rod' },
+                { label: '🪓 Woodcutting',    value: 'woodcutting', description: 'Requires: Axe' },
+                { label: '⛏️ Mining',          value: 'mining',      description: 'Requires: Mining Tools' },
             ])
     );
 

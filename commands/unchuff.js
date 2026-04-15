@@ -19,11 +19,11 @@ module.exports = {
             .setTitle('Handcuffs Removed')
             .setColor(0x2E7D32)
             .addFields(
-                { name: '👮 المنفذ',    value: `<@${message.author.id}>`, inline: true },
+                { name: '👮 Executed By',    value: `<@${message.author.id}>`, inline: true },
                 { name: '🎯 اللاعب',   value: `<@${target.id}>`,         inline: true },
-                { name: '📋 الحالة',   value: '`محرر 🔓`',               inline: true },
+                { name: '📋 Status',   value: '`محرر 🔓`',               inline: true },
             )
-            .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
+            .setFooter({ text: 'Police System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

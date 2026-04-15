@@ -11,7 +11,7 @@ module.exports = {
         .addSubcommand(s => s
             .setName('اضافة')
             .setDescription('أضف غرضاً للمتجر')
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم الغرض').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('Item name').setRequired(true))
             .addIntegerOption(o => o.setName('السعر').setDescription('السعر بالريال').setRequired(true).setMinValue(1))
             .addStringOption(o => o.setName('الوصف').setDescription('وصف الغرض (اختياري)').setRequired(false))
         )
@@ -64,7 +64,7 @@ module.exports = {
                     { name: 'السعر',    value: `${Number(item.price).toLocaleString()} ريال`,  inline: true },
                     { name: 'الوصف',    value: item.description || '—',                        inline: false },
                 )
-                .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المتجر • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -107,7 +107,7 @@ module.exports = {
                     { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المتجر • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -120,7 +120,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Store List')
                 .setColor(0xBF360C)
-                .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المتجر • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
                 embed.setDescription('لا توجد أغراض مضافة.');
             } else {

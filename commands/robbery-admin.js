@@ -46,7 +46,7 @@ module.exports = {
                     { name: '🛠️ الأدوات المطلوبة', value: `\`${tools}\``, inline: false },
                     { name: '💵 المبلغ',            value: `\`${minMoney.toLocaleString()}\` — \`${maxMoney.toLocaleString()}\` ريال`, inline: true },
                 )
-                .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                .setFooter({ text: 'Robbery System • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
@@ -64,7 +64,7 @@ module.exports = {
                 .setTitle('تم حذف السرقة')
                 .setColor(0x757575)
                 .setDescription(`تم حذف سرقة **${rob.name}** بنجاح.`)
-                .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
+                .setFooter({ text: 'Robbery System • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
@@ -78,7 +78,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Robbery List')
                 .setColor(0xB71C1C)
-                .setFooter({ text: `${robberies.length} سرقة • بوت FANTASY` })
+                .setFooter({ text: `${robberies.length} سرقة • FANTASY Bot` })
                 .setTimestamp();
             if (!robberies.length) {
                 embed.setDescription('> لا توجد سرقات مضافة بعد.');

@@ -7,7 +7,7 @@ module.exports = {
     name: 'وزارة-التجارة',
     data: new SlashCommandBuilder()
         .setName('وزارة-التجارة')
-        .setDescription('لوحة تحكم وزارة التجارة'),
+        .setDescription('Ministry of Commerce control panel'),
 
     async slashExecute(interaction, db) {
         const _img = await db.getImage('market').catch(() => null);
@@ -15,17 +15,17 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Ministry of Commerce')
             .setColor(0x1565C0)
-            .setDescription('مرحباً بك في لوحة تحكم وزارة التجارة. اختر أحد الخيارات أدناه.')
-            .setFooter({ text: 'وزارة التجارة • بوت FANTASY' })
+            .setDescription('Welcome to the Ministry of Commerce control panel. Choose one of the options below.')
+            .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' })
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('ministry_login_btn').setLabel('تسجيل دخول').setEmoji('🟢').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId('ministry_logout_btn').setLabel('تسجيل خروج').setEmoji('🔴').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('ministry_login_btn').setLabel('Login').setEmoji('🟢').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('ministry_logout_btn').setLabel('Logout').setEmoji('🔴').setStyle(ButtonStyle.Danger),
         );
         const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('ministry_companies_btn').setLabel('عرض الشركات المسجلة').setEmoji('🏢').setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().setCustomId('ministry_approve_btn').setLabel('قبول شركة').setEmoji('✅').setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId('ministry_companies_btn').setLabel('View Registered Companies').setEmoji('🏢').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('ministry_approve_btn').setLabel('Approve Company').setEmoji('✅').setStyle(ButtonStyle.Success),
         );
 
         await interaction.reply({ content: '\u200b', flags: 64 });

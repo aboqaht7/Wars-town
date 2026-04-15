@@ -5,12 +5,12 @@ module.exports = {
     async execute(message, args, db) {
         const target = message.mentions.members?.first();
         if (!target) {
-            return message.reply('❌ استخدم: `-نقل [اسم الغرض] @المستخدم`\nمثال: `-نقل سنارة @اللاعب`');
+            return message.reply('❌ استخدم: `-نقل [Item name] @المستخدم`\nمثال: `-نقل سنارة @اللاعب`');
         }
         const itemName = args.slice(0, args.findIndex(a => a.startsWith('<@'))).join(' ').trim()
             || args.filter(a => !a.startsWith('<@')).join(' ').trim();
         if (!itemName) {
-            return message.reply('❌ يجب تحديد اسم الغرض. مثال: `-نقل سنارة @اللاعب`');
+            return message.reply('❌ يجب تحديد Item name. مثال: `-نقل سنارة @اللاعب`');
         }
         if (target.id === message.author.id) {
             return message.reply('❌ لا يمكنك نقل غرض لنفسك.');
@@ -27,11 +27,11 @@ module.exports = {
             .setTitle('Item Transferred')
             .setColor(0xE65100)
             .addFields(
-                { name: '👤 المُرسِل', value: `${message.author}`, inline: true },
+                { name: '👤 Sender', value: `${message.author}`, inline: true },
                 { name: '🎯 المُستلِم', value: `${target}`, inline: true },
                 { name: '📦 الغرض', value: `\`${itemName}\``, inline: true },
             )
-            .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
+            .setFooter({ text: 'Bag System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

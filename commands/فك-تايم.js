@@ -10,7 +10,7 @@ module.exports = {
 
         const target = message.mentions.members?.first();
         if (!target) {
-            return message.reply('❌ **الاستخدام:** `-فك-تايم @العضو`');
+            return message.reply('❌ **الاستخدام:** `-فك-تايم @Member`');
         }
 
         if (!target.isCommunicationDisabled()) {
@@ -18,7 +18,7 @@ module.exports = {
         }
 
         try {
-            await target.timeout(null, `فك التايم اوت بواسطة ${message.author.tag}`);
+            await target.timeout(null, `فك التايم اوت By ${message.author.tag}`);
         } catch (err) {
             console.error('[فك-تايم] error:', err);
             return message.reply('❌ فشل فك التايم اوت. تأكد من أن البوت لديه الصلاحيات الكافية.');
@@ -31,10 +31,10 @@ module.exports = {
             .setColor(0x43A047)
             .setTitle('Timeout Removed')
             .addFields(
-                { name: '👤 العضو',  value: `<@${target.id}>`,         inline: true },
-                { name: '👮 بواسطة', value: `<@${message.author.id}>`, inline: true },
+                { name: '👤 Member',  value: `<@${target.id}>`,         inline: true },
+                { name: '👮 By', value: `<@${message.author.id}>`, inline: true },
             )
-            .setFooter({ text: 'نظام التايم اوت • بوت FANTASY' })
+            .setFooter({ text: 'Timeout System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

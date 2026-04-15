@@ -34,7 +34,7 @@ module.exports = {
                 .setTitle('Setup Complete')
                 .setColor(0x1B5E20)
                 .setDescription(`روم بلاغات الشرطة: <#${channel.id}>`)
-                .setFooter({ text: 'إعداد البلاغات • بوت FANTASY' })
+                .setFooter({ text: 'إعداد البلاغات • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
@@ -49,7 +49,7 @@ module.exports = {
                 .setTitle('Setup Complete')
                 .setColor(0x1B5E20)
                 .setDescription(`روم بلاغات الإسعاف: <#${channel.id}>`)
-                .setFooter({ text: 'إعداد البلاغات • بوت FANTASY' })
+                .setFooter({ text: 'إعداد البلاغات • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });

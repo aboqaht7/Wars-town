@@ -5,14 +5,14 @@ module.exports = {
     name: 'مسؤولين-الهوية',
     data: new SlashCommandBuilder()
         .setName('مسؤولين-الهوية')
-        .setDescription('تعيين رتبة مسؤولي الهوية وقناة لوق الهويات')
+        .setDescription('Set identity admin role and identity log channel')
         .addRoleOption(opt =>
-            opt.setName('رتبة').setDescription('رتبة مسؤولي الهوية').setRequired(true))
+            opt.setName('الرتبة').setDescription('Identity admin role').setRequired(true))
         .addChannelOption(opt =>
-            opt.setName('قناة').setDescription('قناة لوق الهويات (حيث تصل طلبات القبول/الرفض)').setRequired(true)),
+            opt.setName('قناة').setDescription('Identity log channel (where approval/rejection requests arrive)').setRequired(true)),
 
     async slashExecute(interaction, db) {
-        const role    = interaction.options.getRole('رتبة');
+        const role    = interaction.options.getRole('الرتبة');
         const channel = interaction.options.getChannel('قناة');
         await db.setConfig('identity_admin_role', role.id);
         await db.setConfig('identity_log_channel', channel.id);
@@ -24,10 +24,10 @@ module.exports = {
             .setTitle('Identity Admins Set')
             .setColor(0x1565C0)
             .addFields(
-                { name: '🛡️ الرتبة المسؤولة', value: `<@&${role.id}> — \`${role.name}\``, inline: true },
+                { name: '🛡️ الRank المسؤولة', value: `<@&${role.id}> — \`${role.name}\``, inline: true },
                 { name: '📋 قناة اللوق',        value: `<#${channel.id}>`, inline: true },
             )
-            .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
+            .setFooter({ text: 'Identity System • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });

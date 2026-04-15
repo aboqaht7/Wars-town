@@ -11,7 +11,7 @@ const WEAPONS = [
 function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Manufacturing System')
-        .setDescription('اختر المسدس الذي تريد تصنيعه من القائمة أدناه.')
+        .setDescription('Choose the pistol you want to craft from the list below.')
         .setColor(0xe74c3c);
 }
 
@@ -32,11 +32,11 @@ module.exports = {
     name: 'تصنيع',
     data: new SlashCommandBuilder()
         .setName('تصنيع')
-        .setDescription('صنّع مسدسات من الموارد التي جمعتها'),
+        .setDescription('Craft pistols from gathered resources'),
 
     async slashExecute(interaction, db) {
         const identity = await db.getActiveIdentity(interaction.user.id);
-        if (!identity) return interaction.reply({ content: 'ماسجلت دخولك؟سجل دخولك يالامير بعدين تعال', flags: 64 });
+        if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
         if (interaction._isReset) {
             return interaction.message.edit({ embeds: [buildEmbed()], components: [buildRow()] });

@@ -6,7 +6,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'قاضي',
-    data: new SlashCommandBuilder().setName('قاضي').setDescription('🏛️ قائمة القضاة المعتمدين'),
+    data: new SlashCommandBuilder().setName('قاضي').setDescription('🏛️ Certified Judges List'),
 
     async execute(message, args, db) {
         message.channel.send(await buildMain(db));
@@ -31,13 +31,13 @@ async function buildMain(db) {
     const embed = new EmbedBuilder()
         .setTitle('Certified Judges')
         .setColor(0x4A148C)
-        .setFooter({ text: 'نظام العدل • بوت FANTASY' })
+        .setFooter({ text: 'Justice System • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
 
     if (!judges.length) {
-        embed.setDescription('> 📭 لا يوجد قضاة مسجلون حالياً');
+        embed.setDescription('> 📭 No judges registered currently');
         return { embeds: [embed], components: [resetRow('قاضي')] };
     }
 
@@ -47,7 +47,7 @@ async function buildMain(db) {
 
     const menu = new StringSelectMenuBuilder()
         .setCustomId('judge_select')
-        .setPlaceholder('🏛️ اختر قاضياً لعرض قضاياه')
+        .setPlaceholder('🏛️ Choose a judge to view their cases')
         .addOptions(
             judges.slice(0, 25).map(j => ({
                 label: j.judge_name,
@@ -74,23 +74,23 @@ async function buildJudgeDashboard(db, judgeId, judgeName) {
     const embed = new EmbedBuilder()
         .setTitle('Judge Dashboard')
         .setColor(0x4A148C)
-        .setAuthor({ name: `القاضي: ${judgeName}` })
-        .setFooter({ text: 'نظام العدل • بوت FANTASY' })
+        .setAuthor({ name: `Judge: ${judgeName}` })
+        .setFooter({ text: 'Justice System • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
 
     if (!cases.length) {
-        embed.setDescription('> 📭 لا توجد قضايا جارية مُسنَدة إليك حالياً');
+        embed.setDescription('> 📭 No ongoing cases assigned to you currently');
     } else {
-        embed.setDescription(`> ⚖️ لديك **${cases.length}** قضية جارية — استخدم \`/عدل\` لإصدار الأحكام`);
+        embed.setDescription(`> ⚖️ You have **${cases.length}** قضية جارية — استخدم \`/عدل\` لإصدار الأحكام`);
         embed.addFields(
             cases.slice(0, 10).map((c, i) => ({
                 name: `${i + 1}. 📁 ${c.case_number} — ${c.title}`,
                 value: [
-                    `👤 المدعي: **${c.plaintiff_name}**`,
-                    `⚔️ المدعى عليه: **${c.defendant || '—'}**`,
-                    c.lawyer_name ? `👨‍⚖️ المحامي: **${c.lawyer_name}**` : '',
+                    `👤 Plaintiff: **${c.plaintiff_name}**`,
+                    `⚔️ Defendant: **${c.defendant || '—'}**`,
+                    c.lawyer_name ? `👨‍⚖️ Lawyer: **${c.lawyer_name}**` : '',
                 ].filter(Boolean).join(' • '),
                 inline: false,
             }))

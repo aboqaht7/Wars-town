@@ -17,8 +17,8 @@ async function bankMenu(imageUrl, db) {
     const embed = new EmbedBuilder()
         .setTitle('FANTASY Bank')
         .setColor(0x1565C0)
-        .setDescription('مرحباً بك في البنك. اختر الخدمة المطلوبة.')
-        .setFooter({ text: 'نظام البنك • بوت FANTASY' })
+        .setDescription('Welcome to the bank. Choose the service you need.')
+        .setFooter({ text: 'Bank System • FANTASY Bot' })
         .setTimestamp();
     if (imageUrl) embed.setImage(imageUrl);
     return { embeds: [embed], components: [row, resetRow('bank')] };
@@ -28,7 +28,7 @@ module.exports = {
     name: 'بنك',
     data: new SlashCommandBuilder()
         .setName('بنك')
-        .setDescription('افتح قائمة البنك'),
+        .setDescription('Open the bank menu'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);

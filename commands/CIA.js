@@ -9,7 +9,7 @@ module.exports = {
     name: 'cia',
     data: new SlashCommandBuilder()
         .setName('cia')
-        .setDescription('لوحة نظام CIA — تسجيل الدخول والخروج وكشف المباشرين'),
+        .setDescription('CIA System — Login, Logout & Active Members'),
     async slashExecute(interaction, db) {
         const c = await loadSystemBtns(db, 'cia');
 
@@ -20,13 +20,13 @@ module.exports = {
             .setTitle('CIA — Intelligence Agency')
             .setColor(0x0D1B2A)
             .setDescription(
-                '**🟢 تسجيل دخول** — سجّل حضورك كعضو CIA\n' +
-                '**🔴 تسجيل خروج** — سجّل مغادرتك\n' +
-                '**👥 كشف مباشرين** — عرض أعضاء CIA المباشرين (Chef فقط)\n' +
-                '**🪪 هوية مزيفة** — إصدار هوية مزيفة لشخص (Chef فقط)\n\n' +
-                '> الأزرار متاحة لأعضاء CIA فقط'
+                '**🟢 Login** — Log your attendance as a CIA member\n' +
+                '**🔴 Logout** — Log your departure\n' +
+                '**👥 Active List** — View active CIA members (Chef only)\n' +
+                '**🪪 Fake ID** — Issue a fake identity to someone (Chef only)\n\n' +
+                '> Buttons available to CIA members only'
             )
-            .setFooter({ text: 'CIA • بوت FANTASY' })
+            .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();
 
         const row1 = new ActionRowBuilder().addComponents(

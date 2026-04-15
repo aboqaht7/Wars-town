@@ -68,7 +68,7 @@ module.exports = {
                     { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed], components: [row] });
         }
@@ -94,7 +94,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
                 .setColor(0x4527A0)
-                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
                 embed.setDescription('لا توجد معدات مضافة.');
             } else {
@@ -148,7 +148,7 @@ module.exports = {
                     { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -191,7 +191,7 @@ module.exports = {
                     { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -204,7 +204,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
                 .setColor(0x4527A0)
-                .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
                 embed.setDescription('لا توجد معدات مضافة.');
             } else {

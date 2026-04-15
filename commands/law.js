@@ -3,7 +3,7 @@ const { resetRow } = require('../utils');
 
 module.exports = {
     name: 'محاماة',
-    data: new SlashCommandBuilder().setName('محاماة').setDescription('⚖️ مكتب المحاماة'),
+    data: new SlashCommandBuilder().setName('محاماة').setDescription('⚖️ Law Office'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
@@ -29,19 +29,19 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Law Office')
         .setColor(0x0D47A1)
-        .setDescription('> اختر الخدمة القانونية من القائمة أدناه')
-        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setDescription('> Choose the legal service from the menu below')
+        .setFooter({ text: 'Law System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('law_menu')
-            .setPlaceholder('⚖️ اختر خدمة قانونية')
+            .setPlaceholder('⚖️ Choose a legal service')
             .addOptions([
-                { label: '📁 رفع قضية',        value: 'new_case',    description: 'تقديم قضية جديدة إلى المحكمة' },
-                { label: '📋 قضاياي',           value: 'my_cases',   description: 'عرض جميع القضايا المرفوعة منك' },
-                { label: '👨‍⚖️ توكيل محامي',    value: 'hire_lawyer', description: 'طلب توكيل محامٍ لقضيتك' },
+                { label: '📁 File a Case',        value: 'new_case',    description: 'Submit a new case to the court' },
+                { label: '📋 My Cases',           value: 'my_cases',   description: 'View all cases filed by you' },
+                { label: '👨‍⚖️ Hire a Lawyer',    value: 'hire_lawyer', description: 'Request a lawyer for your case' },
             ])
     );
     return { embeds: [embed], components: [menu, resetRow('محاماة')] };

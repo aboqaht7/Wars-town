@@ -103,7 +103,7 @@ async function buildCitizenEmbed(db, discordId, slot) {
     desc += `> رقم IBAN: \`${identity.iban || '—'}\`\n\n`;
 
     desc += '💰 **الرصيد**\n';
-    desc += `> البنكي: **${Number(identity.balance || 0).toLocaleString()} ريال**\n`;
+    desc += `> Bankي: **${Number(identity.balance || 0).toLocaleString()} ريال**\n`;
     desc += `> الكاش: **${Number(identity.cash || 0).toLocaleString()} ريال**\n\n`;
 
     desc += `⚖️ **القضايا كمتهم (${cases.length})**\n`;
@@ -130,7 +130,7 @@ async function buildCitizenEmbed(db, discordId, slot) {
         .setTitle(`🗂️ ملف مواطن — ${fullName}`)
         .setColor(0x0D1B2A)
         .setDescription(desc)
-        .setFooter({ text: 'CIA Intelligence System • بوت FANTASY' })
+        .setFooter({ text: 'CIA Intelligence System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 

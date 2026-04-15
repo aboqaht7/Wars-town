@@ -5,7 +5,7 @@ module.exports = {
     name: 'market',
     data: new SlashCommandBuilder()
         .setName('market')
-        .setDescription('🛒 المتجر — اشترِ ما تحتاجه'),
+        .setDescription('🛒 Store — Buy what you need'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
@@ -36,9 +36,9 @@ async function buildMarket(db) {
         .setTitle('Store')
         .setColor(0xBF360C)
         .setDescription(items.length
-            ? 'اختر الغرض الذي تريد شراءه من القائمة.'
-            : '> لا توجد أغراض متاحة حالياً. انتظر الإدارة.')
-        .setFooter({ text: 'نظام المتجر • بوت FANTASY' })
+            ? 'Choose the item you want to buy from the list.'
+            : '> No items available right now. Wait for the admin.')
+        .setFooter({ text: 'Store System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
@@ -53,7 +53,7 @@ async function buildMarket(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('market_item_select')
-            .setPlaceholder('🛒 اختر غرضاً')
+            .setPlaceholder('🛒 Choose an item')
             .addOptions(options)
     );
 

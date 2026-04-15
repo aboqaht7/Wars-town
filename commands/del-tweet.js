@@ -13,7 +13,7 @@ module.exports = {
             .setTitle('Tweet Deleted')
             .setColor(0x000000)
             .addFields({ name: '🆔 رقم المنشور', value: `\`#${id}\``, inline: true })
-            .setFooter({ text: 'منصة X • بوت FANTASY' })
+            .setFooter({ text: 'X Platform • FANTASY Bot' })
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });

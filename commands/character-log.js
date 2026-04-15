@@ -4,9 +4,9 @@ const {
 } = require('discord.js');
 
 const ACTION_LABELS = {
-    login:            '✅ تسجيل دخول',
-    logout:           '🚪 تسجيل خروج',
-    hurricane_logout: '🌪️ خروج تلقائي (إعصار)',
+    login:            '✅ Login',
+    logout:           '🚪 Logout',
+    hurricane_logout: '🌪️ خروج تلقائي (Hurricane)',
     trip_logout:      '✈️ خروج (إغلاق رحلة)',
     approved:         '🟢 هوية مقبولة',
     rejected:         '🔴 هوية مرفوضة',

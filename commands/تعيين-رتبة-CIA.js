@@ -5,10 +5,10 @@ module.exports = {
     name: 'تعيين-رتبة-cia',
     data: new SlashCommandBuilder()
         .setName('تعيين-رتبة-cia')
-        .setDescription('تحديد رتبة CIA Chef (أدمن فقط)')
+        .setDescription('تحديد Rank CIA Chef (أدمن فقط)')
         .addRoleOption(o =>
             o.setName('الرتبة')
-             .setDescription('الرتبة المخصصة لأعضاء CIA')
+             .setDescription('الRank المخصصة لأعضاء CIA')
              .setRequired(true)
         ),
 
@@ -25,8 +25,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('CIA Role Set')
             .setColor(0x0D1B2A)
-            .setDescription(`رتبة **${role.name}** هي الآن رتبة CIA Chef.\n\nأصحاب هذه الرتبة يستطيعون استخدام أزرار لوحة \`/cia\`.`)
-            .setFooter({ text: 'CIA • بوت FANTASY' })
+            .setDescription(`Rank **${role.name}** هي الآن Rank CIA Chef.\n\nأصحاب هذه الRank يستطيعون استخدام أزرار لوحة \`/cia\`.`)
+            .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

@@ -11,7 +11,7 @@ module.exports = {
     name: 'tickets',
     data: new SlashCommandBuilder()
         .setName('tickets')
-        .setDescription('نظام التكتات'),
+        .setDescription('Ticket System'),
 
     async execute(message, args, db) {
         const payload = await build(db);
@@ -37,22 +37,22 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Ticket System')
         .setColor(0x1565C0)
-        .setFooter({ text: 'نظام التكتات • بوت FANTASY' })
+        .setFooter({ text: 'Ticket System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     if (!types.length) {
-        embed.setDescription('> لا توجد أنواع تكتات متاحة حالياً. انتظر الإدارة.');
+        embed.setDescription('> No ticket types available. Wait for the admin.');
         return { embeds: [embed], components: [resetRow('tickets')] };
     }
 
-    embed.setDescription('اختر نوع التكت من القائمة أدناه وسيُنشأ لك روم خاص.');
+    embed.setDescription('Choose the ticket type from the menu below and a private channel will be created for you.');
 
     const options = types.slice(0, 25).map(t => {
         const opt = new StringSelectMenuOptionBuilder()
             .setLabel(t.name || 'تكت')
             .setValue(String(t.id))
-            .setDescription(t.role_id ? 'يستلمه فريق مخصص' : 'انقر للفتح');
+            .setDescription(t.role_id ? 'Handled by a dedicated team' : 'Click to open');
         if (t.emoji) {
             const parsed = parseEmoji(t.emoji);
             if (parsed) {
@@ -67,7 +67,7 @@ async function build(db) {
     const menuRow = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('tickets_type_menu')
-            .setPlaceholder('🎫 اختر نوع التكت')
+            .setPlaceholder('🎫 Choose a ticket type')
             .addOptions(options)
     );
 

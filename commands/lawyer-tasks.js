@@ -51,7 +51,7 @@ async function buildMain(db) {
             '> اختر اسمك من القائمة أدناه للوصول إلى لوحة مهامك الخاصة.\n' +
             '> لا يمكن لأي محامٍ الدخول على لوحة محامٍ آخر.'
         )
-        .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
+        .setFooter({ text: 'Law System • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
@@ -87,7 +87,7 @@ async function buildPrivate(db, lawyerId, lawyerName) {
     const embed = new EmbedBuilder()
         .setTitle('My Tasks Board')
         .setColor(0x0D47A1)
-        .setFooter({ text: `بدل التوكيل: ${RETAINER_FEE.toLocaleString()} ريال • نظام المحاماة • بوت FANTASY` })
+        .setFooter({ text: `بدل التوكيل: ${RETAINER_FEE.toLocaleString()} ريال • Law System • FANTASY Bot` })
         .setTimestamp();
 
     if (img) embed.setThumbnail(img);
