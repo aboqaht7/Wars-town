@@ -53,6 +53,8 @@ module.exports = {
             const price = interaction.options.getInteger('السعر');
             const desc  = interaction.options.getString('الوصف')?.trim() || null;
             const item  = await db.addMarketItem(name, price, desc);
+            const _img = await db.getImage('market').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Added to Store')
                 .setColor(0xBF360C)
@@ -63,6 +65,7 @@ module.exports = {
                     { name: 'الوصف',    value: item.description || '—',                        inline: false },
                 )
                 .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -93,6 +96,8 @@ module.exports = {
                 ...(desc !== undefined ? { description: desc || null } : {}),
             });
             if (!item) return interaction.reply({ content: `❌ لا يوجد غرض بـ ID: ${id}`, flags: 64 });
+            const _img = await db.getImage('market').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Updated')
                 .setColor(0xBF360C)
@@ -103,12 +108,15 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المتجر • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
             const items = await db.getMarketItems();
+            const _img = await db.getImage('market').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Store List')
                 .setColor(0xBF360C)
@@ -123,6 +131,7 @@ module.exports = {
                     ).join('\n')
                 );
             }
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
         }

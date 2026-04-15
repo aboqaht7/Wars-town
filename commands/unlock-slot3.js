@@ -17,6 +17,9 @@ module.exports = {
 
         await db.unlockSlot3(target.id);
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('تم فتح الشخصية الثالثة')
             .setColor(0x6A1B9A)
@@ -28,6 +31,7 @@ module.exports = {
             .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
 
         try {

@@ -13,6 +13,9 @@ module.exports = {
     async slashExecute(interaction, db) {
         const c = await loadSystemBtns(db, 'cia');
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('CIA — Intelligence Agency')
             .setColor(0x0D1B2A)
@@ -35,6 +38,8 @@ module.exports = {
         const row2 = new ActionRowBuilder().addComponents(
             makeBtn('cia_fake_id_btn', c.fake_id),
         );
+
+        if (_img) embed.setImage(_img);
 
         await interaction.reply({ embeds: [embed], components: [row1, row2] });
     }

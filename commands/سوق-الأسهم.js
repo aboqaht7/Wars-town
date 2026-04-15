@@ -34,6 +34,9 @@ async function buildMarketEmbed(db) {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: false });
 
+    const _img = await db.getImage('سوق-مركزي').catch(() => null);
+
+
     const embed = new EmbedBuilder()
         .setColor(0x0A1628)
         .setTitle('Fantasy Town Stock Exchange')
@@ -103,6 +106,7 @@ module.exports = {
         }
 
         await interaction.reply({ content: '\u200b', flags: 64 });
+        if (_img) embed.setImage(_img);
         return interaction.channel.send({ embeds: [built.embed], components: [built.row] });
     }
 };

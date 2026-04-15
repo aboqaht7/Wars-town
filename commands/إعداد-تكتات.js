@@ -68,11 +68,14 @@ module.exports = {
                 { name: '🎫 الاسم', value: `${type.emoji} ${type.name}`, inline: true },
             ];
             if (role) fields.push({ name: '🛡️ الرتبة المستلِمة', value: `<@&${role.id}>`, inline: true });
+            const _img = await db.getImage('tickets').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Ticket Type Added')
                 .setColor(0x1565C0)
                 .addFields(...fields)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -81,17 +84,22 @@ module.exports = {
             const id      = interaction.options.getInteger('الرقم');
             const deleted = await db.removeTicketType(id);
             if (!deleted) return interaction.reply({ content: `❌ لا يوجد نوع برقم \`${id}\`.`, flags: 64 });
+            const _img = await db.getImage('tickets').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم حذف نوع التكت')
                 .setColor(0xB71C1C)
                 .setDescription(`تم حذف نوع **${deleted.emoji} ${deleted.name}** بنجاح.`)
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
             const types = await db.getTicketTypes();
+            const _img = await db.getImage('tickets').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Ticket Types')
                 .setColor(0x37474F)
@@ -106,6 +114,7 @@ module.exports = {
                     ).join('\n')
                 );
             }
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -113,11 +122,14 @@ module.exports = {
         if (sub === 'فئة') {
             const cat = interaction.options.getChannel('الفئة');
             await db.setConfig('ticket_category_id', cat.id);
+            const _img = await db.getImage('tickets').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم تعيين فئة التكتات')
                 .setColor(0x1565C0)
                 .addFields({ name: '📁 الفئة', value: `**${cat.name}**`, inline: true })
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -125,11 +137,14 @@ module.exports = {
         if (sub === 'لوق') {
             const ch = interaction.options.getChannel('الروم');
             await db.setConfig('ticket_log_channel', ch.id);
+            const _img = await db.getImage('tickets').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم تعيين روم لوق التكتات')
                 .setColor(0x1565C0)
                 .addFields({ name: '📋 الروم', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -137,6 +152,8 @@ module.exports = {
         if (sub === 'مسؤولين') {
             const role = interaction.options.getRole('الرتبة');
             await db.setConfig('ticket_admin_role', role.id);
+            const _img = await db.getImage('tickets').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Ticket Admins Role Set')
                 .setColor(0x7B1FA2)
@@ -145,6 +162,7 @@ module.exports = {
                     { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الرتبة يقدرون يغلقون التكتات', inline: false },
                 )
                 .setFooter({ text: 'نظام التكتات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }

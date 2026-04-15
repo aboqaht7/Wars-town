@@ -49,6 +49,8 @@ module.exports = {
             const name  = interaction.options.getString('الاسم').trim();
             const price = interaction.options.getInteger('السعر');
             const item  = await db.addBlackMarketItem(name, price);
+            const _img = await db.getImage('بلاك ماركت').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Added')
                 .setColor(0x1a1a2e)
@@ -59,6 +61,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -83,6 +86,8 @@ module.exports = {
             if (!name && !price) return interaction.reply({ content: '❌ يجب تحديد اسم أو سعر للتعديل.', flags: 64 });
             const item = await db.updateBlackMarketItem(id, { name, price });
             if (!item) return interaction.reply({ content: `❌ لا يوجد غرض بـ ID: ${id}`, flags: 64 });
+            const _img = await db.getImage('بلاك ماركت').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Updated')
                 .setColor(0x1a1a2e)
@@ -93,12 +98,15 @@ module.exports = {
                 )
                 .setFooter({ text: 'إدارة البلاك ماركت • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
             return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
             const items = await db.getBlackMarketItems();
+            const _img = await db.getImage('بلاك ماركت').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Black Market List')
                 .setColor(0x1a1a2e)
@@ -111,6 +119,7 @@ module.exports = {
                     items.map(it => `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString('en-US')}$**`).join('\n')
                 );
             }
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
             return interaction.reply({ content: '​', flags: 64 });
         }

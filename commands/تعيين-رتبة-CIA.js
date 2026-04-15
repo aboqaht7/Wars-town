@@ -19,6 +19,9 @@ module.exports = {
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('cia_chef_role', role.id);
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('CIA Role Set')
             .setColor(0x0D1B2A)
@@ -26,6 +29,8 @@ module.exports = {
             .setFooter({ text: 'CIA • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
+        if (_img) embed.setImage(_img);
         return interaction.reply({ embeds: [embed] });
     },
 };

@@ -17,6 +17,9 @@ module.exports = {
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('violation_role_id', role.id);
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Ban Role Set')
             .setColor(0xB71C1C)
@@ -28,6 +31,7 @@ module.exports = {
             .setFooter({ text: 'نظام المخالفات • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         return interaction.reply({ content: '​', flags: 64 });
     },

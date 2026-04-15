@@ -19,6 +19,9 @@ module.exports = {
             ? members.map(m => `<@${m.discord_id}> — **${m.role}** — راتب: \`${(m.salary || 0).toLocaleString()} ريال\``).join('\n')
             : '_لا يوجد موظفون_';
 
+        const _img = await db.getImage('market').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle(`🏢 إدارة شركة ${company.name}`)
             .setColor(0x1565C0)
@@ -46,6 +49,7 @@ module.exports = {
         );
 
         await interaction.reply({ content: '\u200b', flags: 64 });
+        if (_img) embed.setImage(_img);
         return interaction.channel.send({ embeds: [embed], components: [row1, row2] });
     },
 };

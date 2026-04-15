@@ -58,6 +58,9 @@ module.exports = {
                 roleStatus = '\n⚠️ لم يتم تحديد رتبة المحامين — استخدم `/تعيين-رتبة-محامي`';
             }
 
+            const _img = await db.getImage('محاماة').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Added')
                 .setColor(0x1B5E20)
@@ -67,6 +70,7 @@ module.exports = {
                     { name: '📛 الاسم',    value: name,             inline: true },
                 )
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             // أرسل مهام المحامي الجديد للروم المحدد تلقائياً
             const tasksChannelId = await db.getConfig('lawyer_tasks_channel');
@@ -95,12 +99,16 @@ module.exports = {
                 }
             }
 
+            const _img = await db.getImage('محاماة').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Removed')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -109,12 +117,15 @@ module.exports = {
             const lawyers = await db.getLawyers();
             if (!lawyers.length) return interaction.reply({ content: '📋 لا يوجد محامون مسجلون حالياً.', flags: 64 });
             const lines = lawyers.map((l, i) => `**${i + 1}.** ${l.lawyer_name} — <@${l.discord_id}>`).join('\n');
+            const _img = await db.getImage('محاماة').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Certified Lawyers')
                 .setColor(0x0D47A1)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${lawyers.length} محامٍ`, inline: true })
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '\u200b', flags: 64 });
         }
@@ -122,11 +133,14 @@ module.exports = {
         if (sub === 'تعيين-روم') {
             const channel = interaction.options.getChannel('الروم');
             await db.setConfig('lawyer_tasks_channel', channel.id);
+            const _img = await db.getImage('محاماة').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم تعيين روم مهام المحامين')
                 .setColor(0x0D47A1)
                 .setDescription(`سيتم إرسال مهام المحامين في <#${channel.id}> تلقائياً`)
                 .setFooter({ text: 'نظام المحاماة • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '\u200b', flags: 64 });
         }

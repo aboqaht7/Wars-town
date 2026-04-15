@@ -48,11 +48,14 @@ module.exports = {
         if (sub === 'روم-البدء') {
             const ch = interaction.options.getChannel('الروم');
             await db.setConfig('trips_start_channel', ch.id);
+            const _img = await db.getImage('events').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم تعيين روم بدء الرحلة')
                 .setColor(0x1565C0)
                 .addFields({ name: '📢 الروم', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -60,11 +63,14 @@ module.exports = {
         if (sub === 'روم-التنبيهات') {
             const ch = interaction.options.getChannel('الروم');
             await db.setConfig('trips_alerts_channel', ch.id);
+            const _img = await db.getImage('events').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم تعيين روم تنبيهات الرحلة')
                 .setColor(0x1565C0)
                 .addFields({ name: '📢 الروم', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -92,6 +98,9 @@ module.exports = {
             const msgHurr    = await db.getConfig('trip_hurricane_message');
             const msgRenew   = await db.getConfig('trip_renewal_message');
 
+            const _img = await db.getImage('events').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Trip System Settings')
                 .setColor(0x37474F)
@@ -103,6 +112,7 @@ module.exports = {
                     { name: '🔄 رسالة التجديد',    value: msgRenew   ? '✅ مخصصة'  : '⬜ افتراضية', inline: true },
                 )
                 .setFooter({ text: 'نظام الرحلات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }

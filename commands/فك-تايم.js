@@ -24,6 +24,9 @@ module.exports = {
             return message.reply('❌ فشل فك التايم اوت. تأكد من أن البوت لديه الصلاحيات الكافية.');
         }
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setColor(0x43A047)
             .setTitle('Timeout Removed')
@@ -34,6 +37,8 @@ module.exports = {
             .setFooter({ text: 'نظام التايم اوت • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
+        if (_img) embed.setImage(_img);
         await message.channel.send({ embeds: [embed] });
         await message.delete().catch(() => {});
     }

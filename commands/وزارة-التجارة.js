@@ -10,6 +10,8 @@ module.exports = {
         .setDescription('لوحة تحكم وزارة التجارة'),
 
     async slashExecute(interaction, db) {
+        const _img = await db.getImage('market').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Ministry of Commerce')
             .setColor(0x1565C0)
@@ -27,6 +29,7 @@ module.exports = {
         );
 
         await interaction.reply({ content: '\u200b', flags: 64 });
+        if (_img) embed.setImage(_img);
         return interaction.channel.send({ embeds: [embed], components: [row1, row2] });
 
     },

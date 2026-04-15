@@ -21,6 +21,8 @@ module.exports = {
         if (!result.success) {
             return message.reply(`❌ ${result.error}`);
         }
+        const _img = await db.getImage('market').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Item Transferred')
             .setColor(0xE65100)
@@ -31,6 +33,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام الحقيبة • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     }
 };

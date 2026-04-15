@@ -12,14 +12,16 @@ module.exports = {
         const xChannelId = await db.getConfig('x_channel');
         if (!xChannelId) return message.reply('❌ لم يتم تحديد روم التغريدات بعد.');
         const post = await db.postTweet(message.author.id, content);
-        const { embed, row } = buildTweetMessage(post, message.author.displayAvatarURL());
+        const { embed, row } = await buildTweetMessage(post, message.author.displayAvatarURL(), db);
         const xChannel = message.guild?.channels?.cache.get(xChannelId);
         if (xChannel) await xChannel.send({ embeds: [embed], components: [row] });
         message.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>` });
     }
 };
 
-function buildTweetMessage(post, avatarURL) {
+async function buildTweetMessage(post, avatarURL, db) {
+    const _img = await db.getImage('x_platform').catch(() => null);
+
     const embed = new EmbedBuilder()
         .setAuthor({ name: `@${post.x_username}`, iconURL: avatarURL || undefined })
         .setColor(0x000000)
@@ -31,6 +33,7 @@ function buildTweetMessage(post, avatarURL) {
         )
         .setFooter({ text: 'منصة X • بوت FANTASY' })
         .setTimestamp();
+    if (_img) embed.setImage(_img);
 
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId(`x_like_${post.id}`).setLabel(`${post.likes ?? 0}`).setEmoji('❤️').setStyle(ButtonStyle.Secondary),

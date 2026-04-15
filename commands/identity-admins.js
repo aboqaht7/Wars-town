@@ -17,6 +17,9 @@ module.exports = {
         await db.setConfig('identity_admin_role', role.id);
         await db.setConfig('identity_log_channel', channel.id);
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Identity Admins Set')
             .setColor(0x1565C0)
@@ -26,6 +29,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         return interaction.reply({ content: '​', flags: 64 });
     }

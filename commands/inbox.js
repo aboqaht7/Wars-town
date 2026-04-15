@@ -7,6 +7,9 @@ module.exports = {
         const msgs = await db.getMessages(message.author.id, 10);
         await db.markMessagesRead(message.author.id);
 
+        const _img = await db.getImage('سناب شات').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Inbox')
             .setColor(0x00838F)
@@ -27,6 +30,7 @@ module.exports = {
                 });
             }
         }
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     }
 };

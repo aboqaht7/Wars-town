@@ -23,6 +23,9 @@ module.exports = {
         await db.removeItem(message.author.id, 'كلبشات', 1);
         await db.cuffPlayer(target.id, message.author.id);
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Handcuffed')
             .setColor(0xB71C1C)
@@ -35,6 +38,7 @@ module.exports = {
             .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
         message.delete().catch(() => {});
     }

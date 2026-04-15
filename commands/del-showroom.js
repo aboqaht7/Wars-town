@@ -17,6 +17,9 @@ module.exports = {
         if (!removed)
             return interaction.reply({ content: `❌ لم يتم العثور على سيارة برقم \`${id}\``, flags: 64 });
 
+        const _img = await db.getImage('showroom').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('تم حذف السيارة من المعرض')
             .setColor(0xB71C1C)
@@ -26,6 +29,8 @@ module.exports = {
             )
             .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
             .setTimestamp();
+
+        if (_img) embed.setImage(_img);
 
         await interaction.reply({ embeds: [embed] });
     }

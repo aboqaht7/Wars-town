@@ -21,18 +21,20 @@ const OPTIONS = [
 module.exports = {
     name: 'help',
     data: new SlashCommandBuilder().setName('help').setDescription('عرض قائمة أنظمة البوت'),
-    execute(message, args, db) {
-        message.channel.send(build());
+    async execute(message, args, db) {
+        message.channel.send(await build(db));
     },
     async slashExecute(interaction, db) {
-        const main = build();
+        const main = await build(db);
         if (interaction._isReset) return interaction.message.edit(main);
         await interaction.channel.send(main);
         await interaction.reply({ content: '​', flags: 64 });
     }
 };
 
-function build() {
+async function build(db) {
+    const _img = await db.getImage('admin').catch(() => null);
+
     const embed = new EmbedBuilder()
         .setTitle('FANTASY Bot — Systems Menu')
         .setColor(0xE53935)
@@ -45,5 +47,6 @@ function build() {
             .setPlaceholder('اختر نظاماً للتفاصيل')
             .addOptions(OPTIONS)
     );
+    if (_img) embed.setImage(_img);
     return { embeds: [embed], components: [menu, resetRow('help')] };
 }

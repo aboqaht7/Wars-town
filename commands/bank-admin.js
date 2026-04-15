@@ -40,6 +40,9 @@ module.exports = {
             const result = await db.adminAddMoney(iban, amount, note);
             if (!result.success) return message.reply(`❌ ${result.error}`);
 
+            const _img = await db.getImage('bank').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Balance Added')
                 .setColor(0x2E7D32)
@@ -52,6 +55,7 @@ module.exports = {
                     { name: '📝 ملاحظة', value: note || '—', inline: true },
                 )
                 .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -65,6 +69,9 @@ module.exports = {
             const result = await db.adminRemoveMoney(iban, amount, note);
             if (!result.success) return message.reply(`❌ ${result.error}`);
 
+            const _img = await db.getImage('bank').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Balance Withdrawn')
                 .setColor(0xB71C1C)
@@ -77,6 +84,7 @@ module.exports = {
                     { name: '📝 ملاحظة', value: note || '—', inline: true },
                 )
                 .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -87,6 +95,9 @@ module.exports = {
             const char = await db.freezeAccount(iban);
             if (!char) return message.reply(`❌ لا يوجد حساب بالإيبان \`${iban}\``);
 
+            const _img = await db.getImage('bank').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Account Frozen')
                 .setColor(0x0288D1)
@@ -96,6 +107,7 @@ module.exports = {
                     { name: '🔧 بواسطة', value: `<@${message.author.id}>`, inline: true },
                 )
                 .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -106,6 +118,9 @@ module.exports = {
             const char = await db.unfreezeAccount(iban);
             if (!char) return message.reply(`❌ لا يوجد حساب بالإيبان \`${iban}\``);
 
+            const _img = await db.getImage('bank').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Account Unfrozen')
                 .setColor(0x2E7D32)
@@ -115,6 +130,7 @@ module.exports = {
                     { name: '🔧 بواسطة', value: `<@${message.author.id}>`, inline: true },
                 )
                 .setFooter({ text: 'أدمن البنك • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
 
@@ -135,6 +151,8 @@ module.exports = {
             }
 
             const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+            const _img = await db.getImage('bank').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle(`🏦 حسابات ${mentioned ? mentioned.username : chars[0].character_name}`)
                 .setColor(0x1565C0)
@@ -147,6 +165,7 @@ module.exports = {
                     inline: false,
                 });
             }
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed] });
         }
     },

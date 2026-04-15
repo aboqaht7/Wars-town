@@ -51,6 +51,9 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
 
     await db.deleteIdentity(targetId, slot);
 
+    const _img = await db.getImage('identity').catch(() => null);
+
+
     const embed = new EmbedBuilder()
         .setTitle('Identity Deleted')
         .setColor(0x757575)
@@ -62,7 +65,9 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
         .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
         .setTimestamp();
 
-    if (interaction) await interaction.channel.send({ embeds: [embed] });
+    if (interaction) if (_img) embed.setImage(_img);
+ await interaction.channel.send({ embeds: [embed] });
  return interaction.reply({ content: '​', flags: 64 });
+    if (_img) embed.setImage(_img);
     channel.send({ embeds: [embed] });
 }

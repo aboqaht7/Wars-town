@@ -33,6 +33,9 @@ module.exports = {
 
         const updated = await db.updateRobbery(existing.id, { name: newName, tools, minMoney, maxMoney });
 
+        const _img = await db.getImage('crime').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Robbery Updated')
             .setColor(0xB71C1C)
@@ -44,6 +47,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         return interaction.reply({ content: '​', flags: 64 });
     }

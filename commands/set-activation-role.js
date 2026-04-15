@@ -17,6 +17,9 @@ module.exports = {
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('activation_role_id', role.id);
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Activation Role Set')
             .setColor(0x2E7D32)
@@ -26,6 +29,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
 
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         return interaction.reply({ content: '​', flags: 64 });
     },

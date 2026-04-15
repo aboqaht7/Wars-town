@@ -14,6 +14,8 @@ module.exports = {
         .setDescription('إرسال لوحة تفعيل الحسابات'),
 
     async slashExecute(interaction, db) {
+        const _img = await db.getImage('identity').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Account Activation System')
             .setColor(0x1565C0)

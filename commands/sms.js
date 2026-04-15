@@ -14,6 +14,9 @@ module.exports = {
         await db.ensureUser(target.id, target.user.username);
         await db.sendMessage(message.author.id, target.id, content);
 
+        const _img = await db.getImage('phone').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Message Sent')
             .setColor(0x00838F)
@@ -24,6 +27,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
 
         const notif = new EmbedBuilder()
@@ -37,6 +41,7 @@ module.exports = {
             .setFooter({ text: 'نظام الجوال • بوت FANTASY' })
             .setTimestamp();
         try {
+            if (_img) notif.setImage(_img);
             await target.send({ embeds: [notif] });
         } catch (_) {}
     }

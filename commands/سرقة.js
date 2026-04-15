@@ -51,6 +51,9 @@ module.exports = {
             ? `🎒 أغراض:\n${stolenItems.join('\n')}`
             : '🎒 أغراض: لا يوجد';
 
+        const _img = await db.getImage('crime').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Robbery Committed')
             .setColor(0x37474F)
@@ -61,6 +64,7 @@ module.exports = {
             .setFooter({ text: 'نظام الجرائم • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
         message.delete().catch(() => {});
     }

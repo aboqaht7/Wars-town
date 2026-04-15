@@ -18,6 +18,9 @@ module.exports = {
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('lawyer_role_id', role.id);
 
+        const _img = await db.getImage('محاماة').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Lawyers Role Set')
             .setColor(0x1565C0)
@@ -29,6 +32,7 @@ module.exports = {
             .setFooter({ text: 'نظام المحاماة • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed], components: [row2] });
         return interaction.reply({ content: '​', flags: 64 });
     },

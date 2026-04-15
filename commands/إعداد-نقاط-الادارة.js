@@ -20,6 +20,8 @@ module.exports = {
         if (sub === 'مسؤولين') {
             const role = interaction.options.getRole('الرتبة');
             await db.setConfig('points_admin_role', role.id);
+            const _img = await db.getImage('نقاط-الادارة').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Points Admins Role Set')
                 .setColor(0x1565C0)
@@ -28,6 +30,7 @@ module.exports = {
                     { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الرتبة يقدرون يضيفون أو يخصمون النقاط', inline: false },
                 )
                 .setFooter({ text: 'نظام نقاط الإدارة • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }

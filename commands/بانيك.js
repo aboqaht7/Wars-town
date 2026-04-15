@@ -14,6 +14,9 @@ module.exports = {
         if (!panicChannel)
             return interaction.reply({ content: '❌ لم يتم تحديد روم الاستغاثة بعد. استخدم `/إعداد-بانيك` أولاً.', flags: 64 });
 
+        const _img = await db.getImage('events').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Panic — Distress Call')
             .setColor(0xD32F2F)
@@ -32,6 +35,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
         );
 
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed], components: [row] });
         return interaction.reply({ content: '✅ تم إرسال إمبيد البانيك.', flags: 64 });
     },

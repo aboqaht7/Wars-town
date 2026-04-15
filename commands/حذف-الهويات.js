@@ -8,6 +8,9 @@ module.exports = {
             return message.reply('❌ هذا الأمر للمسؤولين فقط.');
         }
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Confirm Full Deletion')
             .setColor(0xB71C1C)
@@ -24,6 +27,7 @@ module.exports = {
             new ButtonBuilder().setCustomId('cancel_delete_all_identities').setLabel('إلغاء').setStyle(ButtonStyle.Secondary),
         );
 
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed], components: [row] });
     }
 };

@@ -57,6 +57,8 @@ module.exports = {
             if (!name || isNaN(price) || price < 1)
                 return message.reply('❌ الاستخدام الصحيح:\n`-إدارة-معدات اضافة اسم المعدة | السعر | الوصف (اختياري)`');
             const item = await db.addEquipmentItem(name, price, desc);
+            const _img = await db.getImage('معدات').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Equipment Added')
                 .setColor(0x4527A0)
@@ -67,6 +69,7 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed], components: [row] });
         }
 
@@ -86,6 +89,8 @@ module.exports = {
 
         if (sub === 'قائمة') {
             const items = await db.getEquipmentItems();
+            const _img = await db.getImage('معدات').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
                 .setColor(0x4527A0)
@@ -100,6 +105,7 @@ module.exports = {
                     ).join('\n')
                 );
             }
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed], components: [row] });
         }
 
@@ -131,6 +137,8 @@ module.exports = {
             const price = interaction.options.getInteger('السعر');
             const desc  = interaction.options.getString('الوصف')?.trim() || null;
             const item  = await db.addEquipmentItem(name, price, desc);
+            const _img = await db.getImage('معدات').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Equipment Added')
                 .setColor(0x4527A0)
@@ -141,6 +149,7 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -171,6 +180,8 @@ module.exports = {
                 ...(desc !== undefined ? { description: desc || null } : {}),
             });
             if (!item) return interaction.reply({ content: `❌ لا توجد معدة بـ ID: ${id}`, flags: 64 });
+            const _img = await db.getImage('معدات').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Updated')
                 .setColor(0x4527A0)
@@ -181,12 +192,15 @@ module.exports = {
                     { name: 'الوصف', value: item.description || '—',                       inline: false },
                 )
                 .setFooter({ text: 'إدارة المعدات • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
             const items = await db.getEquipmentItems();
+            const _img = await db.getImage('معدات').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
                 .setColor(0x4527A0)
@@ -201,6 +215,7 @@ module.exports = {
                     ).join('\n')
                 );
             }
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
         }

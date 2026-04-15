@@ -26,6 +26,9 @@ module.exports = {
         await db.setConfig('trade_ministry_role', role.id);
         await db.setConfig('trade_ministry_channel', channel.id);
 
+        const _img = await db.getImage('market').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Ministry of Commerce Configured')
             .setColor(0x1565C0)
@@ -37,6 +40,8 @@ module.exports = {
             .setFooter({ text: 'نظام الشركات • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
+        if (_img) embed.setImage(_img);
         return interaction.reply({ embeds: [embed] });
     },
 };

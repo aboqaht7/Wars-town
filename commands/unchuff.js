@@ -12,6 +12,9 @@ module.exports = {
 
         await db.uncuffPlayer(target.id);
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Handcuffs Removed')
             .setColor(0x2E7D32)
@@ -23,6 +26,7 @@ module.exports = {
             .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
         message.delete().catch(() => {});
     }

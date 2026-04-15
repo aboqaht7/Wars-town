@@ -53,6 +53,9 @@ module.exports = {
                 roleStatus = '\n⚠️ لم يتم تحديد رتبة القضاة — استخدم `/تعيين-رتبة-قاضي`';
             }
 
+            const _img = await db.getImage('عدل').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Judge Added')
                 .setColor(0x4A148C)
@@ -62,6 +65,7 @@ module.exports = {
                     { name: '📛 الاسم', value: name,              inline: true },
                 )
                 .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -86,12 +90,16 @@ module.exports = {
                 }
             }
 
+            const _img = await db.getImage('عدل').catch(() => null);
+
+
             const embed = new EmbedBuilder()
                 .setTitle('Judge Removed')
                 .setColor(0xB71C1C)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 العضو', value: `<@${user.id}>`, inline: true })
                 .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -100,12 +108,15 @@ module.exports = {
             const judges = await db.getJudges();
             if (!judges.length) return interaction.reply({ content: '📋 لا يوجد قضاة مسجلون حالياً.', flags: 64 });
             const lines = judges.map((j, i) => `**${i + 1}.** ${j.judge_name} — <@${j.discord_id}>`).join('\n');
+            const _img = await db.getImage('عدل').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Certified Judges')
                 .setColor(0x4A148C)
                 .setDescription(lines)
                 .addFields({ name: 'الإجمالي', value: `${judges.length} قاضٍ`, inline: true })
                 .setFooter({ text: 'نظام العدل • بوت FANTASY' }).setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });
             return interaction.reply({ content: '​', flags: 64 });
         }

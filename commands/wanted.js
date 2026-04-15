@@ -23,6 +23,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [emptyEmbed] });
         }
 
@@ -37,6 +38,9 @@ module.exports = {
             }
         }
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Inspect & Rob Handcuffed Player')
             .setColor(0xFF6F00)
@@ -49,6 +53,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     }
 };

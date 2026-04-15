@@ -33,6 +33,8 @@ module.exports = {
             return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
 
         const slotNames = { 1: 'الخانة الأولى', 2: 'الخانة الثانية', 3: 'الخانة الثالثة' };
+        const _img = await db.getImage('bank').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('IBAN Updated')
             .setColor(0x1B5E20)
@@ -44,6 +46,7 @@ module.exports = {
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
         return interaction.reply({ content: '​', flags: 64 });
     },
@@ -64,6 +67,8 @@ module.exports = {
         if (!result.success) return message.reply(`❌ ${result.error}`);
 
         const slotNames = { 1: 'الخانة الأولى', 2: 'الخانة الثانية', 3: 'الخانة الثالثة' };
+        const _img = await db.getImage('bank').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('IBAN Updated')
             .setColor(0x1B5E20)
@@ -75,6 +80,7 @@ module.exports = {
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
             .setTimestamp();
 
+        if (_img) embed.setImage(_img);
         return message.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
     },
 };

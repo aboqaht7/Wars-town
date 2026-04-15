@@ -19,12 +19,17 @@ module.exports = {
         const channel = interaction.options.getChannel('الروم');
         await db.setConfig('panic_channel', channel.id);
 
+        const _img = await db.getImage('admin').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Panic Room Configured')
             .setColor(0x1B5E20)
             .setDescription(`سيتم إرسال طلبات الاستغاثة إلى <#${channel.id}>`)
             .setFooter({ text: 'إعداد البانيك • بوت FANTASY' })
             .setTimestamp();
+
+        if (_img) embed.setImage(_img);
 
         await interaction.reply({ embeds: [embed], flags: 64 });
     },

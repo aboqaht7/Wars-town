@@ -28,24 +28,30 @@ module.exports = {
 
         if (sub === 'شرطة') {
             await db.setConfig('police_reports_channel', channel.id);
+            const _img = await db.getImage('admin').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Setup Complete')
                 .setColor(0x1B5E20)
                 .setDescription(`روم بلاغات الشرطة: <#${channel.id}>`)
                 .setFooter({ text: 'إعداد البلاغات • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
             return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'إسعاف') {
             await db.setConfig('ambulance_reports_channel', channel.id);
+            const _img = await db.getImage('admin').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Setup Complete')
                 .setColor(0x1B5E20)
                 .setDescription(`روم بلاغات الإسعاف: <#${channel.id}>`)
                 .setFooter({ text: 'إعداد البلاغات • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
             return interaction.reply({ content: '​', flags: 64 });
         }

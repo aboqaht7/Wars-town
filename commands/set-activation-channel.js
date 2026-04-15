@@ -17,6 +17,9 @@ module.exports = {
         const channel = interaction.options.getChannel('القناة');
         await db.setConfig('activation_log_channel', channel.id);
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Activation Channel Set')
             .setColor(0x1565C0)
@@ -25,6 +28,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام التفعيل • بوت FANTASY' }).setTimestamp();
 
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         return interaction.reply({ content: '​', flags: 64 });
     },

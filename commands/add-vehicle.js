@@ -20,6 +20,8 @@ module.exports = {
         if (!result.success) {
             return message.reply(`❌ ${result.error}`);
         }
+        const _img = await db.getImage('vehicles').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Car Registered')
             .setColor(0x37474F)
@@ -31,6 +33,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
@@ -42,6 +45,8 @@ module.exports = {
         if (!result.success) {
             return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
         }
+        const _img = await db.getImage('vehicles').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Car Registered')
             .setColor(0x37474F)
@@ -53,6 +58,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام السيارات • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         await interaction.reply({ content: '​', flags: 64 });
     }

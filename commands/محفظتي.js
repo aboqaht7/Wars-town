@@ -24,6 +24,9 @@ module.exports = {
         let totalValue = 0;
         let totalCost  = 0;
 
+        const _img = await db.getImage('market').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setColor(0x0A1628)
             .setTitle('Your Investment Portfolio')
@@ -77,6 +80,7 @@ module.exports = {
             .setTimestamp();
 
         await interaction.reply({ content: '\u200b', flags: 64 });
+        if (_img) embed.setImage(_img);
         return interaction.channel.send({ embeds: [embed] });
     }
 };

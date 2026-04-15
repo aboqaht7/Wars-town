@@ -12,23 +12,29 @@ module.exports = {
         const channel = message.mentions.channels.first();
         if (!channel) return message.reply('❌ اذكر الروم. مثال: `-x-روم #اسم-الروم`');
         await db.setConfig('x_channel', channel.id);
+        const _img = await db.getImage('x_platform').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Tweets Channel Set')
             .setColor(0x000000)
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
             .setFooter({ text: 'منصة X • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     },
     async slashExecute(interaction, db) {
         const channel = interaction.options.getChannel('روم');
         await db.setConfig('x_channel', channel.id);
+        const _img = await db.getImage('x_platform').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Tweets Channel Set')
             .setColor(0x000000)
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> تلقائياً.`)
             .setFooter({ text: 'منصة X • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         await interaction.reply({ content: '​', flags: 64 });
     }

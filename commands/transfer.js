@@ -16,6 +16,8 @@ module.exports = {
         if (!result.success) {
             return message.reply(`❌ ${result.error}`);
         }
+        const _img = await db.getImage('bank').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Transfer Successful')
             .setColor(0x2E7D32)
@@ -27,6 +29,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام البنك • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     }
 };

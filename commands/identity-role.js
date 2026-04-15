@@ -12,12 +12,16 @@ module.exports = {
         const role = interaction.options.getRole('رتبة');
         await db.setConfig('identity_role', role.id);
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Identity Role Set')
             .setColor(0x1565C0)
             .setDescription(`سيحصل كل من تُقبل هويته على رتبة ${role} تلقائياً.`)
             .setFooter({ text: 'نظام الهوية • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
         return interaction.reply({ content: '​', flags: 64 });
     }

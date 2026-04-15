@@ -35,6 +35,8 @@ module.exports = {
             if (maxMoney < minMoney) return interaction.reply({ content: '❌ الحد الأعلى يجب أن يكون أكبر من الحد الأدنى.', flags: 64 });
 
             const row = await db.addRobbery(name, tools, minMoney, maxMoney);
+            const _img = await db.getImage('crime').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Robbery Added')
                 .setColor(0xB71C1C)
@@ -46,6 +48,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
@@ -55,18 +58,23 @@ module.exports = {
             const rob = await db.getRobberyById(id);
             if (!rob) return interaction.reply({ content: `❌ لا توجد سرقة برقم \`${id}\`.`, flags: 64 });
             await db.deleteRobbery(id);
+            const _img = await db.getImage('crime').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('تم حذف السرقة')
                 .setColor(0x757575)
                 .setDescription(`تم حذف سرقة **${rob.name}** بنجاح.`)
                 .setFooter({ text: 'نظام السرقات • بوت FANTASY' })
                 .setTimestamp();
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }
 
         if (sub === 'قائمة') {
             const robberies = await db.getRobberies();
+            const _img = await db.getImage('crime').catch(() => null);
+
             const embed = new EmbedBuilder()
                 .setTitle('Robbery List')
                 .setColor(0xB71C1C)
@@ -79,6 +87,7 @@ module.exports = {
                     `**\`#${r.id}\` ${r.name}**\n🛠️ \`${r.tools}\`\n💵 \`${Number(r.min_money).toLocaleString()}\` — \`${Number(r.max_money).toLocaleString()}\` ريال`
                 ).join('\n\n'));
             }
+            if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
             return interaction.reply({ content: '​', flags: 64 });
         }

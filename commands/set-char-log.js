@@ -11,6 +11,9 @@ module.exports = {
 
         await db.setConfig('character_log_channel', channel.id);
 
+        const _img = await db.getImage('identity').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Character Log Channel Set')
             .setColor(0x37474F)
@@ -20,6 +23,7 @@ module.exports = {
             )
             .setFooter({ text: 'بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     }
 };

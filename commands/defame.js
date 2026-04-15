@@ -5,6 +5,8 @@ module.exports = {
         const reason = args.slice(1).join(' ') || 'لم يُذكر سبب';
         if (!target) return message.reply('❌ يجب ذكر اللاعب المراد تشهيره. مثال: `-تشهير @اللاعب السبب`');
         const { EmbedBuilder } = require('discord.js');
+        const _img = await db.getImage('admin').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Defamation Executed')
             .setColor(0x6A1B9A)
@@ -16,6 +18,7 @@ module.exports = {
             )
             .setFooter({ text: 'نظام الشرطة • بوت FANTASY' })
             .setTimestamp();
+        if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
     }
 };

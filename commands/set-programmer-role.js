@@ -14,11 +14,14 @@ module.exports = {
             return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('programmer_role_id', role.id);
+        const _img = await db.getImage('admin').catch(() => null);
+
         const embed = new EmbedBuilder()
             .setTitle('Programmer Role Set')
             .setColor(0x6A1B9A)
             .setDescription(`أصحاب رتبة <@&${role.id}> يمتلكون الآن صلاحية الوصول لجميع الأوامر الإدارية.`)
             .setFooter({ text: 'إعدادات البوت • FANTASY' }).setTimestamp();
+        if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed], components: [resetRow] });
         return interaction.reply({ content: '​', flags: 64 });
     },

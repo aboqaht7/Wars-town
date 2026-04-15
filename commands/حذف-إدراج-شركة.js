@@ -42,6 +42,9 @@ module.exports = {
 
         await db.delistCompany(match.company_id);
 
+        const _img = await db.getImage('market').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Company Removed from Stock Market')
             .setColor(0xB71C1C)
@@ -55,6 +58,7 @@ module.exports = {
             .setTimestamp();
 
         await interaction.reply({ content: '\u200b', flags: 64 });
+        if (_img) embed.setImage(_img);
         return interaction.channel.send({ embeds: [embed] });
     }
 };

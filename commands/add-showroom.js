@@ -22,6 +22,9 @@ module.exports = {
 
         await db.addShowroomCar(carName, carType, price, color, interaction.user.id);
 
+        const _img = await db.getImage('showroom').catch(() => null);
+
+
         const embed = new EmbedBuilder()
             .setTitle('Car Added to Showroom')
             .setColor(0x2E7D32)
@@ -34,6 +37,8 @@ module.exports = {
             )
             .setFooter({ text: 'نظام المعارض • بوت FANTASY' })
             .setTimestamp();
+
+        if (_img) embed.setImage(_img);
 
         await interaction.reply({ embeds: [embed] });
     }
