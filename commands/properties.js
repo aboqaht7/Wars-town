@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'properties',
@@ -39,7 +39,7 @@ async function build(db) {
 
     if (!props.length) return { embeds: [embed], components: [resetRow('properties')] };
 
-    const options = props.slice(0, 25).map(p => ({
+    const options = props.slice(0, 24).map(p => ({
         label: p.name,
         value: String(p.id),
         description: `💰 ${Number(p.price).toLocaleString()} ريال`,
@@ -49,7 +49,7 @@ async function build(db) {
         new StringSelectMenuBuilder()
             .setCustomId('properties_menu')
             .setPlaceholder('🏠 Choose a property')
-            .addOptions(options)
+            .addOptions([...options, resetOption('properties')])
     );
-    return { embeds: [embed], components: [menu, resetRow('properties')] };
+    return { embeds: [embed], components: [menu] };
 }

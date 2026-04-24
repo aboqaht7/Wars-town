@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const db = require('../database');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 async function build() {
     const items = await db.getBlackMarketItems();
@@ -18,11 +18,12 @@ async function build() {
 
     if (!items.length) return { embeds: [embed], components: [resetRow('بلاك-ماركت')] };
 
-    const options = items.slice(0, 25).map(it => ({
+    const options = items.slice(0, 24).map(it => ({
         label: it.name,
         value: String(it.id),
         description: `💰 ${Number(it.price).toLocaleString('en-US')}$`,
     }));
+    options.push(resetOption('بلاك-ماركت'));
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
@@ -30,7 +31,7 @@ async function build() {
             .setPlaceholder('🔫 Choose an item')
             .addOptions(options)
     );
-    return { embeds: [embed], components: [menu, resetRow('بلاك-ماركت')] };
+    return { embeds: [embed], components: [menu] };
 }
 
 module.exports = {

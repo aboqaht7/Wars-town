@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'معدات',
@@ -46,7 +46,7 @@ async function buildEquipment(db) {
 
     embed.setDescription('Choose equipment from the list below.');
 
-    const options = items.slice(0, 25).map(it => ({
+    const options = items.slice(0, 24).map(it => ({
         label: it.name,
         value: String(it.id),
         description: `💰 ${Number(it.price).toLocaleString()} ريال` +
@@ -57,8 +57,8 @@ async function buildEquipment(db) {
         new StringSelectMenuBuilder()
             .setCustomId('equipment_item_select')
             .setPlaceholder('🔨 Choose equipment')
-            .addOptions(options)
+            .addOptions([...options, resetOption('معدات')])
     );
 
-    return { embeds: [embed], components: [menu, resetRow('معدات')] };
+    return { embeds: [embed], components: [menu] };
 }

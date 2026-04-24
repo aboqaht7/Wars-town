@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder, EmbedBuilder,
     ActionRowBuilder, StringSelectMenuBuilder,
 } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 const db = require('../database');
 
 async function build() {
@@ -32,10 +32,12 @@ async function build() {
                     value: 'report_ambulance',
                     description: 'Send a report to the ambulance team',
                 },
+            
+                { label: '🔄 Reset Menu', value: 'reset_phone', description: 'Return to the main view' },
             ])
     );
 
-    return { embeds: [embed], components: [menu, resetRow('phone')] };
+    return { embeds: [embed], components: [menu] };
 }
 
 module.exports = {

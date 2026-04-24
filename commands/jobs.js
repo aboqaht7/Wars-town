@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 const COOLDOWN_SECONDS = 10;
 const COOLDOWN_MINUTES = COOLDOWN_SECONDS / 60;
@@ -46,8 +46,10 @@ async function buildJobs(db) {
                 { label: '🎣 Fishing',      value: 'fishing',     description: 'Requires: Fishing Rod' },
                 { label: '🪓 Woodcutting',    value: 'woodcutting', description: 'Requires: Axe' },
                 { label: '⛏️ Mining',          value: 'mining',      description: 'Requires: Mining Tools' },
+            
+                { label: '🔄 Reset Menu', value: 'reset_jobs', description: 'Return to the main view' },
             ])
     );
 
-    return { embeds: [embed], components: [menu, resetRow('jobs')] };
+    return { embeds: [embed], components: [menu] };
 }

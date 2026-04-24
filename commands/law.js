@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'محاماة',
@@ -42,7 +42,9 @@ async function build(db) {
                 { label: '📁 File a Case',        value: 'new_case',    description: 'Submit a new case to the court' },
                 { label: '📋 My Cases',           value: 'my_cases',   description: 'View all cases filed by you' },
                 { label: '👨‍⚖️ Hire a Lawyer',    value: 'hire_lawyer', description: 'Request a lawyer for your case' },
+            
+                { label: '🔄 Reset Menu', value: 'reset_محاماة', description: 'Return to the main view' },
             ])
     );
-    return { embeds: [embed], components: [menu, resetRow('محاماة')] };
+    return { embeds: [embed], components: [menu] };
 }

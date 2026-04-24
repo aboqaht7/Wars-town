@@ -4,7 +4,7 @@ const {
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder
 } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 const { parseEmoji } = require('../btnConfig');
 
 module.exports = {
@@ -48,7 +48,7 @@ async function build(db) {
 
     embed.setDescription('Choose the ticket type from the menu below and a private channel will be created for you.');
 
-    const options = types.slice(0, 25).map(t => {
+    const options = types.slice(0, 24).map(t => {
         const opt = new StringSelectMenuOptionBuilder()
             .setLabel(t.name || 'تكت')
             .setValue(String(t.id))
@@ -68,8 +68,8 @@ async function build(db) {
         new StringSelectMenuBuilder()
             .setCustomId('tickets_type_menu')
             .setPlaceholder('🎫 Choose a ticket type')
-            .addOptions(options)
+            .addOptions([...options, resetOption('tickets')])
     );
 
-    return { embeds: [embed], components: [menuRow, resetRow('tickets')] };
+    return { embeds: [embed], components: [menuRow] };
 }

@@ -2302,6 +2302,31 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isStringSelectMenu()) {
         const value = interaction.values[0];
 
+        // ── Reset Menu option selected inside a select menu ─────────────────────
+        if (value.startsWith('reset_')) {
+            const key = value.replace('reset_', '');
+            const commandName = resetCommandMap[key];
+            const command = commandName ? client.commands.get(commandName) : null;
+            if (command?.slashExecute) {
+                try {
+                    await interaction.deferUpdate();
+                    interaction._isReset = true;
+                    interaction.reply = async (data) => {
+                        if (!data || data?.flags === 64 ||
+                            data?.content === '\u200b' || data?.content === '​') return;
+                        return interaction.editReply(data);
+                    };
+                    await command.slashExecute(interaction, db);
+                } catch (e) {
+                    console.error(e);
+                    try { if (interaction.deferred) interaction.editReply({ content: '❌ حدث خطأ.' }); } catch {}
+                }
+            } else {
+                await interaction.deferUpdate().catch(() => {});
+            }
+            return;
+        }
+
         // ── منيو التفعيل ────────────────────────────────────────────────────────
         if (interaction.customId === 'activation_menu' && value === 'activate_now') {
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB } = require('discord.js');

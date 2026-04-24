@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'crime',
@@ -37,11 +37,12 @@ async function build(db) {
 
     if (!robberies.length) return { embeds: [embed], components: [resetRow('crime')] };
 
-    const options = robberies.slice(0, 25).map(r => ({
+    const options = robberies.slice(0, 24).map(r => ({
         label: r.name,
         value: String(r.id),
         description: `💵 ${Number(r.min_money).toLocaleString()} — ${Number(r.max_money).toLocaleString()} ريال`,
     }));
+    options.push(resetOption('crime'));
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
@@ -49,5 +50,5 @@ async function build(db) {
             .setPlaceholder('⛓️ Choose a robbery')
             .addOptions(options)
     );
-    return { embeds: [embed], components: [menu, resetRow('crime')] };
+    return { embeds: [embed], components: [menu] };
 }

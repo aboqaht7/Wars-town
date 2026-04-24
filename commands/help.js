@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
 
 const OPTIONS = [
     { label: '🪪 الهوية', value: 'identity' },
@@ -16,6 +15,7 @@ const OPTIONS = [
     { label: '🔫 Crimes', value: 'crime' },
     { label: '🎫 Tickets', value: 'tickets' },
     { label: '🚗 Cars & Showroom', value: 'vehicles' },
+    { label: '🔄 Reset Menu', value: 'reset_help', description: 'Return to the main view' },
 ];
 
 module.exports = {
@@ -48,5 +48,5 @@ async function build(db) {
             .addOptions(OPTIONS)
     );
     if (_img) embed.setImage(_img);
-    return { embeds: [embed], components: [menu, resetRow('help')] };
+    return { embeds: [embed], components: [menu] };
 }

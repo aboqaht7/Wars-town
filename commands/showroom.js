@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'معارض',
@@ -36,14 +36,15 @@ function build(cars, image) {
         .setTimestamp();
     if (image) embed.setImage(image);
 
-    const components = [resetRow('showroom')];
+    const components = cars.length ? [] : [resetRow('showroom')];
     if (cars.length) {
-        const options = cars.slice(0, 25).map(c => ({
+        const options = cars.slice(0, 24).map(c => ({
             label: `🚗 ${c.car_name}`,
             value: `car_${c.id}`,
             description: `${Number(c.price).toLocaleString()} ريال${c.color ? ` • ${c.color}` : ''}`,
         }));
-        components.unshift(new ActionRowBuilder().addComponents(
+        options.push(resetOption('showroom'));
+        components.push(new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('showroom_menu')
                 .setPlaceholder('Choose a car to inquire about')

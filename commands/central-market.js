@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'سوق-مركزي',
@@ -77,8 +77,10 @@ async function buildMarket(db) {
                 { label: '🪓 بيع كل الأخشاب',    value: 'woodcutting', description: 'خشب' },
                 { label: '⛏️ بيع كل المعادن',    value: 'mining',      description: 'نحاس • فضة • ذهب • الماس' },
                 { label: '💰 بيع الكل دفعة واحدة', value: 'all',        description: 'بيع جميع مكاسب الوظائف' },
+            
+                { label: '🔄 Reset Menu', value: 'reset_سوق-مركزي', description: 'Return to the main view' },
             ])
     );
 
-    return { embeds: [embed], components: [menu, resetRow('سوق-مركزي')] };
+    return { embeds: [embed], components: [menu] };
 }

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'سيارات',
@@ -31,7 +31,9 @@ function build(image) {
             .setPlaceholder('Choose an option')
             .addOptions([
                 { label: '🚗 View My Cars', value: 'view' },
+            
+                { label: '🔄 Reset Menu', value: 'reset_vehicles', description: 'Return to the main view' },
             ])
     );
-    return { embeds: [embed], components: [menu, resetRow('vehicles')] };
+    return { embeds: [embed], components: [menu] };
 }

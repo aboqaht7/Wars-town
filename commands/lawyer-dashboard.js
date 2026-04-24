@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder, EmbedBuilder, ActionRowBuilder,
     ButtonBuilder, ButtonStyle, StringSelectMenuBuilder
 } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'محامي',
@@ -48,21 +48,19 @@ async function buildMain(db) {
     const menu = new StringSelectMenuBuilder()
         .setCustomId('lawyer_select')
         .setPlaceholder('👤 اختر محامياً لعرض لوحته')
-        .addOptions(
-            lawyers.slice(0, 25).map(l => ({
+        .addOptions([
+            ...lawyers.slice(0, 24).map(l => ({
                 label: l.lawyer_name,
                 value: l.discord_id,
                 description: `عرض طلبات التوكيل الخاصة بـ ${l.lawyer_name}`,
                 emoji: '⚖️',
-            }))
-        );
+            })),
+            resetOption('محامي'),
+        ]);
 
     return {
         embeds: [embed],
-        components: [
-            new ActionRowBuilder().addComponents(menu),
-            resetRow('محامي'),
-        ],
+        components: [new ActionRowBuilder().addComponents(menu)],
     };
 }
 

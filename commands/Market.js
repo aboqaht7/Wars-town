@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'market',
@@ -44,11 +44,12 @@ async function buildMarket(db) {
 
     if (!items.length) return { embeds: [embed], components: [resetRow('market')] };
 
-    const options = items.slice(0, 25).map(it => ({
+    const options = items.slice(0, 24).map(it => ({
         label: it.name,
         value: String(it.id),
         description: `💰 ${Number(it.price).toLocaleString()} ريال` + (it.description ? ` — ${it.description.slice(0, 50)}` : ''),
     }));
+    options.push(resetOption('market'));
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
@@ -57,5 +58,5 @@ async function buildMarket(db) {
             .addOptions(options)
     );
 
-    return { embeds: [embed], components: [menu, resetRow('market')] };
+    return { embeds: [embed], components: [menu] };
 }

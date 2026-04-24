@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder, EmbedBuilder,
     ActionRowBuilder, StringSelectMenuBuilder
 } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'identity',
@@ -12,12 +12,12 @@ module.exports = {
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const { embed, menu } = await buildMain(message.author.id, db);
-        message.channel.send({ embeds: [embed], components: [menu, resetRow('identity')] });
+        message.channel.send({ embeds: [embed], components: [menu] });
     },
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const { embed, menu } = await buildMain(interaction.user.id, db);
-        const main = { embeds: [embed], components: [menu, resetRow('identity')] };
+        const main = { embeds: [embed], components: [menu] };
         if (interaction._isReset) return interaction.message.edit(main);
         await interaction.channel.send(main);
         await interaction.reply({ content: '​', flags: 64 });
@@ -44,6 +44,8 @@ async function buildMain(userId, db) {
                 { label: '✏️ Create Identity', value: 'create_identity', description: 'Create a new character in an empty slot' },
                 { label: '✅ Login', value: 'login_identity', description: 'Login with an existing character' },
                 { label: '🚪 Logout', value: 'logout_identity', description: 'Logout from the current character' },
+            
+                { label: '🔄 Reset Menu', value: 'reset_identity', description: 'Return to the main view' },
             ])
     );
     return { embed, menu };

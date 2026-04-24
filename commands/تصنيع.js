@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 
 const RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
 
@@ -22,11 +22,14 @@ function buildRow() {
         new StringSelectMenuBuilder()
             .setCustomId('craft_weapon')
             .setPlaceholder('🔫 اختر المسدس...')
-            .addOptions(WEAPONS.map(w => ({
-                label: w.label,
-                description: w.description,
-                value: w.value,
-            })))
+            .addOptions([
+                ...WEAPONS.map(w => ({
+                    label: w.label,
+                    description: w.description,
+                    value: w.value,
+                })),
+                resetOption('تصنيع'),
+            ])
     );
 }
 
@@ -40,7 +43,7 @@ module.exports = {
         const identity = await db.getActiveIdentity(interaction.user.id);
         if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
-        const payload = { embeds: [buildEmbed()], components: [buildRow(), resetRow('تصنيع')] };
+        const payload = { embeds: [buildEmbed()], components: [buildRow()] };
         if (interaction._isReset) {
             return interaction.message.edit(payload);
         }

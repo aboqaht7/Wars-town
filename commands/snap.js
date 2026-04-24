@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder, EmbedBuilder,
     ActionRowBuilder, StringSelectMenuBuilder,
 } = require('discord.js');
-const { resetRow } = require('../utils');
+const { resetRow, resetOption } = require('../utils');
 const { loadSystemBtns, makeBtn, makeMenuOption } = require('../btnConfig');
 
 async function buildSnap(account, image, db) {
@@ -19,7 +19,7 @@ async function buildSnap(account, image, db) {
         const row = new ActionRowBuilder().addComponents(
             makeBtn('snap_create', c.create),
         );
-        return { embeds: [embed], components: [row, resetRow('سناب')] };
+        return { embeds: [embed], components: [row] };
     }
 
     const mc = await loadSystemBtns(db, 'snap_menu');
@@ -33,10 +33,12 @@ async function buildSnap(account, image, db) {
                 makeMenuOption('snap_friends',  mc.friends),
                 makeMenuOption('snap_add',      mc.add),
                 makeMenuOption('snap_requests', mc.requests),
+            
+                { label: '🔄 Reset Menu', value: 'reset_سناب', description: 'Return to the main view' },
             ])
     );
 
-    return { embeds: [embed], components: [menu, resetRow('سناب')] };
+    return { embeds: [embed], components: [menu] };
 }
 
 module.exports = {
