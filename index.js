@@ -232,8 +232,7 @@ async function sendToTripLog(embed) {
 async function handleOpenTicket(interaction, typeId) {
     try {
         const types = await db.getTicketTypes();
-        console.log(`[TICKET] typeId received: ${typeId} (${typeof typeId}), DB ids: ${types.map(t => `${t.id}(${typeof t.id})`).join(', ')}`);
-        const type  = types.find(t => String(t.id) === String(typeId));
+        const type  = types.find(t => t.name === String(typeId) || String(t.id) === String(typeId));
         if (!type) return interaction.reply({ content: '❌ Ticket type not found.', flags: 64 });
 
         const categoryId  = await db.getConfig('ticket_category_id');
@@ -2676,8 +2675,7 @@ client.on('interactionCreate', async interaction => {
                 }
                 return interaction.deferUpdate().catch(() => {});
             }
-            const typeId = parseInt(value);
-            return handleOpenTicket(interaction, typeId);
+            return handleOpenTicket(interaction, value);
         }
 
         // ── ملف المواطن — اختيار من القائمة ─────────────────────────────────────
