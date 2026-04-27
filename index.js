@@ -276,10 +276,10 @@ async function handleOpenTicket(interaction, typeId) {
                     const freshPayload = await ticketCmd.buildPanel(db);
                     await interaction.message.edit(freshPayload).catch(() => {});
                 }
-                await interaction.followUp({ content: '⚠️ The ticket menu was outdated and has been refreshed. Please select your ticket type again.', flags: 64 }).catch(() => {});
+                await interaction.followUp({ content: '⚠️ تم تحديث قائمة التكتات. يرجى الاختيار من جديد.', flags: 64 }).catch(() => {});
             } catch (e) {
                 console.error('[TICKET] auto-refresh failed:', e);
-                interaction.reply({ content: '❌ Please try again.', flags: 64 }).catch(() => {});
+                interaction.reply({ content: '❌ حدث خطأ، حاول مجدداً.', flags: 64 }).catch(() => {});
             }
             return;
         }
