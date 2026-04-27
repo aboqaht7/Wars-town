@@ -284,9 +284,10 @@ async function handleOpenTicket(interaction, typeId) {
             return;
         }
 
-        const categoryId  = await db.getConfig('ticket_category_id');
-        const cleanName   = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;
-        const channelName = `ticket-${cleanName}`;
+        const defaultCategoryId = await db.getConfig('ticket_category_id').catch(() => null);
+        const categoryId        = type.category_id || defaultCategoryId;
+        const cleanName         = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;
+        const channelName       = `ticket-${cleanName}`;
 
         const { PermissionFlagsBits: PFB, ChannelType, ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
 
