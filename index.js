@@ -268,13 +268,16 @@ async function handleOpenTicket(interaction, typeId) {
         const types = await db.getTicketTypes();
         const type  = types.find(t => t.name === String(typeId) || String(t.id) === String(typeId));
         if (!type) {
-            // Panel is stale — auto-refresh it and ask user to try again
+            // Panel is stale — auto-refresh it in place and notify user
             try {
-                const ticketCmd = client.commands.get('tickets');
                 if (!interaction.deferred && !interaction.replied) await interaction.deferUpdate().catch(() => {});
-                if (ticketCmd?.buildPanel) {
+                const ticketCmd = client.commands.get('tickets');
+                if (ticketCmd?.sendOrUpdatePanel) {
+                    // Edit the exact message that was clicked, then register it as the active panel
                     const freshPayload = await ticketCmd.buildPanel(db);
                     await interaction.message.edit(freshPayload).catch(() => {});
+                    const configKey = `ticket_panel_msg_${interaction.channel.id}`;
+                    await db.setConfig(configKey, interaction.message.id).catch(() => {});
                 }
                 await interaction.followUp({ content: '⚠️ تم تحديث قائمة التكتات. يرجى الاختيار من جديد.', flags: 64 }).catch(() => {});
             } catch (e) {
