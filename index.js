@@ -80,6 +80,26 @@ function markInteraction(id) {
     return true;
 }
 
+// Patches interaction so that both reply() and channel.send() redirect to
+// editReply() when a reset action refreshes an existing panel in-place.
+function patchResetInteraction(interaction) {
+    interaction._isReset = true;
+    interaction.reply = async (data) => {
+        if (!data || data?.flags === 64 ||
+            data?.content === '\u200b' || data?.content === '​') return;
+        return interaction.editReply(data).catch(() => {});
+    };
+    const originalSend = interaction.channel.send.bind(interaction.channel);
+    interaction.channel = Object.create(interaction.channel);
+    interaction.channel.send = async (data) => {
+        try {
+            return await interaction.editReply(data);
+        } catch {
+            return originalSend(data);
+        }
+    };
+}
+
 /* ── جلسات التراكينق: targetId → { code, trackerId, channelId, guildId, timer } ── */
 const trackingSessions = new Map();
 
@@ -341,12 +361,7 @@ client.on('interactionCreate', async interaction => {
                     if (!interaction.replied && !interaction.deferred) {
                         await interaction.deferUpdate();
                     }
-                    interaction._isReset = true;
-                    interaction.reply = async (data) => {
-                        if (!data || data?.flags === 64 ||
-                            data?.content === '\u200b' || data?.content === '​') return;
-                        return interaction.editReply(data);
-                    };
+                    patchResetInteraction(interaction);
                     await command.slashExecute(interaction, db);
                 } catch (e) {
                     if (e?.code === 40060 || e?.code === 10062) return;
@@ -2318,12 +2333,7 @@ client.on('interactionCreate', async interaction => {
                     if (!interaction.replied && !interaction.deferred) {
                         await interaction.deferUpdate();
                     }
-                    interaction._isReset = true;
-                    interaction.reply = async (data) => {
-                        if (!data || data?.flags === 64 ||
-                            data?.content === '\u200b' || data?.content === '​') return;
-                        return interaction.editReply(data);
-                    };
+                    patchResetInteraction(interaction);
                     await command.slashExecute(interaction, db);
                 } catch (e) {
                     if (e?.code === 40060 || e?.code === 10062) return;
