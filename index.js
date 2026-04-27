@@ -233,7 +233,22 @@ async function handleOpenTicket(interaction, typeId) {
     try {
         const types = await db.getTicketTypes();
         const type  = types.find(t => t.name === String(typeId) || String(t.id) === String(typeId));
-        if (!type) return interaction.reply({ content: '❌ Ticket type not found.', flags: 64 });
+        if (!type) {
+            // Panel is stale — auto-refresh it and ask user to try again
+            try {
+                const ticketCmd = client.commands.get('tickets');
+                if (!interaction.deferred && !interaction.replied) await interaction.deferUpdate().catch(() => {});
+                if (ticketCmd?.buildPanel) {
+                    const freshPayload = await ticketCmd.buildPanel(db);
+                    await interaction.message.edit(freshPayload).catch(() => {});
+                }
+                await interaction.followUp({ content: '⚠️ The ticket menu was outdated and has been refreshed. Please select your ticket type again.', flags: 64 }).catch(() => {});
+            } catch (e) {
+                console.error('[TICKET] auto-refresh failed:', e);
+                interaction.reply({ content: '❌ Please try again.', flags: 64 }).catch(() => {});
+            }
+            return;
+        }
 
         const categoryId  = await db.getConfig('ticket_category_id');
         const cleanName   = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;

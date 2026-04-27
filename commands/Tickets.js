@@ -9,6 +9,7 @@ const { parseEmoji } = require('../btnConfig');
 
 module.exports = {
     name: 'tickets',
+    buildPanel: build,
     data: new SlashCommandBuilder()
         .setName('tickets')
         .setDescription('Ticket System'),
@@ -30,7 +31,7 @@ module.exports = {
     }
 };
 
-async function build(db) {
+async function build(db) { // exported as buildPanel
     const types = await db.getTicketTypes();
     const img   = await db.getImage('tickets').catch(() => null);
 
