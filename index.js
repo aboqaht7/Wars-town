@@ -294,9 +294,9 @@ async function handleOpenTicket(interaction, typeId) {
 }
 
 const resetCommandMap = {
-    bank: 'bank', bag: 'bag', identity: 'identity',
+    bank: 'بنك', bag: 'bag', identity: 'identity',
     phone: 'phone', الرحلات: 'الرحلات', jobs: 'jobs', market: 'market', 'بلاك-ماركت': 'بلاك-ماركت',
-    law: 'law', admin: 'admin', crime: 'crime', health: 'health',
+    law: 'محاماة', admin: 'admin', crime: 'crime', health: 'health',
     tickets: 'tickets', showroom: 'معارض', vehicles: 'سيارات',
     x_platform: 'منصة-x', help: 'help', properties: 'properties',
     معدات: 'معدات',

@@ -41,7 +41,7 @@ module.exports = {
 
         if (_img) embed.setImage(_img);
 
-        const payload = { embeds: [embed], components: [row1, row2, resetRow('cia')] };
+        const payload = { embeds: [embed], components: [row1, row2] };
 
         if (interaction._isReset) {
             return interaction.message.edit(payload);

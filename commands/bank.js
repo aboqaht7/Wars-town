@@ -21,7 +21,7 @@ async function bankMenu(imageUrl, db) {
         .setFooter({ text: 'Bank System • FANTASY Bot' })
         .setTimestamp();
     if (imageUrl) embed.setImage(imageUrl);
-    return { embeds: [embed], components: [row, resetRow('bank')] };
+    return { embeds: [embed], components: [row] };
 }
 
 module.exports = {

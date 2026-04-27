@@ -36,7 +36,7 @@ module.exports = {
         const identity = await db.getActiveIdentity(interaction.user.id);
         if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
-        const payload = { embeds: [buildEmbed()], components: [buildRow(), resetRow('تجميع')] };
+        const payload = { embeds: [buildEmbed()], components: [buildRow()] };
         if (interaction._isReset) {
             return interaction.message.edit(payload);
         }

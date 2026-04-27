@@ -23,7 +23,7 @@ async function build(image, account, db) {
         makeBtn('x_delete_account', c.delete),
     );
 
-    return { embeds: [embed], components: [row, resetRow('x_platform')] };
+    return { embeds: [embed], components: [row] };
 }
 
 module.exports = {

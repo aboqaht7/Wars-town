@@ -21,7 +21,7 @@ async function build(image, db) {
         makeBtn('bag_transfer', c.transfer),
     );
 
-    return { embeds: [embed], components: [row, resetRow('bag')] };
+    return { embeds: [embed], components: [row] };
 }
 
 module.exports = {

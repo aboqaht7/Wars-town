@@ -46,5 +46,5 @@ async function build(db) {
         new ButtonBuilder().setCustomId('trip_alert').setLabel('Alert').setStyle(ButtonStyle.Secondary).setEmoji('📣'),
     );
 
-    return { embeds: [embed], components: [row, resetRow('الرحلات')] };
+    return { embeds: [embed], components: [row] };
 }

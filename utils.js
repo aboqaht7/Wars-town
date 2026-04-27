@@ -5,13 +5,13 @@ function resetRow(key) {
         new ButtonBuilder()
             .setCustomId(`reset_${key}`)
             .setLabel('Reset Menu')
-            .setEmoji('🔄')
+            .setEmoji({ id: '1479212270746599528', name: 'GL137', animated: true })
             .setStyle(ButtonStyle.Secondary)
     );
 }
 
 function resetOption(key) {
-    return { label: '🔄 Reset Menu', value: `reset_${key}`, description: 'Return to the main view' };
+    return { label: 'Reset Menu', value: `reset_${key}`, description: 'Return to the main view', emoji: { id: '1479212270746599528', name: 'GL137', animated: true } };
 }
 
 async function isAdmin(member, db) {
