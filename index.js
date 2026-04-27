@@ -232,7 +232,8 @@ async function sendToTripLog(embed) {
 async function handleOpenTicket(interaction, typeId) {
     try {
         const types = await db.getTicketTypes();
-        const type  = types.find(t => t.id === typeId);
+        console.log(`[TICKET] typeId received: ${typeId} (${typeof typeId}), DB ids: ${types.map(t => `${t.id}(${typeof t.id})`).join(', ')}`);
+        const type  = types.find(t => String(t.id) === String(typeId));
         if (!type) return interaction.reply({ content: '❌ Ticket type not found.', flags: 64 });
 
         const categoryId  = await db.getConfig('ticket_category_id');
@@ -2300,7 +2301,9 @@ client.on('interactionCreate', async interaction => {
             const command = commandName ? client.commands.get(commandName) : null;
             if (command?.slashExecute) {
                 try {
-                    await interaction.deferUpdate();
+                    if (!interaction.replied && !interaction.deferred) {
+                        await interaction.deferUpdate();
+                    }
                     interaction._isReset = true;
                     interaction.reply = async (data) => {
                         if (!data || data?.flags === 64 ||
@@ -2309,6 +2312,7 @@ client.on('interactionCreate', async interaction => {
                     };
                     await command.slashExecute(interaction, db);
                 } catch (e) {
+                    if (e?.code === 40060 || e?.code === 10062) return;
                     console.error(e);
                     try { if (interaction.deferred) interaction.editReply({ content: '❌ An error occurred.' }); } catch {}
                 }
