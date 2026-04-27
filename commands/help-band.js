@@ -4,23 +4,23 @@ module.exports = {
     name: 'help-band',
     data: new SlashCommandBuilder()
         .setName('help-band')
-        .setDescription('قائمة أوامر التشهير والطرد النهائي'),
+        .setDescription('List of defamation and permanent-ban commands'),
 
     async slashExecute(interaction, db) {
         await interaction.reply({ content: '⏳', flags: 64 });
 
         const text = [
-            '**🚫 أوامر التشهير — الطرد النهائي من السيرفر**',
+            '**🚫 Defamation Commands — Permanent Server Ban**',
             '',
-            '`-بنعالي @اللاعب`',
-            '`-شقلب @اللاعب`',
-            '`-تفوو @اللاعب`',
-            '`-بنعال-ابو-قحط @اللاعب`',
-            '`-بنعال-عسيري @اللاعب`',
-            '`-بنعال-الشريف @اللاعب`',
-            '`-بنعال-مشاري @اللاعب`',
+            '`-بنعالي @player`',
+            '`-شقلب @player`',
+            '`-تفوو @player`',
+            '`-بنعال-ابو-قحط @player`',
+            '`-بنعال-عسيري @player`',
+            '`-بنعال-الشريف @player`',
+            '`-بنعال-مشاري @player`',
             '',
-            '> جميع الأوامر للإدارة فقط — يُطرد اللاعب نهائياً من السيرفر فور التنفيذ.',
+            '> All commands are admin-only — the player is permanently banned from the server upon execution.',
         ].join('\n');
 
         await interaction.channel.send(text);

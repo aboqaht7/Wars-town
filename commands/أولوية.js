@@ -5,9 +5,9 @@ const STYLE_MAP = { Primary: BS.Primary, Secondary: BS.Secondary, Success: BS.Su
 function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Priority System')
-        .setDescription('اختر مستوى الأولوية بالضغط على الزر المناسب.')
+        .setDescription('Choose your priority level by pressing the appropriate button.')
         .setColor(0xF57C00)
-        .setFooter({ text: 'نظام الأولوية • FANTASY Bot' })
+        .setFooter({ text: 'Priority System • FANTASY Bot' })
         .setTimestamp();
 }
 
@@ -20,7 +20,7 @@ module.exports = {
     async slashExecute(interaction, db) {
         const buttons = await db.getPriorityButtons();
         if (!buttons.length)
-            return interaction.reply({ content: '❌ لم تتم إضافة أي أزرار أولوية بعد.', flags: 64 });
+            return interaction.reply({ content: '❌ No priority buttons have been added yet.', flags: 64 });
 
         const rows = [];
         let currentRow = new ActionRowBuilder();

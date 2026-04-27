@@ -7,16 +7,15 @@ module.exports = {
             ? message.member.roles.cache.has(permRoleId)
             : message.member.roles.cache.some(r => r.name === 'مبرمج') || await isAdmin(message.member, db);
         if (!authorized)
-            return message.reply('❌ ليس لديك صلاحية تنفيذ أوامر الباند.');
+            return message.reply('❌ You do not have permission to lift violations.');
 
         const target = message.mentions.members?.first()
             || message.guild?.members.cache.get(args[0]);
         if (!target)
-            return message.reply('❌ استخدم: `-فك-مخالف @اللاعب`');
+            return message.reply('❌ Usage: `-فك-مخالف @player`');
 
         const violation = await db.getViolationByUserId(target.id);
 
-        // جمع الرتب المراد إعادتها
         const rolesToRestore = new Set();
 
         if (violation?.saved_roles) {
@@ -26,23 +25,19 @@ module.exports = {
             } catch (_) {}
         }
 
-        // Rank التفعيل وRank الهوية دائماً
         const activationRoleId = await db.getConfig('activation_role_id');
         const identityRoleId   = await db.getConfig('identity_role');
         if (activationRoleId) rolesToRestore.add(activationRoleId);
         if (identityRoleId)   rolesToRestore.add(identityRoleId);
 
-        // Rank الباند — نحذفها من القائمة إن وُجدت
         const banRoleId = await db.getConfig('violation_role_id');
         if (banRoleId) rolesToRestore.delete(banRoleId);
 
-        // تطبيق الرتب
         for (const roleId of rolesToRestore) {
             const role = message.guild.roles.cache.get(roleId);
             if (role) await target.roles.add(role).catch(() => {});
         }
 
-        // إزالة Rank الباند
         if (banRoleId) {
             const banRole = message.guild.roles.cache.get(banRoleId);
             if (banRole) await target.roles.remove(banRole).catch(() => {});
@@ -51,13 +46,13 @@ module.exports = {
         await db.removeViolation(target.id);
 
         await message.channel.send(
-            `✅ **تم فك المخالفة عن ${target} وتمت استعادة جميع رتبه**\n> **المنفذ:** ${message.author}`
+            `✅ **Violation lifted for ${target} — all roles restored**\n> **By:** ${message.author}`
         );
 
         try {
             await target.send(
-                `✅ **تم رفع المخالفة عنك في سيرفر ${message.guild.name}**\n` +
-                `> تمت استعادة جميع رتبك السابقة بالكامل.`
+                `✅ **Your violation in ${message.guild.name} has been lifted**\n` +
+                `> All your previous roles have been fully restored.`
             );
         } catch (_) {}
     }

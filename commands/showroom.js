@@ -41,7 +41,7 @@ function build(cars, image) {
         const options = cars.slice(0, 24).map(c => ({
             label: `🚗 ${c.car_name}`,
             value: `car_${c.id}`,
-            description: `${Number(c.price).toLocaleString()} ريال${c.color ? ` • ${c.color}` : ''}`,
+            description: `${Number(c.price).toLocaleString()} Riyals${c.color ? ` • ${c.color}` : ''}`,
         }));
         options.push(resetOption('showroom'));
         components.push(new ActionRowBuilder().addComponents(

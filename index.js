@@ -89,43 +89,43 @@ client.once('clientReady', async () => {
     // ── ضبط رسائل الرحلات الافتراضية ──────────────────────────────────────
     try {
         await db.setConfig('trip_start_message',
-`- إعـلان رحـلـة لـدولـة —FANTASY TOWN .
+`— FANTASY TOWN Flight Announcement —
 
+ - Captain ID: {هوست}
 
- - أيـدي كـابـتـن الـطـائـرة : {هوست}
+- Co-Pilot ID: {نائب}
 
-- أيـدي مـسـاعـد الـطـائـرة : {نائب}
+— Join Time: {وقت}
 
-— موعد التجوين : {وقت}
+— Observer: {رقابي}
 
-— رقابي الـرحـلة: {رقابي}
+- Important Notes:
 
-- مـلاحـظـات مـهـمة 
+- Add the Captain and Co-Pilot.
 
-- إضـافـة كـابـتـن الـطـائـرة والـمُـسـاعـد .
-
-- عـدم إزعـاج كـابـتـن الـطـائـرة والـمُـسـاعـد .
+- Do not disturb the Captain or Co-Pilot.
 || @everyone ||`);
 
         await db.setConfig('trip_renewal_message',
-`بدء الرحلة  — يوجد Renew رحلة 
-الرجاء من الجميع وضع خيار { LAST LOCATION } 
-و الخروج من الرحلة و الدخول على الرحلة الجديدة 
+`Trip Renew Notification
 
-ايدي الهوست : {هوست}
+Please set your option to { LAST LOCATION }
+then leave the current trip and rejoin the new one.
 
-نتمنى لكم التوفيق دائماً ❣️
+Host ID: {هوست}
+
+We wish you all the best ❣️
 || @everyone ||`);
 
         await db.setConfig('trip_hurricane_message',
-`الRenew اشعار اعصار 
+`Hurricane Warning Notification
 
-⚠️— يوجد اعصار في المدينة يجب على جميع اللاعبين 
-المغادرة من الرحلة و انتظار الرحلات القادمة 
+⚠️ — There is a hurricane in the city. All players must
+leave the trip and wait for future trips.
 
-رحلة كانت ممتعة و نعوضكم الرحلات القادمة 
+It was a great trip and we'll make it up to you next time.
 
-نتمنى لكم التوفيق دائماً ❣️
+We wish you all the best ❣️
 || @everyone ||`);
 
         console.log('✅ تم ضبط رسائل الرحلات');
@@ -155,55 +155,55 @@ client.once('clientReady', async () => {
 
 const menuHandlers = {
     help_menu: {
-        identity: '🪪 **الهوية** — اكتب `/identity` لعرض شخصيتك والإيبان الخاص بها.',
-        phone: '📱 **الجوال** — اكتب `/phone` لإرسال بلاغ شرطة 🚨 أو بلاغ إسعاف 🚑.',
-        bag: '🎒 **Bag** — اكتب `/bag` لعرض أغراضك. لنقل غرض: `-نقل [غرض] @مستخدم`',
-        bank: '🏦 **Bank** — اكتب `/bank` لعرض رصيدك وإيبانك. لتحويل مال: `-تحويل [إيبان] [مبلغ]`',
-        trips: '✈️ **الرحلات** — اكتب `/الرحلات` لفتح رحلة أو إرسال Alert.',
-        jobs: '💼 **الوظائف** — اكتب `/jobs` لاختيار وظيفتك (صيد، تكسي، صيد حيوانات، منجم).',
-        market: '🛒 **Tools Market** — اكتب `/market` لشراء السنارة والفأس وأدوات المنجم.',
-        law: '⚖️ **Law** — اكتب `/law` لفتح قضية أو إدارة القضايا.',
-        admin: '🛡️ **Admin** — اكتب `/admin` لعرض لوحة Admin.',
-        crime: '🔫 **Crimes** — اكتب `/crime` لتنفيذ جريمة.',
-        tickets: '🎫 **Tickets** — اكتب `/tickets` لفتح تكت (شكوى، اقتراح، بلاغ).',
-        vehicles: '🚗 **Cars & Showroom**\n• `/سيارات` — سياراتك المسجلة\n• `/معارض` — عرض المعرض\n• `/اضافة-معرض` — إضافة سيارة للمعرض',
-        sms: '💬 **Messages**\n• `-رسالة @مستخدم [نص]` — إرسال رسالة\n• `-صندوق` — عرض صندوق Messages\n• `-جهات @مستخدم [اسم]` — إضافة جهة اتصال\n• `-جهات` — عرض جهات الاتصال',
-        x_platform: '𝕏 **X Platform**\n• `-تغريد [نص]` — نشر تغريدة\n• `/منصة-x` — عرض المنشورات\n• `-حذف-تغريدة [رقم]` — حذف تغريدتك',
+        identity: '🪪 **Identity** — Type `/identity` to view your character and IBAN.',
+        phone: '📱 **Phone** — Type `/phone` to send a police report 🚨 or ambulance report 🚑.',
+        bag: '🎒 **Bag** — Type `/bag` to view your items. To transfer an item: `-نقل [item] @user`',
+        bank: '🏦 **Bank** — Type `/bank` to view your balance and IBAN. To transfer money: `-تحويل [IBAN] [amount]`',
+        trips: '✈️ **Trips** — Type `/الرحلات` to open a trip or send an Alert.',
+        jobs: '💼 **Jobs** — Type `/jobs` to choose your job (fishing, taxi, hunting, mining).',
+        market: '🛒 **Tools Market** — Type `/market` to buy a fishing rod, axe, or mining tools.',
+        law: '⚖️ **Law** — Type `/law` to open a case or manage cases.',
+        admin: '🛡️ **Admin** — Type `/admin` to view the admin dashboard.',
+        crime: '🔫 **Crimes** — Type `/crime` to commit a crime.',
+        tickets: '🎫 **Tickets** — Type `/tickets` to open a ticket (complaint, suggestion, report).',
+        vehicles: '🚗 **Cars & Showroom**\n• `/سيارات` — Your registered cars\n• `/معارض` — View the showroom\n• `/اضافة-معرض` — Add a car to the showroom',
+        sms: '💬 **Messages**\n• `-رسالة @user [text]` — Send a message\n• `-صندوق` — View your inbox\n• `-جهات @user [name]` — Add a contact\n• `-جهات` — View contacts',
+        x_platform: '𝕏 **X Platform**\n• `-تغريد [text]` — Post a tweet\n• `/منصة-x` — View posts\n• `-حذف-تغريدة [number]` — Delete your tweet',
     },
     admin_menu: {
-        ranks: '🏅 **عرض الرتب** — تواصل مع Admin لعرض رتبتك الحالية.',
-        points: '⭐ **نقاط Admin** — تواصل مع Admin لمعرفة نقاطك.',
-        manage: '👥 **إدارة اللاعبين** — صلاحية خاصة بAdmin فقط.',
-        logs: '📋 **سجل الإجراءات** — سجل جميع الإجراءات الإدارية.',
+        ranks: '🏅 **View Ranks** — Contact Admin to view your current rank.',
+        points: '⭐ **Admin Points** — Contact Admin to check your points.',
+        manage: '👥 **Player Management** — Admin-only permission.',
+        logs: '📋 **Action Log** — Log of all administrative actions.',
     },
     jobs_menu: {
-        fishing: '🎣 **صيد السمك** — توجه لمنطقة الصيد وابدأ رحلة الصيد.',
-        taxi: '🚕 **تكسي** — توجه لمحطة التكسي وابدأ العمل.',
-        hunting: '🦌 **صيد الحيوانات** — توجه للغابة وابدأ رحلة الصيد.',
-        mining: '⛏️ **منجم** — توجه للمنجم وابدأ استخراج المعادن.',
+        fishing: '🎣 **Fishing** — Head to the fishing area and start fishing.',
+        taxi: '🚕 **Taxi** — Head to the taxi station and start working.',
+        hunting: '🦌 **Hunting** — Head to the forest and start hunting.',
+        mining: '⛏️ **Mining** — Head to the mine and start extracting minerals.',
     },
     law_menu: {
-        new_case: '📁 **فتح قضية** — تواصل مع Admin لفتح قضية جديدة.',
-        view_cases: '📋 **عرض القضايا** — تواصل مع Admin لعرض قضاياك.',
-        hire_lawyer: '👨‍⚖️ **توكيل محامٍ** — تواصل مع Admin لتوكيل محامٍ.',
-        legal_process: '⚖️ **الإجراءات القانونية** — تواصل مع Admin لمعرفة الإجراءات.',
+        new_case: '📁 **Open a Case** — Contact Admin to open a new case.',
+        view_cases: '📋 **View Cases** — Contact Admin to view your cases.',
+        hire_lawyer: '👨‍⚖️ **Hire a Lawyer** — Contact Admin to hire a lawyer.',
+        legal_process: '⚖️ **Legal Procedures** — Contact Admin for information on legal procedures.',
     },
     market_menu: {
-        fishing_rod: '🎣 **سنارة صيد** — تواصل مع Admin لشراء سنارة الصيد.',
-        axe: '🪓 **فأس** — تواصل مع Admin لشراء فأس للحطب.',
-        mining_tools: '⛏️ **أدوات منجم** — تواصل مع Admin لشراء أدوات المنجم.',
-        auction: '🔨 **مزاد** — تواصل مع Admin لحضور مزاد السيارات والعقارات.',
+        fishing_rod: '🎣 **Fishing Rod** — Contact Admin to purchase a fishing rod.',
+        axe: '🪓 **Axe** — Contact Admin to purchase an axe.',
+        mining_tools: '⛏️ **Mining Tools** — Contact Admin to purchase mining tools.',
+        auction: '🔨 **Auction** — Contact Admin to attend a car and property auction.',
     },
     health_menu: {
-        hospital_resuscitation: '🏥 **إنعاش مستشفى** — تواصل مع طاقم المستشفى لإنعاشك.',
-        decay: '💀 **تحلل** — شخصيتك في وضع التحلل، تواصل مع Admin.',
-        witch_resuscitation: '🧙 **إنعاش ساحرة** — تواصل مع الساحرة للحصول على الإنعاش.',
+        hospital_resuscitation: '🏥 **Hospital Resuscitation** — Contact the hospital staff to revive you.',
+        decay: '💀 **Decay** — Your character is in decay state. Contact Admin.',
+        witch_resuscitation: '🧙 **Witch Resuscitation** — Contact the witch for a revival.',
     },
     ticket_menu: {
-        complaint: '📋 **شكوى** — اكتب تفاصيل شكواك وأرسلها للإدارة.',
-        suggestion: '💡 **اقتراح** — اكتب اقتراحك وسيتم مراجعته.',
-        report: '🚨 **بلاغ** — اكتب تفاصيل البلاغ مع الأدلة وأرسله للإدارة.',
-        inquiry: '❓ **استفسار** — اكتب استفسارك وستحصل على رد.',
+        complaint: '📋 **Complaint** — Write the details of your complaint and send it to management.',
+        suggestion: '💡 **Suggestion** — Write your suggestion and it will be reviewed.',
+        report: '🚨 **Report** — Write the details of the report with evidence and send it to management.',
+        inquiry: '❓ **Inquiry** — Write your inquiry and you will receive a reply.',
     },
 };
 
@@ -233,7 +233,7 @@ async function handleOpenTicket(interaction, typeId) {
     try {
         const types = await db.getTicketTypes();
         const type  = types.find(t => t.id === typeId);
-        if (!type) return interaction.reply({ content: '❌ نوع التكت غير موجود.', flags: 64 });
+        if (!type) return interaction.reply({ content: '❌ Ticket type not found.', flags: 64 });
 
         const categoryId  = await db.getConfig('ticket_category_id');
         const cleanName   = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;
@@ -334,7 +334,7 @@ client.on('interactionCreate', async interaction => {
                 } catch (e) {
                     console.error(e);
                     try {
-                        if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
+                        if (interaction.deferred) interaction.editReply({ content: 'An error occurred.' });
                     } catch {}
                 }
             } else {
@@ -345,24 +345,24 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.customId.startsWith('trip_msg_btn_')) {
             const type   = interaction.customId.replace('trip_msg_btn_', '');
-            const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الHurricane', trip_renewal: 'الRenew' };
+            const labels = { trip_start: 'Start Trip', trip_hurricane: 'Hurricane', trip_renewal: 'Renew' };
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB_TM } = require('discord.js');
             const placeholders = {
-                trip_start:    'المتغيرات: {هوست} {نائب} {رقابي} {وقت} {منظم}\nاتركها فارغة لإعادة الرسالة الافتراضية',
-                trip_renewal:  'المتغيرات: {هوست} {منظم}\nاتركها فارغة لإعادة الرسالة الافتراضية',
-                trip_hurricane:'اتركها فارغة لإعادة الرسالة الافتراضية',
+                trip_start:    'Variables: {هوست} {نائب} {رقابي} {وقت} {منظم}\nLeave blank to reset to default message',
+                trip_renewal:  'Variables: {هوست} {منظم}\nLeave blank to reset to default message',
+                trip_hurricane:'Leave blank to reset to default message',
             };
             const modal = new ModalBuilder()
                 .setCustomId(`set_trip_msg_${type}`)
-                .setTitle(`✏️ رسالة ${labels[type] || type}`);
+                .setTitle(`✏️ Message — ${labels[type] || type}`);
             modal.addComponents(
                 new ARB_TM().addComponents(
                     new TextInputBuilder()
                         .setCustomId('trip_msg_text')
-                        .setLabel('نص الرسالة')
+                        .setLabel('Message Text')
                         .setStyle(TextInputStyle.Paragraph)
                         .setRequired(false)
-                        .setPlaceholder(placeholders[type] || 'اتركها فارغة لإعادة الرسالة الافتراضية')
+                        .setPlaceholder(placeholders[type] || 'Leave blank to reset to default message')
                 )
             );
             return interaction.showModal(modal);
@@ -370,19 +370,19 @@ client.on('interactionCreate', async interaction => {
 
         if (['trip_start', 'trip_hurricane', 'trip_renewal', 'trip_alert'].includes(interaction.customId)) {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({ content: '❌ هذا الزر للمسؤولين فقط.', flags: 64 });
+                return interaction.reply({ content: '❌ This button is for admins only.', flags: 64 });
             }
 
             if (interaction.customId === 'trip_hurricane') {
                 try { await interaction.deferReply({ flags: 64 }); } catch { return; }
                 try {
                     const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                    if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم الAlertات. استخدم `/إعداد-رحلات` أولاً.' });
+                    if (!alertsChannelId) return interaction.editReply({ content: '❌ Alerts channel not configured. Use `/إعداد-رحلات` first.' });
 
                     await db.setConfig('hurricane_active', 'true');
                     await db.setConfig('trip_open', 'false');
                     await db.logoutAllUsers();
-                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'جميع اللاعبين', 0, 'Hurricane — خروج تلقائي لجميع اللاعبين');
+                    await db.addCharacterLog('system', 'system', 'hurricane_logout', 'All Players', 0, 'Hurricane — Automatic logout of all players');
 
                     const customMsg = await db.getConfig('trip_hurricane_message');
                     try {
@@ -401,8 +401,8 @@ client.on('interactionCreate', async interaction => {
                                 const hurricaneEmbed = new EmbedBuilder()
                                     .setTitle('Warning — Hurricane!')
                                     .setColor(0xB71C1C)
-                                    .setDescription('⚠️ **تم تفعيل حدث الHurricane!**\n\n🚪 تم Logout **جميع اللاعبين** automatically.\n✈️ **تسجيل الدخول متوقف** حتى يتم فتح رحلة جديدة.')
-                                    .addFields({ name: '🔧 فعّله', value: `<@${interaction.user.id}>`, inline: true })
+                                    .setDescription('⚠️ **The Hurricane event has been activated!**\n\n🚪 **All players** have been logged out automatically.\n✈️ **Login is suspended** until a new trip is opened.')
+                                    .addFields({ name: '🔧 Activated by', value: `<@${interaction.user.id}>`, inline: true })
                                     .setFooter({ text: 'Trip System • FANTASY Bot' })
                                     .setTimestamp();
                                 await ch.send({ embeds: [hurricaneEmbed] });
@@ -410,10 +410,10 @@ client.on('interactionCreate', async interaction => {
                             }
                         }
                     } catch (sendErr) { console.error('[hurricane] send error:', sendErr?.message); }
-                    return interaction.editReply({ content: '✅ تم إرسال تحذير الHurricane.' });
+                    return interaction.editReply({ content: '✅ Hurricane warning sent.' });
                 } catch (e) {
                     console.error('[hurricane] error:', e?.message);
-                    return interaction.editReply({ content: '❌ حدث خطأ.' });
+                    return interaction.editReply({ content: '❌ An error occurred.' });
                 }
             }
 
@@ -422,10 +422,10 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'trip_start') {
                 const modal = new ModalBuilder().setCustomId('trip_start_modal').setTitle('Start New Trip');
                 modal.addComponents(
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_deputy').setLabel('نائب الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_supervisor').setLabel('الرقابي').setStyle(TextInputStyle.Short).setRequired(true)),
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_time').setLabel('وقت الرحلة').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 9:00 مساءً')),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_host_id').setLabel('Host ID').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_deputy').setLabel('Co-Pilot / Deputy').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_supervisor').setLabel('Observer').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('trip_time').setLabel('Trip Time').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('Example: 9:00 PM')),
                 );
                 return interaction.showModal(modal).catch(() => {});
             }
@@ -435,16 +435,16 @@ client.on('interactionCreate', async interaction => {
                 const hurricaneActive = await db.getConfig('hurricane_active');
 
                 if (hurricaneActive === 'true') {
-                    return interaction.reply({ content: '⚠️ يوجد Hurricane نشط — لا يمكن الRenew. يجب فتح رحلة جديدة أولاً عبر زر **Start Trip**.', flags: 64 });
+                    return interaction.reply({ content: '⚠️ An active Hurricane is in effect — Renew is not possible. Please open a new trip first via the **Start Trip** button.', flags: 64 });
                 }
 
                 if (tripOpen !== 'true') {
-                    return interaction.reply({ content: '❌ لا توجد رحلة مفتوحة حالياً — يجب Start Trip أولاً قبل الRenew.', flags: 64 });
+                    return interaction.reply({ content: '❌ No trip is currently open — you must Start Trip first before Renewing.', flags: 64 });
                 }
 
                 const modal = new ModalBuilder().setCustomId('trip_renewal_modal').setTitle('Trip Renewal');
                 modal.addComponents(
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('renewal_host_id').setLabel('ID الهوست').setStyle(TextInputStyle.Short).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('renewal_host_id').setLabel('Host ID').setStyle(TextInputStyle.Short).setRequired(true)),
                 );
                 return interaction.showModal(modal).catch(() => {});
             }
@@ -452,7 +452,7 @@ client.on('interactionCreate', async interaction => {
             if (interaction.customId === 'trip_alert') {
                 const modal = new ModalBuilder().setCustomId('trip_alert_modal').setTitle('Send Alert');
                 modal.addComponents(
-                    new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('نص الAlert').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                    new ARB().addComponents(new TextInputBuilder().setCustomId('alert_text').setLabel('Alert Text').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                 );
                 return interaction.showModal(modal).catch(() => {});
             }
@@ -467,16 +467,16 @@ client.on('interactionCreate', async interaction => {
 
                 const jobKey = interaction.customId.replace('do_job_', '');
                 const JOBS = {
-                    fishing:     { label: '🎣 Fishing',   req: 'سنارة',    items: ['سمك هامور','سالمون','روبيان','حوت'], weights: [20,35,40,5], color: 0x1565C0 },
-                    woodcutting: { label: '🪓 Woodcutting', req: 'فأس',      items: ['خشب'],                            weights: [100],       color: 0x4E342E },
-                    mining:      { label: '⛏️ Mining',       req: 'أدوات المنجم',   items: ['الماس','ذهب','فضة','نحاس'],     weights: [5,20,35,40], color: 0x546E7A },
+                    fishing:     { label: '🎣 Fishing',    req: 'سنارة',       items: ['Grouper Fish','Salmon','Shrimp','Whale'], weights: [20,35,40,5], color: 0x1565C0 },
+                    woodcutting: { label: '🪓 Woodcutting', req: 'فأس',         items: ['Wood'],                                   weights: [100],       color: 0x4E342E },
+                    mining:      { label: '⛏️ Mining',      req: 'أدوات المنجم', items: ['Diamond','Gold','Silver','Copper'],       weights: [5,20,35,40], color: 0x546E7A },
                 };
                 const job = JOBS[jobKey];
                 if (!job) return;
 
                 const hasReq = await db.hasItem(interaction.user.id, job.req);
                 if (!hasReq)
-                    return interaction.reply({ content: `❌ تحتاج **${job.req}** في حقيبتك لتنفيذ هذه الوظيفة.`, flags: 64 });
+                    return interaction.reply({ content: `❌ You need **${job.req}** in your bag to perform this job.`, flags: 64 });
 
                 const { COOLDOWN_MINUTES } = require('./commands/jobs');
                 const cooldownMs = COOLDOWN_MINUTES * 60 * 1000;
@@ -485,7 +485,7 @@ client.on('interactionCreate', async interaction => {
                     const elapsed = Date.now() - new Date(lastUsed).getTime();
                     if (elapsed < cooldownMs) {
                         const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
-                        return interaction.reply({ content: `⏳ يجب الانتظار **${remaining} ثانية** قبل تنفيذ هذه الوظيفة مجدداً.`, flags: 64 });
+                        return interaction.reply({ content: `⏳ You must wait **${remaining} seconds** before performing this job again.`, flags: 64 });
                     }
                 }
 
@@ -509,22 +509,22 @@ client.on('interactionCreate', async interaction => {
                 await db.setJobCooldown(interaction.user.id, jobKey);
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`${job.label} — النتيجة`)
+                    .setTitle(`${job.label} — Result`)
                     .setColor(job.color)
-                    .setDescription(`حصلت على **${qty} ${obtained}** 🎉`)
+                    .setDescription(`You obtained **${qty} ${obtained}** 🎉`)
                     .addFields(
-                        { name: '📦 الغنيمة',          value: `${qty}× ${obtained}`,                  inline: true },
-                        { name: '💹 سعر الوحدة',        value: `${unitPrice.toLocaleString()} ريال`,  inline: true },
-                        { name: '💰 القيمة التقديرية',  value: `${estValue.toLocaleString()} ريال`,   inline: true },
-                        { name: '🎒 تُضاف إلى',         value: 'حقيبتك',                             inline: true },
-                        { name: '⏳ الكولداون',          value: `10 ثوان`,                             inline: true },
+                        { name: '📦 Loot',               value: `${qty}× ${obtained}`,                        inline: true },
+                        { name: '💹 Unit Price',          value: `${unitPrice.toLocaleString()} Riyals`,       inline: true },
+                        { name: '💰 Estimated Value',     value: `${estValue.toLocaleString()} Riyals`,        inline: true },
+                        { name: '🎒 Added to',            value: 'Your bag',                                   inline: true },
+                        { name: '⏳ Cooldown',             value: '10 seconds',                                 inline: true },
                     )
-                    .setFooter({ text: 'Jobs System • FANTASY Bot — بيع مكاسبك عبر قائمة الوظائف' })
+                    .setFooter({ text: 'Jobs System • FANTASY Bot — sell your earnings via the jobs menu' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -536,13 +536,13 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId = parseInt(interaction.customId.replace('buy_bm_', ''));
                 const item   = await db.getBlackMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
+                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const cash = Number(identity.cash);
-                if (cash < item.price) return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString('en-US')}$** وYou have **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
+                if (cash < item.price) return interaction.reply({ content: `❌ Insufficient cash. You need **${Number(item.price).toLocaleString('en-US')}$** and you have **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -550,18 +550,18 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
                     .setColor(0x1a1a2e)
-                    .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
+                    .setDescription(`**${item.name}** was successfully purchased and added to your bag.`)
                     .addFields(
-                        { name: '🛒 الغرض',        value: item.name,                                                    inline: true },
-                        { name: '💸 المبلغ المدفوع', value: `${Number(item.price).toLocaleString('en-US')}$`,           inline: true },
-                        { name: '💰 رصيدك المتبقي',  value: `${(cash - item.price).toLocaleString('en-US')}$`,          inline: true },
+                        { name: '🛒 Item',             value: item.name,                                                    inline: true },
+                        { name: '💸 Amount Paid',       value: `${Number(item.price).toLocaleString('en-US')}$`,           inline: true },
+                        { name: '💰 Remaining Balance', value: `${(cash - item.price).toLocaleString('en-US')}$`,          inline: true },
                     )
                     .setFooter({ text: 'Black Market • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -573,14 +573,14 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId   = parseInt(interaction.customId.replace('buy_market_', ''));
                 const item     = await db.getMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
+                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
-                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** وYou have **${cash.toLocaleString()} ريال**.`, flags: 64 });
+                    return interaction.reply({ content: `❌ Insufficient cash. You need **${Number(item.price).toLocaleString()} Riyals** and you have **${cash.toLocaleString()} Riyals**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -588,18 +588,18 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
                     .setColor(0xBF360C)
-                    .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
+                    .setDescription(`**${item.name}** was successfully purchased and added to your bag.`)
                     .addFields(
-                        { name: '🛒 الغرض',          value: item.name,                                         inline: true },
-                        { name: '💸 المبلغ المدفوع',  value: `${Number(item.price).toLocaleString()} ريال`,    inline: true },
-                        { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
+                        { name: '🛒 Item',             value: item.name,                                            inline: true },
+                        { name: '💸 Amount Paid',       value: `${Number(item.price).toLocaleString()} Riyals`,    inline: true },
+                        { name: '💵 Remaining Cash',    value: `${(cash - item.price).toLocaleString()} Riyals`,   inline: true },
                     )
                     .setFooter({ text: 'Store System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -611,14 +611,14 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId   = parseInt(interaction.customId.replace('buy_equipment_', ''));
                 const item     = await db.getEquipmentItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ هذه المعدة لم تعد متاحة.', flags: 64 });
+                if (!item) return interaction.reply({ content: '❌ This equipment is no longer available.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
-                    return interaction.reply({ content: `❌ كاشك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** وYou have **${cash.toLocaleString()} ريال**.`, flags: 64 });
+                    return interaction.reply({ content: `❌ Insufficient cash. You need **${Number(item.price).toLocaleString()} Riyals** and you have **${cash.toLocaleString()} Riyals**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -626,18 +626,18 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
                     .setColor(0x4527A0)
-                    .setDescription(`تم شراء **${item.name}** بنجاح وأضيف لحقيبتك.`)
+                    .setDescription(`**${item.name}** was successfully purchased and added to your bag.`)
                     .addFields(
-                        { name: '🔨 المعدة',          value: item.name,                                         inline: true },
-                        { name: '💸 المبلغ المدفوع',  value: `${Number(item.price).toLocaleString()} ريال`,    inline: true },
-                        { name: '💵 الكاش المتبقي',   value: `${(cash - item.price).toLocaleString()} ريال`,   inline: true },
+                        { name: '🔨 Equipment',         value: item.name,                                            inline: true },
+                        { name: '💸 Amount Paid',        value: `${Number(item.price).toLocaleString()} Riyals`,    inline: true },
+                        { name: '💵 Remaining Cash',     value: `${(cash - item.price).toLocaleString()} Riyals`,   inline: true },
                     )
                     .setFooter({ text: 'Equipment Store • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -649,15 +649,15 @@ client.on('interactionCreate', async interaction => {
 
                 const propId = parseInt(interaction.customId.replace('buy_property_', ''));
                 const prop   = await db.getPropertyById(propId);
-                if (!prop) return interaction.reply({ content: '❌ هذا العقار لم يعد متاحاً.', flags: 64 });
+                if (!prop) return interaction.reply({ content: '❌ This property is no longer available.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ لم يتم العثور على هويتك النشطة.', flags: 64 });
+                if (!identity) return interaction.reply({ content: '❌ Your active identity was not found.', flags: 64 });
 
                 const price = Number(prop.price);
                 if (Number(identity.cash) < price) {
                     return interaction.reply({
-                        content: `❌ كاشك غير كافٍ. لديك \`${Number(identity.cash).toLocaleString()} ريال\` وسعر العقار \`${price.toLocaleString()} ريال\`.`,
+                        content: `❌ Insufficient cash. You have \`${Number(identity.cash).toLocaleString()} Riyals\` and the property costs \`${price.toLocaleString()} Riyals\`.`,
                         flags: 64
                     });
                 }
@@ -667,13 +667,13 @@ client.on('interactionCreate', async interaction => {
 
                 // DM the buyer with property details
                 const dmEmbed = new EmbedBuilder()
-                    .setTitle(`🏠 تم شراء عقار — ${prop.name}`)
+                    .setTitle(`🏠 Property Purchased — ${prop.name}`)
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '🏠 اسم العقار', value: prop.name, inline: true },
-                        { name: '💰 السعر المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
+                        { name: '🏠 Property Name', value: prop.name, inline: true },
+                        { name: '💰 Amount Paid',   value: `\`${price.toLocaleString()} Riyals\``, inline: true },
                     )
-                    .setDescription('> تهانينا! تم شراء عقارك بنجاح. احتفظ بهذه الرسالة كوثيقة ملكية.')
+                    .setDescription('> Congratulations! Your property was successfully purchased. Keep this message as your ownership document.')
                     .setFooter({ text: 'Properties System • FANTASY Bot' })
                     .setTimestamp();
                 if (prop.image_url) dmEmbed.setImage(prop.image_url);
@@ -689,38 +689,38 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Purchase Complete')
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '🏠 العقار', value: prop.name, inline: true },
-                        { name: '💰 Amount المدفوع', value: `\`${price.toLocaleString()} ريال\``, inline: true },
+                        { name: '🏠 Property',     value: prop.name, inline: true },
+                        { name: '💰 Amount Paid',  value: `\`${price.toLocaleString()} Riyals\``, inline: true },
                     )
-                    .setDescription('> تم خصم المبلغ من كاشك وإرسال وثيقة الملكية في خاصك.')
+                    .setDescription('> The amount has been deducted from your cash and an ownership document has been sent to your DMs.')
                     .setFooter({ text: 'Properties System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.update({ embeds: [successEmbed], components: [] });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء عملية الشراء.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred during the purchase.', flags: 64 });
             }
         }
 
         if (interaction.customId === 'confirm_delete_all_identities' || interaction.customId === 'cancel_delete_all_identities') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({ content: '❌ هذا الأمر للمسؤولين فقط.', flags: 64 });
+                return interaction.reply({ content: '❌ This command is for admins only.', flags: 64 });
             }
             if (interaction.customId === 'cancel_delete_all_identities') {
-                return interaction.update({ content: '❌ تم إلغاء العملية.', embeds: [], components: [] });
+                return interaction.update({ content: '❌ Operation cancelled.', embeds: [], components: [] });
             }
             try {
                 await db.deleteAllIdentities();
                 const doneEmbed = new EmbedBuilder()
                     .setTitle('All Identities Deleted')
                     .setColor(0x757575)
-                    .setDescription('> تم حذف جميع الهويات والطلبات المعلقة بنجاح، وتم تسجيل الخروج من جميع الحسابات.')
-                    .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
+                    .setDescription('> All identities and pending requests have been successfully deleted, and all accounts have been logged out.')
+                    .setFooter({ text: 'FANTASY Bot • Identity System' })
                     .setTimestamp();
                 return interaction.update({ embeds: [doneEmbed], components: [] });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء حذف الهويات.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while deleting identities.', flags: 64 });
             }
         }
 
@@ -730,10 +730,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 const adminRole = await db.getConfig('identity_admin_role');
                 if (adminRole && !interaction.member.roles.cache.has(adminRole)) {
-                    return interaction.reply({ content: '❌ ليس لديك صلاحية على هويات اللاعبين.', flags: 64 });
+                    return interaction.reply({ content: '❌ You do not have permission to manage player identities.', flags: 64 });
                 }
                 const pending = await db.getPendingIdentity(pendingId);
-                if (!pending) return interaction.reply({ content: '❌ الطلب غير موجود أو تمت معالجته بالفعل.', flags: 64 });
+                if (!pending) return interaction.reply({ content: '❌ Request not found or already processed.', flags: 64 });
 
                 if (isApprove) {
                     const char = await db.createIdentityFull(pending.discord_id, pending.slot, {
@@ -741,22 +741,21 @@ client.on('interactionCreate', async interaction => {
                         birthPlace: pending.birth_place, birthDate: pending.birth_date, gender: pending.gender
                     });
                     await db.updatePendingStatus(pendingId, 'approved');
-                    await db.addCharacterLog(pending.discord_id, pending.username, 'approved', pending.char_name, pending.slot, `قبله: ${interaction.user.username}`);
+                    await db.addCharacterLog(pending.discord_id, pending.username, 'approved', pending.char_name, pending.slot, `Approved by: ${interaction.user.username}`);
 
                     const resultEmbed = new EmbedBuilder()
                         .setTitle('Identity Request Accepted')
                         .setColor(0x2E7D32)
                         .addFields(
-                            { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
-                            { name: '📋 الشخصية', value: `شخصية ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
-                            { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '👤 User',      value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '📋 Character', value: `Character ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
+                            { name: '✅ Approved by', value: `<@${interaction.user.id}>`, inline: true },
                             { name: '🏦 IBAN', value: `\`${char.iban}\``, inline: true },
                         )
                         .setFooter({ text: 'Identity System • FANTASY Bot' }).setTimestamp();
                     sendToCharLog(resultEmbed);
                     await interaction.update({ embeds: [resultEmbed], components: [] });
 
-                    // منح Rank الهوية تلقائياً
                     try {
                         const identityRoleId = await db.getConfig('identity_role');
                         if (identityRoleId) {
@@ -767,34 +766,34 @@ client.on('interactionCreate', async interaction => {
 
                     try {
                         const user = await client.users.fetch(pending.discord_id);
-                        const slotNamesApprove = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                        const slotNamesApprove = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                         const approveDmEmbed = new EmbedBuilder()
                             .setTitle('Your Identity Request Accepted!')
                             .setColor(0x2E7D32)
-                            .setDescription('مبروك! تم قبول هويتك بنجاح. يمكنك الآن تسجيل الدخول.')
+                            .setDescription('Congratulations! Your identity has been approved. You can now log in.')
                             .addFields(
-                                { name: '📌 الشخصية', value: slotNamesApprove[pending.slot] || `شخصية ${pending.slot}`, inline: true },
-                                { name: '👤 الاسم الكامل', value: `${pending.char_name} ${pending.family_name}`, inline: true },
-                                { name: '⚧ الجنس', value: pending.gender || '—', inline: true },
-                                { name: '📅 تاريخ الميلاد', value: pending.birth_date || '—', inline: true },
-                                { name: '📍 مكان الولادة', value: pending.birth_place || '—', inline: true },
-                                { name: '🏦 IBAN الخاص بك', value: `\`${char.iban}\``, inline: true },
+                                { name: '📌 Character',   value: slotNamesApprove[pending.slot] || `Character ${pending.slot}`, inline: true },
+                                { name: '👤 Full Name',   value: `${pending.char_name} ${pending.family_name}`, inline: true },
+                                { name: '⚧ Gender',       value: pending.gender || '—', inline: true },
+                                { name: '📅 Birth Date',  value: pending.birth_date || '—', inline: true },
+                                { name: '📍 Birth Place', value: pending.birth_place || '—', inline: true },
+                                { name: '🏦 Your IBAN',   value: `\`${char.iban}\``, inline: true },
                             )
-                            .setFooter({ text: 'بوت FANTASY • Identity System' })
+                            .setFooter({ text: 'FANTASY Bot • Identity System' })
                             .setTimestamp();
                         await user.send({ embeds: [approveDmEmbed] });
                     } catch {}
                 } else {
                     await db.updatePendingStatus(pendingId, 'rejected');
-                    await db.addCharacterLog(pending.discord_id, pending.username, 'rejected', pending.char_name, pending.slot, `رفضه: ${interaction.user.username}`);
+                    await db.addCharacterLog(pending.discord_id, pending.username, 'rejected', pending.char_name, pending.slot, `Rejected by: ${interaction.user.username}`);
 
                     const resultEmbed = new EmbedBuilder()
                         .setTitle('Identity Request Rejected')
                         .setColor(0xB71C1C)
                         .addFields(
-                            { name: '👤 المستخدم', value: `<@${pending.discord_id}>`, inline: true },
-                            { name: '📋 الشخصية', value: `شخصية ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
-                            { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '👤 User',        value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '📋 Character',   value: `Character ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
+                            { name: '❌ Rejected by', value: `<@${interaction.user.id}>`, inline: true },
                         )
                         .setFooter({ text: 'Identity System • FANTASY Bot' }).setTimestamp();
                     sendToCharLog(resultEmbed);
@@ -802,24 +801,24 @@ client.on('interactionCreate', async interaction => {
 
                     try {
                         const user = await client.users.fetch(pending.discord_id);
-                        const slotNamesReject = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                        const slotNamesReject = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Identity Request Rejected')
                             .setColor(0xB71C1C)
-                            .setDescription('للأسف، تم رفض طلب إنشاء هويتك. يمكنك إعادة المحاولة أو التواصل مع Admin.')
+                            .setDescription('Unfortunately, your identity creation request has been rejected. You can try again or contact Admin.')
                             .addFields(
-                                { name: '📌 الشخصية', value: slotNamesReject[pending.slot] || `شخصية ${pending.slot}`, inline: true },
-                                { name: '🪪 الاسم المقدّم', value: `${pending.char_name} ${pending.family_name}`, inline: true },
-                                { name: '❌ رفضه', value: interaction.user.username, inline: true },
+                                { name: '📌 Character',       value: slotNamesReject[pending.slot] || `Character ${pending.slot}`, inline: true },
+                                { name: '🪪 Submitted Name',  value: `${pending.char_name} ${pending.family_name}`, inline: true },
+                                { name: '❌ Rejected by',     value: interaction.user.username, inline: true },
                             )
-                            .setFooter({ text: 'بوت FANTASY • Identity System' })
+                            .setFooter({ text: 'FANTASY Bot • Identity System' })
                             .setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
                 }
             } catch (e) {
                 console.error(e);
-                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
             return;
         }
@@ -832,13 +831,13 @@ client.on('interactionCreate', async interaction => {
                 const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
                 if (!isAdmin && !hasMinistryRole)
-                    return interaction.reply({ content: '❌ هذا الزر لمسؤولي وزارة التجارة فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This button is for Ministry of Commerce admins only.', flags: 64 });
 
                 const pending = await db.getPendingCompany(pendingId);
                 if (!pending)
-                    return interaction.reply({ content: '❌ الطلب غير موجود.', flags: 64 });
+                    return interaction.reply({ content: '❌ Request not found.', flags: 64 });
                 if (pending.status !== 'pending')
-                    return interaction.reply({ content: '❌ تمت معالجة هذا الطلب بالفعل.', flags: 64 });
+                    return interaction.reply({ content: '❌ This request has already been processed.', flags: 64 });
 
                 if (isApprove) {
                     const result = await db.createCompany(pending.company_name, pending.discord_id);
@@ -847,10 +846,10 @@ client.on('interactionCreate', async interaction => {
                         const failEmbed = new EmbedBuilder()
                             .setTitle('Company Establishment Failed')
                             .setColor(0xB71C1C)
-                            .setDescription(`السبب: ${result.error}`)
+                            .setDescription(`Reason: ${result.error}`)
                             .addFields(
-                                { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
-                                { name: '🏢 الشركة', value: pending.company_name, inline: true },
+                                { name: '👤 Applicant', value: `<@${pending.discord_id}>`, inline: true },
+                                { name: '🏢 Company',   value: pending.company_name, inline: true },
                             )
                             .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         return interaction.update({ embeds: [failEmbed], components: [] });
@@ -870,13 +869,13 @@ client.on('interactionCreate', async interaction => {
                     let ownerRoleMention = '';
                     try {
                         const ownerRole = await interaction.guild.roles.create({
-                            name: `مالك ${pending.company_name}`,
+                            name: `Owner — ${pending.company_name}`,
                             color: 0x1565C0,
-                            reason: `تأسيس شركة ${pending.company_name}`,
+                            reason: `Company establishment: ${pending.company_name}`,
                         });
                         const ownerMember = await interaction.guild.members.fetch(pending.discord_id);
                         await ownerMember.roles.add(ownerRole);
-                        ownerRoleMention = ` — Rank ${ownerRole} مُعيّنة`;
+                        ownerRoleMention = ` — Role ${ownerRole} assigned`;
                     } catch (roleErr) {
                         console.error('[OWNER ROLE CREATE ERROR]', roleErr);
                     }
@@ -885,9 +884,9 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('Establishment Request Accepted')
                         .setColor(0x1B5E20)
                         .addFields(
-                            { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
-                            { name: '🏢 الشركة', value: `**${pending.company_name}**`, inline: true },
-                            { name: '✅ قبله', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '👤 Applicant',    value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '🏢 Company',      value: `**${pending.company_name}**`, inline: true },
+                            { name: '✅ Approved by',  value: `<@${interaction.user.id}>`, inline: true },
                         )
                         .setDescription(ownerRoleMention || null)
                         .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
@@ -898,7 +897,7 @@ client.on('interactionCreate', async interaction => {
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Company Establishment Approved!')
                             .setColor(0x1B5E20)
-                            .setDescription(`مبروك أصبحت من تجار Fantasy town وفالك النجاح 🎉\n\nتم تأسيس شركة **${pending.company_name}** بنجاح. يمكنك الآن إدارتها عبر أوامر \`/شركة\`.`)
+                            .setDescription(`Congratulations, you are now one of Fantasy Town's traders, and we wish you success! 🎉\n\nCompany **${pending.company_name}** has been successfully established. You can now manage it via \`/شركة\`.`)
                             .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
@@ -909,9 +908,9 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('Establishment Request Rejected')
                         .setColor(0xB71C1C)
                         .addFields(
-                            { name: '👤 المتقدم', value: `<@${pending.discord_id}>`, inline: true },
-                            { name: '🏢 الشركة', value: pending.company_name, inline: true },
-                            { name: '❌ رفضه', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '👤 Applicant',    value: `<@${pending.discord_id}>`, inline: true },
+                            { name: '🏢 Company',      value: pending.company_name, inline: true },
+                            { name: '❌ Rejected by',  value: `<@${interaction.user.id}>`, inline: true },
                         )
                         .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                     await interaction.update({ embeds: [rejectEmbed], components: [] });
@@ -921,14 +920,14 @@ client.on('interactionCreate', async interaction => {
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Your Company Establishment Request Rejected')
                             .setColor(0xB71C1C)
-                            .setDescription(`للأسف، تم رفض طلب تأسيس شركة **${pending.company_name}**.\nيمكنك التواصل مع وزارة التجارة للمزيد من التفاصيل.`)
+                            .setDescription(`Unfortunately, the establishment request for company **${pending.company_name}** has been rejected.\nYou can contact the Ministry of Commerce for more details.`)
                             .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
                     } catch {}
                 }
             } catch (e) {
                 console.error('[COMPANY APPROVE/REJECT ERROR]', e);
-                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
             return;
         }
@@ -943,18 +942,17 @@ client.on('interactionCreate', async interaction => {
                 // تسجيل الدخول والخروج: Rank الوزارة فقط بدون استثناء الأدمن
                 if (['ministry_login_btn', 'ministry_logout_btn'].includes(interaction.customId)) {
                     if (!hasMinistryRole)
-                        return interaction.reply({ content: '❌ تسجيل الدخول والخروج لمسؤولي وزارة التجارة فقط.', flags: 64 });
+                        return interaction.reply({ content: '❌ Login and logout is for Ministry of Commerce staff only.', flags: 64 });
                 } else {
-                    // باقي الأزرار: أدمن أو Rank الوزارة
                     if (!isAdminUser && !hasMinistryRole)
-                        return interaction.reply({ content: '❌ هذا الإجراء لمسؤولي وزارة التجارة فقط.', flags: 64 });
+                        return interaction.reply({ content: '❌ This action is for Ministry of Commerce staff only.', flags: 64 });
                 }
 
                 // ─── Login ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_login_btn') {
                     const duty = await db.getMinistryDuty(interaction.user.id);
                     if (duty?.status === 'on')
-                        return interaction.reply({ content: '⚠️ أنت بالفعل مسجّل دخول.', flags: 64 });
+                        return interaction.reply({ content: '⚠️ You are already logged in.', flags: 64 });
                     await db.setMinistryDuty(interaction.user.id, 'on');
                     const ministryChId = await db.getConfig('trade_ministry_channel');
                     if (ministryChId) {
@@ -963,18 +961,18 @@ client.on('interactionCreate', async interaction => {
                             embeds: [new EmbedBuilder()
                                 .setTitle('Login — Ministry of Commerce')
                                 .setColor(0x1B5E20)
-                                .addFields({ name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true })
+                                .addFields({ name: '👤 Staff', value: `<@${interaction.user.id}>`, inline: true })
                                 .setTimestamp()]
                         });
                     }
-                    return interaction.reply({ content: '✅ تم Loginك بنجاح.', flags: 64 });
+                    return interaction.reply({ content: '✅ You have successfully logged in.', flags: 64 });
                 }
 
                 // ─── Logout ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_logout_btn') {
                     const duty = await db.getMinistryDuty(interaction.user.id);
                     if (!duty || duty.status === 'off')
-                        return interaction.reply({ content: '⚠️ أنت لست مسجّل دخول أصلاً.', flags: 64 });
+                        return interaction.reply({ content: '⚠️ You are not currently logged in.', flags: 64 });
                     await db.setMinistryDuty(interaction.user.id, 'off');
                     const ministryChId = await db.getConfig('trade_ministry_channel');
                     if (ministryChId) {
@@ -983,25 +981,25 @@ client.on('interactionCreate', async interaction => {
                             embeds: [new EmbedBuilder()
                                 .setTitle('Logout — Ministry of Commerce')
                                 .setColor(0xB71C1C)
-                                .addFields({ name: '👤 المسؤول', value: `<@${interaction.user.id}>`, inline: true })
+                                .addFields({ name: '👤 Staff', value: `<@${interaction.user.id}>`, inline: true })
                                 .setTimestamp()]
                         });
                     }
-                    return interaction.reply({ content: '✅ تم Logoutك بنجاح.', flags: 64 });
+                    return interaction.reply({ content: '✅ You have successfully logged out.', flags: 64 });
                 }
 
                 // ─── View Registered Companies ──────────────────────────────────────
                 if (interaction.customId === 'ministry_companies_btn') {
                     const companies = await db.getAllCompanies();
                     if (!companies.length)
-                        return interaction.reply({ content: '📋 لا توجد شركات مسجلة حالياً.', flags: 64 });
+                        return interaction.reply({ content: '📋 No registered companies found.', flags: 64 });
 
                     const list = companies.map((c, i) =>
-                        `**${i + 1}.** ${c.name} — المالك: <@${c.owner_discord_id}> — الرصيد: \`${(c.balance || 0).toLocaleString()} ريال\``
+                        `**${i + 1}.** ${c.name} — Owner: <@${c.owner_discord_id}> — Balance: \`${(c.balance || 0).toLocaleString()} Riyals\``
                     ).join('\n');
 
                     const embed = new EmbedBuilder()
-                        .setTitle(`🏢 الشركات المسجلة (${companies.length})`)
+                        .setTitle(`🏢 Registered Companies (${companies.length})`)
                         .setColor(0x1565C0)
                         .setDescription(list)
                         .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' })
@@ -1009,38 +1007,37 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
-                // ─── Approve Company — عرض الطلبات المعلقة ─────────────────────────
                 if (interaction.customId === 'ministry_approve_btn') {
                     const pending = await db.getAllPendingCompanies();
                     if (!pending.length)
-                        return interaction.reply({ content: '📋 لا توجد طلبات شركات معلقة حالياً.', flags: 64 });
+                        return interaction.reply({ content: '📋 No pending company requests at the moment.', flags: 64 });
 
                     for (const p of pending) {
                         const embed = new EmbedBuilder()
-                            .setTitle(`📋 طلب تأسيس شركة #${p.id}`)
+                            .setTitle(`📋 Company Establishment Request #${p.id}`)
                             .setColor(0xF57F17)
                             .addFields(
-                                { name: '👤 المتقدم', value: `<@${p.discord_id}>`, inline: true },
-                                { name: '🏢 اسم الشركة', value: p.company_name, inline: true },
-                                { name: '📝 معلومات شخصية', value: p.personal_info || '—', inline: false },
-                                { name: '🏗️ تفاصيل الشركة', value: p.company_details || '—', inline: false },
-                                { name: '📊 خطة Admin', value: p.management_plan || '—', inline: false },
-                                { name: '💰 المعلومات المالية', value: p.financial_info || '—', inline: false },
+                                { name: '👤 Applicant',         value: `<@${p.discord_id}>`, inline: true },
+                                { name: '🏢 Company Name',      value: p.company_name, inline: true },
+                                { name: '📝 Personal Info',     value: p.personal_info || '—', inline: false },
+                                { name: '🏗️ Company Details',   value: p.company_details || '—', inline: false },
+                                { name: '📊 Management Plan',   value: p.management_plan || '—', inline: false },
+                                { name: '💰 Financial Info',    value: p.financial_info || '—', inline: false },
                             )
                             .setFooter({ text: `Ministry of Commerce • FANTASY Bot` })
                             .setTimestamp();
 
                         const row = new ActionRowBuilder().addComponents(
-                            new ButtonBuilder().setCustomId(`approve_company_${p.id}`).setLabel('قبول').setEmoji('✅').setStyle(ButtonStyle.Success),
-                            new ButtonBuilder().setCustomId(`reject_company_${p.id}`).setLabel('رفض').setEmoji('❌').setStyle(ButtonStyle.Danger),
+                            new ButtonBuilder().setCustomId(`approve_company_${p.id}`).setLabel('Approve').setEmoji('✅').setStyle(ButtonStyle.Success),
+                            new ButtonBuilder().setCustomId(`reject_company_${p.id}`).setLabel('Reject').setEmoji('❌').setStyle(ButtonStyle.Danger),
                         );
                         await interaction.channel.send({ embeds: [embed], components: [row] });
                     }
-                    return interaction.reply({ content: `📨 تم عرض **${pending.length}** طلب/طلبات معلقة أعلاه.`, flags: 64 });
+                    return interaction.reply({ content: `📨 **${pending.length}** pending request(s) shown above.`, flags: 64 });
                 }
             } catch (e) {
                 console.error('[MINISTRY BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -1054,13 +1051,13 @@ client.on('interactionCreate', async interaction => {
                     (ciaMemberRoleId && interaction.member.roles.cache.has(ciaMemberRoleId)) ||
                     (ciaChefRoleId   && interaction.member.roles.cache.has(ciaChefRoleId));
                 if (!hasCiaAccess)
-                    return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
+                    return interaction.reply({ content: '🔒 This button is for CIA members only.', flags: 64 });
 
                 // ─── Login ──────────────────────────────────────────────
                 if (interaction.customId === 'cia_login_btn') {
                     const duty = await db.getCiaDuty(interaction.user.id);
                     if (duty?.status === 'on')
-                        return interaction.reply({ content: '⚠️ أنت بالفعل مسجّل دخول.', flags: 64 });
+                        return interaction.reply({ content: '⚠️ You are already logged in.', flags: 64 });
                     await db.setCiaDuty(interaction.user.id, 'on');
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Login')
@@ -1074,7 +1071,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'cia_logout_btn') {
                     const duty = await db.getCiaDuty(interaction.user.id);
                     if (!duty || duty.status === 'off')
-                        return interaction.reply({ content: '⚠️ أنت لست مسجّل دخول أصلاً.', flags: 64 });
+                        return interaction.reply({ content: '⚠️ You are not currently logged in.', flags: 64 });
                     await db.setCiaDuty(interaction.user.id, 'off');
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Logout')
@@ -1087,7 +1084,7 @@ client.on('interactionCreate', async interaction => {
                 // ─── هوية مزيفة — فتح مودال (CIA Chef فقط) ──────────────────────
                 if (interaction.customId === 'cia_fake_id_btn') {
                     if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
-                        return interaction.reply({ content: '🔒 إنشاء الهوية المزيفة لـ CIA Chef فقط.', flags: 64 });
+                        return interaction.reply({ content: '🔒 Creating fake IDs is for CIA Chief only.', flags: 64 });
 
                     const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                     const modal = new ModalBuilder()
@@ -1098,25 +1095,25 @@ client.on('interactionCreate', async interaction => {
                         new ActionRowBuilder().addComponents(
                             new TextInputBuilder()
                                 .setCustomId('fake_target')
-                                .setLabel('منشن الشخص أو الـ ID')
+                                .setLabel('Mention or ID of the target')
                                 .setStyle(TextInputStyle.Short)
-                                .setPlaceholder('@username أو 123456789')
+                                .setPlaceholder('@username or 123456789')
                                 .setRequired(true)
                         ),
                         new ActionRowBuilder().addComponents(
                             new TextInputBuilder()
                                 .setCustomId('fake_name')
-                                .setLabel('الاسم المزيف')
+                                .setLabel('Fake Name')
                                 .setStyle(TextInputStyle.Short)
-                                .setPlaceholder('مثال: محمد العمري')
+                                .setPlaceholder('Example: John Smith')
                                 .setRequired(true)
                         ),
                         new ActionRowBuilder().addComponents(
                             new TextInputBuilder()
                                 .setCustomId('fake_duration')
-                                .setLabel('مدة الانتهاء')
+                                .setLabel('Expiry Duration')
                                 .setStyle(TextInputStyle.Short)
-                                .setPlaceholder('مثال: 30m أو 2h أو 1d أو 7d')
+                                .setPlaceholder('Example: 30m or 2h or 1d or 7d')
                                 .setRequired(true)
                         )
                     );
@@ -1126,19 +1123,19 @@ client.on('interactionCreate', async interaction => {
                 // ─── كشف المباشرين (CIA Chef فقط) ───────────────────────────────
                 if (interaction.customId === 'cia_active_btn') {
                     if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
-                        return interaction.reply({ content: '🔒 كشف المباشرين لـ CIA Chef فقط.', flags: 64 });
+                        return interaction.reply({ content: '🔒 Viewing active members is for CIA Chief only.', flags: 64 });
 
                     const active = await db.getAllActiveCia();
                     if (!active.length)
-                        return interaction.reply({ content: '📭 لا يوجد أعضاء CIA مباشرون حالياً.', flags: 64 });
+                        return interaction.reply({ content: '📭 No CIA members are currently active.', flags: 64 });
 
                     let desc = '';
                     for (const row of active) {
                         const since = Math.floor(new Date(row.updated_at).getTime() / 1000);
-                        desc += `🕵️ <@${row.discord_id}> — منذ <t:${since}:R>\n`;
+                        desc += `🕵️ <@${row.discord_id}> — since <t:${since}:R>\n`;
                     }
                     const embed = new EmbedBuilder()
-                        .setTitle(`👥 CIA — المباشرون حالياً (${active.length})`)
+                        .setTitle(`👥 CIA — Currently Active (${active.length})`)
                         .setColor(0x0D1B2A)
                         .setDescription(desc)
                         .setTimestamp();
@@ -1146,24 +1143,23 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error('[CIA DUTY ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
 
-        // ── كشف ملفات المواطنين ──────────────────────────────────────────────────
         if (interaction.customId === 'security_files_btn') {
             try {
                 const ciaRoleId = await db.getConfig('cia_chef_role');
                 if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
-                    return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
+                    return interaction.reply({ content: '🔒 This button is for CIA members only.', flags: 64 });
 
                 await interaction.deferReply({ flags: 64 });
                 const ministryRoleId = await db.getConfig('trade_ministry_role');
                 const allIdentities = await db.getAllActiveIdentities();
 
                 if (!allIdentities.length) {
-                    return interaction.editReply({ content: '📭 لا يوجد مواطنون مسجلون حالياً.' });
+                    return interaction.editReply({ content: '📭 No registered citizens found.' });
                 }
 
                 const filtered = [];
@@ -1177,7 +1173,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 if (!filtered.length) {
-                    return interaction.editReply({ content: '📭 لا يوجد مواطنون بعد استثناء المسؤولين.' });
+                    return interaction.editReply({ content: '📭 No citizens found after excluding staff.' });
                 }
 
                 const CHUNK = 10;
@@ -1185,7 +1181,7 @@ client.on('interactionCreate', async interaction => {
                 for (let i = 0; i < filtered.length; i += CHUNK) {
                     const slice = filtered.slice(i, i + CHUNK);
                     const embed = new EmbedBuilder()
-                        .setTitle(`📋 ملفات المواطنين — ${i + 1} إلى ${Math.min(i + CHUNK, filtered.length)} من ${filtered.length}`)
+                        .setTitle(`📋 Citizen Files — ${i + 1} to ${Math.min(i + CHUNK, filtered.length)} of ${filtered.length}`)
                         .setColor(0x1A237E)
                         .setTimestamp();
 
@@ -1193,9 +1189,9 @@ client.on('interactionCreate', async interaction => {
                     for (const p of slice) {
                         const fullName = [p.character_name, p.family_name].filter(Boolean).join(' ');
                         const sawa = p.violation
-                            ? `⚠️ **${p.violation.reason}** (تنتهي: <t:${Math.floor(new Date(p.violation.expires_at).getTime() / 1000)}:R>)`
-                            : '✅ لا يوجد سوابق';
-                        desc += `👤 **${fullName}**\n🪪 الهوية: \`${p.iban}\`\n📌 السوابق: ${sawa}\n\n`;
+                            ? `⚠️ **${p.violation.reason}** (expires: <t:${Math.floor(new Date(p.violation.expires_at).getTime() / 1000)}:R>)`
+                            : '✅ No prior violations';
+                        desc += `👤 **${fullName}**\n🪪 IBAN: \`${p.iban}\`\n📌 Violations: ${sawa}\n\n`;
                     }
                     embed.setDescription(desc.slice(0, 4000));
                     embeds.push(embed);
@@ -1204,7 +1200,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply({ embeds: embeds.slice(0, 10) });
             } catch (e) {
                 console.error('[SECURITY FILES ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
             }
             return;
         }
@@ -1213,7 +1209,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'tracking_btn') {
             const ciaRoleId = await db.getConfig('cia_chef_role');
             if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
-                return interaction.reply({ content: '🔒 هذا الزر لأعضاء CIA فقط.', flags: 64 });
+                return interaction.reply({ content: '🔒 This button is for CIA members only.', flags: 64 });
 
             const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
             const modal = new ModalBuilder()
@@ -1221,9 +1217,9 @@ client.on('interactionCreate', async interaction => {
                 .setTitle('Tracking');
             const input = new TextInputBuilder()
                 .setCustomId('tracking_target')
-                .setLabel('منشن الشخص أو الـ ID الخاص فيه')
+                .setLabel('Mention or ID of the target')
                 .setStyle(TextInputStyle.Short)
-                .setPlaceholder('@username أو 123456789')
+                .setPlaceholder('@username or 123456789')
                 .setRequired(true);
             modal.addComponents(new ActionRowBuilder().addComponents(input));
             await interaction.showModal(modal);
@@ -1237,10 +1233,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 const { isAdmin } = require('./utils');
                 if (!(await isAdmin(interaction.member, db)))
-                    return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ Admins only.', flags: 64 });
 
                 const req = await db.getActivationRequest(reqId);
-                if (!req) return interaction.update({ content: '❌ الطلب غير موجود أو تمت معالجته.', embeds: [], components: [] });
+                if (!req) return interaction.update({ content: '❌ Request not found or already processed.', embeds: [], components: [] });
 
                 if (isApprove) {
                     // منح Rank التفعيل وتعيين النيك نيم بـ ID سوني
@@ -1257,9 +1253,9 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('Activation Request Accepted')
                         .setColor(0x2E7D32)
                         .addFields(
-                            { name: '👤 اللاعب',       value: `<@${req.user_id}>`,  inline: true },
-                            { name: '🎮 ID سوني',       value: `\`${req.sony_id}\``, inline: true },
-                            { name: '✅ قبله',           value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '👤 Player',      value: `<@${req.user_id}>`,  inline: true },
+                            { name: '🎮 Sony ID',     value: `\`${req.sony_id}\``, inline: true },
+                            { name: '✅ Approved by', value: `<@${interaction.user.id}>`, inline: true },
                         )
                         .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
@@ -1268,9 +1264,9 @@ client.on('interactionCreate', async interaction => {
                     try {
                         const user = await client.users.fetch(req.user_id);
                         await user.send(
-                            `✅ **تم قبول طلب تفعيلك في سيرفر ${interaction.guild.name}!**\n` +
-                            `> 🎮 **ID سوني:** \`${req.sony_id}\`\n` +
-                            `> يمكنك الآن الوصول إلى السيرفر بشكل كامل.`
+                            `✅ **Your activation request in server ${interaction.guild.name} has been approved!**\n` +
+                            `> 🎮 **Sony ID:** \`${req.sony_id}\`\n` +
+                            `> You can now access the server fully.`
                         );
                     } catch (_) {}
 
@@ -1279,9 +1275,9 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('Activation Request Rejected')
                         .setColor(0xB71C1C)
                         .addFields(
-                            { name: '👤 اللاعب',  value: `<@${req.user_id}>`,         inline: true },
-                            { name: '🎮 ID سوني', value: `\`${req.sony_id}\``,         inline: true },
-                            { name: '❌ رفضه',    value: `<@${interaction.user.id}>`,  inline: true },
+                            { name: '👤 Player',      value: `<@${req.user_id}>`,         inline: true },
+                            { name: '🎮 Sony ID',     value: `\`${req.sony_id}\``,         inline: true },
+                            { name: '❌ Rejected by', value: `<@${interaction.user.id}>`,  inline: true },
                         )
                         .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
@@ -1290,8 +1286,8 @@ client.on('interactionCreate', async interaction => {
                     try {
                         const user = await client.users.fetch(req.user_id);
                         await user.send(
-                            `❌ **تم رفض طلب تفعيلك في سيرفر ${interaction.guild.name}.**\n` +
-                            `> تواصل مع Admin لمعرفة السبب أو إعادة المحاولة.`
+                            `❌ **Your activation request in server ${interaction.guild.name} has been rejected.**\n` +
+                            `> Contact Admin for the reason or to try again.`
                         );
                     } catch (_) {}
                 }
@@ -1300,7 +1296,7 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 if (!interaction.replied && !interaction.deferred)
-                    interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                    interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -1314,18 +1310,18 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'bank_balance') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    const SLOT_NAMES_B = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                    const SLOT_NAMES_B = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     const embed = new EmbedBuilder()
                         .setTitle('Money Display')
                         .setColor(0x1565C0)
                         .addFields(
-                            { name: '👤 الاسم', value: `${identity.character_name || '—'} ${identity.family_name || ''}`, inline: true },
-                            { name: '📌 الشخصية', value: SLOT_NAMES_B[identity.slot] || `شخصية ${identity.slot}`, inline: true },
+                            { name: '👤 Name',         value: `${identity.character_name || '—'} ${identity.family_name || ''}`, inline: true },
+                            { name: '📌 Character',    value: SLOT_NAMES_B[identity.slot] || `Character ${identity.slot}`, inline: true },
                             { name: '\u200b', value: '\u200b', inline: true },
-                            { name: '🏦 رصيد Bank', value: `\`${Number(identity.balance).toLocaleString()} ريال\``, inline: true },
-                            { name: '💵 الكاش', value: `\`${Number(identity.cash || 0).toLocaleString()} ريال\``, inline: true },
-                            { name: '🏦 IBAN', value: `\`${identity.iban}\``, inline: true },
-                            { name: '🔒 الحالة', value: identity.frozen ? '❄️ مجمّد' : '✅ Active', inline: true },
+                            { name: '🏦 Bank Balance', value: `\`${Number(identity.balance).toLocaleString()} Riyals\``, inline: true },
+                            { name: '💵 Cash',          value: `\`${Number(identity.cash || 0).toLocaleString()} Riyals\``, inline: true },
+                            { name: '🏦 IBAN',          value: `\`${identity.iban}\``, inline: true },
+                            { name: '🔒 Status',        value: identity.frozen ? '❄️ Frozen' : '✅ Active', inline: true },
                         )
                         .setFooter({ text: 'Bank System • FANTASY Bot' })
                         .setTimestamp();
@@ -1334,38 +1330,38 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'bank_deposit') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
+                    if (identity.frozen) return interaction.reply({ content: '❄️ Your account is frozen.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_deposit_modal').setTitle('Deposit Cash to Bank');
                     modal.addComponents(new ARB().addComponents(
-                        new TextInputBuilder().setCustomId('deposit_amount').setLabel('المبلغ المراد Depositه (ريال)').setStyle(TextInputStyle.Short).setRequired(true)
+                        new TextInputBuilder().setCustomId('deposit_amount').setLabel('Amount to Deposit (Riyals)').setStyle(TextInputStyle.Short).setRequired(true)
                     ));
                     return interaction.showModal(modal);
                 }
 
                 if (interaction.customId === 'bank_withdraw') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
+                    if (identity.frozen) return interaction.reply({ content: '❄️ Your account is frozen.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_withdraw_modal').setTitle('Withdraw Cash from Bank');
                     modal.addComponents(new ARB().addComponents(
-                        new TextInputBuilder().setCustomId('withdraw_amount').setLabel('المبلغ المراد صرفه (ريال)').setStyle(TextInputStyle.Short).setRequired(true)
+                        new TextInputBuilder().setCustomId('withdraw_amount').setLabel('Amount to Withdraw (Riyals)').setStyle(TextInputStyle.Short).setRequired(true)
                     ));
                     return interaction.showModal(modal);
                 }
 
                 if (interaction.customId === 'bank_transfer') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (identity.frozen) return interaction.reply({ content: '❄️ حسابك مجمّد.', flags: 64 });
+                    if (identity.frozen) return interaction.reply({ content: '❄️ Your account is frozen.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_transfer_modal').setTitle('Bank Transfer');
                     modal.addComponents(
-                        new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_iban').setLabel('إيبان المستلم (7 أرقام)').setStyle(TextInputStyle.Short).setMinLength(7).setMaxLength(7).setRequired(true)),
-                        new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_amount').setLabel('المبلغ (ريال)').setStyle(TextInputStyle.Short).setRequired(true)),
-                        new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_note').setLabel('ملاحظة (اختياري)').setStyle(TextInputStyle.Short).setRequired(false)),
+                        new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_iban').setLabel('Recipient IBAN (7 digits)').setStyle(TextInputStyle.Short).setMinLength(7).setMaxLength(7).setRequired(true)),
+                        new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_amount').setLabel('Amount (Riyals)').setStyle(TextInputStyle.Short).setRequired(true)),
+                        new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_note').setLabel('Note (optional)').setStyle(TextInputStyle.Short).setRequired(false)),
                     );
                     return interaction.showModal(modal);
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -1376,35 +1372,35 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_create') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (acc) return interaction.reply({ content: `❌ لديك حساب بالفعل: **${acc.snap_username}**`, flags: 64 });
+                if (acc) return interaction.reply({ content: `❌ You already have an account: **${acc.snap_username}**`, flags: 64 });
                 const modal = new MSN().setCustomId('snap_create_modal').setTitle('Create Snap Account')
                     .addComponents(new ARSN().addComponents(
-                        new TISN().setCustomId('snap_user').setLabel('اسم الحساب')
+                        new TISN().setCustomId('snap_user').setLabel('Account Username')
                             .setStyle(TSSN.Short).setRequired(true).setMinLength(3).setMaxLength(20)
-                            .setPlaceholder('مثال: Sultan2025')
+                            .setPlaceholder('Example: Sultan2025')
                     ));
                 return interaction.showModal(modal);
             }
 
             if (interaction.customId === 'snap_send') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب. أنشئ حساباً أولاً.', flags: 64 });
+                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account. Create one first.', flags: 64 });
                 const friends = await db.getSnapFriends(interaction.user.id);
-                if (!friends.length) return interaction.reply({ content: '❌ ليس لديك أصدقاء بعد. أضف صديقاً أولاً.', flags: 64 });
+                if (!friends.length) return interaction.reply({ content: '❌ You have no friends yet. Add a friend first.', flags: 64 });
                 const options = friends.slice(0, 25).map(f => ({
                     label: f.friend_username,
                     value: f.friend_id,
-                    description: `🔥 ستريك: ${f.streak}`,
+                    description: `🔥 Streak: ${f.streak}`,
                 }));
                 const row = new ARSN().addComponents(
-                    new SSSN().setCustomId('snap_friend_select').setPlaceholder('👻 اختر صديق لإرسال سناب').addOptions(options)
+                    new SSSN().setCustomId('snap_friend_select').setPlaceholder('👻 Choose a friend to send a snap').addOptions(options)
                 );
-                return interaction.reply({ content: '📸 **اختر الصديق الذي تريد إرسال سناب له:**', components: [row], flags: 64 });
+                return interaction.reply({ content: '📸 **Choose the friend you want to send a snap to:**', components: [row], flags: 64 });
             }
 
             if (interaction.customId === 'snap_inbox') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
+                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
                 const msgs = await db.getSnapInbox(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Snap Inbox')
@@ -1412,13 +1408,13 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 if (!msgs.length) {
-                    embed.setDescription('> 📭 لا توجد سنابات واردة');
+                    embed.setDescription('> 📭 No incoming snaps');
                 } else {
                     const unseen = msgs.filter(m => !m.seen);
-                    embed.setDescription(`📩 **${unseen.length}** سناب جديد غير مقروء`);
+                    embed.setDescription(`📩 **${unseen.length}** new unread snap(s)`);
                     const fields = msgs.slice(0, 10).map(m => ({
-                        name: `${m.seen ? '📖' : '🔴'} من: **${m.sender_username}**`,
-                        value: `> ${m.content}\n⏰ ${new Date(m.created_at).toLocaleString('ar-SA')}`,
+                        name: `${m.seen ? '📖' : '🔴'} From: **${m.sender_username}**`,
+                        value: `> ${m.content}\n⏰ ${new Date(m.created_at).toLocaleString('en-US')}`,
                         inline: false,
                     }));
                     embed.addFields(fields);
@@ -1429,15 +1425,15 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_friends') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
+                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
                 const friends = await db.getSnapFriends(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('My Snap Friends')
                     .setColor(0xFFFC00)
-                    .setFooter({ text: `${friends.length} صديق • Snapchat • FANTASY Bot` })
+                    .setFooter({ text: `${friends.length} friend(s) • Snapchat • FANTASY Bot` })
                     .setTimestamp();
                 if (!friends.length) {
-                    embed.setDescription('> لا يوجد أصدقاء بعد. استخدم **➕ إضافة صديق**');
+                    embed.setDescription('> No friends yet. Use **➕ Add Friend**');
                 } else {
                     const SPACER = { name: '\u200b', value: '\u200b', inline: true };
                     const fields = friends.map(f => {
@@ -1448,7 +1444,7 @@ client.on('interactionCreate', async interaction => {
                         const status = mySnapped && theirSnapped ? '✅' : mySnapped ? '⏳' : '📩';
                         return {
                             name: `👻 ${f.friend_username}`,
-                            value: `${streakBadge} **${streak}** ستريك\n${status}`,
+                            value: `${streakBadge} **${streak}** streak\n${status}`,
                             inline: true,
                         };
                     });
@@ -1460,19 +1456,19 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_add') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب. أنشئ حساباً أولاً.', flags: 64 });
+                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account. Create one first.', flags: 64 });
                 const modal = new MSN().setCustomId('snap_add_modal').setTitle('Add Friend')
                     .addComponents(new ARSN().addComponents(
-                        new TISN().setCustomId('friend_snap_name').setLabel('اسم حساب سناب الصديق')
+                        new TISN().setCustomId('friend_snap_name').setLabel('Friend\'s Snap account name')
                             .setStyle(TSSN.Short).setRequired(true).setMaxLength(20)
-                            .setPlaceholder('مثال: Sultan2025')
+                            .setPlaceholder('Example: Sultan2025')
                     ));
                 return interaction.showModal(modal);
             }
 
             if (interaction.customId === 'snap_requests') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
+                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
                 const requests = await db.getPendingSnapRequests(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Incoming Friend Requests')
@@ -1480,17 +1476,17 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 if (!requests.length) {
-                    embed.setDescription('> لا توجد طلبات صداقة معلّقة.');
+                    embed.setDescription('> No pending friend requests.');
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
-                embed.setDescription(`📩 **${requests.length}** طلب صداقة`);
+                embed.setDescription(`📩 **${requests.length}** friend request(s)`);
                 const options = requests.slice(0, 25).map(r => ({
                     label: r.requester_username,
                     value: r.requester_id,
-                    description: 'اضغط للقبول',
+                    description: 'Tap to accept',
                 }));
                 const row = new ARSN().addComponents(
-                    new SSSN().setCustomId('snap_accept_select').setPlaceholder('✅ اختر طلباً لقبوله').addOptions(options)
+                    new SSSN().setCustomId('snap_accept_select').setPlaceholder('✅ Choose a request to accept').addOptions(options)
                 );
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             }
@@ -1503,10 +1499,10 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_create_account') {
                 const existing = await db.getXAccount(interaction.user.id);
-                if (existing) return interaction.reply({ content: `❌ لديك حساب بالفعل: **@${existing.x_username}**`, flags: 64 });
+                if (existing) return interaction.reply({ content: `❌ You already have an account: **@${existing.x_username}**`, flags: 64 });
                 const modal = new MBX().setCustomId('x_create_modal').setTitle('Create X Account')
                     .addComponents(new ARBX().addComponents(
-                        new TIBX().setCustomId('x_username').setLabel('اسم الحساب (بدون @)')
+                        new TIBX().setCustomId('x_username').setLabel('Account Username (without @)')
                             .setStyle(TISX.Short).setRequired(true).setMinLength(3).setMaxLength(20)
                     ));
                 return interaction.showModal(modal);
@@ -1514,12 +1510,12 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_send_tweet') {
                 const xChannel = await db.getConfig('x_channel');
-                if (!xChannel) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات بعد. تواصل مع المسؤولين.', flags: 64 });
+                if (!xChannel) return interaction.reply({ content: '❌ Tweet channel not configured yet. Contact admins.', flags: 64 });
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform. أنشئ حساباً أولاً.', flags: 64 });
+                if (!account) return interaction.reply({ content: '❌ You do not have an X Platform account. Create one first.', flags: 64 });
                 const modal = new MBX().setCustomId('x_tweet_modal').setTitle('Send Tweet')
                     .addComponents(new ARBX().addComponents(
-                        new TIBX().setCustomId('tweet_content').setLabel('نص التغريدة')
+                        new TIBX().setCustomId('tweet_content').setLabel('Tweet Content')
                             .setStyle(TISX.Paragraph).setRequired(true).setMaxLength(280)
                     ));
                 return interaction.showModal(modal);
@@ -1527,12 +1523,12 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_delete_account') {
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
+                if (!account) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
                 await db.deleteXAccount(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Account Deleted')
                     .setColor(0xB71C1C)
-                    .setDescription(`تم حذف حساب **@${account.x_username}** وجميع تغريداته نهائياً.`)
+                    .setDescription(`Account **@${account.x_username}** and all its tweets have been permanently deleted.`)
                     .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
@@ -1549,17 +1545,17 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Your Inventory')
                     .setColor(0xE65100)
-                    .setFooter({ text: `إجمالي الأغراض: ${items.length} • Bag System • FANTASY Bot` })
+                    .setFooter({ text: `Total Items: ${items.length} • Bag System • FANTASY Bot` })
                     .setTimestamp();
 
                 if (!items.length) {
-                    embed.setDescription('> 🪹 حقيبتك فارغة حالياً');
+                    embed.setDescription('> 🪹 Your bag is currently empty');
                 } else {
-                    embed.setDescription(`📦 **${items.length}** غرض في حقيبتك`);
+                    embed.setDescription(`📦 **${items.length}** item(s) in your bag`);
                     const SPACER = { name: '\u200b', value: '\u200b', inline: true };
                     const fields = items.map(i => ({
                         name: `┌─ ${i.item_name} ─┐`,
-                        value: `📦 الكمية: \`${i.quantity}\``,
+                        value: `📦 Qty: \`${i.quantity}\``,
                         inline: true,
                     }));
                     // pad to multiple of 3 so rows are uniform
@@ -1571,16 +1567,16 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'bag_use') {
                 const items = await db.getInventory(interaction.user.id);
-                if (!items.length) return interaction.reply({ content: '❌ حقيبتك فارغة لا يوجد ما تستخدمه.', flags: 64 });
+                if (!items.length) return interaction.reply({ content: '❌ Your bag is empty, nothing to use.', flags: 64 });
                 const options = items.slice(0, 25).map(i => ({
                     label: i.item_name,
                     value: `use_${i.item_name}`,
-                    description: `الكمية: ${i.quantity}`,
+                    description: `Qty: ${i.quantity}`,
                 }));
                 const row = new ARB2().addComponents(
-                    new SSM2().setCustomId('bag_use_select').setPlaceholder('اختر الغرض للاستخدام').addOptions(options)
+                    new SSM2().setCustomId('bag_use_select').setPlaceholder('Choose an item to use').addOptions(options)
                 );
-                return interaction.reply({ content: '✅ **اختر الغرض الذي تريد استخدامه:**', components: [row], flags: 64 });
+                return interaction.reply({ content: '✅ **Choose the item you want to use:**', components: [row], flags: 64 });
             }
 
             if (interaction.customId === 'bag_transfer') {
@@ -1593,7 +1589,7 @@ client.on('interactionCreate', async interaction => {
                                 .setStyle(TIS2.Short).setRequired(true).setMaxLength(50)
                         ),
                         new ARB2().addComponents(
-                            new TIB2().setCustomId('transfer_iban').setLabel('إيبان المستلِم')
+                            new TIB2().setCustomId('transfer_iban').setLabel('Recipient IBAN')
                                 .setStyle(TIS2.Short).setRequired(true).setMaxLength(20)
                         ),
                     );
@@ -1609,9 +1605,9 @@ client.on('interactionCreate', async interaction => {
                     ? interaction.customId.replace('lawyer_req_accept_', '')
                     : interaction.customId.replace('lawyer_req_reject_', '')));
                 const req = await db.getLawyerRequestById(reqId);
-                if (!req) return interaction.reply({ content: '❌ الطلب غير موجود أو انتهت صلاحيته.', flags: 64 });
-                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: '❌ هذا الطلب ليس موجهاً لك.', flags: 64 });
-                if (req.status !== 'pending') return interaction.reply({ content: '❌ تم البت في هذا الطلب مسبقاً.', flags: 64 });
+                if (!req) return interaction.reply({ content: '❌ Request not found or has expired.', flags: 64 });
+                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: '❌ This request is not addressed to you.', flags: 64 });
+                if (req.status !== 'pending') return interaction.reply({ content: '❌ This request has already been processed.', flags: 64 });
 
                 await db.updateLawyerRequest(reqId, isAccept ? 'accepted' : 'rejected');
                 const allLawyers = await db.getLawyers();
@@ -1626,25 +1622,24 @@ client.on('interactionCreate', async interaction => {
                         req.plaintiff_id,
                         interaction.user.id,
                         RETAINER_FEE,
-                        `بدل توكيل — قضية ${req.case_number}`
+                        `Retainer fee — Case ${req.case_number}`
                     );
 
-                    // ✉️ إرسال تفاصيل الموكّل والقضية للمحامي في الخاص
                     try {
                         const fullCase = await db.getCaseById(req.case_id);
                         const lawyerUser = await interaction.client.users.fetch(interaction.user.id);
                         const caseEmbed = new EmbedBuilder()
                             .setTitle('New Case Details')
                             .setColor(0x0D47A1)
-                            .setDescription('لقد Accepted هذا التوكيل. فيما يلي تفاصيل الموكّل والقضية:')
+                            .setDescription('You have accepted this case. Here are the client and case details:')
                             .addFields(
-                                { name: '🔢 رقم القضية', value: fullCase?.case_number || req.case_number, inline: true },
-                                { name: '📌 عنوان القضية', value: fullCase?.title || req.case_title, inline: true },
-                                { name: '👤 اسم الموكّل', value: req.plaintiff_name, inline: true },
-                                { name: '🪪 معرّف الموكّل', value: `<@${req.plaintiff_id}>`, inline: true },
-                                { name: '🎯 المدّعى عليه', value: fullCase?.defendant || '—', inline: true },
-                                { name: '📋 وصف القضية', value: fullCase?.description || '—', inline: false },
-                                { name: '🗂️ الأدلة', value: fullCase?.evidence || '—', inline: false },
+                                { name: '🔢 Case Number',   value: fullCase?.case_number || req.case_number, inline: true },
+                                { name: '📌 Case Title',    value: fullCase?.title || req.case_title, inline: true },
+                                { name: '👤 Client Name',   value: req.plaintiff_name, inline: true },
+                                { name: '🪪 Client ID',     value: `<@${req.plaintiff_id}>`, inline: true },
+                                { name: '🎯 Defendant',     value: fullCase?.defendant || '—', inline: true },
+                                { name: '📋 Description',   value: fullCase?.description || '—', inline: false },
+                                { name: '🗂️ Evidence',      value: fullCase?.evidence || '—', inline: false },
                             )
                             .setFooter({ text: 'Law System • FANTASY Bot' })
                             .setTimestamp();
@@ -1657,21 +1652,21 @@ client.on('interactionCreate', async interaction => {
                     const { RETAINER_FEE } = require('./commands/lawyer-tasks');
                     const plaintiffUser = await interaction.client.users.fetch(req.plaintiff_id);
                     const dmFields = [
-                        { name: '🔢 رقم القضية', value: req.case_number,              inline: true },
-                        { name: '📌 العنوان',     value: req.case_title,               inline: true },
-                        { name: '👨‍⚖️ المحامي',   value: lawyer?.lawyer_name || '—', inline: true },
+                        { name: '🔢 Case Number', value: req.case_number,              inline: true },
+                        { name: '📌 Title',        value: req.case_title,               inline: true },
+                        { name: '👨‍⚖️ Lawyer',    value: lawyer?.lawyer_name || '—', inline: true },
                     ];
                     if (isAccept) {
                         dmFields.push({
-                            name: '💰 بدل التوكيل',
+                            name: '💰 Retainer Fee',
                             value: feeResult?.success
-                                ? `✅ تم خصم **${RETAINER_FEE.toLocaleString()} ريال** من حسابك`
-                                : `⚠️ ${feeResult?.error || 'تعذّر خصم بدل التوكيل'}`,
+                                ? `✅ **${RETAINER_FEE.toLocaleString()} Riyals** deducted from your account`
+                                : `⚠️ ${feeResult?.error || 'Failed to deduct retainer fee'}`,
                             inline: false,
                         });
                     }
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle(isAccept ? '✅ تم قبول طلب التوكيل' : '❌ تم رفض طلب التوكيل')
+                        .setTitle(isAccept ? '✅ Retainer Request Accepted' : '❌ Retainer Request Rejected')
                         .setColor(isAccept ? 0x1B5E20 : 0xB71C1C)
                         .addFields(...dmFields)
                         .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
@@ -1682,59 +1677,55 @@ client.on('interactionCreate', async interaction => {
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const newDash = await buildTasks(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
                 return interaction.update(newDash);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── طلب أتعاب إضافية 10,000 ───────────────────────────────────────────
         if (interaction.customId.startsWith('lawyer_atab_')) {
             try {
                 const caseId = Number(interaction.customId.replace('lawyer_atab_', ''));
                 const c = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
                 if (c.lawyer_id !== interaction.user.id)
-                    return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the lawyer of this case.', flags: 64 });
 
-                // ✅ شرط 15 يوم
                 const DAYS_REQUIRED = 15;
                 const assignedAt = c.lawyer_assigned_at ? new Date(c.lawyer_assigned_at).getTime() : null;
                 const daysPassed  = assignedAt ? Math.floor((Date.now() - assignedAt) / 86_400_000) : 0;
                 if (daysPassed < DAYS_REQUIRED)
-                    return interaction.reply({ content: `⏳ لم يحن وقت المطالبة بالأتعاب بعد — يتبقى **${DAYS_REQUIRED - daysPassed} يوم**.`, flags: 64 });
+                    return interaction.reply({ content: `⏳ It is not yet time to claim fees — **${DAYS_REQUIRED - daysPassed} day(s)** remaining.`, flags: 64 });
 
                 const { ATAB_FEE } = require('./commands/lawyer-tasks');
                 const result = await db.chargeLawyerFee(
                     c.plaintiff_id,
                     interaction.user.id,
                     ATAB_FEE,
-                    `أتعاب محاماة — قضية ${c.case_number}`
+                    `Legal fees — Case ${c.case_number}`
                 );
 
                 if (!result.success)
                     return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
 
-                // إشعار الموكّل بالأتعاب
                 try {
                     const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder()
-                        .setTitle('تم خصم أتعاب Law')
+                        .setTitle('Legal Fees Deducted')
                         .setColor(0xE65100)
                         .addFields(
-                            { name: '🔢 رقم القضية', value: c.case_number,              inline: true },
-                            { name: '📌 العنوان',     value: c.title,                   inline: true },
-                            { name: '👨‍⚖️ المحامي',   value: c.lawyer_name || '—',     inline: true },
-                            { name: '💰 Amount المخصوم', value: `**${ATAB_FEE.toLocaleString()} ريال**`, inline: false },
+                            { name: '🔢 Case Number',    value: c.case_number,              inline: true },
+                            { name: '📌 Title',          value: c.title,                   inline: true },
+                            { name: '👨‍⚖️ Lawyer',      value: c.lawyer_name || '—',     inline: true },
+                            { name: '💰 Amount Deducted', value: `**${ATAB_FEE.toLocaleString()} Riyals**`, inline: false },
                         )
                         .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
-                // تحديث اللوحة
                 const allLawyers = await db.getLawyers();
                 const lawyerData = allLawyers.find(l => l.discord_id === interaction.user.id);
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const newDash = await buildTasks(db, interaction.user.id, lawyerData?.lawyer_name || interaction.user.username);
                 return interaction.update(newDash);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── التخلي عن قضية (فتح modal) ───────────────────────────────────────
@@ -1742,27 +1733,27 @@ client.on('interactionCreate', async interaction => {
             try {
                 const caseId = Number(interaction.customId.replace('lawyer_abandon_', ''));
                 const c = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
                 if (c.lawyer_id !== interaction.user.id)
-                    return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the lawyer of this case.', flags: 64 });
 
                 const { ABANDON_FEE } = require('./commands/lawyer-tasks');
                 const modal = new ModalBuilder()
                     .setCustomId(`lawyer_abandon_modal_${caseId}`)
-                    .setTitle(`🚫 التخلي عن القضية — ${c.case_number}`);
+                    .setTitle(`🚫 Abandon Case — ${c.case_number}`);
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder()
                             .setCustomId('abandon_reason')
-                            .setLabel(`سبب التخلي عن التوكيل`)
+                            .setLabel(`Reason for abandoning the case`)
                             .setStyle(TextInputStyle.Paragraph)
-                            .setPlaceholder(`سيُرفع هذا السبب للموكّل • سيُخصم ${ABANDON_FEE.toLocaleString()} ريال من رصيدك`)
+                            .setPlaceholder(`This reason will be sent to the client • ${ABANDON_FEE.toLocaleString()} Riyals will be deducted`)
                             .setRequired(true)
                             .setMinLength(10)
                     )
                 );
                 return interaction.showModal(modal);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── أزرار الأولوية ──────────────────────────────────────────────────────────
@@ -1771,16 +1762,16 @@ client.on('interactionCreate', async interaction => {
                 const btnId = parseInt(interaction.customId.replace('priority_', ''));
                 const buttons = await db.getPriorityButtons();
                 const btn = buttons.find(b => b.id === btnId);
-                if (!btn) return interaction.reply({ content: '❌ هذا الزر لم يعد موجوداً.', flags: 64 });
+                if (!btn) return interaction.reply({ content: '❌ This button no longer exists.', flags: 64 });
 
                 const channelId = await db.getConfig('priority_channel_id');
-                if (!channelId) return interaction.reply({ content: '❌ لم يتم تعيين روم الأولوية بعد.', flags: 64 });
+                if (!channelId) return interaction.reply({ content: '❌ Priority channel has not been set yet.', flags: 64 });
 
                 const targetChannel = interaction.guild.channels.cache.get(channelId);
-                if (!targetChannel) return interaction.reply({ content: '❌ روم الأولوية غير موجود.', flags: 64 });
+                if (!targetChannel) return interaction.reply({ content: '❌ Priority channel not found.', flags: 64 });
 
                 await targetChannel.send(btn.priority);
-                await interaction.reply({ content: `✅ تم الإرسال.`, flags: 64 });
+                await interaction.reply({ content: `✅ Sent successfully.`, flags: 64 });
             } catch (e) { console.error(e); }
             return;
         }
@@ -1808,7 +1799,7 @@ client.on('interactionCreate', async interaction => {
                 await db.addItem(interaction.user.id, picked.name, amount);
 
                 await interaction.followUp({
-                    content: `🪛 جمّعت **${amount}x ${picked.emoji} ${picked.name}** وأضفتها إلى حقيبتك!`,
+                    content: `🪛 You gathered **${amount}x ${picked.emoji} ${picked.name}** and added them to your bag!`,
                     flags: 64
                 });
             } catch (e) { console.error(e); }
@@ -1821,7 +1812,7 @@ client.on('interactionCreate', async interaction => {
             interaction.customId.startsWith('citizen_file_next:')) {
             const chefRoleId = await db.getConfig('cia_chef_role');
             if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId))
-                return interaction.reply({ content: '❌ غير مصرح.', flags: 64 });
+                return interaction.reply({ content: '❌ Unauthorized.', flags: 64 });
             try {
                 await interaction.deferUpdate();
                 const parts   = interaction.customId.split(':');
@@ -1877,14 +1868,14 @@ client.on('interactionCreate', async interaction => {
             const total   = trips * 5 + gmc * 8 + tickets * 5 + manual;
 
             const embed = new EmbedBuilder()
-                .setTitle(`📊 نقاط ${interaction.user.username}`)
+                .setTitle(`📊 Points for ${interaction.user.username}`)
                 .setColor(0x1565C0)
                 .addFields(
-                    { name: '🚀 فتح رحلات',       value: `${trips} رحلة × 5 = **${trips * 5} نقطة**`,   inline: false },
-                    { name: '👁️ حضور رقابة (GMC)',  value: `${gmc} مرة × 8 = **${gmc * 8} نقطة**`,       inline: false },
-                    { name: '🎫 استلام تكتات',      value: `${tickets} تكت × 5 = **${tickets * 5} نقطة**`, inline: false },
-                    { name: '✏️ نقاط مضافة يدوياً', value: `**${manual} نقطة**`,                           inline: false },
-                    { name: '─────────────────', value: `🏆 **الإجمالي: ${total} نقطة**`,               inline: false },
+                    { name: '🚀 Trips Opened',        value: `${trips} trip(s) × 5 = **${trips * 5} pts**`,    inline: false },
+                    { name: '👁️ GMC Supervision',     value: `${gmc} time(s) × 8 = **${gmc * 8} pts**`,       inline: false },
+                    { name: '🎫 Tickets Claimed',      value: `${tickets} ticket(s) × 5 = **${tickets * 5} pts**`, inline: false },
+                    { name: '✏️ Manually Added Points', value: `**${manual} pts**`,                               inline: false },
+                    { name: '─────────────────',       value: `🏆 **Total: ${total} pts**`,                     inline: false },
                 )
                 .setFooter({ text: 'Admin Points System • FANTASY Bot' }).setTimestamp();
             return interaction.reply({ embeds: [embed], flags: 64 });
@@ -1895,16 +1886,16 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const isDeposit = interaction.customId === 'comp_deposit_btn';
                 const modal = new ModalBuilder()
                     .setCustomId(isDeposit ? 'comp_deposit_modal' : 'comp_withdraw_modal')
-                    .setTitle(isDeposit ? '📥 Deposit في حساب الشركة' : '💸 سحب من حساب الشركة');
+                    .setTitle(isDeposit ? '📥 Deposit to Company Account' : '💸 Withdraw from Company Account');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('amount').setLabel('المبلغ')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('اكتب المبلغ بالأرقام فقط')
+                        new TextInputBuilder().setCustomId('amount').setLabel('Amount')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Enter amount in numbers only')
                             .setRequired(true).setMaxLength(15)
                     )
                 );
@@ -1918,23 +1909,23 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('Assign Employee');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 123456789012345678')
+                        new TextInputBuilder().setCustomId('user_id').setLabel('Player ID (copy from Discord)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Example: 123456789012345678')
                             .setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('role').setLabel('الRank (مدير / محاسب / موظف)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('موظف')
+                        new TextInputBuilder().setCustomId('role').setLabel('Role (Manager / Accountant / Employee)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Employee')
                             .setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('salary').setLabel('الراتب الشهري (بالأرقام)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 5000')
+                        new TextInputBuilder().setCustomId('salary').setLabel('Monthly Salary (numbers only)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Example: 5000')
                             .setRequired(true).setMaxLength(12)
                     ),
                 );
@@ -1948,34 +1939,34 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
 
                 const res = await db.payCompanySalaries(company.id);
                 if (res.error)
                     return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
 
                 const salaryLines = res.members.map(m =>
-                    `<@${m.discord_id}> — \`${parseInt(m.salary).toLocaleString()} ريال\``
+                    `<@${m.discord_id}> — \`${parseInt(m.salary).toLocaleString()} Riyals\``
                 ).join('\n');
 
                 const embed = new EmbedBuilder()
                     .setTitle('Salaries Deposited')
                     .setColor(0x2E7D32)
-                    .setDescription(`تم خصم **${res.total.toLocaleString()} ريال** من رصيد الشركة وDepositها في حسابات الموظفين.`)
+                    .setDescription(`**${res.total.toLocaleString()} Riyals** deducted from the company balance and deposited into employee accounts.`)
                     .addFields(
-                        { name: `👥 الموظفون (${res.members.length})`, value: salaryLines, inline: false },
-                        { name: '🏢 الشركة', value: company.name, inline: true },
-                        { name: '💳 إجمالي المدفوع', value: `\`${res.total.toLocaleString()} ريال\``, inline: true },
+                        { name: `👥 Employees (${res.members.length})`, value: salaryLines, inline: false },
+                        { name: '🏢 Company',     value: company.name, inline: true },
+                        { name: '💳 Total Paid', value: `\`${res.total.toLocaleString()} Riyals\``, inline: true },
                     )
                     .setFooter({ text: 'Company System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[PAY SALARIES ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ أثناء صرف الرواتب.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred while paying salaries.', flags: 64 });
             }
             return;
         }
@@ -1985,23 +1976,23 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('Promote Employee');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 123456789012345678')
+                        new TextInputBuilder().setCustomId('user_id').setLabel('Player ID (copy from Discord)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Example: 123456789012345678')
                             .setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('role').setLabel('الRank الجديدة (مدير / محاسب / موظف)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('مدير')
+                        new TextInputBuilder().setCustomId('role').setLabel('New Role (Manager / Accountant / Employee)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Manager')
                             .setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('salary').setLabel('الراتب الجديد (بالأرقام)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 8000')
+                        new TextInputBuilder().setCustomId('salary').setLabel('New Salary (numbers only)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Example: 8000')
                             .setRequired(true).setMaxLength(12)
                     ),
                 );
@@ -2015,13 +2006,13 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('Fire Employee');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('user_id').setLabel('آيدي اللاعب (انسخه من Discord)')
-                            .setStyle(TextInputStyle.Short).setPlaceholder('مثال: 123456789012345678')
+                        new TextInputBuilder().setCustomId('user_id').setLabel('Player ID (copy from Discord)')
+                            .setStyle(TextInputStyle.Short).setPlaceholder('Example: 123456789012345678')
                             .setRequired(true).setMaxLength(20)
                     ),
                 );
@@ -2035,23 +2026,23 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ هذا الإجراء لأصحاب Rank **مستثمر** فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
                 if (company.balance > 0)
-                    return interaction.reply({ content: `❌ لا يمكن Dissolve Company ورصيدها **${company.balance.toLocaleString()} ريال**. اسحب الرصيد أولاً.`, flags: 64 });
+                    return interaction.reply({ content: `❌ Cannot dissolve company while it has a balance of **${company.balance.toLocaleString()} Riyals**. Withdraw the balance first.`, flags: 64 });
 
                 await db.dissolveCompany(company.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('تم Dissolve Company')
+                    .setTitle('Company Dissolved')
                     .setColor(0xB71C1C)
-                    .setDescription(`تم حل شركة **${company.name}** نهائياً وإغلاق جميع سجلاتها.`)
+                    .setDescription(`Company **${company.name}** has been permanently dissolved and all its records closed.`)
                     .setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -2065,21 +2056,21 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'stock_portfolio_btn') {
                     const portfolio = await db.getUserPortfolio(interaction.user.id);
                     if (!portfolio.length)
-                        return interaction.reply({ content: '📭 محفظتك فارغة — ليس لديك أي أسهم حالياً.', flags: 64 });
+                        return interaction.reply({ content: '📭 Your portfolio is empty — you have no shares currently.', flags: 64 });
                     let totalValue = 0;
                     let desc = '';
                     for (const p of portfolio) {
                         const value = parseFloat(p.current_price) * p.shares;
                         totalValue += value;
                         const pl = value - parseFloat(p.ipo_price) * p.shares;
-                        desc += `**🏢 ${p.company_name}** — \`${p.shares}\` سهم × \`${parseFloat(p.current_price).toFixed(0)} ريال\` = **${value.toLocaleString(undefined,{maximumFractionDigits:0})} ريال**  ${pl>=0?`🟢 +${pl.toFixed(0)}`:`🔴 ${pl.toFixed(0)}`} ريال\n`;
+                        desc += `**🏢 ${p.company_name}** — \`${p.shares}\` shares × \`${parseFloat(p.current_price).toFixed(0)} Riyals\` = **${value.toLocaleString(undefined,{maximumFractionDigits:0})} Riyals**  ${pl>=0?`🟢 +${pl.toFixed(0)}`:`🔴 ${pl.toFixed(0)}`} Riyals\n`;
                     }
                     const embed = new EmbedBuilder()
                         .setTitle('Your Investment Portfolio')
                         .setColor(0x1B5E20)
                         .setDescription(desc)
-                        .addFields({ name: '💰 إجمالي القيمة', value: `\`${totalValue.toLocaleString(undefined,{maximumFractionDigits:0})} ريال\`` })
-                        .setFooter({ text: 'سوق الأسهم • FANTASY Bot' }).setTimestamp();
+                        .addFields({ name: '💰 Total Value', value: `\`${totalValue.toLocaleString(undefined,{maximumFractionDigits:0})} Riyals\`` })
+                        .setFooter({ text: 'Stock Market • FANTASY Bot' }).setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
@@ -2087,26 +2078,26 @@ client.on('interactionCreate', async interaction => {
                 const isBuy = interaction.customId === 'stock_buy_btn';
                 const allListings = await db.getAllStockListings();
                 if (!allListings.length)
-                    return interaction.reply({ content: '❌ لا توجد شركات مدرجة في السوق حالياً.', flags: 64 });
+                    return interaction.reply({ content: '❌ No companies are currently listed on the market.', flags: 64 });
 
                 const options = allListings.slice(0, 25).map(l =>
                     new StringSelectMenuOptionBuilder()
                         .setLabel(l.company_name.slice(0, 100))
                         .setValue(String(l.company_id))
-                        .setDescription(`السعر: ${parseFloat(l.current_price).toFixed(0)} ريال | الأسهم المتاحة: ${l.avail_shares}`)
+                        .setDescription(`Price: ${parseFloat(l.current_price).toFixed(0)} Riyals | Available shares: ${l.avail_shares}`)
                 );
                 const selectMenu = new StringSelectMenuBuilder()
                     .setCustomId(isBuy ? 'stock_company_select:buy' : 'stock_company_select:sell')
                     .setPlaceholder(isBuy ? '📈 Choose a company to buy from' : '📉 Choose a company to sell')
                     .addOptions(options);
                 return interaction.reply({
-                    content: isBuy ? '📈 **اختر الشركة التي تريد شراء أسهمها:**' : '📉 **اختر الشركة التي تريد بيع أسهمها:**',
+                    content: isBuy ? '📈 **Choose the company whose shares you want to buy:**' : '📉 **Choose the company whose shares you want to sell:**',
                     components: [new ActionRowBuilder().addComponents(selectMenu)],
                     flags: 64
                 });
             } catch (e) {
                 console.error('[STOCK BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -2119,11 +2110,11 @@ client.on('interactionCreate', async interaction => {
 
                 const hasPerm = await db.hasTradePermit(interaction.user.id);
                 if (!hasPerm)
-                    return interaction.reply({ content: '❌ لا تملك تصريحاً تجارياً. تواصل مع **وزارة التجارة** للحصول على تصريح.', flags: 64 });
+                    return interaction.reply({ content: '❌ You do not have a trade permit. Contact the **Ministry of Commerce** to obtain one.', flags: 64 });
 
                 const existingComp = await db.getUserCompany(interaction.user.id);
                 if (existingComp)
-                    return interaction.reply({ content: `❌ أنت مرتبط بالفعل بشركة **${existingComp.name}**. لا يمكنك تأسيس شركة أخرى.`, flags: 64 });
+                    return interaction.reply({ content: `❌ You are already associated with company **${existingComp.name}**. You cannot found another company.`, flags: 64 });
 
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder()
@@ -2132,33 +2123,33 @@ client.on('interactionCreate', async interaction => {
 
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('cf_personal').setLabel('المعلومات الشخصية')
+                        new TextInputBuilder().setCustomId('cf_personal').setLabel('Personal Information')
                             .setStyle(TextInputStyle.Paragraph)
-                            .setPlaceholder('1. اسمك داخل الرول:\n2. عمرك داخل الرول:\n3. عمرك الحقيقي:')
+                            .setPlaceholder('1. Your in-roleplay name:\n2. Your in-roleplay age:\n3. Your real age:')
                             .setRequired(true).setMaxLength(300)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('cf_name').setLabel('اسم الشركة')
+                        new TextInputBuilder().setCustomId('cf_name').setLabel('Company Name')
                             .setStyle(TextInputStyle.Short)
-                            .setPlaceholder('اكتب اسم الشركة هنا')
+                            .setPlaceholder('Enter the company name here')
                             .setRequired(true).setMaxLength(40)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('cf_details').setLabel('تفاصيل الشركة')
+                        new TextInputBuilder().setCustomId('cf_details').setLabel('Company Details')
                             .setStyle(TextInputStyle.Paragraph)
-                            .setPlaceholder('نوع الشركة / فكرة الشركة بالتفصيل / موقع الشركة داخل المدينة')
+                            .setPlaceholder('Company type / Detailed business idea / Company location in the city')
                             .setRequired(true).setMaxLength(800)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('cf_management').setLabel('خطة Admin والتوظيف')
+                        new TextInputBuilder().setCustomId('cf_management').setLabel('Management & Staffing Plan')
                             .setStyle(TextInputStyle.Paragraph)
-                            .setPlaceholder('كيف تدير الشركة / خبرة سابقة / عدد الموظفين / كيف توظف')
+                            .setPlaceholder('How you manage the company / prior experience / number of employees / hiring plan')
                             .setRequired(true).setMaxLength(800)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('cf_financial').setLabel('الجانب المالي والالتزام')
+                        new TextInputBuilder().setCustomId('cf_financial').setLabel('Financial & Commitment')
                             .setStyle(TextInputStyle.Paragraph)
-                            .setPlaceholder('رأس المال / مصدر الأموال / خطة الربح / التعهد بالقوانين / قبول الإغلاق')
+                            .setPlaceholder('Capital / Source of funds / Profit plan / Commitment to rules / Acceptance of closure')
                             .setRequired(true).setMaxLength(800)
                     ),
                 );
@@ -2166,7 +2157,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error('[COMPANY APPLY BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -2180,7 +2171,7 @@ client.on('interactionCreate', async interaction => {
                         new BB2().setCustomId('company_apply_btn').setLabel('Submit Establishment Request').setEmoji('📋').setStyle(BS2.Success)
                     );
                     return interaction.reply({
-                        content: '❌ ليس لديك شركة مسجلة. يمكنك Submit Establishment Request شركة من خلال الزر أدناه.',
+                        content: '❌ You do not have a registered company. You can submit an establishment request using the button below.',
                         components: [applyRow],
                         flags: 64
                     });
@@ -2188,23 +2179,23 @@ client.on('interactionCreate', async interaction => {
 
                 const companies = await db.getAllCompanies();
                 if (!companies.length)
-                    return interaction.reply({ content: '📋 لا توجد شركات مسجلة حالياً.', flags: 64 });
+                    return interaction.reply({ content: '📋 No registered companies found.', flags: 64 });
 
                 const list = companies.map((c, i) =>
-                    `**${i + 1}.** 🏢 **${c.name}** — مالك: <@${c.owner_discord_id}> — رصيد: \`${(c.balance || 0).toLocaleString()} ريال\``
+                    `**${i + 1}.** 🏢 **${c.name}** — Owner: <@${c.owner_discord_id}> — Balance: \`${(c.balance || 0).toLocaleString()} Riyals\``
                 ).join('\n');
 
                 const embed = new EmbedBuilder()
                     .setTitle('Registered Companies List')
                     .setColor(0x1565C0)
                     .setDescription(list)
-                    .setFooter({ text: `Company System • ${companies.length} شركة` })
+                    .setFooter({ text: `Company System • ${companies.length} company/companies` })
                     .setTimestamp();
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error('[COMPANY LIST BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -2216,7 +2207,7 @@ client.on('interactionCreate', async interaction => {
             const isAdmin = pointsAdminRole
                 ? interaction.member.roles.cache.has(pointsAdminRole)
                 : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-            if (!isAdmin) return interaction.reply({ content: '❌ فقط مسؤولو النقاط يقدرون يستخدمون هذا الزر.', flags: 64 });
+            if (!isAdmin) return interaction.reply({ content: '❌ Only points admins can use this button.', flags: 64 });
 
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB4 } = require('discord.js');
             const modal = new ModalBuilder()
@@ -2224,10 +2215,10 @@ client.on('interactionCreate', async interaction => {
                 .setTitle(isAdd ? '➕ Add Points' : '➖ Deduct Points');
             modal.addComponents(
                 new ARB4().addComponents(
-                    new TextInputBuilder().setCustomId('target_id').setLabel('ID الديسكورد للشخص').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 123456789012345678')
+                    new TextInputBuilder().setCustomId('target_id').setLabel('Discord ID of the person').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('Example: 123456789012345678')
                 ),
                 new ARB4().addComponents(
-                    new TextInputBuilder().setCustomId('points_amount').setLabel('عدد النقاط').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('مثال: 10')
+                    new TextInputBuilder().setCustomId('points_amount').setLabel('Number of Points').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('Example: 10')
                 )
             );
             return interaction.showModal(modal);
@@ -2283,9 +2274,9 @@ client.on('interactionCreate', async interaction => {
                 new ActionRowBuilder().addComponents(
                     new TextInputBuilder()
                         .setCustomId('panic_location_text')
-                        .setLabel('أين أنت الآن؟')
+                        .setLabel('Where are you now?')
                         .setStyle(TextInputStyle.Paragraph)
-                        .setPlaceholder('اكتب موقعك بالتفصيل...')
+                        .setPlaceholder('Describe your location in detail...')
                         .setRequired(true)
                         .setMaxLength(500)
                 )
@@ -2316,7 +2307,7 @@ client.on('interactionCreate', async interaction => {
                     await command.slashExecute(interaction, db);
                 } catch (e) {
                     console.error(e);
-                    try { if (interaction.deferred) interaction.editReply({ content: '❌ حدث خطأ.' }); } catch {}
+                    try { if (interaction.deferred) interaction.editReply({ content: '❌ An error occurred.' }); } catch {}
                 }
             } else {
                 await interaction.deferUpdate().catch(() => {});
@@ -2334,9 +2325,9 @@ client.on('interactionCreate', async interaction => {
                 new ARB().addComponents(
                     new TextInputBuilder()
                         .setCustomId('sony_id')
-                        .setLabel('ادخل ID سوني الخاص بك (PSN)')
+                        .setLabel('Enter your Sony ID (PSN)')
                         .setStyle(TextInputStyle.Short)
-                        .setPlaceholder('مثال: PlayerName123')
+                        .setPlaceholder('Example: PlayerName123')
                         .setRequired(true)
                         .setMinLength(3)
                         .setMaxLength(50)
@@ -2350,23 +2341,23 @@ client.on('interactionCreate', async interaction => {
             try {
                 const cars = await db.getShowroom();
                 const car = cars.find(c => c.id === carId);
-                if (!car) return interaction.reply({ content: '❌ السيارة غير موجودة أو تم بيعها.', flags: 64 });
+                if (!car) return interaction.reply({ content: '❌ Car not found or has been sold.', flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle(`🚗 ${car.car_name}`)
                     .setColor(0xB71C1C)
                     .addFields(
-                        { name: '🏷️ النوع', value: car.car_type ? `\`${car.car_type}\`` : '`غير محدد`', inline: true },
-                        { name: '🎨 اللون', value: car.color ? `\`${car.color}\`` : '`غير محدد`', inline: true },
-                        { name: '💰 السعر', value: `\`${Number(car.price).toLocaleString()} ريال\``, inline: true },
-                        { name: '📋 Status', value: '`متاحة للبيع`', inline: true },
-                        { name: '📩 للشراء', value: 'تواصل مع Admin لإتمام عملية الشراء', inline: false },
+                        { name: '🏷️ Type',   value: car.car_type ? `\`${car.car_type}\`` : '`Not specified`', inline: true },
+                        { name: '🎨 Color',  value: car.color ? `\`${car.color}\`` : '`Not specified`', inline: true },
+                        { name: '💰 Price',  value: `\`${Number(car.price).toLocaleString()} Riyals\``, inline: true },
+                        { name: '📋 Status', value: '`Available for sale`', inline: true },
+                        { name: '📩 To Purchase', value: 'Contact an Admin to complete the purchase', inline: false },
                     )
                     .setFooter({ text: 'Showroom System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -2378,26 +2369,26 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId = parseInt(value);
                 const item   = await db.getBlackMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
+                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🖤 ${item.name}`)
                     .setColor(0x1a1a2e)
                     .addFields(
-                        { name: '💰 السعر', value: `**${Number(item.price).toLocaleString('en-US')}$**`, inline: true },
+                        { name: '💰 Price', value: `**${Number(item.price).toLocaleString('en-US')}$**`, inline: true },
                     )
                     .setFooter({ text: 'Black Market • FANTASY Bot' })
                     .setTimestamp();
 
                 const buyBtn = new ButtonBuilder()
                     .setCustomId(`buy_bm_${item.id}`)
-                    .setLabel(`🛒 شراء ${item.name}`)
+                    .setLabel(`🛒 Buy ${item.name}`)
                     .setStyle(ButtonStyle.Danger);
                 const row = new ActionRowBuilder().addComponents(buyBtn);
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -2409,7 +2400,7 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId = parseInt(value);
                 const item   = await db.getMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ هذا الغرض لم يعد متاحاً.', flags: 64 });
+                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const cash     = Number(identity?.cash || 0);
@@ -2418,8 +2409,8 @@ client.on('interactionCreate', async interaction => {
                     .setTitle(`🛒 ${item.name}`)
                     .setColor(0xBF360C)
                     .addFields(
-                        { name: '💰 السعر',      value: `**${Number(item.price).toLocaleString()} ريال**`, inline: true },
-                        { name: '💵 كاشك الحالي', value: `${cash.toLocaleString()} ريال`,                  inline: true },
+                        { name: '💰 Price',        value: `**${Number(item.price).toLocaleString()} Riyals**`, inline: true },
+                        { name: '💵 Your Cash',    value: `${cash.toLocaleString()} Riyals`,                   inline: true },
                     )
                     .setFooter({ text: 'Store System • FANTASY Bot' })
                     .setTimestamp();
@@ -2427,15 +2418,15 @@ client.on('interactionCreate', async interaction => {
                 if (item.description) embed.setDescription(`> ${item.description}`);
 
                 if (cash < item.price) {
-                    embed.addFields({ name: '❌ رصيد غير كافٍ', value: `تحتاج ${(item.price - cash).toLocaleString()} ريال إضافية`, inline: false });
+                    embed.addFields({ name: '❌ Insufficient Balance', value: `You need ${(item.price - cash).toLocaleString()} more Riyals`, inline: false });
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
-                const buyBtn   = new ButtonBuilder().setCustomId(`buy_market_${item.id}`).setLabel(`✅ تأكيد الشراء`).setStyle(ButtonStyle.Success);
+                const buyBtn   = new ButtonBuilder().setCustomId(`buy_market_${item.id}`).setLabel(`✅ Confirm Purchase`).setStyle(ButtonStyle.Success);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -2447,7 +2438,7 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId   = parseInt(value);
                 const item     = await db.getEquipmentItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ هذه المعدة لم تعد متاحة.', flags: 64 });
+                if (!item) return interaction.reply({ content: '❌ This equipment is no longer available.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const cash     = Number(identity?.cash || 0);
@@ -2456,8 +2447,8 @@ client.on('interactionCreate', async interaction => {
                     .setTitle(`🔨 ${item.name}`)
                     .setColor(0x4527A0)
                     .addFields(
-                        { name: '💰 السعر',       value: `**${Number(item.price).toLocaleString()} ريال**`, inline: true },
-                        { name: '💵 كاشك الحالي', value: `${cash.toLocaleString()} ريال`,                  inline: true },
+                        { name: '💰 Price',     value: `**${Number(item.price).toLocaleString()} Riyals**`, inline: true },
+                        { name: '💵 Your Cash', value: `${cash.toLocaleString()} Riyals`,                   inline: true },
                     )
                     .setFooter({ text: 'Equipment Store • FANTASY Bot' })
                     .setTimestamp();
@@ -2465,15 +2456,15 @@ client.on('interactionCreate', async interaction => {
                 if (item.description) embed.setDescription(`> ${item.description}`);
 
                 if (cash < item.price) {
-                    embed.addFields({ name: '❌ رصيد غير كافٍ', value: `تحتاج ${(item.price - cash).toLocaleString()} ريال إضافية`, inline: false });
+                    embed.addFields({ name: '❌ Insufficient Balance', value: `You need ${(item.price - cash).toLocaleString()} more Riyals`, inline: false });
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
-                const buyBtn   = new ButtonBuilder().setCustomId(`buy_equipment_${item.id}`).setLabel('✅ تأكيد الشراء').setStyle(ButtonStyle.Success);
+                const buyBtn   = new ButtonBuilder().setCustomId(`buy_equipment_${item.id}`).setLabel('✅ Confirm Purchase').setStyle(ButtonStyle.Success);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -2485,36 +2476,36 @@ client.on('interactionCreate', async interaction => {
                         db.getUserIdentities(interaction.user.id),
                         db.isSlot3Unlocked(interaction.user.id),
                     ]);
-                    const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                    const slotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     const slotOptions = [1, 2, 3].map(s => {
                         if (s === 3 && !slot3Open) {
-                            return { label: '🔒 الشخصية الثالثة', value: `create_slot_${s}`, description: 'مقفلة — تواصل مع المسؤولين لفتحها' };
+                            return { label: '🔒 Character 3', value: `create_slot_${s}`, description: 'Locked — contact admins to unlock' };
                         }
                         const taken = identities.find(i => i.slot === s && i.character_name);
                         return {
                             label: slotNames[s],
                             value: `create_slot_${s}`,
-                            description: taken ? '🔒 مكتملة بالفعل' : '🟢 متاحة للإنشاء',
+                            description: taken ? '🔒 Already filled' : '🟢 Available to create',
                         };
                     });
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_create_slot')
-                            .setPlaceholder('اختر الشخصية')
+                            .setPlaceholder('Choose a character slot')
                             .addOptions(slotOptions)
                     );
-                    return interaction.reply({ content: '📋 **اختر الشخصية التي تريد إنشاء هويتها:**', components: [slotRow], flags: 64 });
+                    return interaction.reply({ content: '📋 **Choose the character you want to create an identity for:**', components: [slotRow], flags: 64 });
                 }
 
                 if (value === 'login_identity') {
                     const tripOpen = await db.getConfig('trip_open');
                     if (tripOpen !== 'true') {
-                        return interaction.reply({ content: '❌ **تسجيل الدخول متوقف حالياً.**\nلا يمكن تسجيل الدخول إلا عند فتح رحلة. انتظر إعلان المسؤولين.', flags: 64 });
+                        return interaction.reply({ content: '❌ **Login is currently closed.**\nYou can only log in when a trip is open. Wait for an admin announcement.', flags: 64 });
                     }
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const created = identities.filter(i => i.character_name);
-                    if (!created.length) return interaction.reply({ content: '❌ لا توجد شخصيات مُنشأة ومقبولة بعد. قدّم طلب هوية أولاً.', flags: 64 });
-                    const loginSlotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                    if (!created.length) return interaction.reply({ content: '❌ No created and approved characters yet. Submit an identity request first.', flags: 64 });
+                    const loginSlotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     const slotOptions = created.map(i => ({
                         label: `${loginSlotNames[i.slot]}: ${i.character_name} ${i.family_name || ''}`,
                         value: `login_slot_${i.slot}`,
@@ -2523,26 +2514,26 @@ client.on('interactionCreate', async interaction => {
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_login_slot')
-                            .setPlaceholder('اختر الشخصية للدخول')
+                            .setPlaceholder('Choose a character to log in with')
                             .addOptions(slotOptions)
                     );
-                    return interaction.reply({ content: '✅ **اختر الشخصية التي تريد تسجيل الدخول بها:**', components: [slotRow], flags: 64 });
+                    return interaction.reply({ content: '✅ **Choose the character you want to log in with:**', components: [slotRow], flags: 64 });
                 }
 
                 if (value === 'logout_identity') {
                     const status = await db.getLoginStatus(interaction.user.id);
-                    if (!status.is_logged_in) return interaction.reply({ content: '❌ أنت لست مسجّل دخول بأي شخصية حالياً.', flags: 64 });
+                    if (!status.is_logged_in) return interaction.reply({ content: '❌ You are not currently logged in with any character.', flags: 64 });
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const activeChar = identities.find(i => i.slot === status.active_slot);
-                    const slotNamesOut = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                    const slotNamesOut = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     await db.logoutIdentity(interaction.user.id);
                     await db.addCharacterLog(interaction.user.id, interaction.user.username, 'logout', activeChar?.character_name || null, status.active_slot);
                     const embedOut = new EmbedBuilder()
                         .setTitle('Logout')
                         .setColor(0x757575)
                         .addFields(
-                            { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
-                            { name: '🪪 الشخصية', value: `${slotNamesOut[status.active_slot] || `شخصية ${status.active_slot}`}: **${activeChar?.character_name || '—'} ${activeChar?.family_name || ''}**`, inline: true },
+                            { name: '👤 User',      value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '🪪 Character', value: `${slotNamesOut[status.active_slot] || `Character ${status.active_slot}`}: **${activeChar?.character_name || '—'} ${activeChar?.family_name || ''}**`, inline: true },
                         )
                         .setFooter({ text: 'Identity System • FANTASY Bot' })
                         .setTimestamp();
@@ -2551,45 +2542,45 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
         if (interaction.customId === 'identity_create_slot') {
             const slot = parseInt(value.replace('create_slot_', ''));
-            const NAMES = ['', 'الشخصية الأولى', 'الشخصية الثانية', 'الشخصية الثالثة'];
+            const NAMES = ['', 'Character 1', 'Character 2', 'Character 3'];
             if (slot === 3) {
                 const unlocked = await db.isSlot3Unlocked(interaction.user.id);
-                if (!unlocked) return interaction.reply({ content: '🔒 **الشخصية الثالثة** غير مفتوحة. تواصل مع المسؤولين لفتحها.', flags: 64 });
+                if (!unlocked) return interaction.reply({ content: '🔒 **Character 3** is not unlocked. Contact admins to unlock it.', flags: 64 });
             }
             const identities = await db.getUserIdentities(interaction.user.id);
             const taken = identities.find(i => i.slot === slot && i.character_name);
             if (taken) {
-                return interaction.reply({ content: `❌ **${NAMES[slot]}** مكتملة بالفعل ولا يمكن إنشاء هوية جديدة فيها.`, flags: 64 });
+                return interaction.reply({ content: `❌ **${NAMES[slot]}** is already filled and a new identity cannot be created in it.`, flags: 64 });
             }
-            const slotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+            const slotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
             const modal = new ModalBuilder()
                 .setCustomId(`create_char_${slot}`)
                 .setTitle(`✏️ Create Identity — ${slotNames[slot]}`)
                 .addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('char_name').setLabel('اسم الشخصية')
+                        new TextInputBuilder().setCustomId('char_name').setLabel('Character Name')
                             .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(50)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('family_name').setLabel('اسم العائلة')
+                        new TextInputBuilder().setCustomId('family_name').setLabel('Family Name')
                             .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(50)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('birth_place').setLabel('اسم ومكان الولادة')
+                        new TextInputBuilder().setCustomId('birth_place').setLabel('Name & Place of Birth')
                             .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(100)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('birth_date').setLabel('تاريخ الميلاد (مثال: 1990/06/15)')
+                        new TextInputBuilder().setCustomId('birth_date').setLabel('Date of Birth (e.g. 1990/06/15)')
                             .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(20)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('gender').setLabel('الجنس (ذكر / أنثى)')
+                        new TextInputBuilder().setCustomId('gender').setLabel('Gender (Male / Female)')
                             .setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(10)
                     )
                 );
@@ -2601,19 +2592,19 @@ client.on('interactionCreate', async interaction => {
             try {
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const char = identities.find(i => i.slot === slot);
-                if (!char || !char.character_name) return interaction.reply({ content: '❌ هذه الشخصية غير مقبولة أو غير مكتملة. لا يمكن تسجيل الدخول بها.', flags: 64 });
+                if (!char || !char.character_name) return interaction.reply({ content: '❌ This character is not approved or incomplete. Cannot log in with it.', flags: 64 });
                 await db.loginIdentity(interaction.user.id, slot);
                 await db.addCharacterLog(interaction.user.id, interaction.user.username, 'login', char.character_name, slot);
-                const slotNamesLogin = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                const slotNamesLogin = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const embed = new EmbedBuilder()
-                    .setTitle(`✅ تسجيل الدخول — ${slotNamesLogin[slot]}`)
+                    .setTitle(`✅ Login — ${slotNamesLogin[slot]}`)
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '👤 الاسم', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
-                        { name: '⚧ الجنس', value: char.gender || '—', inline: true },
-                        { name: '📅 تاريخ الميلاد', value: char.birth_date || '—', inline: true },
-                        { name: '📍 مكان الولادة', value: char.birth_place || '—', inline: true },
-                        { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '👤 Name',            value: `${char.character_name} ${char.family_name || ''}`, inline: true },
+                        { name: '⚧ Gender',           value: char.gender || '—', inline: true },
+                        { name: '📅 Date of Birth',   value: char.birth_date || '—', inline: true },
+                        { name: '📍 Place of Birth',  value: char.birth_place || '—', inline: true },
+                        { name: '👤 User',             value: `<@${interaction.user.id}>`, inline: true },
                     )
                     .setFooter({ text: 'Identity System • FANTASY Bot' })
                     .setTimestamp();
@@ -2621,7 +2612,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ أثناء تسجيل الدخول.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred during login.', flags: 64 });
             }
         }
 
@@ -2633,33 +2624,33 @@ client.on('interactionCreate', async interaction => {
 
                 const propId = parseInt(value);
                 const prop = await db.getPropertyById(propId);
-                if (!prop) return interaction.reply({ content: '❌ هذا العقار لم يعد متاحاً.', flags: 64 });
+                if (!prop) return interaction.reply({ content: '❌ This property is no longer available.', flags: 64 });
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🏠 ${prop.name}`)
                     .setColor(0xB71C1C)
                     .addFields(
-                        { name: '💰 السعر', value: `\`${Number(prop.price).toLocaleString()} ريال\``, inline: true },
+                        { name: '💰 Price', value: `\`${Number(prop.price).toLocaleString()} Riyals\``, inline: true },
                     )
-                    .setDescription('هل تريد شراء هذا العقار؟ اضغط على زر الشراء أدناه.\n> سيتم خصم المبلغ من كاشك وإرسال تفاصيل العقار في خاصك.')
+                    .setDescription('Do you want to purchase this property? Click the purchase button below.\n> The amount will be deducted from your cash and the property details will be sent to your DMs.')
                     .setFooter({ text: 'Properties System • FANTASY Bot' })
                     .setTimestamp();
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`buy_property_${prop.id}`)
-                        .setLabel(`شراء ${prop.name}`)
+                        .setLabel(`Buy ${prop.name}`)
                         .setStyle(ButtonStyle.Danger),
                 );
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
         if (interaction.customId === 'ticket_menu') {
             return interaction.reply({
-                content: '⚠️ هذه القائمة قديمة. الرجاء استخدام البانل الجديد `/tickets` لفتح تكت.',
+                content: '⚠️ This menu is outdated. Please use the new panel `/tickets` to open a ticket.',
                 flags: 64
             });
         }
@@ -2673,7 +2664,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId.startsWith('citizen_file_select:')) {
             const chefRoleId = await db.getConfig('cia_chef_role');
             if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId))
-                return interaction.reply({ content: '❌ غير مصرح.', flags: 64 });
+                return interaction.reply({ content: '❌ Unauthorized.', flags: 64 });
             try {
                 await interaction.deferUpdate();
                 const page = parseInt(interaction.customId.split(':')[1]) || 0;
@@ -2681,13 +2672,13 @@ client.on('interactionCreate', async interaction => {
                 const { buildCitizenEmbed } = require('./commands/citizen-file');
                 const embed = await buildCitizenEmbed(db, discordId, parseInt(slot));
                 if (!embed) {
-                    await interaction.message.edit({ content: '❌ لم يُعثر على بيانات هذا المواطن.', embeds: [], components: [] });
+                    await interaction.message.edit({ content: '❌ No data found for this citizen.', embeds: [], components: [] });
                     return;
                 }
                 const backBtn = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`citizen_file_back:${page}`)
-                        .setLabel('العودة للقائمة')
+                        .setLabel('Back to Menu')
                         .setEmoji('◀️')
                         .setStyle(ButtonStyle.Secondary)
                 );
@@ -2706,7 +2697,7 @@ client.on('interactionCreate', async interaction => {
 
                 const robberyId = parseInt(value);
                 const rob = await db.getRobberyById(robberyId);
-                if (!rob) return interaction.reply({ content: '❌ هذه السرقة لم تعد متاحة.', flags: 64 });
+                if (!rob) return interaction.reply({ content: '❌ This robbery option is no longer available.', flags: 64 });
 
                 const toolsList = rob.tools.trim().toLowerCase() === 'لا يوجد' || !rob.tools.trim()
                     ? null
@@ -2726,8 +2717,8 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('Missing Tools')
                         .setColor(0xB71C1C)
-                        .setDescription(`لا تملك الأدوات اللازمة لتنفيذ **${rob.name}**:`)
-                        .addFields({ name: '🛠️ الأدوات الناقصة', value: missing.map(t => `• \`${t}\``).join('\n'), inline: false })
+                        .setDescription(`You do not have the required tools to execute **${rob.name}**:`)
+                        .addFields({ name: '🛠️ Missing Tools', value: missing.map(t => `• \`${t}\``).join('\n'), inline: false })
                         .setFooter({ text: 'Robbery System • FANTASY Bot' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
@@ -2754,10 +2745,10 @@ client.on('interactionCreate', async interaction => {
                     const { ModalBuilder: RM, TextInputBuilder: RT, TextInputStyle: RS, ActionRowBuilder: RA } = require('discord.js');
                     const modal = new RM()
                         .setCustomId(`robbery_report_${robberyId}_${amount}`)
-                        .setTitle('بلاغ موقع السرقة');
+                        .setTitle('Robbery Location Report');
                     modal.addComponents(
                         new RA().addComponents(
-                            new RT().setCustomId('robbery_location').setLabel('وين موقعك؟ (اكتب الموقع)').setStyle(RS.Paragraph).setRequired(true).setMaxLength(500)
+                            new RT().setCustomId('robbery_location').setLabel('Where are you? (Write your location)').setStyle(RS.Paragraph).setRequired(true).setMaxLength(500)
                         ),
                     );
                     return interaction.showModal(modal);
@@ -2767,16 +2758,16 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Robbery Successful!')
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '🔫 نوع السرقة', value: rob.name, inline: true },
-                        { name: '💵 المبلغ المسروق', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '🛠️ الأدوات المستخدمة', value: toolsList ? toolsList.map(t => `\`${t}\``).join(', ') : '`لا يوجد`', inline: false },
+                        { name: '🔫 Robbery Type',   value: rob.name, inline: true },
+                        { name: '💵 Amount Stolen',   value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                        { name: '🛠️ Tools Used',      value: toolsList ? toolsList.map(t => `\`${t}\``).join(', ') : '`None`', inline: false },
                     )
                     .setFooter({ text: 'Robbery System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ أثناء تنفيذ السرقة.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred while executing the robbery.', flags: 64 });
             }
         }
 
@@ -2786,20 +2777,20 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 { const _e = await db.checkLoginAndIdentity(interaction.user.id); if (_e) return interaction.reply({ content: _e, flags: 64 }); }
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
+                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
 
                 if (value === 'snap_send') {
                     const friends = await db.getSnapFriends(interaction.user.id);
-                    if (!friends.length) return interaction.reply({ content: '❌ ليس لديك أصدقاء بعد. أضف صديقاً أولاً.', flags: 64 });
+                    if (!friends.length) return interaction.reply({ content: '❌ You have no friends yet. Add a friend first.', flags: 64 });
                     const options = friends.slice(0, 25).map(f => ({
                         label: f.friend_username,
                         value: f.friend_id,
-                        description: `🔥 ستريك: ${f.streak}`,
+                        description: `🔥 Streak: ${f.streak}`,
                     }));
                     const row = new ARN().addComponents(
-                        new SSN().setCustomId('snap_friend_select').setPlaceholder('👻 اختر صديق لإرسال سناب').addOptions(options)
+                        new SSN().setCustomId('snap_friend_select').setPlaceholder('👻 Choose a friend to send a snap to').addOptions(options)
                     );
-                    return interaction.reply({ content: '📸 **اختر الصديق الذي تريد إرسال سناب له:**', components: [row], flags: 64 });
+                    return interaction.reply({ content: '📸 **Choose the friend you want to send a snap to:**', components: [row], flags: 64 });
                 }
 
                 if (value === 'snap_inbox') {
@@ -2810,13 +2801,13 @@ client.on('interactionCreate', async interaction => {
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     if (!msgs.length) {
-                        embed.setDescription('> 📭 لا توجد سنابات واردة');
+                        embed.setDescription('> 📭 No incoming snaps');
                     } else {
                         const unseen = msgs.filter(m => !m.seen);
-                        embed.setDescription(`📩 **${unseen.length}** سناب جديد غير مقروء`);
+                        embed.setDescription(`📩 **${unseen.length}** new unread snap(s)`);
                         msgs.slice(0, 10).forEach(m => embed.addFields({
-                            name: `${m.seen ? '📖' : '🔴'} من: **${m.sender_username}**`,
-                            value: `> ${m.content}\n⏰ ${new Date(m.created_at).toLocaleString('ar-SA')}`,
+                            name: `${m.seen ? '📖' : '🔴'} From: **${m.sender_username}**`,
+                            value: `> ${m.content}\n⏰ ${new Date(m.created_at).toLocaleString('en-US')}`,
                             inline: false,
                         }));
                         for (const m of msgs.filter(m => !m.seen)) await db.markSnapSeen(m.id, interaction.user.id);
@@ -2829,27 +2820,27 @@ client.on('interactionCreate', async interaction => {
                     const embed = new EmbedBuilder()
                         .setTitle('My Snap Friends')
                         .setColor(0xFFFC00)
-                        .setFooter({ text: `${friends.length} صديق • Snapchat • FANTASY Bot` })
+                        .setFooter({ text: `${friends.length} friend(s) • Snapchat • FANTASY Bot` })
                         .setTimestamp();
                     if (!friends.length) {
-                        embed.setDescription('> لا يوجد أصدقاء بعد. اختر **➕ إضافة صديق**');
+                        embed.setDescription('> No friends yet. Choose **➕ Add Friend**');
                         return interaction.reply({ embeds: [embed], flags: 64 });
                     }
                     const SPACER = { name: '\u200b', value: '\u200b', inline: true };
                     const fields = friends.map(f => {
                         const s = f.streak;
                         const badge = s >= 100 ? '💯' : s >= 50 ? '🏆' : s >= 10 ? '⚡' : '🔥';
-                        return { name: `👻 ${f.friend_username}`, value: `${badge} **${s}** ستريك`, inline: true };
+                        return { name: `👻 ${f.friend_username}`, value: `${badge} **${s}** streak`, inline: true };
                     });
                     while (fields.length % 3 !== 0) fields.push(SPACER);
                     embed.addFields(fields);
                     const msgRow = new ARN().addComponents(
                         new SSN().setCustomId('snap_friend_select')
-                            .setPlaceholder('💬 اختر صديق لمراسلته')
+                            .setPlaceholder('💬 Choose a friend to message')
                             .addOptions(friends.slice(0, 25).map(f => ({
                                 label: f.friend_username,
                                 value: f.friend_id,
-                                description: `🔥 ستريك: ${f.streak}`,
+                                description: `🔥 Streak: ${f.streak}`,
                             })))
                     );
                     return interaction.reply({ embeds: [embed], components: [msgRow], flags: 64 });
@@ -2858,9 +2849,9 @@ client.on('interactionCreate', async interaction => {
                 if (value === 'snap_add') {
                     const modal = new MN().setCustomId('snap_add_modal').setTitle('Add Friend')
                         .addComponents(new ARN().addComponents(
-                            new TIN().setCustomId('friend_snap_name').setLabel('اسم حساب سناب الصديق')
+                            new TIN().setCustomId('friend_snap_name').setLabel('Friend\'s Snap username')
                                 .setStyle(TSN.Short).setRequired(true).setMaxLength(20)
-                                .setPlaceholder('مثال: Sultan2025')
+                                .setPlaceholder('Example: Sultan2025')
                         ));
                     return interaction.showModal(modal);
                 }
@@ -2873,23 +2864,23 @@ client.on('interactionCreate', async interaction => {
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     if (!requests.length) {
-                        embed.setDescription('> لا توجد طلبات صداقة معلّقة.');
+                        embed.setDescription('> No pending friend requests.');
                         return interaction.reply({ embeds: [embed], flags: 64 });
                     }
-                    embed.setDescription(`📩 **${requests.length}** طلب صداقة`);
+                    embed.setDescription(`📩 **${requests.length}** friend request(s)`);
                     const options = requests.slice(0, 25).map(r => ({
                         label: r.requester_username,
                         value: r.requester_id,
-                        description: 'اضغط للقبول',
+                        description: 'Click to accept',
                     }));
                     const row = new ARN().addComponents(
-                        new SSN().setCustomId('snap_accept_select').setPlaceholder('✅ اختر طلباً لقبوله').addOptions(options)
+                        new SSN().setCustomId('snap_accept_select').setPlaceholder('✅ Choose a request to accept').addOptions(options)
                     );
                     return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -2898,34 +2889,34 @@ client.on('interactionCreate', async interaction => {
                 const friendId  = value;
                 const myAcc     = await db.getSnapAccount(interaction.user.id);
                 const friendAcc = await db.getSnapAccount(friendId);
-                if (!friendAcc) return interaction.reply({ content: '❌ لم يُعثر على حساب الصديق.', flags: 64 });
+                if (!friendAcc) return interaction.reply({ content: '❌ Friend account not found.', flags: 64 });
 
                 const msgs = await db.getSnapConversation(interaction.user.id, friendId);
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`💬 محادثتك مع @${friendAcc.snap_username}`)
+                    .setTitle(`💬 Your conversation with @${friendAcc.snap_username}`)
                     .setColor(0xFFFC00)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
 
                 if (!msgs.length) {
-                    embed.setDescription('> لا توجد رسائل بعد. ابدأ المحادثة الآن!');
+                    embed.setDescription('> No messages yet. Start the conversation now!');
                 } else {
                     embed.setDescription(
                         msgs.map(m => {
                             const isMe = m.sender_id === interaction.user.id;
-                            const time = new Date(m.created_at).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
-                            return `${isMe ? '📤 **أنت**' : `📥 **@${m.sender_username}**`} — ${time}\n> ${m.content}`;
+                            const time = new Date(m.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                            return `${isMe ? '📤 **You**' : `📥 **@${m.sender_username}**`} — ${time}\n> ${m.content}`;
                         }).join('\n\n')
                     );
                 }
 
-                const sendBtn  = new ButtonBuilder().setCustomId(`snap_msg_btn_${friendId}`).setLabel('📸 إرسال رسالة').setStyle(ButtonStyle.Primary);
+                const sendBtn  = new ButtonBuilder().setCustomId(`snap_msg_btn_${friendId}`).setLabel('📸 Send Message').setStyle(ButtonStyle.Primary);
                 const row = new ActionRowBuilder().addComponents(sendBtn);
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -2935,15 +2926,15 @@ client.on('interactionCreate', async interaction => {
                 const friendAcc = await db.getSnapAccount(friendId);
                 const modal = new ModalBuilder()
                     .setCustomId(`snap_send_modal_${friendId}`)
-                    .setTitle(`📸 رسالة لـ @${friendAcc?.snap_username || 'صديق'}`)
+                    .setTitle(`📸 Message to @${friendAcc?.snap_username || 'friend'}`)
                     .addComponents(new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('snap_content').setLabel('نص الرسالة')
+                        new TextInputBuilder().setCustomId('snap_content').setLabel('Message text')
                             .setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(300)
                     ));
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -2952,17 +2943,17 @@ client.on('interactionCreate', async interaction => {
                 const requesterId = value;
                 const requesterAcc = await db.getSnapAccount(requesterId);
                 const done = await db.acceptSnapFriend(interaction.user.id, requesterId);
-                if (!done) return interaction.reply({ content: '❌ لم يُعثر على الطلب.', flags: 64 });
+                if (!done) return interaction.reply({ content: '❌ Request not found.', flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('تم قبول طلب الصداقة')
+                    .setTitle('Friend Request Accepted')
                     .setColor(0xFFFC00)
-                    .setDescription(`أنتما الآن أصدقاء مع **${requesterAcc?.snap_username || requesterId}** 👻`)
+                    .setDescription(`You are now friends with **${requesterAcc?.snap_username || requesterId}** 👻`)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -2976,15 +2967,15 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Item Used')
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
-                        { name: '📦 الكمية المتبقية', value: `\`${result.remainingQty}\``, inline: true },
+                        { name: '🎒 Item',               value: `**${itemName}**`, inline: true },
+                        { name: '📦 Remaining Quantity', value: `\`${result.remainingQty}\``, inline: true },
                     )
                     .setFooter({ text: 'Bag System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: 'An error occurred.', flags: 64 });
             }
         }
 
@@ -2997,15 +2988,15 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('My Registered Cars')
                         .setColor(0x37474F)
                         .setDescription(cars.length
-                            ? cars.map(c => `🚗 **${c.car_name}** — لوحة: \`${c.plate}\``).join('\n')
-                            : '> لا توجد سيارات مسجلة بعد')
-                        .addFields({ name: '🔢 عدد السيارات', value: `\`${cars.length}\``, inline: true })
+                            ? cars.map(c => `🚗 **${c.car_name}** — Plate: \`${c.plate}\``).join('\n')
+                            : '> No registered cars yet')
+                        .addFields({ name: '🔢 Number of Cars', value: `\`${cars.length}\``, inline: true })
                         .setFooter({ text: 'Vehicles System • FANTASY Bot' })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 } catch (e) {
                     console.error(e);
-                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                    return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
                 }
             }
         }
@@ -3028,7 +3019,7 @@ client.on('interactionCreate', async interaction => {
                     return newRow;
                 });
                 return interaction.update({ components: comps });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         if (interaction.customId.startsWith('x_retweet_')) {
@@ -3036,19 +3027,19 @@ client.on('interactionCreate', async interaction => {
                 const postId = parseInt(interaction.customId.replace('x_retweet_', ''));
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
-                if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات.', flags: 64 });
+                if (!xChannelId) return interaction.reply({ content: '❌ The tweets channel has not been configured.', flags: 64 });
                 const orig = await db.getPostById(postId);
-                if (!orig) return interaction.reply({ content: '❌ التغريدة غير موجودة.', flags: 64 });
+                if (!orig) return interaction.reply({ content: '❌ Tweet not found.', flags: 64 });
                 const rt = await db.retweetPost(interaction.user.id, postId);
                 const embed = new EmbedBuilder()
-                    .setAuthor({ name: `@${myAcc.x_username} 🔁 رتويت`, iconURL: interaction.user.displayAvatarURL() })
+                    .setAuthor({ name: `@${myAcc.x_username} 🔁 Retweet`, iconURL: interaction.user.displayAvatarURL() })
                     .setColor(0x1DA1F2)
                     .setDescription(orig.content)
                     .addFields(
-                        { name: '↩️ رتويت من', value: `@${orig.x_username}`, inline: true },
-                        { name: '🆔 رقم المنشور', value: `\`#${rt.id}\``, inline: true },
+                        { name: '↩️ Retweeted from', value: `@${orig.x_username}`, inline: true },
+                        { name: '🆔 Post ID',         value: `\`#${rt.id}\``, inline: true },
                     )
                     .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
@@ -3065,8 +3056,8 @@ client.on('interactionCreate', async interaction => {
                     return newRow;
                 });
                 await interaction.update({ components: comps });
-                return interaction.followUp({ content: `✅ تم الرتويت في <#${xChannelId}>`, flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+                return interaction.followUp({ content: `✅ Retweeted in <#${xChannelId}>`, flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         if (interaction.customId.startsWith('x_reply_')) {
@@ -3074,15 +3065,15 @@ client.on('interactionCreate', async interaction => {
                 const postId = parseInt(interaction.customId.replace('x_reply_', ''));
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
                 const { ModalBuilder: MBR, TextInputBuilder: TIBR, TextInputStyle: TISR, ActionRowBuilder: ARBR } = require('discord.js');
                 const modal = new MBR().setCustomId(`x_reply_modal_${postId}`).setTitle('Reply to Tweet')
                     .addComponents(new ARBR().addComponents(
-                        new TIBR().setCustomId('reply_content').setLabel('نص ردك')
+                        new TIBR().setCustomId('reply_content').setLabel('Your reply text')
                             .setStyle(TISR.Paragraph).setRequired(true).setMaxLength(280)
                     ));
                 return interaction.showModal(modal);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
 
@@ -3094,45 +3085,45 @@ client.on('interactionCreate', async interaction => {
                 if (err) return interaction.reply({ content: err, flags: 64 });
 
                 if (value === 'new_case') {
-                    const modal = new ModalBuilder().setCustomId('new_case_modal').setTitle('رفع قضية جديدة');
+                    const modal = new ModalBuilder().setCustomId('new_case_modal').setTitle('File a New Case');
                     modal.addComponents(
-                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_title').setLabel('عنوان القضية').setStyle(TextInputStyle.Short).setRequired(true)),
-                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_defendant').setLabel('المدعى عليه').setStyle(TextInputStyle.Short).setRequired(true)),
-                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_desc').setLabel('وصف القضية').setStyle(TextInputStyle.Paragraph).setRequired(true)),
-                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_evidence').setLabel('الأدلة (اختياري)').setStyle(TextInputStyle.Paragraph).setRequired(false)),
-                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_lawyer_fee').setLabel('بدل Law (اختياري)').setStyle(TextInputStyle.Short).setRequired(false).setPlaceholder('مثال: 5000$')),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_title').setLabel('Case Title').setStyle(TextInputStyle.Short).setRequired(true)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_defendant').setLabel('Defendant').setStyle(TextInputStyle.Short).setRequired(true)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_desc').setLabel('Case Description').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_evidence').setLabel('Evidence (optional)').setStyle(TextInputStyle.Paragraph).setRequired(false)),
+                        new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('case_lawyer_fee').setLabel('Lawyer Fee (optional)').setStyle(TextInputStyle.Short).setRequired(false).setPlaceholder('Example: 5000$')),
                     );
                     return interaction.showModal(modal);
                 }
 
                 if (value === 'my_cases') {
                     const cases = await db.getCasesByPlaintiff(interaction.user.id);
-                    if (!cases.length) return interaction.reply({ content: '📋 لا توجد قضايا مرفوعة باسمك.', flags: 64 });
+                    if (!cases.length) return interaction.reply({ content: '📋 No cases filed under your name.', flags: 64 });
                     const lines = cases.map(c =>
-                        `**[${c.case_number}]** ${c.title}\n> ضد: ${c.defendant} • الحالة: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • Lawyer: ${c.lawyer_name}` : ''}${c.judge_name ? ` • Judge: ${c.judge_name}` : ''}`
+                        `**[${c.case_number}]** ${c.title}\n> vs: ${c.defendant} • Status: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • Lawyer: ${c.lawyer_name}` : ''}${c.judge_name ? ` • Judge: ${c.judge_name}` : ''}`
                     ).join('\n\n');
                     const embed = new EmbedBuilder()
                         .setTitle('My Cases')
                         .setColor(0x0D47A1)
                         .setDescription(lines.slice(0, 4000))
-                        .setFooter({ text: `إجمالي القضايا: ${cases.length} • FANTASY Bot` })
+                        .setFooter({ text: `Total Cases: ${cases.length} • FANTASY Bot` })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
                 if (value === 'hire_lawyer') {
                     const lawyers = await db.getLawyers();
-                    if (!lawyers.length) return interaction.reply({ content: '❌ لا يوجد محامون معتمدون حالياً. تواصل مع Admin.', flags: 64 });
+                    if (!lawyers.length) return interaction.reply({ content: '❌ No certified lawyers available currently. Contact an Admin.', flags: 64 });
                     const cases = await db.getCasesByPlaintiff(interaction.user.id);
                     const eligible = cases.filter(c => ['pending','accepted','in_progress'].includes(c.status));
-                    if (!eligible.length) return interaction.reply({ content: '❌ لا توجد قضايا مفتوحة باسمك.', flags: 64 });
+                    if (!eligible.length) return interaction.reply({ content: '❌ No open cases filed under your name.', flags: 64 });
                     const sel = new ActionRowBuilder().addComponents(
-                        new StringSelectMenuBuilder().setCustomId('case_sel_lawyer').setPlaceholder('📁 أولاً: اختر القضية')
-                            .addOptions(eligible.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `الحالة: ${db.CASE_STATUS[c.status]}` })))
+                        new StringSelectMenuBuilder().setCustomId('case_sel_lawyer').setPlaceholder('📁 First: choose the case')
+                            .addOptions(eligible.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `Status: ${db.CASE_STATUS[c.status]}` })))
                     );
-                    return interaction.reply({ content: '👨‍⚖️ **الخطوة 1:** اختر القضية:', components: [sel], flags: 64 });
+                    return interaction.reply({ content: '👨‍⚖️ **Step 1:** Choose the case:', components: [sel], flags: 64 });
                 }
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── العدل ─────────────────────────────────────────────────────────────
@@ -3140,118 +3131,116 @@ client.on('interactionCreate', async interaction => {
             try {
                 const { isAdmin } = require('./utils');
                 if (!(await isAdmin(interaction.member, db)))
-                    return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+                    return interaction.reply({ content: '❌ Admins only.', flags: 64 });
 
                 const actionMap = {
-                    accept_case:   { statuses: ['pending'],     label: '✅ اختر القضية للقبول',   customId: 'case_sel_accept' },
-                    reject_case:   { statuses: ['pending'],     label: '❌ اختر القضية للرفض',    customId: 'case_sel_reject' },
-                    assign_judge:  { statuses: ['accepted'],    label: '👨‍⚖️ اختر القضية لتعيين قاضٍ', customId: 'case_sel_judge' },
-                    issue_verdict: { statuses: ['in_progress'], label: '📜 اختر القضية لإصدار الحكم', customId: 'case_sel_verdict' },
+                    accept_case:   { statuses: ['pending'],     label: '✅ Choose the case to accept',        customId: 'case_sel_accept' },
+                    reject_case:   { statuses: ['pending'],     label: '❌ Choose the case to reject',         customId: 'case_sel_reject' },
+                    assign_judge:  { statuses: ['accepted'],    label: '👨‍⚖️ Choose the case to assign a judge', customId: 'case_sel_judge' },
+                    issue_verdict: { statuses: ['in_progress'], label: '📜 Choose the case to issue a verdict', customId: 'case_sel_verdict' },
                 };
                 const cfg = actionMap[value];
                 if (!cfg) return;
 
                 let cases = [];
                 for (const st of cfg.statuses) cases.push(...await db.getCasesByStatus(st));
-                if (!cases.length) return interaction.reply({ content: '📋 لا توجد قضايا في هذه الحالة.', flags: 64 });
+                if (!cases.length) return interaction.reply({ content: '📋 No cases in this status.', flags: 64 });
 
                 const sel = new ActionRowBuilder().addComponents(
-                    new StringSelectMenuBuilder().setCustomId(cfg.customId).setPlaceholder('اختر القضية')
-                        .addOptions(cases.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `ضد: ${c.defendant} • ${db.CASE_STATUS[c.status]}` })))
+                    new StringSelectMenuBuilder().setCustomId(cfg.customId).setPlaceholder('Choose a case')
+                        .addOptions(cases.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `vs: ${c.defendant} • ${db.CASE_STATUS[c.status]}` })))
                 );
                 return interaction.reply({ content: cfg.label + ':', components: [sel], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── قبول قضية مباشرة ─────────────────────────────────────────────────
+        // ── Accept case directly ─────────────────────────────────────────────────
         if (interaction.customId === 'case_sel_accept') {
             try {
                 const c = await db.getCaseById(Number(value));
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
                 await db.acceptCase(c.id);
                 const embed = new EmbedBuilder()
-                    .setTitle('تم قبول القضية')
+                    .setTitle('Case Accepted')
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '📁 رقم القضية', value: c.case_number,          inline: true },
-                        { name: '📌 العنوان',    value: c.title,                 inline: true },
-                        { name: '👤 المدعي',     value: `<@${c.plaintiff_id}>`, inline: true },
-                        { name: '⚔️ المدعى عليه', value: c.defendant,           inline: true },
+                        { name: '📁 Case Number', value: c.case_number,          inline: true },
+                        { name: '📌 Title',       value: c.title,                 inline: true },
+                        { name: '👤 Plaintiff',   value: `<@${c.plaintiff_id}>`, inline: true },
+                        { name: '⚔️ Defendant',   value: c.defendant,            inline: true },
                     )
-                    .setFooter({ text: `قُبلت بواسطة: ${interaction.user.username} • FANTASY Bot` })
+                    .setFooter({ text: `Accepted by: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
 
-                // DM المدعي
+                // DM the plaintiff
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('تم قبول قضيتك').setColor(0x2E7D32)
-                        .setDescription(`**${c.case_number} — ${c.title}**\n\nتم قبول قضيتك وستتم معالجتها قريباً.`)
+                    const dmEmbed = new EmbedBuilder().setTitle('Your Case Has Been Accepted').setColor(0x2E7D32)
+                        .setDescription(`**${c.case_number} — ${c.title}**\n\nYour case has been accepted and will be processed soon.`)
                         .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── judge_select: عرض لوحة القاضي المختار علناً ────────────────────
+        // ── judge_select: show selected judge's dashboard publicly ────────────────────
         if (interaction.customId === 'judge_select') {
             try {
                 const { buildJudgeDashboard } = require('./commands/judge-dashboard');
                 const judges = await db.getJudges();
                 const judge  = judges.find(j => j.discord_id === value);
-                if (!judge) return interaction.reply({ content: '❌ القاضي غير موجود.', flags: 64 });
+                if (!judge) return interaction.reply({ content: '❌ Judge not found.', flags: 64 });
                 await interaction.channel.send(await buildJudgeDashboard(db, judge.discord_id, judge.judge_name));
                 return interaction.reply({ content: '\u200b', flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── lawyer_select: عرض لوحة المحامي المختار علناً ──────────────────
+        // ── lawyer_select: show selected lawyer's dashboard publicly ──────────────────
         if (interaction.customId === 'lawyer_select') {
             try {
                 const { buildDashboard } = require('./commands/lawyer-dashboard');
                 const lawyers = await db.getLawyers();
                 const lawyer  = lawyers.find(l => l.discord_id === value);
-                if (!lawyer) return interaction.reply({ content: '❌ المحامي غير موجود.', flags: 64 });
+                if (!lawyer) return interaction.reply({ content: '❌ Lawyer not found.', flags: 64 });
                 await interaction.channel.send(await buildDashboard(db, lawyer.discord_id, lawyer.lawyer_name));
                 return interaction.reply({ content: '\u200b', flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── lawyer_tasks_select: لوحة المهام الخاصة — فقط لصاحبها ──────────
+        // ── lawyer_tasks_select: private tasks dashboard — owner only ──────────
         if (interaction.customId === 'lawyer_tasks_select') {
             try {
                 const selectedId = value;
-                // ❌ منع المحامي من الدخول على لوحة محامٍ آخر
                 if (interaction.user.id !== selectedId)
-                    return interaction.reply({ content: '❌ لا يمكنك الدخول على لوحة محامٍ آخر.', flags: 64 });
+                    return interaction.reply({ content: '❌ You cannot access another lawyer\'s dashboard.', flags: 64 });
 
                 const lawyers = await db.getLawyers();
                 const lawyer  = lawyers.find(l => l.discord_id === selectedId);
                 if (!lawyer)
-                    return interaction.reply({ content: '❌ أنت لست مسجلاً كمحامٍ معتمد.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not registered as a certified lawyer.', flags: 64 });
 
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const dash = await buildTasks(db, lawyer.discord_id, lawyer.lawyer_name);
                 return interaction.reply({ ...dash, flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── رفض / توكيل قاضي / حكم / محامي — فتح موودال ──────────────────────
-        // ── case_sel_lawyer: بعد اختيار القضية، اعرض قائمة المحامين ────────
+        // ── case_sel_lawyer: after choosing the case, show lawyer list ────────
         if (interaction.customId === 'case_sel_lawyer') {
             try {
                 const caseId = value;
                 const lawyers = await db.getLawyers();
-                if (!lawyers.length) return interaction.reply({ content: '❌ لا يوجد محامون معتمدون.', flags: 64 });
+                if (!lawyers.length) return interaction.reply({ content: '❌ No certified lawyers available.', flags: 64 });
                 const sel = new ActionRowBuilder().addComponents(
-                    new StringSelectMenuBuilder().setCustomId(`lawyer_pick_${caseId}`).setPlaceholder('👨‍⚖️ الخطوة 2: اختر المحامي')
+                    new StringSelectMenuBuilder().setCustomId(`lawyer_pick_${caseId}`).setPlaceholder('👨‍⚖️ Step 2: Choose a lawyer')
                         .addOptions(lawyers.slice(0,25).map(l => ({ label: l.lawyer_name, value: l.discord_id, description: `ID: ${l.discord_id}` })))
                 );
-                return interaction.reply({ content: '👨‍⚖️ **الخطوة 2:** اختر المحامي:', components: [sel], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+                return interaction.reply({ content: '👨‍⚖️ **Step 2:** Choose a lawyer:', components: [sel], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
-        // ── lawyer_pick_{caseId}: إرسال طلب توكيل للمحامي ──────────────────
+        // ── lawyer_pick_{caseId}: send power of attorney request to lawyer ──────────────────
         if (interaction.customId.startsWith('lawyer_pick_')) {
             try {
                 const caseId   = Number(interaction.customId.replace('lawyer_pick_', ''));
@@ -3259,22 +3248,22 @@ client.on('interactionCreate', async interaction => {
                 const lawyers  = await db.getLawyers();
                 const lawyer   = lawyers.find(l => l.discord_id === lawyerId);
                 const c        = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
-                if (!lawyer) return interaction.reply({ content: '❌ المحامي غير موجود.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!lawyer) return interaction.reply({ content: '❌ Lawyer not found.', flags: 64 });
 
                 await db.createLawyerRequest(caseId, c.case_number, c.title, interaction.user.id, c.plaintiff_name, lawyerId);
 
-                // إشعار المحامي بـ DM
+                // Notify lawyer via DM
                 try {
                     const lawyerUser = await interaction.client.users.fetch(lawyerId);
                     const dmEmbed = new EmbedBuilder()
                         .setTitle('New Power of Attorney Request')
                         .setColor(0x0D47A1)
-                        .setDescription('> لديك طلب توكيل جديد — استخدم `/محامي` للقبول أو الرفض')
+                        .setDescription('> You have a new power of attorney request — use `/محامي` to accept or reject')
                         .addFields(
-                            { name: '🔢 رقم القضية', value: c.case_number,          inline: true },
-                            { name: '📌 العنوان',     value: c.title,                inline: true },
-                            { name: '👤 الموكّل',     value: c.plaintiff_name,       inline: true },
+                            { name: '🔢 Case Number', value: c.case_number,    inline: true },
+                            { name: '📌 Title',        value: c.title,          inline: true },
+                            { name: '👤 Client',       value: c.plaintiff_name, inline: true },
                         )
                         .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await lawyerUser.send({ embeds: [dmEmbed] });
@@ -3283,23 +3272,23 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Power of Attorney Sent')
                     .setColor(0x0D47A1)
-                    .setDescription(`> تم إرسال طلب التوكيل إلى **${lawyer.lawyer_name}**\nسيُخطَر عبر Messages الخاصة، وبإمكانه القبول أو الرفض عبر \`/محامي\``)
+                    .setDescription(`> The power of attorney request has been sent to **${lawyer.lawyer_name}**\nThey will be notified via DM and can accept or reject via \`/محامي\``)
                     .addFields(
-                        { name: '🔢 رقم القضية', value: c.case_number, inline: true },
-                        { name: '📌 العنوان',     value: c.title,       inline: true },
+                        { name: '🔢 Case Number', value: c.case_number, inline: true },
+                        { name: '📌 Title',        value: c.title,       inline: true },
                     )
                     .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         if (['case_sel_reject','case_sel_judge','case_sel_verdict'].includes(interaction.customId)) {
             try {
                 const caseId = value;
                 const modals = {
-                    case_sel_reject:  { id: `case_reject_modal_${caseId}`,  title: '❌ سبب الرفض',      fields: [{ id: 'reason',       label: 'سبب رفض القضية',         long: true  }] },
-                    case_sel_judge:   { id: `case_judge_modal_${caseId}`,   title: '👨‍⚖️ تعيين قاضٍ',   fields: [{ id: 'judge_mention', label: 'اسم القاضي (أو منشن)', long: false }] },
-                    case_sel_verdict: { id: `case_verdict_modal_${caseId}`, title: '📜 إصدار الحكم',    fields: [{ id: 'verdict',       label: 'نص الحكم',               long: true  }] },
+                    case_sel_reject:  { id: `case_reject_modal_${caseId}`,  title: '❌ Reason for Rejection', fields: [{ id: 'reason',       label: 'Reason for rejecting the case',  long: true  }] },
+                    case_sel_judge:   { id: `case_judge_modal_${caseId}`,   title: '👨‍⚖️ Assign a Judge',    fields: [{ id: 'judge_mention', label: 'Judge name (or mention)',         long: false }] },
+                    case_sel_verdict: { id: `case_verdict_modal_${caseId}`, title: '📜 Issue Verdict',        fields: [{ id: 'verdict',       label: 'Verdict text',                   long: true  }] },
                 };
                 const cfg = modals[interaction.customId];
                 const modal = new ModalBuilder().setCustomId(cfg.id).setTitle(cfg.title);
@@ -3310,7 +3299,7 @@ client.on('interactionCreate', async interaction => {
                     )
                 ));
                 return interaction.showModal(modal);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         if (interaction.customId === 'phone_menu') {
@@ -3325,16 +3314,16 @@ client.on('interactionCreate', async interaction => {
                     .setTitle(isPolice ? '🚨 Police Report' : '🚑 Ambulance Report');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('report_location').setLabel('الموقع').setStyle(TextInputStyle.Short).setRequired(true)
+                        new TextInputBuilder().setCustomId('report_location').setLabel('Location').setStyle(TextInputStyle.Short).setRequired(true)
                     ),
                     new ActionRowBuilder().addComponents(
-                        new TextInputBuilder().setCustomId('report_details').setLabel('تفاصيل البلاغ').setStyle(TextInputStyle.Paragraph).setRequired(true)
+                        new TextInputBuilder().setCustomId('report_details').setLabel('Report details').setStyle(TextInputStyle.Paragraph).setRequired(true)
                     ),
                 );
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -3355,28 +3344,28 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const { totalValue, sold } = result;
-                if (!sold.length) return interaction.reply({ content: '❌ ليس لديك أي مكاسب من هذه الفئة في حقيبتك.', flags: 64 });
+                if (!sold.length) return interaction.reply({ content: '❌ You have no earnings from this category in your bag.', flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, totalValue);
 
-                const catLabel = { fishing: '🎣 الأسماك', woodcutting: '🪓 الأخشاب', mining: '⛏️ المعادن', all: '💰 الكل' };
+                const catLabel = { fishing: '🎣 Fish', woodcutting: '🪓 Lumber', mining: '⛏️ Minerals', all: '💰 All' };
                 const lines = sold.map(s =>
-                    `• **${s.name}** × ${s.qty} — ${s.price.toLocaleString()} ريال/وحدة = **${s.value.toLocaleString()} ريال**`
+                    `• **${s.name}** × ${s.qty} — ${s.price.toLocaleString()} Riyals/unit = **${s.value.toLocaleString()} Riyals**`
                 ).join('\n');
 
                 const embed = new EmbedBuilder()
-                    .setTitle(`✅ تمت عملية البيع — ${catLabel[value] || ''}`)
+                    .setTitle(`✅ Sale Completed — ${catLabel[value] || ''}`)
                     .setColor(0x00796B)
                     .setDescription(lines)
                     .addFields(
-                        { name: '💵 الإجمالي المُحصَّل', value: `**${totalValue.toLocaleString()} ريال**`, inline: false },
+                        { name: '💵 Total Collected', value: `**${totalValue.toLocaleString()} Riyals**`, inline: false },
                     )
-                    .setFooter({ text: 'السوق المركزي • FANTASY Bot' })
+                    .setFooter({ text: 'Central Market • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -3397,22 +3386,22 @@ client.on('interactionCreate', async interaction => {
                 const job = jobMap[value];
                 if (!job) return;
 
-                const priceLines = job.items.map(it => `• **${it}:** ${(prices[it]||0).toLocaleString()} ريال`).join('\n');
+                const priceLines = job.items.map(it => `• **${it}:** ${(prices[it]||0).toLocaleString()} Riyals`).join('\n');
                 const embed = new EmbedBuilder()
                     .setTitle(job.label)
                     .setColor(job.color)
                     .addFields(
-                        { name: '🎒 المطلوب',       value: job.req,    inline: true },
-                        { name: '📦 الكمية',         value: '١ – ١٠ عشوائي', inline: true },
-                        { name: '💹 الأسعار الحالية', value: priceLines, inline: false },
+                        { name: '🎒 Required',       value: job.req,          inline: true },
+                        { name: '📦 Quantity',        value: '1 – 10 random',  inline: true },
+                        { name: '💹 Current Prices',  value: priceLines,        inline: false },
                     )
                     .setFooter({ text: 'Jobs System • FANTASY Bot' }).setTimestamp();
 
-                const startBtn  = new ButtonBuilder().setCustomId(`do_job_${value}`).setLabel('▶️ ابدأ').setStyle(ButtonStyle.Success);
+                const startBtn  = new ButtonBuilder().setCustomId(`do_job_${value}`).setLabel('▶️ Start').setStyle(ButtonStyle.Success);
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(startBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -3429,18 +3418,17 @@ client.on('interactionCreate', async interaction => {
                     craft_mkii:    { name: 'Pistol MK II',   req: 500 },
                 };
                 const weapon = CRAFT_WEAPONS[value];
-                if (!weapon) return interaction.reply({ content: '❌ خيار غير صالح.', flags: 65 });
+                if (!weapon) return interaction.reply({ content: '❌ Invalid option.', flags: 65 });
 
-                // تحقق من الموارد وأعرض النقص إن وُجد
                 const missing = [];
                 for (const res of CRAFT_RESOURCES) {
                     const qty = await db.getItemQty(interaction.user.id, res);
-                    if (qty < weapon.req) missing.push(`> ${res}: You have **${qty}** / تحتاج **${weapon.req}**`);
+                    if (qty < weapon.req) missing.push(`> ${res}: You have **${qty}** / Need **${weapon.req}**`);
                 }
 
                 if (missing.length) {
                     return interaction.reply({
-                        content: `❌ **لا تملك موارد كافية لتصنيع ${weapon.name}**\n${missing.join('\n')}`,
+                        content: `❌ **You do not have enough resources to craft ${weapon.name}**\n${missing.join('\n')}`,
                         flags: 65,
                     });
                 }
@@ -3453,11 +3441,11 @@ client.on('interactionCreate', async interaction => {
 
                 const displayName = interaction.member?.displayName || interaction.user.username;
                 await interaction.channel.send(
-                    `🔫 **${displayName}** صنّع **${weapon.name}** بنجاح وأضافه إلى حقيبته!`
+                    `🔫 **${displayName}** successfully crafted **${weapon.name}** and added it to their bag!`
                 );
             } catch (e) {
                 console.error(e);
-                interaction.reply({ content: '❌ حدث خطأ أثناء التصنيع.', flags: 65 }).catch(() => {});
+                interaction.reply({ content: '❌ An error occurred during crafting.', flags: 65 }).catch(() => {});
             }
             return;
         }
@@ -3474,21 +3462,21 @@ client.on('interactionCreate', async interaction => {
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder()
                     .setCustomId(`stock_shares_modal:${isBuy ? 'buy' : 'sell'}:${companyId}`)
-                    .setTitle(isBuy ? '📈 شراء أسهم' : '📉 بيع أسهم');
+                    .setTitle(isBuy ? '📈 Buy Shares' : '📉 Sell Shares');
                 modal.addComponents(
                     new ActionRowBuilder().addComponents(
                         new TextInputBuilder()
                             .setCustomId('stock_shares')
-                            .setLabel('عدد الأسهم')
+                            .setLabel('Number of shares')
                             .setStyle(TextInputStyle.Short)
-                            .setPlaceholder('مثال: 10')
+                            .setPlaceholder('Example: 10')
                             .setRequired(true)
                     )
                 );
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error('[STOCK SELECT ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -3496,7 +3484,7 @@ client.on('interactionCreate', async interaction => {
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;
         const response = handler[value];
-        if (!response) return interaction.reply({ content: 'لا توجد معلومات لهذا الخيار.', flags: 64 });
+        if (!response) return interaction.reply({ content: 'No information available for this option.', flags: 64 });
         return interaction.reply({ content: response, flags: 64 });
     }
 
@@ -3510,18 +3498,18 @@ client.on('interactionCreate', async interaction => {
                 const targetId = raw.replace(/[<@!>]/g, '');
 
                 if (!/^\d{17,20}$/.test(targetId)) {
-                    return interaction.editReply({ content: '❌ المنشن أو الـ ID غير صحيح.' });
+                    return interaction.editReply({ content: '❌ The mention or ID is incorrect.' });
                 }
                 if (targetId === interaction.user.id) {
-                    return interaction.editReply({ content: '❌ ما تقدر تتبع نفسك.' });
+                    return interaction.editReply({ content: '❌ You cannot track yourself.' });
                 }
                 if (trackingSessions.has(targetId)) {
-                    return interaction.editReply({ content: '⚠️ هذا الشخص عليه تراكينق نشط بالفعل.' });
+                    return interaction.editReply({ content: '⚠️ This person already has an active tracking session.' });
                 }
 
                 const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
                 if (!targetMember) {
-                    return interaction.editReply({ content: '❌ الشخص غير موجود في السيرفر.' });
+                    return interaction.editReply({ content: '❌ This person is not in the server.' });
                 }
 
                 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -3531,9 +3519,9 @@ client.on('interactionCreate', async interaction => {
                 let dmSent = true;
                 try {
                     await targetMember.send(
-                        `⚠️ **Alert أمني — يتم تتبعك!**\n\n` +
-                        `تم رصد عملية تتبع عليك من داخل سيرفر **${interaction.guild.name}**.\n\n` +
-                        `لإلغاء التراكينق اكتب هذا الكود هنا خلال **20 ثانية**:\n\n` +
+                        `⚠️ **Security Alert — You are being tracked!**\n\n` +
+                        `A tracking operation has been detected on you from the server **${interaction.guild.name}**.\n\n` +
+                        `To cancel the tracking, send this code here within **20 seconds**:\n\n` +
                         `\`\`\`${code}\`\`\``
                     );
                 } catch (_) {
@@ -3551,9 +3539,9 @@ client.on('interactionCreate', async interaction => {
                                 .setTitle('Tracking Complete')
                                 .setColor(0x43A047)
                                 .setDescription(
-                                    `✅ تم تتبع ${targetMember} لمدة 20 ثانية بنجاح.\n` +
-                                    `👤 المُتتبَع: **${targetMember.displayName}**\n` +
-                                    `🔑 الكود: \`${code}\``
+                                    `✅ Successfully tracked ${targetMember} for 20 seconds.\n` +
+                                    `👤 Target: **${targetMember.displayName}**\n` +
+                                    `🔑 Code: \`${code}\``
                                 )
                                 .setTimestamp();
                             ch.send({ content: `<@${interaction.user.id}>`, embeds: [doneEmbed] }).catch(() => {});
@@ -3573,22 +3561,22 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Tracking Started')
                     .setColor(0xE53935)
                     .setDescription(
-                        `🎯 يتم الآن تتبع ${targetMember} لمدة **20 ثانية**\n` +
+                        `🎯 Now tracking ${targetMember} for **20 seconds**\n` +
                         (dmSent
-                            ? `📨 تم إرسال كود الإلغاء له في الخاص`
-                            : `⚠️ لم يتمكن البوت من إرسال رسالة خاصة للشخص (الـ DM مغلق)`)
+                            ? `📨 The cancellation code has been sent to their DMs`
+                            : `⚠️ The bot could not send a DM to the person (DMs are closed)`)
                     )
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [startEmbed] });
             } catch (e) {
                 console.error('[TRACKING MODAL ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
             }
             return;
         }
 
-        // ── هوية مزيفة — CIA ────────────────────────────────────────────────
+        // ── Fake ID — CIA ────────────────────────────────────────────────
         if (interaction.customId === 'cia_fake_id_modal') {
             try {
                 await interaction.deferReply({ flags: 64 });
@@ -3597,23 +3585,21 @@ client.on('interactionCreate', async interaction => {
                 const fakeName   = interaction.fields.getTextInputValue('fake_name').trim();
                 const rawDur     = interaction.fields.getTextInputValue('fake_duration').trim().toLowerCase();
 
-                // تحليل المدة
                 const durMatch = rawDur.match(/^(\d+)(m|h|d)$/);
                 if (!durMatch)
-                    return interaction.editReply({ content: '❌ صيغة المدة غير صحيحة. مثال: `30m` أو `2h` أو `7d`' });
+                    return interaction.editReply({ content: '❌ Invalid duration format. Example: `30m`, `2h`, or `7d`' });
                 const num  = parseInt(durMatch[1]);
                 const unit = durMatch[2];
                 const msMap = { m: 60_000, h: 3_600_000, d: 86_400_000 };
                 const expiresAt = new Date(Date.now() + num * msMap[unit]);
 
-                // استخراج الـ ID
                 const targetId = rawTarget.replace(/[<@!>]/g, '');
                 if (!/^\d{17,20}$/.test(targetId))
-                    return interaction.editReply({ content: '❌ المنشن أو الـ ID غير صحيح.' });
+                    return interaction.editReply({ content: '❌ The mention or ID is incorrect.' });
 
                 const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
                 if (!targetMember)
-                    return interaction.editReply({ content: '❌ الشخص غير موجود في السيرفر.' });
+                    return interaction.editReply({ content: '❌ This person is not in the server.' });
 
                 // توليد رقم هوية مزيف
                 const fakeIban = String(Math.floor(1000000 + Math.random() * 9000000));
@@ -3627,13 +3613,13 @@ client.on('interactionCreate', async interaction => {
                 const dmEmbed = new EmbedBuilder()
                     .setTitle('Fake ID — Top Secret')
                     .setColor(0x0D1B2A)
-                    .setDescription('تم تزويدك بهوية مزيفة من وكالة CIA. لا تشارك هذه المعلومات مع أحد.')
+                    .setDescription('You have been provided with a fake ID by the CIA. Do not share this information with anyone.')
                     .addFields(
-                        { name: '👤 الاسم المزيف', value: fakeName, inline: true },
-                        { name: '🔢 رقم الهوية', value: `\`${fakeIban}\``, inline: true },
-                        { name: '⏳ تنتهي', value: `<t:${expireTs}:F> (<t:${expireTs}:R>)`, inline: false }
+                        { name: '👤 Fake Name', value: fakeName, inline: true },
+                        { name: '🔢 ID Number',  value: `\`${fakeIban}\``, inline: true },
+                        { name: '⏳ Expires',    value: `<t:${expireTs}:F> (<t:${expireTs}:R>)`, inline: false }
                     )
-                    .setFooter({ text: 'CIA • FANTASY Bot — هذه المعلومات سرية' })
+                    .setFooter({ text: 'CIA • FANTASY Bot — This information is classified' })
                     .setTimestamp();
 
                 let dmSent = true;
@@ -3645,19 +3631,19 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Fake ID Issued')
                     .setColor(0x1B5E20)
                     .addFields(
-                        { name: '🎯 الشخص', value: `<@${targetId}>`, inline: true },
-                        { name: '👤 الاسم المزيف', value: fakeName, inline: true },
-                        { name: '🔢 رقم الهوية', value: `\`${fakeIban}\``, inline: true },
-                        { name: '⏳ تنتهي', value: `<t:${expireTs}:R>`, inline: true },
-                        { name: '📨 DM', value: dmSent ? '✅ تم الإرسال' : '⚠️ الـ DM مغلق', inline: true }
+                        { name: '🎯 Target',    value: `<@${targetId}>`, inline: true },
+                        { name: '👤 Fake Name', value: fakeName, inline: true },
+                        { name: '🔢 ID Number', value: `\`${fakeIban}\``, inline: true },
+                        { name: '⏳ Expires',   value: `<t:${expireTs}:R>`, inline: true },
+                        { name: '📨 DM',        value: dmSent ? '✅ Sent' : '⚠️ DMs are closed', inline: true }
                     )
-                    .setFooter({ text: `صادرة من ${interaction.user.tag}` })
+                    .setFooter({ text: `Issued by ${interaction.user.tag}` })
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [confirmEmbed] });
             } catch (e) {
                 console.error('[CIA FAKE ID ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
             }
             return;
         }
@@ -3678,11 +3664,11 @@ client.on('interactionCreate', async interaction => {
                 const sharesInput = interaction.fields.getTextInputValue('stock_shares').trim();
                 const shares = parseInt(sharesInput);
                 if (isNaN(shares) || shares < 1)
-                    return interaction.editReply({ content: '❌ عدد الأسهم يجب أن يكون رقماً صحيحاً أكبر من 0.' });
+                    return interaction.editReply({ content: '❌ Number of shares must be a whole number greater than 0.' });
 
                 const listings = await db.getAllStockListings();
                 const match = listings.find(l => l.company_id === companyId);
-                if (!match) return interaction.editReply({ content: '❌ الشركة غير مدرجة في السوق.' });
+                if (!match) return interaction.editReply({ content: '❌ This company is not listed on the market.' });
 
                 const result = isBuy
                     ? await db.buyShares(interaction.user.id, companyId, shares, activeIdentity.slot)
@@ -3691,28 +3677,28 @@ client.on('interactionCreate', async interaction => {
                 if (result.error) return interaction.editReply({ content: `❌ ${result.error}` });
 
                 const changeStr = isBuy
-                    ? `🟢 +${result.priceIncrease.toFixed(2)} ريال`
-                    : `🔴 -${result.priceDecrease.toFixed(2)} ريال`;
+                    ? `🟢 +${result.priceIncrease.toFixed(2)} Riyals`
+                    : `🔴 -${result.priceDecrease.toFixed(2)} Riyals`;
 
                 const embed = new EmbedBuilder()
-                    .setTitle(isBuy ? '📈 تم شراء الأسهم بنجاح' : '📉 تم بيع الأسهم بنجاح')
+                    .setTitle(isBuy ? '📈 Shares Purchased Successfully' : '📉 Shares Sold Successfully')
                     .setColor(isBuy ? 0x1B5E20 : 0xB71C1C)
                     .addFields(
-                        { name: '🏢 الشركة', value: match.company_name, inline: true },
-                        { name: '📦 الأسهم', value: `\`${shares}\``, inline: true },
-                        { name: isBuy ? '💸 المبلغ المدفوع' : '💰 Amount المكتسب',
-                          value: `\`${(isBuy ? result.totalCost : result.totalEarned).toLocaleString()} ريال\``, inline: true },
-                        { name: '📊 السعر الجديد', value: `\`${parseFloat(result.newPrice).toFixed(2)} ريال\``, inline: true },
-                        { name: '📈 تأثير السعر', value: changeStr, inline: true },
+                        { name: '🏢 Company',       value: match.company_name, inline: true },
+                        { name: '📦 Shares',         value: `\`${shares}\``, inline: true },
+                        { name: isBuy ? '💸 Amount Paid' : '💰 Amount Earned',
+                          value: `\`${(isBuy ? result.totalCost : result.totalEarned).toLocaleString()} Riyals\``, inline: true },
+                        { name: '📊 New Price',      value: `\`${parseFloat(result.newPrice).toFixed(2)} Riyals\``, inline: true },
+                        { name: '📈 Price Impact',   value: changeStr, inline: true },
                     )
-                    .setFooter({ text: 'سوق الأسهم • FANTASY Bot' })
+                    .setFooter({ text: 'Stock Market • FANTASY Bot' })
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [embed] });
                 refreshStockMarket(db).catch(() => {});
             } catch (e) {
                 console.error('[STOCK MODAL ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ.' });
+                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
             }
             return;
         }
@@ -3726,7 +3712,7 @@ client.on('interactionCreate', async interaction => {
                 const location = interaction.fields.getTextInputValue('robbery_location').trim();
 
                 const rob = await db.getRobberyById(robberyId);
-                const robName = rob?.name || 'سرقة';
+                const robName = rob?.name || 'Robbery';
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const displayName = identity?.character_name || interaction.member?.displayName || interaction.user.username;
@@ -3739,13 +3725,13 @@ client.on('interactionCreate', async interaction => {
                             .setTitle('Robbery Report')
                             .setColor(0xD32F2F)
                             .addFields(
-                                { name: '👤 السارق', value: `<@${interaction.user.id}>`, inline: true },
-                                { name: '🏷️ الاسم', value: displayName, inline: true },
-                                { name: '🔫 نوع السرقة', value: robName, inline: true },
-                                { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                                { name: '📍 Location', value: location, inline: false },
+                                { name: '👤 Suspect',      value: `<@${interaction.user.id}>`, inline: true },
+                                { name: '🏷️ Name',         value: displayName, inline: true },
+                                { name: '🔫 Robbery Type', value: robName, inline: true },
+                                { name: '💵 Amount',        value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                                { name: '📍 Location',     value: location, inline: false },
                             )
-                            .setFooter({ text: 'بلاغات السرقة • FANTASY Bot' })
+                            .setFooter({ text: 'Robbery Reports • FANTASY Bot' })
                             .setTimestamp();
                         await ch.send({ embeds: [reportEmbed] });
                     }
@@ -3755,16 +3741,16 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Robbery Successful!')
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '🔫 نوع السرقة', value: robName, inline: true },
-                        { name: '💵 المبلغ المسروق', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '📍 Location المبلّغ', value: location, inline: false },
+                        { name: '🔫 Robbery Type',      value: robName, inline: true },
+                        { name: '💵 Amount Stolen',      value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                        { name: '📍 Reported Location',  value: location, inline: false },
                     )
                     .setFooter({ text: 'Robbery System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -3775,7 +3761,7 @@ client.on('interactionCreate', async interaction => {
                 const targetId  = interaction.fields.getTextInputValue('target_id').trim();
                 const amount    = parseInt(interaction.fields.getTextInputValue('points_amount').trim());
 
-                if (isNaN(amount) || amount <= 0) return interaction.reply({ content: '❌ أدخل عدداً صحيحاً موجباً.', flags: 64 });
+                if (isNaN(amount) || amount <= 0) return interaction.reply({ content: '❌ Enter a positive whole number.', flags: 64 });
 
                 const delta = isAdd ? amount : -amount;
                 await db.addStaffManualPoints(targetId, delta);
@@ -3784,11 +3770,11 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setColor(isAdd ? 0x2E7D32 : 0xB71C1C)
-                    .setTitle(isAdd ? '➕ تمت إضافة النقاط' : '➖ تم خصم النقاط')
+                    .setTitle(isAdd ? '➕ Points Added' : '➖ Points Deducted')
                     .addFields(
-                        { name: '👤 الشخص',    value: target ? `<@${targetId}>` : targetId, inline: true },
-                        { name: '📊 العملية',  value: `${isAdd ? '+' : '-'}${amount} نقطة`,    inline: true },
-                        { name: '🔧 By',   value: `<@${interaction.user.id}>`,             inline: true },
+                        { name: '👤 Person',    value: target ? `<@${targetId}>` : targetId, inline: true },
+                        { name: '📊 Operation', value: `${isAdd ? '+' : '-'}${amount} point(s)`, inline: true },
+                        { name: '🔧 By',        value: `<@${interaction.user.id}>`,              inline: true },
                     )
                     .setFooter({ text: 'Admin Points System • FANTASY Bot' }).setTimestamp();
 
@@ -3796,7 +3782,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ content: '​', flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء تعديل النقاط.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while modifying points.', flags: 64 });
             }
         }
 
@@ -3805,17 +3791,17 @@ client.on('interactionCreate', async interaction => {
             try {
                 const type   = interaction.customId.replace('set_trip_msg_', '');
                 const text   = interaction.fields.getTextInputValue('trip_msg_text').trim();
-                const labels = { trip_start: 'بدء الرحلة', trip_hurricane: 'الHurricane', trip_renewal: 'الRenew' };
+                const labels = { trip_start: 'Trip Start', trip_hurricane: 'Hurricane', trip_renewal: 'Renewal' };
                 if (text) {
                     await db.setConfig(`${type}_message`, text);
-                    await interaction.reply({ content: `✅ تم حفظ رسالة **${labels[type]}** المخصصة.`, flags: 64 });
+                    await interaction.reply({ content: `✅ Custom **${labels[type]}** message saved.`, flags: 64 });
                 } else {
                     await db.setConfig(`${type}_message`, '');
-                    await interaction.reply({ content: `🔄 تمت إعادة رسالة **${labels[type]}** للافتراضية.`, flags: 64 });
+                    await interaction.reply({ content: `🔄 **${labels[type]}** message reset to default.`, flags: 64 });
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -3825,16 +3811,16 @@ client.on('interactionCreate', async interaction => {
                 const style = interaction.customId.replace('priority_add_modal_', '');
                 const label = interaction.fields.getTextInputValue('priority_label').trim();
                 const text  = interaction.fields.getTextInputValue('priority_text').trim();
-                if (!label || !text) return interaction.reply({ content: '❌ يجب تعبئة جميع الحقول.', flags: 64 });
+                if (!label || !text) return interaction.reply({ content: '❌ All fields must be filled.', flags: 64 });
 
                 const btn = await db.addPriorityButton(label, text, style);
                 await interaction.reply({
-                    content: `✅ تم إضافة زر الأولوية **${label}** (ID: ${btn.id})`,
+                    content: `✅ Priority button **${label}** added (ID: ${btn.id})`,
                     flags: 64
                 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -3845,11 +3831,11 @@ client.on('interactionCreate', async interaction => {
 
                 const logChannelId = await db.getConfig('activation_log_channel');
                 if (!logChannelId)
-                    return interaction.reply({ content: '❌ لم يتم تعيين قناة التفعيل بعد. تواصل مع Admin.', flags: 64 });
+                    return interaction.reply({ content: '❌ Activation channel has not been set yet. Contact an Admin.', flags: 64 });
 
                 const logChannel = interaction.guild.channels.cache.get(logChannelId);
                 if (!logChannel)
-                    return interaction.reply({ content: '❌ قناة التفعيل غير موجودة. تواصل مع Admin.', flags: 64 });
+                    return interaction.reply({ content: '❌ Activation channel not found. Contact an Admin.', flags: 64 });
 
                 const req = await db.createActivationRequest(
                     interaction.user.id,
@@ -3861,21 +3847,21 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('New Activation Request')
                     .setColor(0x1565C0)
                     .addFields(
-                        { name: '👤 اللاعب',          value: `<@${interaction.user.id}> (${interaction.user.username})`, inline: false },
-                        { name: '🎮 ID سوني (PSN)',   value: `\`${sonyId}\``, inline: true },
-                        { name: '🆔 Discord ID',      value: `\`${interaction.user.id}\``, inline: true },
+                        { name: '👤 Player',       value: `<@${interaction.user.id}> (${interaction.user.username})`, inline: false },
+                        { name: '🎮 Sony ID (PSN)', value: `\`${sonyId}\``, inline: true },
+                        { name: '🆔 Discord ID',   value: `\`${interaction.user.id}\``, inline: true },
                     )
                     .setThumbnail(interaction.user.displayAvatarURL())
                     .setFooter({ text: 'Activation System • FANTASY Bot' }).setTimestamp();
 
                 const approveBtn = new ButtonBuilder()
                     .setCustomId(`activate_approve_${req.id}`)
-                    .setLabel('✅ تفعيل')
+                    .setLabel('✅ Activate')
                     .setStyle(ButtonStyle.Success);
 
                 const rejectBtn = new ButtonBuilder()
                     .setCustomId(`activate_reject_${req.id}`)
-                    .setLabel('❌ رفض')
+                    .setLabel('❌ Reject')
                     .setStyle(ButtonStyle.Danger);
 
                 await logChannel.send({
@@ -3884,12 +3870,12 @@ client.on('interactionCreate', async interaction => {
                 });
 
                 return interaction.reply({
-                    content: `✅ **تم إرسال طلب تفعيلك بنجاح!**\n> 🎮 **ID سوني:** \`${sonyId}\`\n> Wait for admin approval.`,
+                    content: `✅ **Your activation request has been submitted successfully!**\n> 🎮 **Sony ID:** \`${sonyId}\`\n> Wait for admin approval.`,
                     flags: 64
                 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while submitting the request.', flags: 64 });
             }
         }
 
@@ -3909,16 +3895,16 @@ client.on('interactionCreate', async interaction => {
                 const newCase = await db.createCase(interaction.user.id, identity.full_name || interaction.user.username, defendant, title, desc, evidence, lawyerFee);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('تم رفع القضية')
+                    .setTitle('Case Filed')
                     .setColor(0x0D47A1)
                     .addFields(
-                        { name: '🔢 رقم القضية',    value: newCase.case_number,                inline: true },
-                        { name: '📌 العنوان',        value: title,                              inline: true },
-                        { name: '⚔️ المدعى عليه',   value: defendant,                           inline: true },
-                        { name: '📝 الوصف',          value: desc.slice(0, 300),                 inline: false },
-                        { name: '🔍 الأدلة',         value: evidence || 'لا توجد أدلة',         inline: false },
-                        { name: '💰 بدل Law',   value: lawyerFee || 'غير محدد',            inline: true },
-                        { name: '⏳ الحالة',          value: '⏳ معلقة — بانتظار Admin',       inline: true },
+                        { name: '🔢 Case Number', value: newCase.case_number,             inline: true },
+                        { name: '📌 Title',        value: title,                           inline: true },
+                        { name: '⚔️ Defendant',    value: defendant,                       inline: true },
+                        { name: '📝 Description',  value: desc.slice(0, 300),              inline: false },
+                        { name: '🔍 Evidence',     value: evidence || 'No evidence',       inline: false },
+                        { name: '💰 Lawyer Fee',   value: lawyerFee || 'Not specified',    inline: true },
+                        { name: '⏳ Status',        value: '⏳ Pending — awaiting Admin',  inline: true },
                     )
                     .setFooter({ text: 'Law System • FANTASY Bot' })
                     .setTimestamp();
@@ -3931,7 +3917,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ أثناء رفع القضية.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred while filing the case.', flags: 64 }); }
         }
 
         // ── تأكيد التخلي عن القضية ────────────────────────────────────────────
@@ -3940,9 +3926,9 @@ client.on('interactionCreate', async interaction => {
                 const caseId = Number(interaction.customId.replace('lawyer_abandon_modal_', ''));
                 const reason = interaction.fields.getTextInputValue('abandon_reason').trim();
                 const c = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
                 if (c.lawyer_id !== interaction.user.id)
-                    return interaction.reply({ content: '❌ أنت لست محامي هذه القضية.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the lawyer for this case.', flags: 64 });
 
                 const { ABANDON_FEE } = require('./commands/lawyer-tasks');
                 const result = await db.abandonCase(caseId, interaction.user.id, c.plaintiff_id, ABANDON_FEE);
@@ -3956,22 +3942,21 @@ client.on('interactionCreate', async interaction => {
                     const dmEmbed = new EmbedBuilder()
                         .setTitle('Lawyer Withdrew from Your Case')
                         .setColor(0xB71C1C)
-                        .setDescription(`تخلّى المحامي **${c.lawyer_name}** عن تمثيلك في القضية.`)
+                        .setDescription(`Lawyer **${c.lawyer_name}** has withdrawn from representing you in the case.`)
                         .addFields(
-                            { name: '🔢 رقم القضية',   value: c.case_number, inline: true },
-                            { name: '📌 العنوان',       value: c.title,       inline: true },
-                            { name: '📝 سبب التخلي',    value: reason,        inline: false },
-                            { name: '💰 التعويض',
-                              value: `✅ تم إعادة **${ABANDON_FEE.toLocaleString()} ريال** إلى رصيدك`,
+                            { name: '🔢 Case Number',  value: c.case_number, inline: true },
+                            { name: '📌 Title',         value: c.title,       inline: true },
+                            { name: '📝 Reason',        value: reason,        inline: false },
+                            { name: '💰 Compensation',
+                              value: `✅ **${ABANDON_FEE.toLocaleString()} Riyals** have been returned to your balance`,
                               inline: false },
                         )
                         .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
-                // رد على المحامي
-                await interaction.reply({ content: `✅ تم التخلي عن القضية **${c.case_number}** وخصم **${ABANDON_FEE.toLocaleString()} ريال** من رصيدك كتعويض للموكّل.`, flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+                await interaction.reply({ content: `✅ Withdrawn from case **${c.case_number}** and **${ABANDON_FEE.toLocaleString()} Riyals** have been deducted from your balance as compensation for the client.`, flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── رفض قضية ─────────────────────────────────────────────────────────
@@ -3980,35 +3965,35 @@ client.on('interactionCreate', async interaction => {
                 const caseId = Number(interaction.customId.replace('case_reject_modal_', ''));
                 const reason = interaction.fields.getTextInputValue('reason').trim();
                 const c      = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
 
                 await db.rejectCase(caseId, reason, interaction.user.id);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('تم رفض القضية')
+                    .setTitle('Case Rejected')
                     .setColor(0xB71C1C)
                     .addFields(
-                        { name: '🔢 رقم القضية',  value: c.case_number,                inline: true },
-                        { name: '📌 العنوان',      value: c.title,                     inline: true },
-                        { name: '👤 المدعي',       value: `<@${c.plaintiff_id}>`,      inline: true },
-                        { name: '❌ سبب الرفض',   value: reason,                       inline: false },
+                        { name: '🔢 Case Number',      value: c.case_number,           inline: true },
+                        { name: '📌 Title',             value: c.title,                 inline: true },
+                        { name: '👤 Plaintiff',         value: `<@${c.plaintiff_id}>`,  inline: true },
+                        { name: '❌ Reason for Rejection', value: reason,               inline: false },
                     )
-                    .setFooter({ text: `رُفضت بواسطة: ${interaction.user.username} • FANTASY Bot` })
+                    .setFooter({ text: `Rejected by: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
 
-                // DM المدعي بالرفض
+                // DM the plaintiff about rejection
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('تم رفض قضيتك').setColor(0xB71C1C)
+                    const dmEmbed = new EmbedBuilder().setTitle('Your Case Has Been Rejected').setColor(0xB71C1C)
                         .addFields(
-                            { name: '🔢 رقم القضية', value: c.case_number, inline: true },
-                            { name: '📌 العنوان',     value: c.title,       inline: true },
-                            { name: '❌ سبب الرفض',  value: reason,         inline: false },
+                            { name: '🔢 Case Number',      value: c.case_number, inline: true },
+                            { name: '📌 Title',             value: c.title,       inline: true },
+                            { name: '❌ Reason',            value: reason,         inline: false },
                         ).setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── توكيل قاضي ───────────────────────────────────────────────────────
@@ -4017,9 +4002,8 @@ client.on('interactionCreate', async interaction => {
                 const caseId    = Number(interaction.customId.replace('case_judge_modal_', ''));
                 const judgeText = interaction.fields.getTextInputValue('judge_mention').trim();
                 const c         = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
 
-                // محاولة استخراج ID من المنشن
                 const mentionMatch = judgeText.match(/^<@!?(\d+)>$/);
                 const judgeId   = mentionMatch ? mentionMatch[1] : null;
                 const judgeName = judgeText;
@@ -4030,16 +4014,16 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Judge Assigned')
                     .setColor(0x4A148C)
                     .addFields(
-                        { name: '🔢 رقم القضية',   value: c.case_number,           inline: true },
-                        { name: '📌 العنوان',       value: c.title,                 inline: true },
-                        { name: '👤 المدعي',        value: `<@${c.plaintiff_id}>`,  inline: true },
-                        { name: '👨‍⚖️ القاضي',     value: judgeId ? `<@${judgeId}>` : judgeName, inline: true },
-                        { name: '⚖️ الحالة',        value: '⚖️ جارية',             inline: true },
+                        { name: '🔢 Case Number', value: c.case_number,                                inline: true },
+                        { name: '📌 Title',        value: c.title,                                     inline: true },
+                        { name: '👤 Plaintiff',    value: `<@${c.plaintiff_id}>`,                      inline: true },
+                        { name: '👨‍⚖️ Judge',     value: judgeId ? `<@${judgeId}>` : judgeName,       inline: true },
+                        { name: '⚖️ Status',       value: '⚖️ In Progress',                           inline: true },
                     )
-                    .setFooter({ text: `عُيِّن بواسطة: ${interaction.user.username} • FANTASY Bot` })
+                    .setFooter({ text: `Assigned by: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── إصدار حكم ────────────────────────────────────────────────────────
@@ -4048,39 +4032,38 @@ client.on('interactionCreate', async interaction => {
                 const caseId  = Number(interaction.customId.replace('case_verdict_modal_', ''));
                 const verdict = interaction.fields.getTextInputValue('verdict').trim();
                 const c       = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
 
                 await db.issueVerdict(caseId, verdict, interaction.user.id);
 
                 const embed = new EmbedBuilder()
-                    .setTitle('صدر الحكم')
+                    .setTitle('Verdict Issued')
                     .setColor(0x1B5E20)
                     .addFields(
-                        { name: '🔢 رقم القضية',   value: c.case_number,          inline: true },
-                        { name: '📌 العنوان',       value: c.title,                inline: true },
-                        { name: '👤 المدعي',        value: `<@${c.plaintiff_id}>`, inline: true },
-                        { name: '⚔️ المدعى عليه',  value: c.defendant,            inline: true },
-                        { name: '👨‍⚖️ القاضي',     value: c.judge_name || 'غير محدد', inline: true },
-                        { name: '📜 الحكم',         value: verdict,                inline: false },
-                        { name: '🔒 الحالة',        value: '🔒 مغلقة',             inline: true },
+                        { name: '🔢 Case Number', value: c.case_number,                   inline: true },
+                        { name: '📌 Title',        value: c.title,                         inline: true },
+                        { name: '👤 Plaintiff',    value: `<@${c.plaintiff_id}>`,           inline: true },
+                        { name: '⚔️ Defendant',    value: c.defendant,                     inline: true },
+                        { name: '👨‍⚖️ Judge',     value: c.judge_name || 'Not specified', inline: true },
+                        { name: '📜 Verdict',      value: verdict,                         inline: false },
+                        { name: '🔒 Status',       value: '🔒 Closed',                    inline: true },
                     )
-                    .setFooter({ text: `أصدره: ${interaction.user.username} • FANTASY Bot` })
+                    .setFooter({ text: `Issued by: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
 
-                // DM المدعي بالحكم
+                // DM the plaintiff with the verdict
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('صدر حكم في قضيتك').setColor(0x1B5E20)
+                    const dmEmbed = new EmbedBuilder().setTitle('A Verdict Has Been Issued in Your Case').setColor(0x1B5E20)
                         .addFields(
-                            { name: '🔢 رقم القضية', value: c.case_number,               inline: true },
-                            { name: '📌 العنوان',     value: c.title,                    inline: true },
-                            { name: '👨‍⚖️ القاضي',   value: c.judge_name || 'غير محدد', inline: true },
-                            { name: '📜 الحكم',       value: verdict,                    inline: false },
+                            { name: '🔢 Case Number', value: c.case_number,                   inline: true },
+                            { name: '📌 Title',        value: c.title,                         inline: true },
+                            { name: '👨‍⚖️ Judge',     value: c.judge_name || 'Not specified', inline: true },
+                            { name: '📜 Verdict',      value: verdict,                         inline: false },
                         ).setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
-                // إشعار روم الأحكام إن وُجد
                 const verdictsChannelId = await db.getConfig('verdicts_channel');
                 if (verdictsChannelId) {
                     const ch = interaction.guild?.channels?.cache?.get(verdictsChannelId);
@@ -4088,7 +4071,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         // ── توكيل محامي (طلب) ────────────────────────────────────────────────
@@ -4098,7 +4081,7 @@ client.on('interactionCreate', async interaction => {
                 const lawyerName = interaction.fields.getTextInputValue('lawyer_name').trim();
                 const reason     = interaction.fields.getTextInputValue('lawyer_reason').trim();
                 const c          = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ القضية غير موجودة.', flags: 64 });
+                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
 
                 await db.assignLawyer(caseId, null, lawyerName);
 
@@ -4106,16 +4089,15 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Lawyer Power of Attorney Request')
                     .setColor(0xE65100)
                     .addFields(
-                        { name: '🔢 رقم القضية',    value: c.case_number,           inline: true },
-                        { name: '📌 العنوان',        value: c.title,                 inline: true },
-                        { name: '👤 المدعي',         value: `<@${c.plaintiff_id}>`,  inline: true },
-                        { name: '👨‍⚖️ المحامي المطلوب', value: lawyerName,           inline: true },
-                        { name: '📝 سبب الطلب',      value: reason,                  inline: false },
+                        { name: '🔢 Case Number',           value: c.case_number,          inline: true },
+                        { name: '📌 Title',                  value: c.title,                inline: true },
+                        { name: '👤 Plaintiff',              value: `<@${c.plaintiff_id}>`, inline: true },
+                        { name: '👨‍⚖️ Requested Lawyer',   value: lawyerName,             inline: true },
+                        { name: '📝 Reason',                 value: reason,                 inline: false },
                     )
                     .setFooter({ text: 'Law System • FANTASY Bot' })
                     .setTimestamp();
 
-                // إشعار روم القضايا إن وُجد
                 const casesChannelId = await db.getConfig('cases_channel');
                 if (casesChannelId) {
                     const ch = interaction.guild?.channels?.cache?.get(casesChannelId);
@@ -4123,7 +4105,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
         }
 
         if (interaction.customId === 'report_police_modal' || interaction.customId === 'report_ambulance_modal') {
@@ -4133,7 +4115,7 @@ client.on('interactionCreate', async interaction => {
                 const details    = interaction.fields.getTextInputValue('report_details').trim();
                 const configKey  = isPolice ? 'police_reports_channel' : 'ambulance_reports_channel';
                 const channelId  = await db.getConfig(configKey);
-                if (!channelId) return interaction.reply({ content: `❌ لم يتم تحديد روم البلاغات. تواصل مع Admin.`, flags: 64 });
+                if (!channelId) return interaction.reply({ content: `❌ Reports channel has not been set. Contact an Admin.`, flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const charName = identity ? (identity.character_name || interaction.user.username) : interaction.user.username;
@@ -4142,11 +4124,11 @@ client.on('interactionCreate', async interaction => {
                     .setTitle(isPolice ? '🚨 Police Report' : '🚑 Ambulance Report')
                     .setColor(isPolice ? 0xB71C1C : 0x1565C0)
                     .addFields(
-                        { name: '👤 المُبلِّغ',        value: `<@${interaction.user.id}> — \`${charName}\``, inline: false },
-                        { name: '📍 Location',            value: location,  inline: true },
-                        { name: '📋 تفاصيل البلاغ',    value: details,   inline: false },
+                        { name: '👤 Reporter',       value: `<@${interaction.user.id}> — \`${charName}\``, inline: false },
+                        { name: '📍 Location',        value: location,  inline: true },
+                        { name: '📋 Report Details',  value: details,   inline: false },
                     )
-                    .setFooter({ text: `نظام البلاغات • FANTASY Bot` })
+                    .setFooter({ text: `Reports System • FANTASY Bot` })
                     .setTimestamp();
 
                 try {
@@ -4154,10 +4136,10 @@ client.on('interactionCreate', async interaction => {
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
 
-                return interaction.reply({ content: `✅ تم إرسال ${isPolice ? 'بلاغ الشرطة' : 'بلاغ الإسعاف'} بنجاح.`, flags: 64 });
+                return interaction.reply({ content: `✅ ${isPolice ? 'Police report' : 'Ambulance report'} submitted successfully.`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -4168,22 +4150,22 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const amount = parseInt(interaction.fields.getTextInputValue('deposit_amount').replace(/,/g, ''));
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ المبلغ غير صحيح.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid amount.', flags: 64 });
                 const result = await db.depositCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Cash Deposited to Bank')
                     .setColor(0x2E7D32)
                     .addFields(
-                        { name: '💵 الكاش المودَع', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '🏦 رصيد Bank الجديد', value: `\`${(Number(result.sender.balance) + amount).toLocaleString()} ريال\``, inline: true },
-                        { name: '💵 الكاش المتبقي', value: `\`${(Number(result.sender.cash) - amount).toLocaleString()} ريال\``, inline: true },
+                        { name: '💵 Cash Deposited', value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                        { name: '🏦 New Bank Balance', value: `\`${(Number(result.sender.balance) + amount).toLocaleString()} Riyals\``, inline: true },
+                        { name: '💵 Remaining Cash',  value: `\`${(Number(result.sender.cash) - amount).toLocaleString()} Riyals\``, inline: true },
                     )
                     .setFooter({ text: 'Bank System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -4194,22 +4176,22 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const amount = parseInt(interaction.fields.getTextInputValue('withdraw_amount').replace(/,/g, ''));
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ المبلغ غير صحيح.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid amount.', flags: 64 });
                 const result = await db.withdrawCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
-                    .setTitle('تم صرف الكاش من Bank')
+                    .setTitle('Cash Withdrawn from Bank')
                     .setColor(0xB71C1C)
                     .addFields(
-                        { name: '💵 الكاش المصروف', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '🏦 رصيد Bank الجديد', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
-                        { name: '💵 الكاش الجديد', value: `\`${(Number(result.sender.cash) + amount).toLocaleString()} ريال\``, inline: true },
+                        { name: '💵 Cash Withdrawn',  value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                        { name: '🏦 New Bank Balance', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} Riyals\``, inline: true },
+                        { name: '💵 New Cash',         value: `\`${(Number(result.sender.cash) + amount).toLocaleString()} Riyals\``, inline: true },
                     )
                     .setFooter({ text: 'Bank System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -4223,32 +4205,32 @@ client.on('interactionCreate', async interaction => {
                 const note    = interaction.fields.getTextInputValue('transfer_note').trim() || null;
                 const amount  = parseInt(rawAmt);
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ المبلغ غير صحيح. أدخل رقماً موجباً.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid amount. Enter a positive number.', flags: 64 });
 
                 const result = await db.transferMoney(interaction.user.id, toIban, amount, note);
                 if (!result.success)
                     return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
 
-                const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                const SLOT_NAMES = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const embed = new EmbedBuilder()
                     .setTitle('Transfer Successful')
                     .setColor(0x1565C0)
                     .addFields(
-                        { name: '👤 المرسِل', value: `${result.sender.character_name} ${result.sender.family_name || ''} (${SLOT_NAMES[result.sender.slot] || `شخصية ${result.sender.slot}`})`, inline: false },
-                        { name: '🏦 إيبانك', value: `\`${result.sender.iban}\``, inline: true },
-                        { name: '💰 رصيدك بعد التحويل', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
-                        { name: '\u200b', value: '\u200b', inline: true },
-                        { name: '📨 المستلِم', value: `${result.receiver.character_name} ${result.receiver.family_name || ''}`, inline: true },
-                        { name: '🏦 إيبان المستلِم', value: `\`${toIban}\``, inline: true },
-                        { name: '💸 المبلغ المحوَّل', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                        { name: '📝 ملاحظة', value: note || '—', inline: false },
+                        { name: '👤 Sender',               value: `${result.sender.character_name} ${result.sender.family_name || ''} (${SLOT_NAMES[result.sender.slot] || `Character ${result.sender.slot}`})`, inline: false },
+                        { name: '🏦 Your IBAN',            value: `\`${result.sender.iban}\``, inline: true },
+                        { name: '💰 Balance After Transfer', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} Riyals\``, inline: true },
+                        { name: '\u200b',                   value: '\u200b', inline: true },
+                        { name: '📨 Recipient',             value: `${result.receiver.character_name} ${result.receiver.family_name || ''}`, inline: true },
+                        { name: '🏦 Recipient IBAN',        value: `\`${toIban}\``, inline: true },
+                        { name: '💸 Amount Transferred',    value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                        { name: '📝 Note',                  value: note || '—', inline: false },
                     )
                     .setFooter({ text: 'Bank System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred during the transfer.', flags: 64 });
             }
         }
 
@@ -4261,13 +4243,13 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('X Account Created')
                     .setColor(0x000000)
-                    .addFields({ name: '👤 اسم الحساب', value: `**@${xUsername}**`, inline: true })
+                    .addFields({ name: '👤 Account Name', value: `**@${xUsername}**`, inline: true })
                     .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء إنشاء الحساب.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while creating the account.', flags: 64 });
             }
         }
 
@@ -4275,7 +4257,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const snapUsername = interaction.fields.getTextInputValue('snap_user').trim();
                 if (!/^[\w\u0600-\u06FF]{3,20}$/.test(snapUsername))
-                    return interaction.reply({ content: '❌ اسم الحساب يجب أن يكون 3-20 حرف بدون مسافات.', flags: 64 });
+                    return interaction.reply({ content: '❌ Account name must be 3-20 characters with no spaces.', flags: 64 });
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const result = await db.createSnapAccount(interaction.user.id, snapUsername);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
@@ -4285,7 +4267,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply(await buildSnap(account, img, db));
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -4293,10 +4275,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 const friendName = interaction.fields.getTextInputValue('friend_snap_name').trim();
                 const myAcc = await db.getSnapAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب سناب.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
                 const friendAcc = await db.getSnapAccountByUsername(friendName);
-                if (!friendAcc) return interaction.reply({ content: `❌ لا يوجد حساب باسم **${friendName}**.`, flags: 64 });
-                if (friendAcc.discord_id === interaction.user.id) return interaction.reply({ content: '❌ لا يمكنك إضافة نفسك.', flags: 64 });
+                if (!friendAcc) return interaction.reply({ content: `❌ No account found with the name **${friendName}**.`, flags: 64 });
+                if (friendAcc.discord_id === interaction.user.id) return interaction.reply({ content: '❌ You cannot add yourself.', flags: 64 });
                 const result = await db.addSnapFriend(interaction.user.id, friendAcc.discord_id);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 // notify via DM
@@ -4305,7 +4287,7 @@ client.on('interactionCreate', async interaction => {
                     const notif = new EmbedBuilder()
                         .setTitle('New Snap Friend Request!')
                         .setColor(0xFFFC00)
-                        .setDescription(`**@${myAcc.snap_username}** يريد إضافتك كصديق على Snapchat!\nاستخدم **زر الطلبات 🔔** لقبول الطلب.`)
+                        .setDescription(`**@${myAcc.snap_username}** wants to add you as a friend on Snapchat!\nUse the **Requests button 🔔** to accept the request.`)
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     await targetUser.send({ embeds: [notif] });
@@ -4313,13 +4295,13 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Friend Request Sent')
                     .setColor(0xFFFC00)
-                    .setDescription(`أُرسل طلب صداقة لـ **@${friendAcc.snap_username}** 👻\nسيتم إشعاره وعليه قبول الطلب.`)
+                    .setDescription(`Friend request sent to **@${friendAcc.snap_username}** 👻\nThey will be notified and need to accept.`)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -4329,15 +4311,15 @@ client.on('interactionCreate', async interaction => {
                 const content = interaction.fields.getTextInputValue('snap_content').trim();
                 const myAcc = await db.getSnapAccount(interaction.user.id);
                 const receiverAcc = await db.getSnapAccount(receiverId);
-                if (!myAcc || !receiverAcc) return interaction.reply({ content: '❌ حساب غير موجود.', flags: 64 });
+                if (!myAcc || !receiverAcc) return interaction.reply({ content: '❌ Account not found.', flags: 64 });
                 await db.sendSnap(interaction.user.id, receiverId, content);
                 // DM notification
                 try {
                     const targetUser = await client.users.fetch(receiverId);
                     const notif = new EmbedBuilder()
-                        .setTitle('سناب جديد وصلك!')
+                        .setTitle('New Snap Received!')
                         .setColor(0xFFFC00)
-                        .setDescription(`**@${myAcc.snap_username}** أرسل لك سناباً!\nافتح Snapchat لمشاهدته 👻`)
+                        .setDescription(`**@${myAcc.snap_username}** sent you a snap!\nOpen Snapchat to view it 👻`)
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     await targetUser.send({ embeds: [notif] });
@@ -4345,13 +4327,13 @@ client.on('interactionCreate', async interaction => {
                 const embed = new EmbedBuilder()
                     .setTitle('Snap Sent!')
                     .setColor(0xFFFC00)
-                    .setDescription(`أُرسل سناب لـ **@${receiverAcc.snap_username}** بنجاح 👻`)
+                    .setDescription(`Snap sent to **@${receiverAcc.snap_username}** successfully 👻`)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'حدث خطأ أثناء إرسال السناب.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while sending the snap.', flags: 64 });
             }
         }
 
@@ -4360,18 +4342,18 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const content = interaction.fields.getTextInputValue('tweet_content').trim();
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
+                if (!account) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
-                if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات. تواصل مع المسؤولين.', flags: 64 });
+                if (!xChannelId) return interaction.reply({ content: '❌ The tweets channel has not been set. Contact the admins.', flags: 64 });
                 const post = await db.postTweet(interaction.user.id, content);
                 const { buildTweetMessage } = require('./commands/tweet');
                 const { embed: tweetEmbed, row: tweetRow } = buildTweetMessage(post, interaction.user.displayAvatarURL());
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [tweetEmbed], components: [tweetRow] });
-                return interaction.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>`, flags: 64 });
+                return interaction.reply({ content: `✅ Your tweet has been posted in <#${xChannelId}>`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء نشر التغريدة.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while posting the tweet.', flags: 64 });
             }
         }
 
@@ -4381,28 +4363,28 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const content = interaction.fields.getTextInputValue('reply_content').trim();
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ ليس لديك حساب على X Platform.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
-                if (!xChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم التغريدات.', flags: 64 });
+                if (!xChannelId) return interaction.reply({ content: '❌ The tweets channel has not been set.', flags: 64 });
                 const orig = await db.getPostById(postId);
-                if (!orig) return interaction.reply({ content: '❌ التغريدة الأصلية غير موجودة.', flags: 64 });
+                if (!orig) return interaction.reply({ content: '❌ Original tweet not found.', flags: 64 });
                 const reply = await db.replyPost(interaction.user.id, postId, content);
                 const embed = new EmbedBuilder()
                     .setAuthor({ name: `@${myAcc.x_username}`, iconURL: interaction.user.displayAvatarURL() })
                     .setColor(0x17BF63)
                     .setDescription(content)
                     .addFields(
-                        { name: '↩️ رداً على', value: `@${orig.x_username} • #${postId}`, inline: true },
-                        { name: '🆔 رقم الرد', value: `\`#${reply.id}\``, inline: true },
+                        { name: '↩️ In reply to', value: `@${orig.x_username} • #${postId}`, inline: true },
+                        { name: '🆔 Reply ID',    value: `\`#${reply.id}\``, inline: true },
                     )
                     .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [embed] });
-                return interaction.reply({ content: `✅ تم نشر ردك في <#${xChannelId}>`, flags: 64 });
+                return interaction.reply({ content: `✅ Your reply has been posted in <#${xChannelId}>`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء نشر الرد.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while posting the reply.', flags: 64 });
             }
         }
 
@@ -4412,24 +4394,24 @@ client.on('interactionCreate', async interaction => {
                 const itemName = interaction.fields.getTextInputValue('transfer_item_name').trim();
                 const toIban   = interaction.fields.getTextInputValue('transfer_iban').trim();
                 const receiver = await db.getIdentityByIban(toIban);
-                if (!receiver) return interaction.reply({ content: '❌ لم يُعثر على مستخدم بهذا الإيبان.', flags: 64 });
-                if (receiver.discord_id === interaction.user.id) return interaction.reply({ content: '❌ لا يمكنك تحويل غرض لنفسك.', flags: 64 });
+                if (!receiver) return interaction.reply({ content: '❌ No user found with this IBAN.', flags: 64 });
+                if (receiver.discord_id === interaction.user.id) return interaction.reply({ content: '❌ You cannot transfer an item to yourself.', flags: 64 });
                 const result = await db.transferItem(interaction.user.id, receiver.discord_id, itemName);
-                if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'الغرض غير موجود في حقيبتك أو الكمية صفر.'}`, flags: 64 });
+                if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'Item not found in your bag or quantity is zero.'}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Item Transferred Successfully')
                     .setColor(0x6A1B9A)
                     .addFields(
-                        { name: '🎒 الغرض', value: `**${itemName}**`, inline: true },
-                        { name: '📨 المستلِم', value: `${receiver.character_name} ${receiver.family_name || ''}`, inline: true },
-                        { name: '🏦 إيبان المستلِم', value: `\`${toIban}\``, inline: true },
+                        { name: '🎒 Item',           value: `**${itemName}**`, inline: true },
+                        { name: '📨 Recipient',       value: `${receiver.character_name} ${receiver.family_name || ''}`, inline: true },
+                        { name: '🏦 Recipient IBAN',  value: `\`${toIban}\``, inline: true },
                     )
                     .setFooter({ text: 'Bag System • FANTASY Bot' })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء التحويل.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred during the transfer.', flags: 64 });
             }
         }
 
@@ -4441,7 +4423,7 @@ client.on('interactionCreate', async interaction => {
             }
             try {
                 const startChannelId = await db.getConfig('trips_start_channel');
-                if (!startChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم بدء الرحلة. استخدم `/إعداد-رحلات` أولاً.' });
+                if (!startChannelId) return interaction.editReply({ content: '❌ Trip start channel has not been set. Use `/إعداد-رحلات` first.' });
 
                 const hostId     = interaction.fields.getTextInputValue('trip_host_id').trim()   || '—';
                 const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim()     || '—';
@@ -4477,13 +4459,13 @@ client.on('interactionCreate', async interaction => {
                             const embed = new EmbedBuilder()
                                 .setTitle('Start New Trip!')
                                 .setColor(0x2E7D32)
-                                .setDescription('🎉 **تم فتح رحلة جديدة! يمكن لجميع اللاعبين تسجيل الدخول.**')
+                                .setDescription('🎉 **A new trip has been opened! All players can now log in.**')
                                 .addFields(
-                                    { name: '🎤 الهوست',      value: `\`${hostId}\``, inline: true },
-                                    { name: '🎤 نائب الهوست', value: deputy,           inline: true },
-                                    { name: '👁️ الرقابي',     value: supervisor,       inline: true },
-                                    { name: '🕐 وقت الرحلة', value: tripTime,          inline: true },
-                                    { name: '🔧 بدأها',        value: `<@${interaction.user.id}>`, inline: true },
+                                    { name: '🎤 Host',        value: `\`${hostId}\``, inline: true },
+                                    { name: '🎤 Deputy Host', value: deputy,           inline: true },
+                                    { name: '👁️ Supervisor',  value: supervisor,       inline: true },
+                                    { name: '🕐 Trip Time',   value: tripTime,          inline: true },
+                                    { name: '🔧 Started by',  value: `<@${interaction.user.id}>`, inline: true },
                                 )
                                 .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
@@ -4497,10 +4479,10 @@ client.on('interactionCreate', async interaction => {
                     console.error('[trip_start] channel send error:', sendErr?.message);
                 }
                 await db.addStaffActivity(interaction.user.id, 'trips_count');
-                return interaction.editReply({ content: sent ? '✅ تم إرسال إشعار بدء الرحلة.' : '⚠️ فُتحت الرحلة لكن تعذّر الإرسال — تحقق من صلاحيات البوت في الروم.' });
+                return interaction.editReply({ content: sent ? '✅ Trip start notification sent.' : '⚠️ Trip opened but message could not be sent — check the bot\'s permissions in the channel.' });
             } catch (e) {
                 console.error('[trip_start_modal] error:', e?.message, e);
-                return interaction.editReply({ content: '❌ حدث خطأ: ' + (e?.message || e) });
+                return interaction.editReply({ content: '❌ An error occurred: ' + (e?.message || e) });
             }
         }
 
@@ -4512,7 +4494,7 @@ client.on('interactionCreate', async interaction => {
             }
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.editReply({ content: '❌ لم يتم تحديد روم الAlertات. استخدم `/إعداد-رحلات` أولاً.' });
+                if (!alertsChannelId) return interaction.editReply({ content: '❌ Alerts channel has not been set. Use `/إعداد-رحلات` first.' });
 
                 const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim() || '—';
 
@@ -4537,10 +4519,10 @@ client.on('interactionCreate', async interaction => {
                             const embed = new EmbedBuilder()
                                 .setTitle('Trip Renewal')
                                 .setColor(0x1565C0)
-                                .setDescription('🔄 **تم Renew الرحلة!**')
+                                .setDescription('🔄 **Trip has been renewed!**')
                                 .addFields(
-                                    { name: '🎤 ID الهوست', value: `\`${hostId}\``, inline: true },
-                                    { name: '🔧 جدّدها',     value: `<@${interaction.user.id}>`, inline: true },
+                                    { name: '🎤 Host ID',    value: `\`${hostId}\``, inline: true },
+                                    { name: '🔧 Renewed by', value: `<@${interaction.user.id}>`, inline: true },
                                 )
                                 .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
@@ -4552,17 +4534,17 @@ client.on('interactionCreate', async interaction => {
                 } catch (sendErr) {
                     console.error('[trip_renewal] channel send error:', sendErr?.message);
                 }
-                return interaction.editReply({ content: sent ? '✅ تم إرسال إشعار الRenew.' : '⚠️ تم تسجيل الRenew لكن تعذّر الإرسال — تحقق من صلاحيات البوت في الروم.' });
+                return interaction.editReply({ content: sent ? '✅ Renewal notification sent.' : '⚠️ Renewal recorded but message could not be sent — check the bot\'s permissions in the channel.' });
             } catch (e) {
                 console.error('[trip_renewal_modal] error:', e?.message, e);
-                return interaction.editReply({ content: '❌ حدث خطأ: ' + (e?.message || e) });
+                return interaction.editReply({ content: '❌ An error occurred: ' + (e?.message || e) });
             }
         }
 
         if (interaction.customId === 'trip_alert_modal') {
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.reply({ content: '❌ لم يتم تحديد روم الAlertات. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
+                if (!alertsChannelId) return interaction.reply({ content: '❌ Alerts channel has not been set. Use `/إعداد-رحلات` first.', flags: 64 });
 
                 const alertText = interaction.fields.getTextInputValue('alert_text').trim();
 
@@ -4570,7 +4552,7 @@ client.on('interactionCreate', async interaction => {
                     .setTitle('Alert')
                     .setColor(0xF57F17)
                     .setDescription(alertText)
-                    .addFields({ name: '🔧 أرسله', value: `<@${interaction.user.id}>`, inline: true })
+                    .addFields({ name: '🔧 Sent by', value: `<@${interaction.user.id}>`, inline: true })
                     .setFooter({ text: 'Trip System • FANTASY Bot' })
                     .setTimestamp();
 
@@ -4579,10 +4561,10 @@ client.on('interactionCreate', async interaction => {
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
                 sendToTripLog(embed);
-                return interaction.reply({ content: '✅ تم إرسال الAlert.', flags: 64 });
+                return interaction.reply({ content: '✅ Alert sent.', flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
         }
 
@@ -4595,29 +4577,29 @@ client.on('interactionCreate', async interaction => {
 
                 const panicChannelId = await db.getConfig('panic_channel');
                 if (!panicChannelId)
-                    return interaction.reply({ content: '❌ لم يتم إعداد روم الاستغاثة. تواصل مع Admin.', flags: 64 });
+                    return interaction.reply({ content: '❌ Panic channel has not been set up. Contact an Admin.', flags: 64 });
 
                 const ch = await client.channels.fetch(panicChannelId).catch(() => null);
                 if (!ch)
-                    return interaction.reply({ content: '❌ الروم غير موجود أو البوت لا يملك صلاحية الوصول إليه.', flags: 64 });
+                    return interaction.reply({ content: '❌ Channel not found or the bot does not have access to it.', flags: 64 });
 
                 const embed = new EmbedBuilder()
                     .setTitle('Panic — Distress Call')
                     .setColor(0xD32F2F)
                     .setThumbnail(interaction.user.displayAvatarURL())
                     .addFields(
-                        { name: '👤 المستغيث', value: `<@${interaction.user.id}>`, inline: true },
-                        { name: '🏷️ الاسم', value: displayName, inline: true },
+                        { name: '👤 Caller',   value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '🏷️ Name',    value: displayName, inline: true },
                         { name: '📍 Location', value: location, inline: false },
                     )
-                    .setFooter({ text: 'نظام الاستغاثة • FANTASY Bot' })
+                    .setFooter({ text: 'Panic System • FANTASY Bot' })
                     .setTimestamp();
 
                 await ch.send({ content: '@here', embeds: [embed] });
-                return interaction.reply({ content: '✅ تم إرسال موقعك، المساعدة في الطريق!', flags: 64 });
+                return interaction.reply({ content: '✅ Your location has been sent, help is on the way!', flags: 64 });
             } catch (e) {
                 console.error('[PANIC ERROR]', e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الموقع.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while sending the location.', flags: 64 });
             }
         }
 
@@ -4632,7 +4614,7 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const slotTaken = identities.find(i => i.slot === slot && i.character_name);
-                if (slotTaken) return interaction.reply({ content: '❌ هذه الخانة ممتلئة بالفعل. اختر خانة أخرى.', flags: 64 });
+                if (slotTaken) return interaction.reply({ content: '❌ This slot is already occupied. Choose another slot.', flags: 64 });
 
                 const pending = await db.createPendingIdentity({
                     discordId: interaction.user.id,
@@ -4641,7 +4623,7 @@ client.on('interactionCreate', async interaction => {
                 });
                 await db.addCharacterLog(interaction.user.id, interaction.user.username, 'pending', charName, slot);
 
-                const pendingSlotNames = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                const pendingSlotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const logChannelId = await db.getConfig('identity_log_channel');
                 if (logChannelId) {
                     try {
@@ -4652,47 +4634,47 @@ client.on('interactionCreate', async interaction => {
                                 .setColor(0xF57F17)
                                 .setThumbnail(interaction.user.displayAvatarURL())
                                 .addFields(
-                                    { name: '👤 المستخدم',        value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
-                                    { name: '📌 الشخصية',          value: pendingSlotNames[slot], inline: true },
-                                    { name: '👤 الاسم الأول',     value: charName, inline: true },
-                                    { name: '👥 اسم العائلة',     value: familyName, inline: true },
-                                    { name: '⚧ الجنس',             value: gender, inline: true },
-                                    { name: '📅 تاريخ الميلاد',   value: birthDate, inline: true },
-                                    { name: '📍 مكان الولادة',    value: birthPlace, inline: true },
-                                    { name: '🆔 رقم الطلب',       value: `\`#${pending.id}\``, inline: true },
+                                    { name: '👤 User',           value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
+                                    { name: '📌 Slot',           value: pendingSlotNames[slot], inline: true },
+                                    { name: '👤 First Name',     value: charName, inline: true },
+                                    { name: '👥 Family Name',    value: familyName, inline: true },
+                                    { name: '⚧ Gender',          value: gender, inline: true },
+                                    { name: '📅 Date of Birth',  value: birthDate, inline: true },
+                                    { name: '📍 Place of Birth', value: birthPlace, inline: true },
+                                    { name: '🆔 Request #',      value: `\`#${pending.id}\``, inline: true },
                                 )
                                 .setFooter({ text: 'Identity System • FANTASY Bot' })
                                 .setTimestamp();
                             const btnRow = new ActionRowBuilder().addComponents(
-                                new ButtonBuilder().setCustomId(`approve_identity_${pending.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
-                                new ButtonBuilder().setCustomId(`reject_identity_${pending.id}`).setLabel('❌ رفض').setStyle(ButtonStyle.Danger)
+                                new ButtonBuilder().setCustomId(`approve_identity_${pending.id}`).setLabel('✅ Approve').setStyle(ButtonStyle.Success),
+                                new ButtonBuilder().setCustomId(`reject_identity_${pending.id}`).setLabel('❌ Reject').setStyle(ButtonStyle.Danger)
                             );
                             await logChannel.send({ embeds: [logEmbed], components: [btnRow] });
                         }
                     } catch (e) { console.error('log channel error:', e); }
                 }
 
-                const pendingNamesLog = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+                const pendingNamesLog = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const pendingLogEmbed = new EmbedBuilder()
-                    .setTitle('⏳ طلب هوية جديد')
+                    .setTitle('⏳ New Identity Request')
                     .setColor(0xF57F17)
                     .addFields(
-                        { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
-                        { name: '📌 الشخصية', value: pendingNamesLog[slot], inline: true },
-                        { name: '🪪 الاسم', value: `${charName} ${familyName}`, inline: true },
-                        { name: '🆔 رقم الطلب', value: `\`#${pending.id}\``, inline: true },
+                        { name: '👤 User',       value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '📌 Slot',       value: pendingNamesLog[slot], inline: true },
+                        { name: '🪪 Name',       value: `${charName} ${familyName}`, inline: true },
+                        { name: '🆔 Request #',  value: `\`#${pending.id}\``, inline: true },
                     )
                     .setFooter({ text: 'Identity System • FANTASY Bot' })
                     .setTimestamp();
                 sendToCharLog(pendingLogEmbed);
 
                 return interaction.reply({
-                    content: `⏳ **تم إرسال طلب هويتك رقم \`#${pending.id}\` للمراجعة.**\nسيصلك رد عند قبول أو رفض الطلب.`,
+                    content: `⏳ **Your identity request \`#${pending.id}\` has been submitted for review.**\nYou will receive a response when it is approved or rejected.`,
                     flags: 64
                 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
+                return interaction.reply({ content: '❌ An error occurred while submitting the request.', flags: 64 });
             }
         }
 
@@ -4702,7 +4684,7 @@ client.on('interactionCreate', async interaction => {
                 const amountStr = interaction.fields.getTextInputValue('amount').trim();
                 const amount = parseInt(amountStr);
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ المبلغ غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid amount. Enter a whole number.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
@@ -4710,7 +4692,7 @@ client.on('interactionCreate', async interaction => {
 
                 const company = await db.getUserCompany(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ أنت لست مرتبطاً بأي شركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not linked to any company.', flags: 64 });
 
                 if (isDeposit) {
                     const result = await db.depositToCompany(company.id, interaction.user.id, identity.slot, amount);
@@ -4720,14 +4702,14 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('Deposited to Company Account')
                         .setColor(0x1B5E20)
                         .addFields(
-                            { name: '🏢 الشركة', value: company.name, inline: true },
-                            { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                            { name: '💰 Company Balance', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
+                            { name: '🏢 Company',         value: company.name, inline: true },
+                            { name: '💵 Amount',           value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                            { name: '💰 Company Balance',  value: `\`${(updated?.balance || 0).toLocaleString()} Riyals\``, inline: true },
                         ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 } else {
                     if (company.userRole !== 'مالك' && company.userRole !== 'مدير')
-                        return interaction.reply({ content: '❌ فقط المالك والمدير يستطيعان سحب الأموال.', flags: 64 });
+                        return interaction.reply({ content: '❌ Only the owner and manager can withdraw funds.', flags: 64 });
                     const result = await db.withdrawFromCompany(company.id, interaction.user.id, identity.slot, amount);
                     if (result.error) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                     const updated = await db.getCompanyById(company.id);
@@ -4735,15 +4717,15 @@ client.on('interactionCreate', async interaction => {
                         .setTitle('Withdrawn from Company Account')
                         .setColor(0xF57F17)
                         .addFields(
-                            { name: '🏢 الشركة', value: company.name, inline: true },
-                            { name: '💵 المبلغ', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                            { name: '💰 Company Balance', value: `\`${(updated?.balance || 0).toLocaleString()} ريال\``, inline: true },
+                            { name: '🏢 Company',        value: company.name, inline: true },
+                            { name: '💵 Amount',          value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                            { name: '💰 Company Balance', value: `\`${(updated?.balance || 0).toLocaleString()} Riyals\``, inline: true },
                         ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
             } catch (e) {
                 console.error('[COMP DEPOSIT/WITHDRAW ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }
@@ -4756,35 +4738,35 @@ client.on('interactionCreate', async interaction => {
                 const salary  = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
-                    return interaction.reply({ content: '❌ الRank غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid rank. Enter: مدير, محاسب, or موظف.', flags: 64 });
                 if (isNaN(salary) || salary < 0)
-                    return interaction.reply({ content: '❌ الراتب غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid salary. Enter a whole number.', flags: 64 });
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
 
                 if (userId === interaction.user.id)
-                    return interaction.reply({ content: '❌ لا يمكنك تعيين نفسك.', flags: 64 });
+                    return interaction.reply({ content: '❌ You cannot assign yourself.', flags: 64 });
 
                 const existing = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
                 if (existing)
-                    return interaction.reply({ content: '❌ هذا اللاعب موظف بالفعل. استخدم زر **Promote Employee** لتعديل رتبته وراتبه.', flags: 64 });
+                    return interaction.reply({ content: '❌ This player is already an employee. Use the **Promote Employee** button to update their rank and salary.', flags: 64 });
 
                 const res = await db.addCompanyMember(company.id, userId, role, salary);
                 if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
 
                 const embed = new EmbedBuilder().setTitle('Employee Assigned').setColor(0x1B5E20)
                     .addFields(
-                        { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
-                        { name: '🏷️ الRank', value: `**${role}**`, inline: true },
-                        { name: '💵 الراتب', value: `\`${salary.toLocaleString()} ريال\``, inline: true },
-                        { name: '🏢 الشركة', value: company.name, inline: true },
+                        { name: '👤 Employee', value: `<@${userId}>`, inline: true },
+                        { name: '🏷️ Rank',     value: `**${role}**`, inline: true },
+                        { name: '💵 Salary',   value: `\`${salary.toLocaleString()} Riyals\``, inline: true },
+                        { name: '🏢 Company',  value: company.name, inline: true },
                     ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP HIRE ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred. Make sure the player ID is correct.', flags: 64 });
             }
             return;
         }
@@ -4797,32 +4779,32 @@ client.on('interactionCreate', async interaction => {
                 const salary    = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
-                    return interaction.reply({ content: '❌ الRank غير صحيحة. اكتب: مدير أو محاسب أو موظف.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid rank. Enter: مدير, محاسب, or موظف.', flags: 64 });
                 if (isNaN(salary) || salary < 0)
-                    return interaction.reply({ content: '❌ الراتب غير صحيح. اكتب رقماً صحيحاً.', flags: 64 });
+                    return interaction.reply({ content: '❌ Invalid salary. Enter a whole number.', flags: 64 });
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
 
                 const member = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
                 if (!member)
-                    return interaction.reply({ content: '❌ هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
+                    return interaction.reply({ content: '❌ This player is not an employee of your company.', flags: 64 });
 
                 await db.updateCompanyMemberRole(company.id, userId, role, salary);
 
                 const embed = new EmbedBuilder().setTitle('Employee Promoted').setColor(0x6A1B9A)
                     .addFields(
-                        { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
-                        { name: '🏷️ الRank السابقة', value: `**${member.role}**`, inline: true },
-                        { name: '🏷️ الRank الجديدة', value: `**${role}**`, inline: true },
-                        { name: '💵 الراتب الجديد', value: `\`${salary.toLocaleString()} ريال\``, inline: true },
-                        { name: '🏢 الشركة', value: company.name, inline: true },
+                        { name: '👤 Employee',   value: `<@${userId}>`, inline: true },
+                        { name: '🏷️ Old Rank',   value: `**${member.role}**`, inline: true },
+                        { name: '🏷️ New Rank',   value: `**${role}**`, inline: true },
+                        { name: '💵 New Salary',  value: `\`${salary.toLocaleString()} Riyals\``, inline: true },
+                        { name: '🏢 Company',     value: company.name, inline: true },
                     ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP PROMOTE ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred. Make sure the player ID is correct.', flags: 64 });
             }
             return;
         }
@@ -4833,24 +4815,24 @@ client.on('interactionCreate', async interaction => {
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ أنت لست مالك أي شركة.', flags: 64 });
+                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
 
                 if (userId === interaction.user.id)
-                    return interaction.reply({ content: '❌ لا يمكنك إقالة نفسك.', flags: 64 });
+                    return interaction.reply({ content: '❌ You cannot fire yourself.', flags: 64 });
 
                 const removed = await db.removeCompanyMember(company.id, userId);
                 if (!removed)
-                    return interaction.reply({ content: '❌ هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
+                    return interaction.reply({ content: '❌ This player is not an employee of your company.', flags: 64 });
 
                 const embed = new EmbedBuilder().setTitle('Employee Fired').setColor(0xB71C1C)
                     .addFields(
-                        { name: '👤 الموظف', value: `<@${userId}>`, inline: true },
-                        { name: '🏢 الشركة', value: company.name, inline: true },
+                        { name: '👤 Employee', value: `<@${userId}>`, inline: true },
+                        { name: '🏢 Company',  value: company.name, inline: true },
                     ).setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP FIRE ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ. تأكد أن آيدي اللاعب صحيح.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred. Make sure the player ID is correct.', flags: 64 });
             }
             return;
         }
@@ -4869,15 +4851,15 @@ client.on('interactionCreate', async interaction => {
 
                 const hasPerm = await db.hasTradePermit(interaction.user.id);
                 if (!hasPerm)
-                    return interaction.reply({ content: '❌ انتهت صلاحية تصريحك أو سُحب. تواصل مع **وزارة التجارة**.', flags: 64 });
+                    return interaction.reply({ content: '❌ Your trade permit has expired or been revoked. Contact the **Ministry of Commerce**.', flags: 64 });
 
                 const existingComp = await db.getUserCompany(interaction.user.id);
                 if (existingComp)
-                    return interaction.reply({ content: `❌ أنت مرتبط بالفعل بشركة **${existingComp.name}**.`, flags: 64 });
+                    return interaction.reply({ content: `❌ You are already linked to company **${existingComp.name}**.`, flags: 64 });
 
                 const ministryChId = await db.getConfig('trade_ministry_channel');
                 if (!ministryChId)
-                    return interaction.reply({ content: '❌ لم يتم تحديد قناة وزارة التجارة بعد. تواصل مع Admin.', flags: 64 });
+                    return interaction.reply({ content: '❌ Ministry of Commerce channel has not been set yet. Contact an Admin.', flags: 64 });
 
                 const pending = await db.createPendingCompany({
                     discordId: interaction.user.id,
@@ -4890,7 +4872,7 @@ client.on('interactionCreate', async interaction => {
                 });
 
                 await interaction.reply({
-                    content: `⏳ **تم إرسال طلب تأسيس شركة «${compName}» برقم \`#${pending.id}\` لوزارة التجارة.**\nسيصلك رد عند قبول أو رفض الطلب.`,
+                    content: `⏳ **Your company founding request for «${compName}» (Request \`#${pending.id}\`) has been sent to the Ministry of Commerce.**\nYou will receive a response when it is approved or rejected.`,
                     flags: 64
                 });
 
@@ -4898,25 +4880,25 @@ client.on('interactionCreate', async interaction => {
                     const ministryCh = await client.channels.fetch(ministryChId);
                     if (ministryCh) {
                         const appEmbed = new EmbedBuilder()
-                            .setTitle(`📋 طلب تأسيس شركة — #${pending.id}`)
+                            .setTitle(`📋 Company Founding Request — #${pending.id}`)
                             .setColor(0xF57F17)
                             .setThumbnail(interaction.user.displayAvatarURL())
                             .addFields(
-                                { name: '👤 المتقدم', value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
-                                { name: '🏷️ الهوية', value: identity.character_name || '—', inline: true },
-                                { name: '💰 رصيد Bank', value: `\`${(identity.balance || 0).toLocaleString()} ريال\``, inline: true },
-                                { name: '🏢 اسم الشركة', value: `**${compName}**`, inline: true },
-                                { name: '👤 المعلومات الشخصية', value: `\`\`\`${personal}\`\`\``, inline: false },
-                                { name: '🏪 تفاصيل الشركة', value: `\`\`\`${details}\`\`\``, inline: false },
-                                { name: '📊 Admin والتوظيف', value: `\`\`\`${management}\`\`\``, inline: false },
-                                { name: '💰 المالية والالتزام', value: `\`\`\`${financial}\`\`\``, inline: false },
+                                { name: '👤 Applicant',         value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
+                                { name: '🏷️ Identity',          value: identity.character_name || '—', inline: true },
+                                { name: '💰 Bank Balance',      value: `\`${(identity.balance || 0).toLocaleString()} Riyals\``, inline: true },
+                                { name: '🏢 Company Name',      value: `**${compName}**`, inline: true },
+                                { name: '👤 Personal Info',     value: `\`\`\`${personal}\`\`\``, inline: false },
+                                { name: '🏪 Company Details',   value: `\`\`\`${details}\`\`\``, inline: false },
+                                { name: '📊 Management Plan',   value: `\`\`\`${management}\`\`\``, inline: false },
+                                { name: '💰 Financial Details', value: `\`\`\`${financial}\`\`\``, inline: false },
                             )
-                            .setFooter({ text: `طلب #${pending.id} • بانتظار المراجعة` })
+                            .setFooter({ text: `Request #${pending.id} • Pending Review` })
                             .setTimestamp();
 
                         const btnRow = new ActionRowBuilder().addComponents(
-                            new ButtonBuilder().setCustomId(`approve_company_${pending.id}`).setLabel('✅ قبول').setStyle(ButtonStyle.Success),
-                            new ButtonBuilder().setCustomId(`reject_company_${pending.id}`).setLabel('❌ رفض').setStyle(ButtonStyle.Danger),
+                            new ButtonBuilder().setCustomId(`approve_company_${pending.id}`).setLabel('✅ Approve').setStyle(ButtonStyle.Success),
+                            new ButtonBuilder().setCustomId(`reject_company_${pending.id}`).setLabel('❌ Reject').setStyle(ButtonStyle.Danger),
                         );
                         await ministryCh.send({ embeds: [appEmbed], components: [btnRow] });
                     }
@@ -4924,7 +4906,7 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error('[COMPANY MODAL ERROR]', e);
                 if (!interaction.replied)
-                    return interaction.reply({ content: '❌ حدث خطأ أثناء إرسال الطلب.', flags: 64 });
+                    return interaction.reply({ content: '❌ An error occurred while submitting the request.', flags: 64 });
             }
             return;
         }
@@ -4951,7 +4933,7 @@ client.on('interactionCreate', async interaction => {
     } catch (error) {
         console.error(`[SLASH ERROR] /${interaction.commandName}:`, error?.message || error);
         if (!interaction.replied && !interaction.deferred) {
-            interaction.reply({ content: 'حدث خطأ أثناء تنفيذ الأمر!', flags: 64 }).catch(() => {});
+            interaction.reply({ content: '❌ An error occurred while executing the command!', flags: 64 }).catch(() => {});
         }
     }
 });
@@ -4964,7 +4946,7 @@ client.on('messageCreate', async message => {
             clearTimeout(session.timer);
             trackingSessions.delete(message.author.id);
             try {
-                await message.author.send('✅ **تم إلغاء التراكينق بنجاح!** كتبت الكود الصحيح.');
+                await message.author.send('✅ **Tracking has been canceled successfully!** You entered the correct code.');
             } catch (_) {}
             try {
                 const ch = await client.channels.fetch(session.channelId).catch(() => null);
@@ -4973,8 +4955,8 @@ client.on('messageCreate', async message => {
                         .setTitle('Tracking Canceled')
                         .setColor(0xFF8F00)
                         .setDescription(
-                            `🚫 قام <@${message.author.id}> بإلغاء التراكينق عن طريق كتابة الكود الصحيح.\n` +
-                            `🔑 الكود المستخدم: \`${session.code}\``
+                            `🚫 <@${message.author.id}> canceled the tracking by entering the correct code.\n` +
+                            `🔑 Code used: \`${session.code}\``
                         )
                         .setTimestamp();
                     ch.send({ content: `<@${session.trackerId}>`, embeds: [cancelEmbed] }).catch(() => {});
@@ -5007,7 +4989,7 @@ client.on('messageCreate', async message => {
         await command.execute(message, args, db);
     } catch (error) {
         console.error(`[CMD ERROR] ${commandName}:`, error?.message || error);
-        message.reply('حدث خطأ أثناء تنفيذ الأمر!');
+        message.reply('❌ An error occurred while executing the command!');
     }
 });
 
@@ -5041,16 +5023,16 @@ client.on('messageDelete', async (message) => {
 
         const restoreEmbed = new EmbedBuilder()
             .setColor(0xE53935)
-            .setTitle('حذف غير مصرح')
-            .setDescription(`**${executor.displayName}** حذف رسالة بدون صلاحية — تم استعادتها:`)
+            .setTitle('Unauthorized Deletion')
+            .setDescription(`**${executor.displayName}** deleted a message without permission — it has been restored:`)
             .addFields(
-                { name: '👤 صاحب الرسالة', value: `<@${message.author.id}>`, inline: true },
-                { name: '🗑️ من حذفها', value: `<@${executor.id}>`, inline: true },
+                { name: '👤 Message Author', value: `<@${message.author.id}>`, inline: true },
+                { name: '🗑️ Deleted by',     value: `<@${executor.id}>`, inline: true },
             )
-            .setFooter({ text: 'نظام حماية الحذف • FANTASY Bot' })
+            .setFooter({ text: 'Delete Protection System • FANTASY Bot' })
             .setTimestamp();
 
-        if (content) restoreEmbed.addFields({ name: '📝 الرسالة', value: content.slice(0, 1024) });
+        if (content) restoreEmbed.addFields({ name: '📝 Message', value: content.slice(0, 1024) });
 
         await message.channel.send({ embeds: [restoreEmbed, ...embeds] });
     } catch (_) {}
@@ -5109,7 +5091,7 @@ setInterval(async () => {
                 // إشعار اللاعب
                 try {
                     const user = await client.users.fetch(v.user_id);
-                    await user.send(`✅ **انتهت مدة مخالفتك في سيرفر ${guild?.name || 'السيرفر'} — تم رفع الباند وإعادة جميع رتبك automatically.**`);
+                    await user.send(`✅ **Your violation in server ${guild?.name || 'the server'} has expired — the ban has been lifted and all your roles have been restored automatically.**`);
                 } catch (_) {}
             } catch (e) { console.error('violation cleanup error:', e); }
         }

@@ -26,8 +26,8 @@ module.exports = {
         const mention = message.mentions.users.first();
         const slot = parseInt(args[1]);
 
-        if (!mention) return message.reply('❌ يجب ذكر اللاعب. مثال: `-حذف-هوية @اللاعب 1`');
-        if (![1, 2, 3].includes(slot)) return message.reply('❌ رقم الهوية يجب أن يكون 1 أو 2 أو 3. مثال: `-حذف-هوية @اللاعب 2`');
+        if (!mention) return message.reply('❌ Mention the player. Example: `-حذف-هوية @player 1`');
+        if (![1, 2, 3].includes(slot)) return message.reply('❌ Slot number must be 1, 2, or 3. Example: `-حذف-هوية @player 2`');
 
         await handleDelete(message.channel, mention.id, mention.username, slot, db, null);
     },
@@ -44,7 +44,7 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
     const identity   = identities.find(i => i.slot === slot);
 
     if (!identity) {
-        const msg = `❌ لا توجد هوية في الخانة **${slot}** للاعب **${targetUsername}**.`;
+        const msg = `❌ No identity found in slot **${slot}** for player **${targetUsername}**.`;
         if (interaction) return interaction.reply({ content: msg, flags: 64 });
         return channel.send(msg);
     }
@@ -58,11 +58,11 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
         .setTitle('Identity Deleted')
         .setColor(0x757575)
         .addFields(
-            { name: '👤 اللاعب',       value: `<@${targetId}>`, inline: true },
-            { name: '🔢 رقم الخانة',   value: `\`${slot}\``, inline: true },
-            { name: '📛 اسم الشخصية', value: `\`${identity.character_name || 'غير محدد'} ${identity.family_name || ''}\``.trim(), inline: true },
+            { name: '👤 Player',      value: `<@${targetId}>`, inline: true },
+            { name: '🔢 Slot',        value: `\`${slot}\``, inline: true },
+            { name: '📛 Character',   value: `\`${identity.character_name || 'Not set'} ${identity.family_name || ''}\``.trim(), inline: true },
         )
-        .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
+        .setFooter({ text: 'FANTASY Bot • Identity System' })
         .setTimestamp();
 
     if (interaction) if (_img) embed.setImage(_img);

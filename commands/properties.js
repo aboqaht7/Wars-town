@@ -42,7 +42,7 @@ async function build(db) {
     const options = props.slice(0, 24).map(p => ({
         label: p.name,
         value: String(p.id),
-        description: `💰 ${Number(p.price).toLocaleString()} ريال`,
+        description: `💰 ${Number(p.price).toLocaleString()} Riyals`,
     }));
 
     const menu = new ActionRowBuilder().addComponents(

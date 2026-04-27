@@ -12,7 +12,7 @@ module.exports = {
     async slashExecute(interaction, db) {
         const { isAdmin } = require('../utils');
         if (!(await isAdmin(interaction.member, db)))
-            return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+            return interaction.reply({ content: '❌ Admins only.', flags: 64 });
 
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('violation_role_id', role.id);
@@ -23,12 +23,12 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Ban Role Set')
             .setColor(0xB71C1C)
-            .setDescription('ستُعطى هذه الRank تلقائياً عند إصدار أمر `-مخالف`، وتُرفع عند انتهاء المدة أو تنفيذ `-فك-مخالف`.')
+            .setDescription('This role will be automatically assigned when `-مخالف` is issued, and removed when the duration expires or `-فك-مخالف` is executed.')
             .addFields(
-                { name: '🚫 الRank',       value: `<@&${role.id}>`, inline: true },
-                { name: '🆔 معرّف الRank', value: role.id,          inline: true },
+                { name: '🚫 Role',    value: `<@&${role.id}>`, inline: true },
+                { name: '🆔 Role ID', value: role.id,          inline: true },
             )
-            .setFooter({ text: 'نظام المخالفات • FANTASY Bot' })
+            .setFooter({ text: 'Violations System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

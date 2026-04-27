@@ -10,17 +10,17 @@ module.exports = {
         if (loginErr) return message.reply(loginErr);
 
         const target = message.mentions.members?.first();
-        if (!target) return message.reply('❌ استخدم: `-سرقة @اللاعب`');
-        if (target.id === message.author.id) return message.reply('❌ لا تقدر تسرق نفسك.');
-        if (target.user.bot) return message.reply('❌ لا تقدر تسرق بوت.');
+        if (!target) return message.reply('❌ Usage: `-سرقة @player`');
+        if (target.id === message.author.id) return message.reply('❌ You cannot rob yourself.');
+        if (target.user.bot) return message.reply('❌ You cannot rob a bot.');
 
         const cuffData = await db.isCuffed(target.id);
-        if (!cuffData) return message.reply(`❌ <@${target.id}> يجب أن يكون **مكبّلاً** حتى تتمكن من سرقته.`);
+        if (!cuffData) return message.reply(`❌ <@${target.id}> must be **handcuffed** in order to rob them.`);
 
         const executorIdentity = await db.getActiveIdentity(message.author.id);
-        if (!executorIdentity) return message.reply('❌ لازم تملك هوية نشطة.');
+        if (!executorIdentity) return message.reply('❌ You must have an active identity.');
 
-        const targetIdentity = await db.getActiveIdentity(target.id);
+        const targetIdentity  = await db.getActiveIdentity(target.id);
         const targetInventory = await db.getInventory(target.id);
 
         let stolenCash = 0;
@@ -45,23 +45,22 @@ module.exports = {
         }
 
         const cashLine  = stolenCash > 0
-            ? `💵 كاش: **${stolenCash.toLocaleString('en-US')} ريال**`
-            : '💵 كاش: لا يوجد';
+            ? `💵 Cash: **${stolenCash.toLocaleString('en-US')} Riyals**`
+            : '💵 Cash: None';
         const itemsLine = stolenItems.length > 0
-            ? `🎒 أغراض:\n${stolenItems.join('\n')}`
-            : '🎒 أغراض: لا يوجد';
+            ? `🎒 Items:\n${stolenItems.join('\n')}`
+            : '🎒 Items: None';
 
         const _img = await db.getImage('crime').catch(() => null);
-
 
         const embed = new EmbedBuilder()
             .setTitle('Robbery Committed')
             .setColor(0x37474F)
-            .setDescription(`قام <@${message.author.id}> بسرقة <@${target.id}>`)
+            .setDescription(`<@${message.author.id}> has robbed <@${target.id}>`)
             .addFields(
-                { name: '💰 المسروقات', value: `${cashLine}\n${itemsLine}`, inline: false },
+                { name: '💰 Stolen', value: `${cashLine}\n${itemsLine}`, inline: false },
             )
-            .setFooter({ text: 'نظام Crimes • FANTASY Bot' })
+            .setFooter({ text: 'Crime System • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

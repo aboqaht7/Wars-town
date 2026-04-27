@@ -13,7 +13,7 @@ module.exports = {
         const carName = args.filter(a => !a.startsWith('<@')).slice(0, -1).join(' ') || args.filter(a => !a.startsWith('<@'))[0];
         const plate = args[args.length - 1];
         if (!target || !carName || !plate) {
-            return message.reply('❌ استخدم: `-اضافة-سيارة @اللاعب [Car name] [رقم اللوحة]`\nمثال: `-اضافة-سيارة @اللاعب كامري ABC123`');
+            return message.reply('❌ Usage: `-اضافة-سيارة @player [Car name] [Plate number]`\nExample: `-اضافة-سيارة @player Camry ABC123`');
         }
         await db.ensureUser(target.id, target.user.username);
         const result = await db.addVehicle(target.id, carName, plate);
@@ -26,10 +26,10 @@ module.exports = {
             .setTitle('Car Registered')
             .setColor(0x37474F)
             .addFields(
-                { name: '👤 المالك', value: `${target}`, inline: true },
-                { name: '🚗 Car name', value: `\`${carName}\``, inline: true },
-                { name: '🔖 رقم اللوحة', value: `\`${plate}\``, inline: true },
-                { name: '👮 أضافها', value: `${message.author}`, inline: true },
+                { name: '👤 Owner',        value: `${target}`,           inline: true },
+                { name: '🚗 Car Name',     value: `\`${carName}\``,      inline: true },
+                { name: '🔖 Plate',        value: `\`${plate}\``,        inline: true },
+                { name: '👮 Added By',     value: `${message.author}`,   inline: true },
             )
             .setFooter({ text: 'Vehicles System • FANTASY Bot' })
             .setTimestamp();
@@ -51,10 +51,10 @@ module.exports = {
             .setTitle('Car Registered')
             .setColor(0x37474F)
             .addFields(
-                { name: '👤 المالك', value: `<@${target.id}>`, inline: true },
-                { name: '🚗 Car name', value: `\`${carName}\``, inline: true },
-                { name: '🔖 رقم اللوحة', value: `\`${plate}\``, inline: true },
-                { name: '👮 أضافها', value: `${interaction.user}`, inline: true },
+                { name: '👤 Owner',    value: `<@${target.id}>`,       inline: true },
+                { name: '🚗 Car Name', value: `\`${carName}\``,         inline: true },
+                { name: '🔖 Plate',    value: `\`${plate}\``,           inline: true },
+                { name: '👮 Added By', value: `${interaction.user}`,    inline: true },
             )
             .setFooter({ text: 'Vehicles System • FANTASY Bot' })
             .setTimestamp();

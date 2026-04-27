@@ -8,7 +8,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor(0x2E7D32)
-            .setDescription(`✅ Well done <@${message.author.id}>!\nتمت إضافة **3 نقاط** لحضور الرحلة.`)
+            .setDescription(`✅ Well done <@${message.author.id}>!\n**3 points** have been added for attending the trip.`)
             .setFooter({ text: 'Admin Points System • FANTASY Bot' })
             .setTimestamp();
 

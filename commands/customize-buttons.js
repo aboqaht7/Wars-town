@@ -2,10 +2,10 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('disc
 const { DEFAULTS, MENU_SYSTEMS, SYSTEM_LABELS, BTN_LABELS } = require('../btnConfig');
 
 const STYLE_CHOICES = [
-    { name: '🔵 أزرق (Primary)',    value: 'primary'   },
-    { name: '⚪ رمادي (Secondary)', value: 'secondary' },
-    { name: '🟢 أخضر (Success)',    value: 'success'   },
-    { name: '🔴 أحمر (Danger)',     value: 'danger'    },
+    { name: '🔵 Blue (Primary)',   value: 'primary'   },
+    { name: '⚪ Grey (Secondary)', value: 'secondary' },
+    { name: '🟢 Green (Success)',  value: 'success'   },
+    { name: '🔴 Red (Danger)',     value: 'danger'    },
 ];
 
 const SYSTEM_CHOICES = Object.keys(SYSTEM_LABELS).map(k => ({
@@ -16,11 +16,9 @@ const SYSTEM_CHOICES = Object.keys(SYSTEM_LABELS).map(k => ({
 async function resolveEmoji(rawEmoji, guild) {
     if (!rawEmoji) return null;
 
-    // صيغة كاملة: <:name:id> أو <a:name:id>
     const fullMatch = rawEmoji.match(/^<(a?):(\w+):(\d+)>$/);
     if (fullMatch) return rawEmoji;
 
-    // اسم فقط أو :name: — نبحث عنه في السيرفر
     const nameOnly = rawEmoji.replace(/^:|:$/g, '').trim();
     if (nameOnly && guild) {
         try {
@@ -32,7 +30,6 @@ async function resolveEmoji(rawEmoji, guild) {
         } catch (_) {}
     }
 
-    // إيموجي Unicode عادي (مثل 💰 أو 🗑️)
     return rawEmoji;
 }
 
@@ -40,35 +37,35 @@ module.exports = {
     name: 'تخصيص-زر',
     data: new SlashCommandBuilder()
         .setName('تخصيص-زر')
-        .setDescription('خصّص نص وإيموجي ولون أي زر أو خيار منيو في البوت [أدمن فقط]')
+        .setDescription('Customize label, emoji, and color of any bot button or menu option [Admin only]')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption(o => o
             .setName('نظام')
-            .setDescription('اختر النظام')
+            .setDescription('Choose the system')
             .setRequired(true)
             .addChoices(...SYSTEM_CHOICES))
         .addStringOption(o => o
             .setName('زر')
-            .setDescription('اختر الزر أو خيار المنيو')
+            .setDescription('Choose the button or menu option')
             .setRequired(true)
             .setAutocomplete(true))
         .addStringOption(o => o
             .setName('نص')
-            .setDescription('النص الجديد للزر')
+            .setDescription('New button label')
             .setRequired(false)
             .setMaxLength(80))
         .addStringOption(o => o
             .setName('ايموجي')
-            .setDescription('اكتب : ثم اسم الإيموجي واختره من المنسدل — أو الصق <:اسم:ID> مباشرة')
+            .setDescription('Type : then the emoji name and select from dropdown — or paste <:name:ID> directly')
             .setRequired(false))
         .addStringOption(o => o
             .setName('لون')
-            .setDescription('لون الزر (للأزرار فقط)')
+            .setDescription('Button color (buttons only)')
             .setRequired(false)
             .addChoices(...STYLE_CHOICES))
         .addStringOption(o => o
             .setName('وصف')
-            .setDescription('وصف الخيار (لخيارات المنيو فقط)')
+            .setDescription('Option description (menu options only)')
             .setRequired(false)
             .setMaxLength(100)),
 
@@ -91,21 +88,20 @@ module.exports = {
         const newDesc  = interaction.options.getString('وصف');
 
         if (!DEFAULTS[system]) {
-            return interaction.reply({ content: '❌ نظام غير معروف.', flags: 64 });
+            return interaction.reply({ content: '❌ Unknown system.', flags: 64 });
         }
         if (!DEFAULTS[system][btnKey]) {
             return interaction.reply({
-                content: `❌ الزر/الخيار \`${btnKey}\` غير موجود في نظام **${SYSTEM_LABELS[system]}**.`,
+                content: `❌ Button/option \`${btnKey}\` not found in **${SYSTEM_LABELS[system]}** system.`,
                 flags: 64,
             });
         }
         if (!newText && !rawEmoji && !newStyle && !newDesc) {
-            return interaction.reply({ content: '❌ يجب تحديد تغيير واحد على الأقل.', flags: 64 });
+            return interaction.reply({ content: '❌ At least one change must be specified.', flags: 64 });
         }
 
         const isMenu = MENU_SYSTEMS.has(system);
 
-        // حل الإيموجي بجميع صيغه
         const resolvedEmoji = rawEmoji
             ? await resolveEmoji(rawEmoji, interaction.guild)
             : null;
@@ -125,24 +121,23 @@ module.exports = {
         const styleEmoji    = { primary: '🔵', secondary: '⚪', success: '🟢', danger: '🔴' };
 
         const fields = [
-            { name: 'النظام',    value: SYSTEM_LABELS[system] || system,        inline: true },
-            { name: isMenu ? 'الخيار' : 'الزر',
-                                  value: BTN_LABELS[system]?.[btnKey] || btnKey, inline: true },
-            { name: '\u200b',    value: '\u200b',                               inline: true },
-            { name: 'النص',      value: updated.label,                          inline: true },
-            { name: 'الإيموجي', value: emojiDisplay,                           inline: true },
+            { name: 'System',                    value: SYSTEM_LABELS[system] || system,        inline: true },
+            { name: isMenu ? 'Option' : 'Button', value: BTN_LABELS[system]?.[btnKey] || btnKey, inline: true },
+            { name: '\u200b',                    value: '\u200b',                               inline: true },
+            { name: 'Label',                     value: updated.label,                          inline: true },
+            { name: 'Emoji',                     value: emojiDisplay,                           inline: true },
         ];
         if (!isMenu) {
-            fields.push({ name: 'اللون', value: `${styleEmoji[updated.style] || ''} ${updated.style}`, inline: true });
+            fields.push({ name: 'Color', value: `${styleEmoji[updated.style] || ''} ${updated.style}`, inline: true });
         } else {
-            fields.push({ name: 'الوصف', value: updated.description || '—', inline: true });
+            fields.push({ name: 'Description', value: updated.description || '—', inline: true });
         }
 
         const embed = new EmbedBuilder()
-            .setTitle('✅ تم تخصيص ' + (isMenu ? 'خيار المنيو' : 'الزر'))
+            .setTitle('✅ ' + (isMenu ? 'Menu Option Updated' : 'Button Updated'))
             .setColor(0x00C853)
             .addFields(...fields)
-            .setFooter({ text: 'التغيير يسري فوراً على أول استخدام للأمر' })
+            .setFooter({ text: 'Changes take effect immediately on next command use' })
             .setTimestamp();
 
         return interaction.reply({ embeds: [embed], flags: 64 });

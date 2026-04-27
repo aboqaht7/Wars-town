@@ -4,39 +4,38 @@ module.exports = {
     name: 'بانيك',
     data: new SlashCommandBuilder()
         .setName('بانيك')
-        .setDescription('إرسال إمبيد نداء الاستغاثة في هذا الروم'),
+        .setDescription('Send a distress call embed in this channel'),
 
     async slashExecute(interaction, db) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const panicChannel = await db.getConfig('panic_channel');
         if (!panicChannel)
-            return interaction.reply({ content: '❌ لم يتم تحديد روم الاستغاثة بعد. استخدم `/إعداد-بانيك` أولاً.', flags: 64 });
+            return interaction.reply({ content: '❌ Panic channel has not been set yet. Use `/إعداد-بانيك` first.', flags: 64 });
 
         const _img = await db.getImage('events').catch(() => null);
-
 
         const embed = new EmbedBuilder()
             .setTitle('Panic — Distress Call')
             .setColor(0xD32F2F)
             .setDescription(
-                '**أنت في خطر؟**\n\n' +
-                'اضغط على الزر أدناه، أدخل موقعك، وسيصل طلب الاستغاثة فوراً للجهات المختصة.\n\n' +
-                '> ⚠️ يُستخدم هذا النظام في الحالات الطارئة فقط.'
+                '**Are you in danger?**\n\n' +
+                'Press the button below, enter your location, and the distress request will immediately reach the relevant authorities.\n\n' +
+                '> ⚠️ This system is for emergency situations only.'
             )
-            .setFooter({ text: 'نظام الاستغاثة • FANTASY Bot' })
+            .setFooter({ text: 'Panic System • FANTASY Bot' })
             .setTimestamp();
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('panic_location_btn')
-                .setLabel('إرسال الموقع').setEmoji('📍')
+                .setLabel('Send Location').setEmoji('📍')
                 .setStyle(ButtonStyle.Danger)
         );
 
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed], components: [row] });
-        return interaction.reply({ content: '✅ تم إرسال إمبيد البانيك.', flags: 64 });
+        return interaction.reply({ content: '✅ Panic embed sent.', flags: 64 });
     },
 };

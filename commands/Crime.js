@@ -40,7 +40,7 @@ async function build(db) {
     const options = robberies.slice(0, 24).map(r => ({
         label: r.name,
         value: String(r.id),
-        description: `💵 ${Number(r.min_money).toLocaleString()} — ${Number(r.max_money).toLocaleString()} ريال`,
+        description: `💵 ${Number(r.min_money).toLocaleString()} — ${Number(r.max_money).toLocaleString()} Riyals`,
     }));
     options.push(resetOption('crime'));
 

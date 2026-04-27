@@ -3,7 +3,7 @@ const { resetRow, resetOption } = require('../utils');
 
 module.exports = {
     name: 'سوق-مركزي',
-    data: new SlashCommandBuilder().setName('سوق-مركزي').setDescription('🏪 السوق المركزي — بيع الأسماك والأخشاب والمعادن'),
+    data: new SlashCommandBuilder().setName('سوق-مركزي').setDescription('🏪 Central Market — Sell fish, wood and metals'),
 
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
@@ -30,40 +30,40 @@ async function buildMarket(db) {
     const prices = await db.getJobPrices();
     const img    = await db.getImage('سوق-مركزي');
 
-    const fmt = (name) => `${(prices[name] || 0).toLocaleString()} ريال`;
+    const fmt = (name) => `${(prices[name] || 0).toLocaleString()} Riyals`;
 
     const embed = new EmbedBuilder()
         .setTitle('Central Market')
         .setColor(0x00796B)
-        .setDescription('> اختر الفئة التي تريد بيعها من القائمة\n> الأسعار تتجدد كل ساعة تلقائياً\n\u200B')
+        .setDescription('> Choose the category you want to sell from the menu\n> Prices refresh automatically every hour\n\u200B')
         .addFields(
             {
-                name: '🎣 الأسماك',
+                name: '🎣 Fish',
                 value: [
-                    `🐟 روبيان — **${fmt('روبيان')}**`,
-                    `🐟 سالمون — **${fmt('سالمون')}**`,
-                    `🐟 سمك هامور — **${fmt('سمك هامور')}**`,
-                    `🐳 حوت — **${fmt('حوت')}**`,
+                    `🐟 Shrimp — **${fmt('روبيان')}**`,
+                    `🐟 Salmon — **${fmt('سالمون')}**`,
+                    `🐟 Grouper — **${fmt('سمك هامور')}**`,
+                    `🐳 Whale — **${fmt('حوت')}**`,
                 ].join('\n'),
                 inline: true,
             },
             {
-                name: '🪓 الأخشاب',
-                value: `🪵 خشب — **${fmt('خشب')}**`,
+                name: '🪓 Wood',
+                value: `🪵 Timber — **${fmt('خشب')}**`,
                 inline: true,
             },
             {
-                name: '⛏️ المعادن',
+                name: '⛏️ Metals',
                 value: [
-                    `🟤 نحاس — **${fmt('نحاس')}**`,
-                    `⚪ فضة — **${fmt('فضة')}**`,
-                    `🟡 ذهب — **${fmt('ذهب')}**`,
-                    `💎 الماس — **${fmt('الماس')}**`,
+                    `🟤 Copper — **${fmt('نحاس')}**`,
+                    `⚪ Silver — **${fmt('فضة')}**`,
+                    `🟡 Gold — **${fmt('ذهب')}**`,
+                    `💎 Diamond — **${fmt('الماس')}**`,
                 ].join('\n'),
                 inline: true,
             },
         )
-        .setFooter({ text: 'السوق المركزي • FANTASY Bot' })
+        .setFooter({ text: 'Central Market • FANTASY Bot' })
         .setTimestamp();
 
     if (img) embed.setImage(img);
@@ -71,13 +71,13 @@ async function buildMarket(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('central_market_sell')
-            .setPlaceholder('🏪 اختر ما تريد بيعه')
+            .setPlaceholder('🏪 Choose what to sell')
             .addOptions([
-                { label: '🎣 بيع كل الأسماك',    value: 'fishing',     description: 'روبيان • سالمون • هامور • حوت' },
-                { label: '🪓 بيع كل الأخشاب',    value: 'woodcutting', description: 'خشب' },
-                { label: '⛏️ بيع كل المعادن',    value: 'mining',      description: 'نحاس • فضة • ذهب • الماس' },
-                { label: '💰 بيع الكل دفعة واحدة', value: 'all',        description: 'بيع جميع مكاسب الوظائف' },
-            
+                { label: '🎣 Sell All Fish',    value: 'fishing',     description: 'Shrimp • Salmon • Grouper • Whale' },
+                { label: '🪓 Sell All Wood',    value: 'woodcutting', description: 'Timber' },
+                { label: '⛏️ Sell All Metals',  value: 'mining',      description: 'Copper • Silver • Gold • Diamond' },
+                { label: '💰 Sell All at Once', value: 'all',         description: 'Sell all job earnings at once' },
+
                 { label: '🔄 Reset Menu', value: 'reset_سوق-مركزي', description: 'Return to the main view' },
             ])
     );

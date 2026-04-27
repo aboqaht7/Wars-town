@@ -7,21 +7,21 @@ module.exports = {
     name: 'إعداد-بلاغات',
     data: new SlashCommandBuilder()
         .setName('إعداد-بلاغات')
-        .setDescription('ضبط قنوات استقبال بلاغات الشرطة والإسعاف')
+        .setDescription('Set the channels for police and ambulance reports')
         .addSubcommand(s => s
             .setName('شرطة')
-            .setDescription('حدد روم استقبال بلاغات الشرطة')
-            .addChannelOption(o => o.setName('الروم').setDescription('الروم المراد إرسال البلاغات إليه').setRequired(true))
+            .setDescription('Set the police reports channel')
+            .addChannelOption(o => o.setName('الروم').setDescription('The channel to receive police reports').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('إسعاف')
-            .setDescription('حدد روم استقبال بلاغات الإسعاف')
-            .addChannelOption(o => o.setName('الروم').setDescription('الروم المراد إرسال البلاغات إليه').setRequired(true))
+            .setDescription('Set the ambulance reports channel')
+            .addChannelOption(o => o.setName('الروم').setDescription('The channel to receive ambulance reports').setRequired(true))
         ),
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const sub     = interaction.options.getSubcommand();
         const channel = interaction.options.getChannel('الروم');
@@ -33,8 +33,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Setup Complete')
                 .setColor(0x1B5E20)
-                .setDescription(`روم بلاغات الشرطة: <#${channel.id}>`)
-                .setFooter({ text: 'إعداد البلاغات • FANTASY Bot' })
+                .setDescription(`Police reports channel: <#${channel.id}>`)
+                .setFooter({ text: 'Reports Setup • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });
@@ -48,8 +48,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Setup Complete')
                 .setColor(0x1B5E20)
-                .setDescription(`روم بلاغات الإسعاف: <#${channel.id}>`)
-                .setFooter({ text: 'إعداد البلاغات • FANTASY Bot' })
+                .setDescription(`Ambulance reports channel: <#${channel.id}>`)
+                .setFooter({ text: 'Reports Setup • FANTASY Bot' })
                 .setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(resetButton)] });

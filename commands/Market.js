@@ -47,7 +47,7 @@ async function buildMarket(db) {
     const options = items.slice(0, 24).map(it => ({
         label: it.name,
         value: String(it.id),
-        description: `💰 ${Number(it.price).toLocaleString()} ريال` + (it.description ? ` — ${it.description.slice(0, 50)}` : ''),
+        description: `💰 ${Number(it.price).toLocaleString()} Riyals` + (it.description ? ` — ${it.description.slice(0, 50)}` : ''),
     }));
     options.push(resetOption('market'));
 

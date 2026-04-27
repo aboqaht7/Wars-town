@@ -4,32 +4,32 @@ module.exports = {
     name: 'إدارة-عقارات',
     data: new SlashCommandBuilder()
         .setName('إدارة-عقارات')
-        .setDescription('إدارة العقارات (أدمن فقط)')
+        .setDescription('Manage properties (admin only)')
         .addSubcommand(sub => sub
             .setName('اضافة')
-            .setDescription('إضافة عقار جديد')
-            .addStringOption(o => o.setName('اسم').setDescription('اسم العقار').setRequired(true))
-            .addIntegerOption(o => o.setName('سعر').setDescription('سعر العقار (ريال)').setRequired(true).setMinValue(1))
-            .addStringOption(o => o.setName('صورة').setDescription('رابط صورة العقار (URL)').setRequired(false))
+            .setDescription('Add a new property')
+            .addStringOption(o => o.setName('اسم').setDescription('Property name').setRequired(true))
+            .addIntegerOption(o => o.setName('سعر').setDescription('Property price (Riyals)').setRequired(true).setMinValue(1))
+            .addStringOption(o => o.setName('صورة').setDescription('Property image URL').setRequired(false))
         )
         .addSubcommand(sub => sub
             .setName('تعديل-صورة')
-            .setDescription('تعديل صورة عقار موجود')
-            .addIntegerOption(o => o.setName('رقم').setDescription('رقم العقار').setRequired(true))
-            .addStringOption(o => o.setName('صورة').setDescription('الرابط الجديد للصورة').setRequired(true))
+            .setDescription('Update property image')
+            .addIntegerOption(o => o.setName('رقم').setDescription('Property ID').setRequired(true))
+            .addStringOption(o => o.setName('صورة').setDescription('New image URL').setRequired(true))
         )
         .addSubcommand(sub => sub
             .setName('حذف')
-            .setDescription('حذف عقار برقمه')
-            .addIntegerOption(o => o.setName('رقم').setDescription('رقم العقار').setRequired(true))
+            .setDescription('Delete a property by ID')
+            .addIntegerOption(o => o.setName('رقم').setDescription('Property ID').setRequired(true))
         )
         .addSubcommand(sub => sub
             .setName('حذف-الكل')
-            .setDescription('حذف جميع العقارات')
+            .setDescription('Delete all properties')
         )
         .addSubcommand(sub => sub
             .setName('قائمة')
-            .setDescription('عرض جميع العقارات المضافة')
+            .setDescription('View all added properties')
         ),
 
     async slashExecute(interaction, db) {
@@ -45,10 +45,10 @@ module.exports = {
                 .setTitle('Property Added')
                 .setColor(0xB71C1C)
                 .addFields(
-                    { name: '🔖 الرقم',    value: `\`${row.id}\``, inline: true },
-                    { name: '🏠 الاسم',    value: name, inline: true },
-                    { name: '💰 السعر',    value: `\`${price.toLocaleString()} ريال\``, inline: true },
-                    { name: '🖼️ الصورة',  value: imageUrl ? `[رابط](${imageUrl})` : '`لم يتم تحديدها`', inline: false },
+                    { name: '🔖 ID',     value: `\`${row.id}\``, inline: true },
+                    { name: '🏠 Name',   value: name, inline: true },
+                    { name: '💰 Price',  value: `\`${price.toLocaleString()} Riyals\``, inline: true },
+                    { name: '🖼️ Image', value: imageUrl ? `[Link](${imageUrl})` : '`Not set`', inline: false },
                 )
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
@@ -61,14 +61,14 @@ module.exports = {
             const id       = interaction.options.getInteger('رقم');
             const imageUrl = interaction.options.getString('صورة').trim();
             const prop = await db.getPropertyById(id);
-            if (!prop) return interaction.reply({ content: `❌ لا يوجد عقار برقم \`${id}\`.`, flags: 64 });
+            if (!prop) return interaction.reply({ content: `❌ No property found with ID \`${id}\`.`, flags: 64 });
             await db.updatePropertyImage(id, imageUrl);
             const embed = new EmbedBuilder()
                 .setTitle('Property Image Updated')
                 .setColor(0xB71C1C)
                 .addFields(
-                    { name: '🏠 العقار', value: prop.name, inline: true },
-                    { name: '🖼️ الصورة الجديدة', value: `[رابط](${imageUrl})`, inline: false },
+                    { name: '🏠 Property',   value: prop.name, inline: true },
+                    { name: '🖼️ New Image', value: `[Link](${imageUrl})`, inline: false },
                 )
                 .setImage(imageUrl)
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
@@ -80,12 +80,12 @@ module.exports = {
         if (sub === 'حذف') {
             const id = interaction.options.getInteger('رقم');
             const prop = await db.getPropertyById(id);
-            if (!prop) return interaction.reply({ content: `❌ لا يوجد عقار برقم \`${id}\`.`, flags: 64 });
+            if (!prop) return interaction.reply({ content: `❌ No property found with ID \`${id}\`.`, flags: 64 });
             await db.deleteProperty(id);
             const embed = new EmbedBuilder()
                 .setTitle('Property Deleted')
                 .setColor(0x757575)
-                .setDescription(`تم حذف عقار **${prop.name}** بنجاح.`)
+                .setDescription(`Property **${prop.name}** has been deleted successfully.`)
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
@@ -97,7 +97,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('All Properties Deleted')
                 .setColor(0x757575)
-                .setDescription('> تم مسح جميع العقارات من القائمة.')
+                .setDescription('> All properties have been removed from the list.')
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
@@ -109,13 +109,13 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Properties List')
                 .setColor(0xB71C1C)
-                .setFooter({ text: `${props.length} عقار • FANTASY Bot` })
+                .setFooter({ text: `${props.length} property(s) • FANTASY Bot` })
                 .setTimestamp();
             if (!props.length) {
-                embed.setDescription('> لا توجد عقارات مضافة بعد.');
+                embed.setDescription('> No properties added yet.');
             } else {
                 embed.setDescription(props.map(p =>
-                    `**\`#${p.id}\` ${p.name}**\n💰 \`${Number(p.price).toLocaleString()} ريال\`\n🖼️ ${p.image_url ? `[صورة](${p.image_url})` : '`لا توجد صورة`'}`
+                    `**\`#${p.id}\` ${p.name}**\n💰 \`${Number(p.price).toLocaleString()} Riyals\`\n🖼️ ${p.image_url ? `[Image](${p.image_url})` : '`No image`'}`
                 ).join('\n\n'));
             }
             await interaction.channel.send({ embeds: [embed] });

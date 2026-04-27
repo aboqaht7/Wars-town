@@ -23,7 +23,6 @@ module.exports = {
 module.exports.buildDashboard  = buildDashboard;
 module.exports.buildMain       = buildMain;
 
-/* ─── اللوحة الرئيسية: قائمة كل المحامين + منيو ─── */
 async function buildMain(db) {
     const lawyers = await db.getLawyers();
     const img     = await db.getImage('محاماة');
@@ -37,7 +36,7 @@ async function buildMain(db) {
     if (img) embed.setThumbnail(img);
 
     if (!lawyers.length) {
-        embed.setDescription('> 📭 لا يوجد محامون مسجلون حالياً');
+        embed.setDescription('> 📭 No lawyers registered currently');
         return { embeds: [embed], components: [resetRow('محامي')] };
     }
 
@@ -47,12 +46,12 @@ async function buildMain(db) {
 
     const menu = new StringSelectMenuBuilder()
         .setCustomId('lawyer_select')
-        .setPlaceholder('👤 اختر محامياً لعرض لوحته')
+        .setPlaceholder('👤 Choose a lawyer to view their dashboard')
         .addOptions([
             ...lawyers.slice(0, 24).map(l => ({
                 label: l.lawyer_name,
                 value: l.discord_id,
-                description: `عرض طلبات التوكيل الخاصة بـ ${l.lawyer_name}`,
+                description: `View retainer requests for ${l.lawyer_name}`,
                 emoji: '⚖️',
             })),
             resetOption('محامي'),
@@ -64,7 +63,6 @@ async function buildMain(db) {
     };
 }
 
-/* ─── لوحة محامي بعينه: طلباته + أزرار القبول/الرفض ─── */
 async function buildDashboard(db, lawyerId, lawyerName) {
     const requests = await db.getLawyerRequests(lawyerId);
     const img      = await db.getImage('محاماة');
@@ -81,13 +79,13 @@ async function buildDashboard(db, lawyerId, lawyerName) {
     const components = [];
 
     if (!requests.length) {
-        embed.setDescription('> 📭 لا توجد طلبات توكيل معلقة حالياً');
+        embed.setDescription('> 📭 No pending retainer requests currently');
     } else {
-        embed.setDescription(`> 📬 You have **${requests.length}** طلب توكيل معلق`);
+        embed.setDescription(`> 📬 You have **${requests.length}** pending retainer request(s)`);
         embed.addFields(
             requests.slice(0, 8).map(r => ({
                 name: `📁 ${r.case_number} — ${r.case_title}`,
-                value: `👤 الموكّل: **${r.plaintiff_name}** (<@${r.plaintiff_id}>)`,
+                value: `👤 Client: **${r.plaintiff_name}** (<@${r.plaintiff_id}>)`,
                 inline: false,
             }))
         );
@@ -96,11 +94,11 @@ async function buildDashboard(db, lawyerId, lawyerName) {
                 new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
                         .setCustomId(`lawyer_req_accept_${r.id}`)
-                        .setLabel(`قبول ${r.case_number}`).setEmoji('✅')
+                        .setLabel(`Accept ${r.case_number}`).setEmoji('✅')
                         .setStyle(ButtonStyle.Success),
                     new ButtonBuilder()
                         .setCustomId(`lawyer_req_reject_${r.id}`)
-                        .setLabel(`رفض ${r.case_number}`).setEmoji('❌')
+                        .setLabel(`Reject ${r.case_number}`).setEmoji('❌')
                         .setStyle(ButtonStyle.Danger),
                 )
             );

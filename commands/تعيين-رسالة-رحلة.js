@@ -4,22 +4,26 @@ module.exports = {
     name: 'تعيين-رسالة-رحلة',
     data: new SlashCommandBuilder()
         .setName('تعيين-رسالة-رحلة')
-        .setDescription('تحديد نص رسالة بدء الرحلة أو الHurricane أو الRenew')
+        .setDescription('Set the text for trip start, Hurricane, or Renew messages')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption(opt =>
             opt.setName('النوع')
-                .setDescription('نوع الرسالة')
+                .setDescription('Message type')
                 .setRequired(true)
                 .addChoices(
-                    { name: '✈️ بدء الرحلة', value: 'trip_start' },
-                    { name: '🌪️ الHurricane', value: 'trip_hurricane' },
-                    { name: '🔄 الRenew', value: 'trip_renewal' },
+                    { name: '✈️ Trip Start',  value: 'trip_start' },
+                    { name: '🌪️ Hurricane',   value: 'trip_hurricane' },
+                    { name: '🔄 Renew',       value: 'trip_renewal' },
                 )
         ),
 
     async slashExecute(interaction, db) {
         const type = interaction.options.getString('النوع');
-        const titles = { trip_start: 'رسالة بدء الرحلة', trip_hurricane: 'رسالة الHurricane', trip_renewal: 'رسالة الRenew' };
+        const titles = {
+            trip_start:    'Trip Start Message',
+            trip_hurricane:'Hurricane Message',
+            trip_renewal:  'Renew Message'
+        };
 
         const modal = new ModalBuilder()
             .setCustomId(`set_trip_msg_${type}`)
@@ -29,11 +33,11 @@ module.exports = {
             new ActionRowBuilder().addComponents(
                 new TextInputBuilder()
                     .setCustomId('trip_msg_text')
-                    .setLabel('النص الذي سيُرسل')
+                    .setLabel('Text to be sent')
                     .setStyle(TextInputStyle.Paragraph)
                     .setRequired(true)
                     .setMaxLength(2000)
-                    .setPlaceholder('اكتب الرسالة كاملة كما تريدها أن تظهر')
+                    .setPlaceholder('Write the full message exactly as you want it to appear')
             ),
         );
 

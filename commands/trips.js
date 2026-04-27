@@ -8,13 +8,13 @@ module.exports = {
         .setDescription('Trip System'),
 
     async execute(message, args, db) {
-        if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) return message.reply('❌ هذا الأمر للمسؤولين فقط.');
+        if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) return message.reply('❌ This command is for admins only.');
         const payload = await build(db);
         message.channel.send(payload);
     },
 
     async slashExecute(interaction, db) {
-        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) return interaction.reply({ content: '❌ هذا الأمر للمسؤولين فقط.', flags: 64 });
+        if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) return interaction.reply({ content: '❌ This command is for admins only.', flags: 64 });
         const payload = await build(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);

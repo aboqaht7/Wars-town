@@ -33,7 +33,7 @@ async function buildPanel(db) {
         leaderboard = all.slice(0, 10).map((row, i) => {
             const total = Number(row.total) || 0;
             const medal = medals[i] || `${i + 1}.`;
-            return `${medal} <@${row.discord_id}> — **${total} نقطة**`;
+            return `${medal} <@${row.discord_id}> — **${total} pts**`;
         }).join('\n');
     }
 

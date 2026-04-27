@@ -6,10 +6,10 @@ module.exports = {
         const iban = args[0];
         const amount = parseInt(args[1]);
         if (!iban || iban.length !== 7 || isNaN(Number(iban))) {
-            return message.reply('❌ استخدم: `-تحويل [إيبان مكون من 7 أرقام] [المبلغ]`\nمثال: `-تحويل 1234567 500`');
+            return message.reply('❌ Usage: `-تحويل [7-digit IBAN] [amount]`\nExample: `-تحويل 1234567 500`');
         }
         if (!amount || amount <= 0) {
-            return message.reply('❌ يجب تحديد مبلغ صحيح أكبر من 0.');
+            return message.reply('❌ You must specify a valid amount greater than 0.');
         }
         await db.ensureUser(message.author.id, message.author.username);
         const result = await db.transferMoney(message.author.id, iban, amount);
@@ -22,10 +22,10 @@ module.exports = {
             .setTitle('Transfer Successful')
             .setColor(0x2E7D32)
             .addFields(
-                { name: '👤 Sender', value: `${message.author} — شخصية ${result.sender.slot}`, inline: true },
-                { name: '🏦 Recipient', value: `الإيبان: \`${iban}\``, inline: true },
-                { name: '💰 Amount Transferred', value: `\`${amount.toLocaleString()} ريال\``, inline: true },
-                { name: '📊 Your Balance After Transfer', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} ريال\``, inline: true },
+                { name: '👤 Sender',                   value: `${message.author} — Slot ${result.sender.slot}`, inline: true },
+                { name: '🏦 Recipient IBAN',           value: `\`${iban}\``, inline: true },
+                { name: '💰 Amount Transferred',       value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
+                { name: '📊 Your Balance After Transfer', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} Riyals\``, inline: true },
             )
             .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();

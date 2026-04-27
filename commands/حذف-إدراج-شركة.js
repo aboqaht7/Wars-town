@@ -25,7 +25,7 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
         const hasRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
         if (!isAdmin && !hasRole)
-            return interaction.reply({ content: '❌ هذا الأمر لمسؤولي وزارة التجارة فقط.', flags: 64 });
+            return interaction.reply({ content: '❌ This command is for Ministry of Commerce admins only.', flags: 64 });
 
         const nameInput = interaction.options.getString('اسم-الشركة').trim();
 
@@ -36,7 +36,7 @@ module.exports = {
 
         if (!match)
             return interaction.reply({
-                content: `❌ لم يتم العثور على شركة مدرجة باسم **${nameInput}** في السوق.`,
+                content: `❌ No listed company found with name **${nameInput}** in the market.`,
                 flags: 64
             });
 
@@ -49,12 +49,12 @@ module.exports = {
             .setTitle('Company Removed from Stock Market')
             .setColor(0xB71C1C)
             .addFields(
-                { name: '🏢 الشركة', value: `**${match.company_name}**`, inline: true },
-                { name: '💰 آخر سعر', value: `\`${parseFloat(match.current_price).toFixed(2)} ريال\``, inline: true },
-                { name: '🗑️ حذفها', value: `<@${interaction.user.id}>`, inline: true },
+                { name: '🏢 Company',    value: `**${match.company_name}**`, inline: true },
+                { name: '💰 Last Price', value: `\`${parseFloat(match.current_price).toFixed(2)} Riyals\``, inline: true },
+                { name: '🗑️ Removed By', value: `<@${interaction.user.id}>`, inline: true },
             )
-            .setDescription('تم إيقاف تداول أسهم هذه الشركة. المحافظ الحالية لن تتأثر ولكن لن يمكن شراء أو بيع أسهمها.')
-            .setFooter({ text: 'بورصة FANTASY • وزارة التجارة' })
+            .setDescription('This company\'s shares have been delisted. Existing portfolios are unaffected but shares can no longer be bought or sold.')
+            .setFooter({ text: 'FANTASY Stock Exchange • Ministry of Commerce' })
             .setTimestamp();
 
         await interaction.reply({ content: '\u200b', flags: 64 });

@@ -16,7 +16,7 @@ module.exports = {
         const channel = interaction.options.getChannel('الروم');
         await db.setConfig('priority_channel_id', channel.id);
         await interaction.reply({
-            content: `✅ تم تعيين روم الأولوية: <#${channel.id}>`,
+            content: `✅ Priority channel set: <#${channel.id}>`,
             flags: 64
         });
     }

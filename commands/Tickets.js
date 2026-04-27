@@ -50,7 +50,7 @@ async function build(db) {
 
     const options = types.slice(0, 24).map(t => {
         const opt = new StringSelectMenuOptionBuilder()
-            .setLabel(t.name || 'تكت')
+            .setLabel(t.name || 'Ticket')
             .setValue(String(t.id))
             .setDescription(t.role_id ? 'Handled by a dedicated team' : 'Click to open');
         if (t.emoji) {

@@ -24,7 +24,7 @@ module.exports = {
     }
 };
 
-const SLOT_NAMES = { 1: 'الشخصية الأولى', 2: 'الشخصية الثانية', 3: 'الشخصية الثالثة' };
+const SLOT_NAMES = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
 
 async function buildMain(userId, db) {
     const img = await db.getImage('identity');

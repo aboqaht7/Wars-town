@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder().setName('عدل').setDescription('🏛️ Justice System — Case Management'),
 
     async execute(message, args, db) {
-        if (!(await isAdmin(message.member, db))) return message.reply('❌ هذا الأمر للإدارة فقط.');
+        if (!(await isAdmin(message.member, db))) return message.reply('❌ This command is for admins only.');
         message.channel.send(await build(db));
     },
 

@@ -22,7 +22,7 @@ module.exports = {
             for (const m of msgs) {
                 const dir = m.sender_id === message.author.id ? '📤 Sent to' : '📥 From';
                 const name = m.sender_id === message.author.id ? m.receiver_name : m.sender_name;
-                const time = new Date(m.created_at).toLocaleString('ar-SA');
+                const time = new Date(m.created_at).toLocaleString('en-GB');
                 embed.addFields({
                     name: `${dir} @${name || 'Unknown'}  •  ${time}`,
                     value: `> ${m.content}`,

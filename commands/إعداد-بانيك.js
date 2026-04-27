@@ -14,7 +14,7 @@ module.exports = {
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const channel = interaction.options.getChannel('الروم');
         await db.setConfig('panic_channel', channel.id);
@@ -25,8 +25,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Panic Room Configured')
             .setColor(0x1B5E20)
-            .setDescription(`سيتم إرسال طلبات الاستغاثة إلى <#${channel.id}>`)
-            .setFooter({ text: 'إعداد البانيك • FANTASY Bot' })
+            .setDescription(`Distress calls will be sent to <#${channel.id}>`)
+            .setFooter({ text: 'Panic Setup • FANTASY Bot' })
             .setTimestamp();
 
         if (_img) embed.setImage(_img);

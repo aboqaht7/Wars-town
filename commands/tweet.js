@@ -4,18 +4,18 @@ module.exports = {
     name: 'تغريد',
     async execute(message, args, db) {
         const content = args.join(' ').trim();
-        if (!content) return message.reply('❌ اكتب نص التغريدة. مثال: `-تغريد مرحباً!`');
-        if (content.length > 280) return message.reply('❌ التغريدة طويلة جداً (الحد 280 حرف).');
+        if (!content) return message.reply('❌ Write the tweet text. Example: `-تغريد Hello!`');
+        if (content.length > 280) return message.reply('❌ Tweet is too long (max 280 characters).');
         await db.ensureUser(message.author.id, message.author.username);
         const account = await db.getXAccount(message.author.id);
-        if (!account) return message.reply('❌ ليس لديك حساب على X Platform. استخدم `/منصة-x` وأنشئ حساباً أولاً.');
+        if (!account) return message.reply('❌ You do not have an X Platform account. Use `/منصة-x` to create one first.');
         const xChannelId = await db.getConfig('x_channel');
-        if (!xChannelId) return message.reply('❌ لم يتم تحديد روم التغريدات بعد.');
+        if (!xChannelId) return message.reply('❌ The tweets channel has not been set yet.');
         const post = await db.postTweet(message.author.id, content);
         const { embed, row } = await buildTweetMessage(post, message.author.displayAvatarURL(), db);
         const xChannel = message.guild?.channels?.cache.get(xChannelId);
         if (xChannel) await xChannel.send({ embeds: [embed], components: [row] });
-        message.reply({ content: `✅ تم نشر تغريدتك في <#${xChannelId}>` });
+        message.reply({ content: `✅ Your tweet has been posted in <#${xChannelId}>` });
     }
 };
 
@@ -27,7 +27,7 @@ async function buildTweetMessage(post, avatarURL, db) {
         .setColor(0x000000)
         .setDescription(post.content)
         .addFields(
-            { name: '🆔 رقم المنشور', value: `\`#${post.id}\``, inline: true },
+            { name: '🆔 Post ID', value: `\`#${post.id}\``, inline: true },
             { name: '❤️', value: `\`${post.likes ?? 0}\``, inline: true },
             { name: '🔁', value: `\`${post.retweets ?? 0}\``, inline: true },
         )
@@ -38,7 +38,7 @@ async function buildTweetMessage(post, avatarURL, db) {
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId(`x_like_${post.id}`).setLabel(`${post.likes ?? 0}`).setEmoji('❤️').setStyle(ButtonStyle.Secondary),
         new ButtonBuilder().setCustomId(`x_retweet_${post.id}`).setLabel(`${post.retweets ?? 0}`).setEmoji('🔁').setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder().setCustomId(`x_reply_${post.id}`).setLabel('رد').setEmoji('💬').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(`x_reply_${post.id}`).setLabel('Reply').setEmoji('💬').setStyle(ButtonStyle.Secondary),
     );
 
     return { embed, row };

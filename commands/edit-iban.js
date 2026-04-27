@@ -3,45 +3,46 @@ const db = require('../database');
 
 const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('Reset Menu').setEmoji('🔄').setStyle(ButtonStyle.Secondary);
 
+const SLOT_NAMES = { 1: 'Slot 1', 2: 'Slot 2', 3: 'Slot 3' };
+
 module.exports = {
     name: 'تعديل-إيبان',
     data: new SlashCommandBuilder()
         .setName('تعديل-إيبان')
-        .setDescription('تعديل إيبان هوية لاعب معين')
-        .addUserOption(o => o.setName('اللاعب').setDescription('اللاعب المراد تعديل إيبانه').setRequired(true))
-        .addIntegerOption(o => o.setName('الخانة').setDescription('رقم الخانة (1، 2، أو 3)').setRequired(true)
+        .setDescription('Edit the IBAN for a player character slot')
+        .addUserOption(o => o.setName('اللاعب').setDescription('The player to target').setRequired(true))
+        .addIntegerOption(o => o.setName('الخانة').setDescription('Slot number (1, 2, or 3)').setRequired(true)
             .addChoices(
-                { name: 'الخانة 1', value: 1 },
-                { name: 'الخانة 2', value: 2 },
-                { name: 'الخانة 3', value: 3 },
+                { name: 'Slot 1', value: 1 },
+                { name: 'Slot 2', value: 2 },
+                { name: 'Slot 3', value: 3 },
             ))
-        .addStringOption(o => o.setName('الإيبان-الجديد').setDescription('الإيبان الجديد (أرقام فقط)').setRequired(true)),
+        .addStringOption(o => o.setName('الإيبان-الجديد').setDescription('New IBAN (digits only)').setRequired(true)),
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const target  = interaction.options.getUser('اللاعب');
         const slot    = interaction.options.getInteger('الخانة');
         const newIban = interaction.options.getString('الإيبان-الجديد').trim();
 
         if (!/^\d+$/.test(newIban))
-            return interaction.reply({ content: '❌ الإيبان يجب أن يحتوي على **أرقام فقط**.', flags: 64 });
+            return interaction.reply({ content: '❌ IBAN must contain **digits only**.', flags: 64 });
 
         const result = await db.updateIban(target.id, slot, newIban);
         if (!result.success)
             return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
 
-        const slotNames = { 1: 'الخانة الأولى', 2: 'الخانة الثانية', 3: 'الخانة الثالثة' };
         const _img = await db.getImage('bank').catch(() => null);
 
         const embed = new EmbedBuilder()
             .setTitle('IBAN Updated')
             .setColor(0x1B5E20)
             .addFields(
-                { name: '👤 اللاعب',     value: `<@${target.id}>`,   inline: true },
-                { name: '📌 الخانة',     value: slotNames[slot],      inline: true },
-                { name: '🏦 IBAN الجديد', value: `\`${newIban}\``, inline: true },
+                { name: '👤 Player',   value: `<@${target.id}>`, inline: true },
+                { name: '📌 Slot',     value: SLOT_NAMES[slot],   inline: true },
+                { name: '🏦 New IBAN', value: `\`${newIban}\``,   inline: true },
             )
             .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();
@@ -53,29 +54,28 @@ module.exports = {
 
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionFlagsBits.Administrator))
-            return message.reply('❌ ليس لديك صلاحية.');
+            return message.reply('❌ You do not have permission.');
 
         const target  = message.mentions.users.first();
         const slot    = parseInt(args[1]);
         const newIban = args[2];
 
-        if (!target) return message.reply('❌ الاستخدام: `-تعديل-إيبان @اللاعب [الخانة] [الإيبان الجديد]`');
-        if (![1, 2, 3].includes(slot)) return message.reply('❌ الخانة يجب أن تكون 1 أو 2 أو 3.');
-        if (!newIban || !/^\d+$/.test(newIban)) return message.reply('❌ الإيبان يجب أن يحتوي على أرقام فقط.');
+        if (!target) return message.reply('❌ Usage: `-تعديل-إيبان @player [slot] [newIBAN]`');
+        if (![1, 2, 3].includes(slot)) return message.reply('❌ Slot must be 1, 2, or 3.');
+        if (!newIban || !/^\d+$/.test(newIban)) return message.reply('❌ IBAN must contain digits only.');
 
         const result = await db.updateIban(target.id, slot, newIban);
         if (!result.success) return message.reply(`❌ ${result.error}`);
 
-        const slotNames = { 1: 'الخانة الأولى', 2: 'الخانة الثانية', 3: 'الخانة الثالثة' };
         const _img = await db.getImage('bank').catch(() => null);
 
         const embed = new EmbedBuilder()
             .setTitle('IBAN Updated')
             .setColor(0x1B5E20)
             .addFields(
-                { name: '👤 اللاعب',         value: `<@${target.id}>`,  inline: true },
-                { name: '📌 الخانة',         value: slotNames[slot],     inline: true },
-                { name: '🏦 IBAN الجديد', value: `\`${newIban}\``,    inline: true },
+                { name: '👤 Player',   value: `<@${target.id}>`, inline: true },
+                { name: '📌 Slot',     value: SLOT_NAMES[slot],   inline: true },
+                { name: '🏦 New IBAN', value: `\`${newIban}\``,   inline: true },
             )
             .setFooter({ text: 'Bank System • FANTASY Bot' })
             .setTimestamp();

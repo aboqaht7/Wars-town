@@ -23,8 +23,8 @@ module.exports = {
             .setTitle('Identity Log Channel Set')
             .setColor(0x7B1FA2)
             .addFields(
-                { name: '📋 الروم المحدد', value: `<#${channel.id}>`, inline: true },
-                { name: 'ℹ️ ما يُسجل تلقائياً', value: '🪪 كل طلبات إنشاء الهويات تصل هنا مع أزرار القبول والرفض', inline: false },
+                { name: '📋 Selected Channel', value: `<#${channel.id}>`, inline: true },
+                { name: 'ℹ️ Logged automatically', value: '🪪 All identity creation requests appear here with Accept/Reject buttons', inline: false },
             )
             .setFooter({ text: 'Identity System • FANTASY Bot' })
             .setTimestamp();

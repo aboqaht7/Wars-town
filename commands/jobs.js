@@ -34,7 +34,7 @@ async function buildJobs(db) {
         .setTitle('Free Jobs')
         .setColor(0xF57F17)
         .setDescription('> Choose your job from the menu below')
-        .setFooter({ text: `Jobs System • FANTASY Bot • كولداون ${COOLDOWN_SECONDS} ثوان بين كل وظيفة` })
+        .setFooter({ text: `Jobs System • FANTASY Bot • ${COOLDOWN_SECONDS}s cooldown between jobs` })
         .setTimestamp();
     if (img) embed.setImage(img);
 

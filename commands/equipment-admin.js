@@ -7,43 +7,43 @@ module.exports = {
     name: 'إدارة-معدات',
     data: new SlashCommandBuilder()
         .setName('إدارة-معدات')
-        .setDescription('إدارة أغراض متجر المعدات')
+        .setDescription('Manage equipment store items')
         .addSubcommand(s => s
             .setName('اضافة')
-            .setDescription('أضف معدة للمتجر')
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم المعدة').setRequired(true))
-            .addIntegerOption(o => o.setName('السعر').setDescription('السعر بالريال').setRequired(true).setMinValue(1))
-            .addStringOption(o => o.setName('الوصف').setDescription('وصف المعدة (اختياري)').setRequired(false))
+            .setDescription('Add equipment to the store')
+            .addStringOption(o => o.setName('الاسم').setDescription('Equipment name').setRequired(true))
+            .addIntegerOption(o => o.setName('السعر').setDescription('Price in Riyals').setRequired(true).setMinValue(1))
+            .addStringOption(o => o.setName('الوصف').setDescription('Equipment description (optional)').setRequired(false))
         )
         .addSubcommand(s => s
             .setName('حذف')
-            .setDescription('احذف معدة بالـ ID')
-            .addIntegerOption(o => o.setName('id').setDescription('ID المعدة').setRequired(true))
+            .setDescription('Delete equipment by ID')
+            .addIntegerOption(o => o.setName('id').setDescription('Equipment ID').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('حذف-الكل')
-            .setDescription('احذف جميع المعدات')
+            .setDescription('Delete all equipment')
         )
         .addSubcommand(s => s
             .setName('تعديل')
-            .setDescription('عدّل معدة بالـ ID')
-            .addIntegerOption(o => o.setName('id').setDescription('ID المعدة').setRequired(true))
-            .addStringOption(o => o.setName('الاسم').setDescription('الاسم الجديد').setRequired(false))
-            .addIntegerOption(o => o.setName('السعر').setDescription('السعر الجديد').setRequired(false).setMinValue(1))
-            .addStringOption(o => o.setName('الوصف').setDescription('الوصف الجديد').setRequired(false))
+            .setDescription('Edit equipment by ID')
+            .addIntegerOption(o => o.setName('id').setDescription('Equipment ID').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('New name').setRequired(false))
+            .addIntegerOption(o => o.setName('السعر').setDescription('New price').setRequired(false).setMinValue(1))
+            .addStringOption(o => o.setName('الوصف').setDescription('New description').setRequired(false))
         )
         .addSubcommand(s => s
             .setName('قائمة')
-            .setDescription('عرض جميع المعدات')
+            .setDescription('View all equipment')
         )
         .addSubcommand(s => s
             .setName('عرض')
-            .setDescription('أرسل إمبيد متجر المعدات في الروم الحالي')
+            .setDescription('Send the equipment store embed in the current channel')
         ),
 
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionFlagsBits.Administrator))
-            return message.reply('❌ ليس لديك صلاحية.');
+            return message.reply('❌ You do not have permission.');
 
         const sub = args[0];
         const row = new ActionRowBuilder().addComponents(resetButton);
@@ -55,7 +55,7 @@ module.exports = {
             const price = parseInt(parts[1]);
             const desc  = parts[2] || null;
             if (!name || isNaN(price) || price < 1)
-                return message.reply('❌ الاستخدام الصحيح:\n`-إدارة-معدات اضافة اسم المعدة | السعر | الوصف (اختياري)`');
+                return message.reply('❌ Usage:\n`-إدارة-معدات اضافة Name | Price | Description (optional)`');
             const item = await db.addEquipmentItem(name, price, desc);
             const _img = await db.getImage('معدات').catch(() => null);
 
@@ -63,28 +63,28 @@ module.exports = {
                 .setTitle('Equipment Added')
                 .setColor(0x4527A0)
                 .addFields(
-                    { name: 'ID',    value: String(item.id),                               inline: true },
-                    { name: 'الاسم', value: item.name,                                     inline: true },
-                    { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
-                    { name: 'الوصف', value: item.description || '—',                       inline: false },
+                    { name: 'ID',          value: String(item.id),                               inline: true },
+                    { name: 'Name',        value: item.name,                                     inline: true },
+                    { name: 'Price',       value: `${Number(item.price).toLocaleString()} Riyals`, inline: true },
+                    { name: 'Description', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
+                .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             return message.channel.send({ embeds: [embed], components: [row] });
         }
 
         if (sub === 'حذف') {
             const id   = parseInt(args[1]);
-            if (isNaN(id)) return message.reply('❌ الاستخدام: `-إدارة-معدات حذف [ID]`');
+            if (isNaN(id)) return message.reply('❌ Usage: `-إدارة-معدات حذف [ID]`');
             const item = await db.getEquipmentItemById(id);
-            if (!item) return message.reply(`❌ لا توجد معدة بـ ID: ${id}`);
+            if (!item) return message.reply(`❌ No equipment found with ID: ${id}`);
             await db.deleteEquipmentItem(id);
-            return message.reply(`✅ تم حذف **${item.name}** بنجاح.`);
+            return message.reply(`✅ **${item.name}** deleted successfully.`);
         }
 
         if (sub === 'حذف-الكل') {
             await db.deleteAllEquipmentItems();
-            return message.reply('✅ تم حذف جميع المعدات.');
+            return message.reply('✅ All equipment deleted.');
         }
 
         if (sub === 'قائمة') {
@@ -94,13 +94,13 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
                 .setColor(0x4527A0)
-                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
+                .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
-                embed.setDescription('لا توجد معدات مضافة.');
+                embed.setDescription('No equipment added yet.');
             } else {
                 embed.setDescription(
                     items.map(it =>
-                        `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString()} ريال**` +
+                        `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString()} Riyals**` +
                         (it.description ? `\n> ${it.description}` : '')
                     ).join('\n')
                 );
@@ -116,8 +116,8 @@ module.exports = {
         }
 
         return message.reply(
-            '**أوامر إدارة المعدات:**\n' +
-            '`-إدارة-معدات اضافة الاسم | السعر | الوصف`\n' +
+            '**Equipment Admin Commands:**\n' +
+            '`-إدارة-معدات اضافة Name | Price | Description`\n' +
             '`-إدارة-معدات حذف [ID]`\n' +
             '`-إدارة-معدات حذف-الكل`\n' +
             '`-إدارة-معدات قائمة`\n' +
@@ -127,7 +127,7 @@ module.exports = {
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const sub = interaction.options.getSubcommand();
         const row = new ActionRowBuilder().addComponents(resetButton);
@@ -143,12 +143,12 @@ module.exports = {
                 .setTitle('Equipment Added')
                 .setColor(0x4527A0)
                 .addFields(
-                    { name: 'ID',    value: String(item.id),                               inline: true },
-                    { name: 'الاسم', value: item.name,                                     inline: true },
-                    { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
-                    { name: 'الوصف', value: item.description || '—',                       inline: false },
+                    { name: 'ID',          value: String(item.id),                               inline: true },
+                    { name: 'Name',        value: item.name,                                     inline: true },
+                    { name: 'Price',       value: `${Number(item.price).toLocaleString()} Riyals`, inline: true },
+                    { name: 'Description', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
+                .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -157,14 +157,14 @@ module.exports = {
         if (sub === 'حذف') {
             const id   = interaction.options.getInteger('id');
             const item = await db.getEquipmentItemById(id);
-            if (!item) return interaction.reply({ content: `❌ لا توجد معدة بـ ID: ${id}`, flags: 64 });
+            if (!item) return interaction.reply({ content: `❌ No equipment found with ID: ${id}`, flags: 64 });
             await db.deleteEquipmentItem(id);
-            return interaction.reply({ content: `✅ تم حذف **${item.name}** بنجاح.`, flags: 64 });
+            return interaction.reply({ content: `✅ **${item.name}** deleted successfully.`, flags: 64 });
         }
 
         if (sub === 'حذف-الكل') {
             await db.deleteAllEquipmentItems();
-            return interaction.reply({ content: '✅ تم حذف جميع المعدات.', flags: 64 });
+            return interaction.reply({ content: '✅ All equipment deleted.', flags: 64 });
         }
 
         if (sub === 'تعديل') {
@@ -173,25 +173,25 @@ module.exports = {
             const price = interaction.options.getInteger('السعر') || undefined;
             const desc  = interaction.options.getString('الوصف')?.trim();
             if (!name && !price && desc === undefined)
-                return interaction.reply({ content: '❌ يجب تحديد حقل واحد على الأقل للتعديل.', flags: 64 });
+                return interaction.reply({ content: '❌ At least one field must be specified for editing.', flags: 64 });
             const item = await db.updateEquipmentItem(id, {
                 ...(name  ? { name }  : {}),
                 ...(price ? { price } : {}),
                 ...(desc !== undefined ? { description: desc || null } : {}),
             });
-            if (!item) return interaction.reply({ content: `❌ لا توجد معدة بـ ID: ${id}`, flags: 64 });
+            if (!item) return interaction.reply({ content: `❌ No equipment found with ID: ${id}`, flags: 64 });
             const _img = await db.getImage('معدات').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('Updated')
+                .setTitle('Equipment Updated')
                 .setColor(0x4527A0)
                 .addFields(
-                    { name: 'ID',    value: String(item.id),                               inline: true },
-                    { name: 'الاسم', value: item.name,                                     inline: true },
-                    { name: 'السعر', value: `${Number(item.price).toLocaleString()} ريال`, inline: true },
-                    { name: 'الوصف', value: item.description || '—',                       inline: false },
+                    { name: 'ID',          value: String(item.id),                               inline: true },
+                    { name: 'Name',        value: item.name,                                     inline: true },
+                    { name: 'Price',       value: `${Number(item.price).toLocaleString()} Riyals`, inline: true },
+                    { name: 'Description', value: item.description || '—',                       inline: false },
                 )
-                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
+                .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -204,13 +204,13 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
                 .setColor(0x4527A0)
-                .setFooter({ text: 'إدارة المعدات • FANTASY Bot' }).setTimestamp();
+                .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
-                embed.setDescription('لا توجد معدات مضافة.');
+                embed.setDescription('No equipment added yet.');
             } else {
                 embed.setDescription(
                     items.map(it =>
-                        `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString()} ريال**` +
+                        `**ID ${it.id}** • ${it.name} — **${Number(it.price).toLocaleString()} Riyals**` +
                         (it.description ? `\n> ${it.description}` : '')
                     ).join('\n')
                 );
@@ -223,7 +223,7 @@ module.exports = {
         if (sub === 'عرض') {
             const eq = require('./equipment');
             const payload = await eq.buildEquipment(db);
-            await interaction.reply({ content: '✅ تم إرسال إمبيد متجر المعدات.', flags: 64 });
+            await interaction.reply({ content: '✅ Equipment store embed sent.', flags: 64 });
             return interaction.channel.send(payload);
         }
     },

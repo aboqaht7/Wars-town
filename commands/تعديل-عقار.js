@@ -17,11 +17,11 @@ module.exports = {
         const imageUrl   = interaction.options.getString('صورة')      ?? undefined;
 
         if ([newName, price, imageUrl].every(v => v === undefined)) {
-            return interaction.reply({ content: '❌ يجب تعديل حقل واحد على الأقل.', flags: 64 });
+            return interaction.reply({ content: '❌ At least one field must be specified for editing.', flags: 64 });
         }
 
         const existing = await db.getPropertyByName(searchName);
-        if (!existing) return interaction.reply({ content: `❌ لا يوجد عقار باسم **${searchName}**.`, flags: 64 });
+        if (!existing) return interaction.reply({ content: `❌ No property found with name **${searchName}**.`, flags: 64 });
 
         const updated = await db.updateProperty(existing.id, { name: newName, price, imageUrl });
 
@@ -29,10 +29,10 @@ module.exports = {
             .setTitle('Property Updated')
             .setColor(0xB71C1C)
             .addFields(
-                { name: '🔖 الرقم',   value: `\`${updated.id}\``, inline: true },
-                { name: '🏠 الاسم',   value: updated.name, inline: true },
-                { name: '💰 السعر',   value: `\`${Number(updated.price).toLocaleString()} ريال\``, inline: true },
-                { name: '🖼️ الصورة', value: updated.image_url ? `[رابط](${updated.image_url})` : '`لا توجد صورة`', inline: false },
+                { name: '🔖 ID',      value: `\`${updated.id}\``, inline: true },
+                { name: '🏠 Name',    value: updated.name, inline: true },
+                { name: '💰 Price',   value: `\`${Number(updated.price).toLocaleString()} Riyals\``, inline: true },
+                { name: '🖼️ Image',  value: updated.image_url ? `[Link](${updated.image_url})` : '`No image`', inline: false },
             )
             .setFooter({ text: 'Properties System • FANTASY Bot' })
             .setTimestamp();

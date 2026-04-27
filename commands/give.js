@@ -5,15 +5,15 @@ module.exports = {
     async execute(message, args, db) {
         const target = message.mentions.members?.first();
         if (!target) {
-            return message.reply('❌ استخدم: `-نقل [Item name] @المستخدم`\nمثال: `-نقل سنارة @اللاعب`');
+            return message.reply('❌ Usage: `-نقل [Item name] @user`\nExample: `-نقل سنارة @player`');
         }
         const itemName = args.slice(0, args.findIndex(a => a.startsWith('<@'))).join(' ').trim()
             || args.filter(a => !a.startsWith('<@')).join(' ').trim();
         if (!itemName) {
-            return message.reply('❌ يجب تحديد Item name. مثال: `-نقل سنارة @اللاعب`');
+            return message.reply('❌ You must specify an item name. Example: `-نقل سنارة @player`');
         }
         if (target.id === message.author.id) {
-            return message.reply('❌ لا يمكنك نقل غرض لنفسك.');
+            return message.reply('❌ You cannot transfer an item to yourself.');
         }
         await db.ensureUser(message.author.id, message.author.username);
         await db.ensureUser(target.id, target.user.username);
@@ -28,8 +28,8 @@ module.exports = {
             .setColor(0xE65100)
             .addFields(
                 { name: '👤 Sender', value: `${message.author}`, inline: true },
-                { name: '🎯 المُستلِم', value: `${target}`, inline: true },
-                { name: '📦 الغرض', value: `\`${itemName}\``, inline: true },
+                { name: '🎯 Recipient', value: `${target}`, inline: true },
+                { name: '📦 Item', value: `\`${itemName}\``, inline: true },
             )
             .setFooter({ text: 'Bag System • FANTASY Bot' })
             .setTimestamp();

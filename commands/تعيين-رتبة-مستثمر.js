@@ -14,7 +14,7 @@ module.exports = {
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('investor_role', role.id);
@@ -25,7 +25,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('Investor Role Set')
             .setColor(0x1565C0)
-            .setDescription(`Rank **${role.name}** هي الآن Rank المستثمر.\n\nأصحاب هذه الRank يستطيعون استخدام أمر \`/إدارة-شركة\` لإدارة شركاتهم.`)
+            .setDescription(`Role **${role.name}** is now the Investor role.\n\nMembers with this role can use \`/إدارة-شركة\` to manage their companies.`)
             .setFooter({ text: 'Company System • FANTASY Bot' })
             .setTimestamp();
 

@@ -19,16 +19,16 @@ module.exports = {
         const maxMoney   = interaction.options.getInteger('حد-اعلى')   ?? undefined;
 
         if ([newName, tools, minMoney, maxMoney].every(v => v === undefined)) {
-            return interaction.reply({ content: '❌ يجب تعديل حقل واحد على الأقل.', flags: 64 });
+            return interaction.reply({ content: '❌ At least one field must be specified for editing.', flags: 64 });
         }
 
         const existing = await db.getRobberyByName(searchName);
-        if (!existing) return interaction.reply({ content: `❌ لا توجد سرقة باسم **${searchName}**.`, flags: 64 });
+        if (!existing) return interaction.reply({ content: `❌ No robbery found with name **${searchName}**.`, flags: 64 });
 
         const resolvedMin = minMoney ?? Number(existing.min_money);
         const resolvedMax = maxMoney ?? Number(existing.max_money);
         if (resolvedMax < resolvedMin) {
-            return interaction.reply({ content: '❌ الحد الأعلى يجب أن يكون أكبر من الحد الأدنى.', flags: 64 });
+            return interaction.reply({ content: '❌ Maximum must be greater than minimum.', flags: 64 });
         }
 
         const updated = await db.updateRobbery(existing.id, { name: newName, tools, minMoney, maxMoney });
@@ -40,10 +40,10 @@ module.exports = {
             .setTitle('Robbery Updated')
             .setColor(0xB71C1C)
             .addFields(
-                { name: '🔖 الرقم',   value: `\`${updated.id}\``, inline: true },
-                { name: '🔫 الاسم',   value: updated.name, inline: true },
-                { name: '🛠️ الأدوات', value: `\`${updated.tools}\``, inline: false },
-                { name: '💵 المبلغ',  value: `\`${Number(updated.min_money).toLocaleString()}\` — \`${Number(updated.max_money).toLocaleString()}\` ريال`, inline: true },
+                { name: '🔖 ID',             value: `\`${updated.id}\``, inline: true },
+                { name: '🔫 Name',           value: updated.name, inline: true },
+                { name: '🛠️ Required Tools', value: `\`${updated.tools}\``, inline: false },
+                { name: '💵 Amount Range',   value: `\`${Number(updated.min_money).toLocaleString()}\` — \`${Number(updated.max_money).toLocaleString()}\` Riyals`, inline: true },
             )
             .setFooter({ text: 'Robbery System • FANTASY Bot' })
             .setTimestamp();

@@ -43,7 +43,7 @@ async function buildSnap(account, image, db) {
 
 module.exports = {
     name: 'سناب',
-    data: new SlashCommandBuilder().setName('سناب').setDescription('Snapchat — Messages والأصدقاء'),
+    data: new SlashCommandBuilder().setName('سناب').setDescription('Snapchat — Messages and Friends'),
     async execute(message, args, db) {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);

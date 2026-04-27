@@ -19,13 +19,12 @@ module.exports = {
 
         const portfolio = await db.getUserPortfolio(interaction.user.id);
         if (!portfolio.length)
-            return interaction.reply({ content: '📭 محفظتك فارغة — ليس لديك أي أسهم حالياً.', flags: 64 });
+            return interaction.reply({ content: '📭 Your portfolio is empty — you have no shares at the moment.', flags: 64 });
 
         let totalValue = 0;
         let totalCost  = 0;
 
         const _img = await db.getImage('market').catch(() => null);
-
 
         const embed = new EmbedBuilder()
             .setColor(0x0A1628)
@@ -49,10 +48,10 @@ module.exports = {
                 name: `${pl >= 0 ? '🟢' : '🔴'} ${p.company_name}`,
                 value: [
                     '```',
-                    `الأسهم  : ${p.shares} سهم`,
-                    `السعر   : ${curr.toFixed(2)} ريال / سهم`,
-                    `القيمة  : ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال`,
-                    `الربح   : ${plSign}${pl.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال  (${plSign}${plPct}%)  ${arrow}`,
+                    `Shares  : ${p.shares} shares`,
+                    `Price   : ${curr.toFixed(2)} Riyals / share`,
+                    `Value   : ${value.toLocaleString(undefined, { maximumFractionDigits: 0 })} Riyals`,
+                    `P&L     : ${plSign}${pl.toLocaleString(undefined, { maximumFractionDigits: 0 })} Riyals  (${plSign}${plPct}%)  ${arrow}`,
                     '```'
                 ].join('\n'),
                 inline: false
@@ -68,15 +67,15 @@ module.exports = {
             name: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             value: [
                 '```yaml',
-                `إجمالي القيمة  : ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال`,
-                `إجمالي الربح   : ${totalSign}${totalPl.toLocaleString(undefined, { maximumFractionDigits: 0 })} ريال  (${totalSign}${totalPlPct}%)  ${totalArrow}`,
+                `Total Value  : ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })} Riyals`,
+                `Total P&L    : ${totalSign}${totalPl.toLocaleString(undefined, { maximumFractionDigits: 0 })} Riyals  (${totalSign}${totalPlPct}%)  ${totalArrow}`,
                 '```'
             ].join('\n'),
             inline: false
         });
 
         embed
-            .setFooter({ text: 'بورصة FANTASY • الأسعار حسب آخر تحديث في السوق' })
+            .setFooter({ text: 'FANTASY Stock Exchange • Prices as of last market update' })
             .setTimestamp();
 
         await interaction.reply({ content: '\u200b', flags: 64 });

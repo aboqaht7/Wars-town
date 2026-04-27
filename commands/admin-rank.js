@@ -72,10 +72,10 @@ module.exports = {
                 .setTitle('Rank Added')
                 .setColor(0x5865F2)
                 .addFields(
-                    { name: 'الاسم',    value: name,          inline: true },
-                    { name: 'الترتيب', value: `${position}`,  inline: true },
+                    { name: 'Name',  value: name,          inline: true },
+                    { name: 'Order', value: `${position}`,  inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -84,13 +84,13 @@ module.exports = {
         if (sub === 'حذف-رتبة') {
             const name    = interaction.options.getString('الاسم');
             const deleted = await db.deleteRankType(name);
-            if (!deleted) return interaction.reply({ content: `❌ الRank **${name}** غير موجودة.`, flags: 64 });
+            if (!deleted) return interaction.reply({ content: `❌ Rank **${name}** not found.`, flags: 64 });
 
             const embed = new EmbedBuilder()
                 .setTitle('Rank Deleted')
                 .setColor(0x888888)
                 .setDescription(`Rank **${deleted.name}** has been deleted.`)
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -98,14 +98,14 @@ module.exports = {
 
         if (sub === 'الرتب') {
             const ranks = await db.getRankTypes();
-            if (!ranks.length) return interaction.reply({ content: '📋 لا توجد رتب مضافة. استخدم `/تعيين-Rank-ادارة إضافة-Rank` لإضافة Rank.', flags: 64 });
+            if (!ranks.length) return interaction.reply({ content: '📋 No ranks added yet. Use `/تعيين-رتبة-ادارة إضافة-رتبة` to add one.', flags: 64 });
 
             const embed = new EmbedBuilder()
                 .setTitle('Available Rank Types')
                 .setColor(0x5865F2)
                 .setDescription(ranks.map((r, i) => `\`${i + 1}\` **${r.name}**`).join('\n'))
-                .addFields({ name: 'العدد الكلي', value: `${ranks.length} Rank`, inline: true })
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .addFields({ name: 'Total', value: `${ranks.length} rank(s)`, inline: true })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -123,14 +123,14 @@ module.exports = {
                 .setColor(0x5865F2)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'Member',        value: `<@${target.id}>`,          inline: true },
-                    { name: 'الRank الجديدة', value: `**${rankName}**`,          inline: true },
-                    { name: 'تم بواسطة',   value: `<@${interaction.user.id}>`, inline: true },
+                    { name: 'Member',       value: `<@${target.id}>`,          inline: true },
+                    { name: 'New Rank',     value: `**${rankName}**`,           inline: true },
+                    { name: 'Assigned by',  value: `<@${interaction.user.id}>`, inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
 
-            if (prev) embed.addFields({ name: 'الRank السابقة', value: prev.rank_name, inline: true });
+            if (prev) embed.addFields({ name: 'Previous Rank', value: prev.rank_name, inline: true });
 
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -139,18 +139,18 @@ module.exports = {
         if (sub === 'إزالة') {
             const target  = interaction.options.getUser('العضو');
             const removed = await db.removeAdminRank(target.id);
-            if (!removed) return interaction.reply({ content: `❌ **${target.username}** ليس لديه Rank إدارية مسجلة.`, flags: 64 });
+            if (!removed) return interaction.reply({ content: `❌ **${target.username}** has no registered admin rank.`, flags: 64 });
 
             const embed = new EmbedBuilder()
                 .setTitle('Remove Admin Rank')
                 .setColor(0x888888)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'Member',       value: `<@${target.id}>`,          inline: true },
-                    { name: 'الRank المُزالة', value: removed.rank_name,       inline: true },
-                    { name: 'تم بواسطة',  value: `<@${interaction.user.id}>`, inline: true },
+                    { name: 'Member',      value: `<@${target.id}>`,          inline: true },
+                    { name: 'Rank Removed', value: removed.rank_name,         inline: true },
+                    { name: 'By',          value: `<@${interaction.user.id}>`, inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -160,22 +160,23 @@ module.exports = {
             const target = interaction.options.getUser('العضو');
             const delta  = interaction.options.getInteger('القيمة');
             const exists = await db.getAdminRank(target.id);
-            if (!exists) return interaction.reply({ content: `❌ **${target.username}** ليس لديه Rank. عيّن له Rank أولاً.`, flags: 64 });
+            if (!exists) return interaction.reply({ content: `❌ **${target.username}** has no rank. Assign a rank first.`, flags: 64 });
 
             const updated = await db.updateAdminPoints(target.id, delta);
 
             const embed = new EmbedBuilder()
-                .setTitle(delta >= 0 ? '⬆️ Add Points' : '⬇️ Deduct Points')
+                .setTitle(delta >= 0 ? '⬆️ Points Added' : '⬇️ Points Deducted')
                 .setColor(delta >= 0 ? 0x00CC66 : 0xFF4444)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'Member',     value: `<@${target.id}>`,            inline: true },
-                    { name: 'الرتبة',    value: updated.rank_name,             inline: true },
-                    { name: delta >= 0 ? 'نقاط أضيفت' : 'نقاط خُصمت', value: `${Math.abs(delta)} نقطة`, inline: true },
-                    { name: 'المجموع الكلي', value: `**${updated.points} نقطة**`, inline: true },
-                    { name: 'تم بواسطة',    value: `<@${interaction.user.id}>`,  inline: true },
+                    { name: 'Member',       value: `<@${target.id}>`,            inline: true },
+                    { name: 'Rank',         value: updated.rank_name,             inline: true },
+                    { name: delta >= 0 ? 'Points Added' : 'Points Deducted',
+                                            value: `${Math.abs(delta)} pt(s)`,    inline: true },
+                    { name: 'Total Points', value: `**${updated.points} pt(s)**`, inline: true },
+                    { name: 'By',           value: `<@${interaction.user.id}>`,   inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -184,22 +185,22 @@ module.exports = {
         if (sub === 'عرض') {
             const target   = interaction.options.getUser('العضو');
             const rankData = await db.getAdminRank(target.id);
-            if (!rankData) return interaction.reply({ content: `❌ **${target.username}** ليس لديه Rank إدارية مسجلة.`, flags: 64 });
+            if (!rankData) return interaction.reply({ content: `❌ **${target.username}** has no registered admin rank.`, flags: 64 });
 
-            const date = new Date(rankData.assigned_at).toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
+            const date = new Date(rankData.assigned_at).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 
             const embed = new EmbedBuilder()
                 .setTitle('Admin Card')
                 .setColor(0x5865F2)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: 'Member',         value: `<@${target.id}>`,                                              inline: true },
-                    { name: 'الرتبة',         value: `**${rankData.rank_name}**`,                                    inline: true },
-                    { name: 'النقاط',         value: `**${rankData.points}** نقطة`,                                  inline: true },
-                    { name: 'عيّنه',          value: rankData.assigned_by ? `<@${rankData.assigned_by}>` : 'غير معروف', inline: true },
-                    { name: 'تاريخ التعيين', value: date,                                                            inline: true },
+                    { name: 'Member',        value: `<@${target.id}>`,                                                  inline: true },
+                    { name: 'Rank',          value: `**${rankData.rank_name}**`,                                        inline: true },
+                    { name: 'Points',        value: `**${rankData.points}** pt(s)`,                                     inline: true },
+                    { name: 'Assigned by',   value: rankData.assigned_by ? `<@${rankData.assigned_by}>` : 'Unknown',    inline: true },
+                    { name: 'Assigned on',   value: date,                                                               inline: true },
                 )
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });
@@ -207,7 +208,7 @@ module.exports = {
 
         if (sub === 'قائمة') {
             const all = await db.getAllAdminRanks();
-            if (!all.length) return interaction.reply({ content: '📋 لا يوجد إداريون مسجلون حالياً.', flags: 64 });
+            if (!all.length) return interaction.reply({ content: '📋 No admins registered currently.', flags: 64 });
 
             const ranks = await db.getRankTypes();
 
@@ -217,14 +218,14 @@ module.exports = {
                 return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
             });
 
-            const lines = all.map(r => `**${r.rank_name}** — <@${r.discord_id}> · ${r.points} نقطة`);
+            const lines = all.map(r => `**${r.rank_name}** — <@${r.discord_id}> · ${r.points} pt(s)`);
 
             const embed = new EmbedBuilder()
                 .setTitle('Admin List')
                 .setColor(0x5865F2)
                 .setDescription(lines.join('\n'))
-                .addFields({ name: 'الإجمالي', value: `${all.length} إداري`, inline: true })
-                .setFooter({ text: 'نظام الرتب الإدارية • FANTASY Bot' })
+                .addFields({ name: 'Total', value: `${all.length} admin(s)`, inline: true })
+                .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed], components: [row2] });
             return interaction.reply({ content: '​', flags: 64 });

@@ -3,9 +3,9 @@ module.exports = {
     async execute(message, args, db) {
         const deleteRoleId = await db.getConfig('delete_role_id');
         if (!deleteRoleId)
-            return message.reply('❌ لم يتم تعيين Rank مسؤولي الحذف بعد.');
+            return message.reply('❌ The deletion admin role has not been set yet.');
         if (!message.member.roles.cache.has(deleteRoleId))
-            return message.reply('❌ ليس لديك صلاحية تنفيذ أمر الحذف.');
+            return message.reply('❌ You do not have permission to use the delete command.');
 
         await message.delete().catch(() => {});
 
@@ -29,7 +29,7 @@ module.exports = {
             if (fetched.size < 100) break;
         }
 
-        const notice = await message.channel.send(`🗑️ تم مسح **${total}** رسالة من الروم.`);
+        const notice = await message.channel.send(`🗑️ **${total}** message(s) cleared from the channel.`);
         setTimeout(() => notice.delete().catch(() => {}), 5000);
     }
 };

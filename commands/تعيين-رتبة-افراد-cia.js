@@ -14,7 +14,7 @@ module.exports = {
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const role = interaction.options.getRole('الرتبة');
         await db.setConfig('cia_member_role', role.id);
@@ -25,7 +25,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('CIA Members Role Set')
             .setColor(0x0D1B2A)
-            .setDescription(`Rank **${role.name}** هي الآن Rank أفراد CIA.\n\nأصحاب هذه الRank يستطيعون تسجيل الدخول والخروج في لوحة \`/cia\`.`)
+            .setDescription(`Role **${role.name}** is now the CIA Members role.\n\nMembers with this role can sign in and out of the \`/cia\` dashboard.`)
             .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();
 

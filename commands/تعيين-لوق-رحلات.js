@@ -23,8 +23,8 @@ module.exports = {
             .setTitle('Trip Log Channel Set')
             .setColor(0x1565C0)
             .addFields(
-                { name: '📋 الروم المحدد', value: `<#${channel.id}>`, inline: true },
-                { name: 'ℹ️ ما يُسجل تلقائياً', value: '✈️ Start Trip • 🌪️ Hurricane\n🔄 Renew رحلة • 📢 Alert', inline: false },
+                { name: '📋 Selected Channel', value: `<#${channel.id}>`, inline: true },
+                { name: 'ℹ️ Logged automatically', value: '✈️ Start Trip • 🌪️ Hurricane\n🔄 Renew Trip • 📢 Alert', inline: false },
             )
             .setFooter({ text: 'Trip System • FANTASY Bot' })
             .setTimestamp();

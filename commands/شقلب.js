@@ -7,11 +7,11 @@ module.exports = {
             ? message.member.roles.cache.has(banRoleId)
             : message.member.roles.cache.some(r => r.name === 'مبرمج') || await isAdmin(message.member, db);
         if (!authorized)
-            return message.reply('❌ ليس لديك صلاحية تنفيذ أوامر الباند.');
+            return message.reply('❌ You do not have permission to execute ban commands.');
         const target = message.mentions.members?.first() || message.guild?.members.cache.get(args[0]);
-        if (!target) return message.reply('❌ حدد اللاعب المراد طرده. مثال: `-شقلب @اللاعب`');
+        if (!target) return message.reply('❌ Specify the player to ban. Example: `-شقلب @player`');
         const username = target.user.username;
-        await target.ban({ reason: `تشهير نهائي — By ${message.author.username}`, deleteMessageSeconds: 0 });
-        await message.channel.send(`🚫 تم طرد الحثالة **${username}** من السيرفر نهائياً.`);
+        await target.ban({ reason: `Permanent ban — By ${message.author.username}`, deleteMessageSeconds: 0 });
+        await message.channel.send(`🚫 Player **${username}** has been permanently banned from the server.`);
     }
 };

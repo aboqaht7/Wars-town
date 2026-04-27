@@ -33,10 +33,10 @@ function formatDuration(ms) {
     const hours = Math.floor((ms % 86_400_000) / 3_600_000);
     const mins  = Math.floor((ms % 3_600_000) / 60_000);
     const parts = [];
-    if (days)  parts.push(`${days} يوم`);
-    if (hours) parts.push(`${hours} ساعة`);
-    if (mins)  parts.push(`${mins} دقيقة`);
-    return parts.join(' و') || 'أقل من دقيقة';
+    if (days)  parts.push(`${days} day(s)`);
+    if (hours) parts.push(`${hours} hour(s)`);
+    if (mins)  parts.push(`${mins} minute(s)`);
+    return parts.join(' and ') || 'Less than a minute';
 }
 
 const MAX_TIMEOUT_MS = 28 * 24 * 60 * 60 * 1000;
@@ -46,51 +46,46 @@ module.exports = {
 
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-            return message.reply('❌ ليس لديك صلاحية تنفيذ هذا الأمر.');
+            return message.reply('❌ You do not have permission to use this command.');
         }
 
         const target = message.mentions.members?.first();
         if (!target) {
-            return message.reply('❌ **الاستخدام:** `-اسكت @Member [المدة]`\n> مثال: `-اسكت @فلان 10م` أو `-اسكت @فلان 1س` أو `-اسكت @فلان 1ي`');
+            return message.reply('❌ **Usage:** `-اسكت @Member [Duration]`\n> Example: `-اسكت @User 10m` or `-اسكت @User 1h` or `-اسكت @User 1d`');
         }
 
-        if (target.id === message.author.id) return message.reply('❌ لا تقدر تسكت نفسك.');
-        if (target.user.bot)                  return message.reply('❌ لا تقدر تسكت بوت.');
+        if (target.id === message.author.id) return message.reply('❌ You cannot timeout yourself.');
+        if (target.user.bot)                  return message.reply('❌ You cannot timeout a bot.');
 
         if (!target.moderatable) {
-            return message.reply('❌ لا أستطيع تطبيق التايم اوت على هذا Member (رتبته أعلى مني).');
+            return message.reply('❌ I cannot apply a timeout to this member (their rank is higher than mine).');
         }
 
         const durationArg = args.find(a => !a.startsWith('<'));
         const durationMs  = parseDuration(durationArg) ?? 60 * 60_000;
 
         if (durationMs > MAX_TIMEOUT_MS) {
-            return message.reply('❌ الحد الأقصى للمدة هو **28 يوم**.');
+            return message.reply('❌ Maximum duration is **28 days**.');
         }
 
         try {
-            await target.timeout(durationMs, `تايم اوت By ${message.author.tag}`);
+            await target.timeout(durationMs, `Timeout by ${message.author.tag}`);
         } catch (err) {
             console.error('[اسكت] timeout error:', err);
-            return message.reply('❌ فشل تطبيق التايم اوت. تأكد من أن البوت لديه الصلاحيات الكافية.');
+            return message.reply('❌ Failed to apply timeout. Make sure the bot has sufficient permissions.');
         }
-
-        const _img = await db.getImage('admin').catch(() => null);
-
 
         const embed = new EmbedBuilder()
             .setColor(0xE53935)
             .setTitle('Timeout Applied')
             .addFields(
-                { name: '👤 Member',      value: `<@${target.id}>`,          inline: true },
-                { name: '⏱️ Duration',      value: formatDuration(durationMs),  inline: true },
-                { name: '👮 By',     value: `<@${message.author.id}>`,  inline: true },
+                { name: '👤 Member',   value: `<@${target.id}>`,          inline: true },
+                { name: '⏱️ Duration', value: formatDuration(durationMs),  inline: true },
+                { name: '👮 By',       value: `<@${message.author.id}>`,   inline: true },
             )
             .setFooter({ text: 'Timeout System • FANTASY Bot' })
             .setTimestamp();
 
-        if (_img) embed.setImage(_img);
-        if (_img) embed.setImage(_img);
         await message.channel.send({ embeds: [embed] });
         await message.delete().catch(() => {});
     }

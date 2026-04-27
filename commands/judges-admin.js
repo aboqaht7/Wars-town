@@ -6,27 +6,27 @@ module.exports = {
     name: 'إدارة-قضاة',
     data: new SlashCommandBuilder()
         .setName('إدارة-قضاة')
-        .setDescription('إدارة قائمة القضاة المعتمدين')
+        .setDescription('Manage the certified judges list')
         .addSubcommand(s => s
             .setName('إضافة')
-            .setDescription('إضافة قاضٍ للقائمة ومنحه الRank تلقائياً')
+            .setDescription('Add a judge to the list and grant them their role automatically')
             .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم القاضي كما سيظهر').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('Judge display name').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('حذف')
-            .setDescription('حذف قاضٍ من القائمة وإزالة رتبته')
+            .setDescription('Remove a judge from the list and revoke their role')
             .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('قائمة')
-            .setDescription('عرض جميع القضاة المعتمدين')
+            .setDescription('View all certified judges')
         ),
 
     async slashExecute(interaction, db) {
         const { isAdmin } = require('../utils');
         if (!(await isAdmin(interaction.member, db)))
-            return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+            return interaction.reply({ content: '❌ Admins only.', flags: 64 });
 
         const sub = interaction.options.getSubcommand();
 
@@ -44,25 +44,24 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.add(judgeRoleId);
-                        roleStatus = `\n✅ تم منح Rank <@&${judgeRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ Role <@&${judgeRoleId}> granted automatically`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من منح الRank (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ Could not grant role (check bot permissions)';
                 }
             } else {
-                roleStatus = '\n⚠️ لم يتم تحديد Rank القضاة — استخدم `/تعيين-Rank-قاضي`';
+                roleStatus = '\n⚠️ Judge role not set — use `/تعيين-Rank-قاضي`';
             }
 
             const _img = await db.getImage('عدل').catch(() => null);
-
 
             const embed = new EmbedBuilder()
                 .setTitle('Judge Added')
                 .setColor(0x4A148C)
                 .setDescription(roleStatus || null)
                 .addFields(
-                    { name: '👤 Member',  value: `<@${user.id}>`, inline: true },
-                    { name: '📛 الاسم', value: name,              inline: true },
+                    { name: '👤 Member', value: `<@${user.id}>`, inline: true },
+                    { name: '📛 Name',   value: name,             inline: true },
                 )
                 .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
@@ -73,7 +72,7 @@ module.exports = {
         if (sub === 'حذف') {
             const user    = interaction.options.getUser('العضو');
             const deleted = await db.removeJudge(user.id);
-            if (!deleted) return interaction.reply({ content: '❌ هذا Member غير مسجل كقاضٍ.', flags: 64 });
+            if (!deleted) return interaction.reply({ content: '❌ This member is not registered as a judge.', flags: 64 });
 
             let roleStatus = '';
             const judgeRoleId = await db.getConfig('judge_role_id');
@@ -83,15 +82,14 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.remove(judgeRoleId);
-                        roleStatus = `\n✅ تمت إزالة Rank <@&${judgeRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ Role <@&${judgeRoleId}> removed automatically`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من إزالة الRank (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ Could not remove role (check bot permissions)';
                 }
             }
 
             const _img = await db.getImage('عدل').catch(() => null);
-
 
             const embed = new EmbedBuilder()
                 .setTitle('Judge Removed')
@@ -106,7 +104,7 @@ module.exports = {
 
         if (sub === 'قائمة') {
             const judges = await db.getJudges();
-            if (!judges.length) return interaction.reply({ content: '📋 لا يوجد قضاة مسجلون حالياً.', flags: 64 });
+            if (!judges.length) return interaction.reply({ content: '📋 No judges registered currently.', flags: 64 });
             const lines = judges.map((j, i) => `**${i + 1}.** ${j.judge_name} — <@${j.discord_id}>`).join('\n');
             const _img = await db.getImage('عدل').catch(() => null);
 
@@ -114,7 +112,7 @@ module.exports = {
                 .setTitle('Certified Judges')
                 .setColor(0x4A148C)
                 .setDescription(lines)
-                .addFields({ name: 'الإجمالي', value: `${judges.length} قاضٍ`, inline: true })
+                .addFields({ name: 'Total', value: `${judges.length} judge(s)`, inline: true })
                 .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [resetRow] });

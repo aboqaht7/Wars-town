@@ -7,32 +7,32 @@ module.exports = {
     name: 'إدارة-محامين',
     data: new SlashCommandBuilder()
         .setName('إدارة-محامين')
-        .setDescription('إدارة قائمة المحامين المعتمدين')
+        .setDescription('Manage the certified lawyers list')
         .addSubcommand(s => s
             .setName('إضافة')
-            .setDescription('إضافة محامٍ للقائمة')
+            .setDescription('Add a lawyer to the list')
             .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
-            .addStringOption(o => o.setName('الاسم').setDescription('اسم المحامي كما سيظهر').setRequired(true))
+            .addStringOption(o => o.setName('الاسم').setDescription('Lawyer display name').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('حذف')
-            .setDescription('حذف محامٍ من القائمة')
+            .setDescription('Remove a lawyer from the list')
             .addUserOption(o => o.setName('العضو').setDescription('The member to target').setRequired(true))
         )
         .addSubcommand(s => s
             .setName('قائمة')
-            .setDescription('عرض جميع المحامين المعتمدين')
+            .setDescription('View all certified lawyers')
         )
         .addSubcommand(s => s
             .setName('تعيين-روم')
-            .setDescription('تحديد الروم الذي تُرسل فيه مهام المحامين')
-            .addChannelOption(o => o.setName('الروم').setDescription('الروم المخصص لمهام المحامين').setRequired(true))
+            .setDescription('Set the channel for lawyer tasks')
+            .addChannelOption(o => o.setName('الروم').setDescription('The channel for lawyer tasks').setRequired(true))
         ),
 
     async slashExecute(interaction, db) {
         const { isAdmin } = require('../utils');
         if (!(await isAdmin(interaction.member, db)))
-            return interaction.reply({ content: '❌ للإدارة فقط.', flags: 64 });
+            return interaction.reply({ content: '❌ Admins only.', flags: 64 });
 
         const sub = interaction.options.getSubcommand();
 
@@ -49,30 +49,28 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.add(lawyerRoleId);
-                        roleStatus = `\n✅ تم منح Rank <@&${lawyerRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ Role <@&${lawyerRoleId}> granted automatically`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من منح الRank (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ Could not grant role (check bot permissions)';
                 }
             } else {
-                roleStatus = '\n⚠️ لم يتم تحديد Rank المحامين — استخدم `/تعيين-Rank-محامي`';
+                roleStatus = '\n⚠️ Lawyer role not set — use `/تعيين-Rank-محامي`';
             }
 
             const _img = await db.getImage('محاماة').catch(() => null);
-
 
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Added')
                 .setColor(0x1B5E20)
                 .setDescription(roleStatus || null)
                 .addFields(
-                    { name: '👤 Member',    value: `<@${user.id}>`, inline: true },
-                    { name: '📛 الاسم',    value: name,             inline: true },
+                    { name: '👤 Member', value: `<@${user.id}>`, inline: true },
+                    { name: '📛 Name',   value: name,             inline: true },
                 )
                 .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
-            // أرسل مهام المحامي الجديد للروم المحدد تلقائياً
             const tasksChannelId = await db.getConfig('lawyer_tasks_channel');
             const tasksTarget = (tasksChannelId && interaction.guild.channels.cache.get(tasksChannelId)) || interaction.channel;
             await tasksTarget.send(await buildMain(db));
@@ -82,7 +80,7 @@ module.exports = {
         if (sub === 'حذف') {
             const user    = interaction.options.getUser('العضو');
             const deleted = await db.removeLawyer(user.id);
-            if (!deleted) return interaction.reply({ content: '❌ هذا Member غير مسجل كمحامٍ.', flags: 64 });
+            if (!deleted) return interaction.reply({ content: '❌ This member is not registered as a lawyer.', flags: 64 });
 
             let roleStatus = '';
             const lawyerRoleId = await db.getConfig('lawyer_role_id');
@@ -92,15 +90,14 @@ module.exports = {
                         || await interaction.guild.members.fetch(user.id);
                     if (member) {
                         await member.roles.remove(lawyerRoleId);
-                        roleStatus = `\n✅ تمت إزالة Rank <@&${lawyerRoleId}> تلقائياً`;
+                        roleStatus = `\n✅ Role <@&${lawyerRoleId}> removed automatically`;
                     }
                 } catch (e) {
-                    roleStatus = '\n⚠️ لم أتمكن من إزالة الRank (تحقق من صلاحيات البوت)';
+                    roleStatus = '\n⚠️ Could not remove role (check bot permissions)';
                 }
             }
 
             const _img = await db.getImage('محاماة').catch(() => null);
-
 
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Removed')
@@ -115,7 +112,7 @@ module.exports = {
 
         if (sub === 'قائمة') {
             const lawyers = await db.getLawyers();
-            if (!lawyers.length) return interaction.reply({ content: '📋 لا يوجد محامون مسجلون حالياً.', flags: 64 });
+            if (!lawyers.length) return interaction.reply({ content: '📋 No lawyers registered currently.', flags: 64 });
             const lines = lawyers.map((l, i) => `**${i + 1}.** ${l.lawyer_name} — <@${l.discord_id}>`).join('\n');
             const _img = await db.getImage('محاماة').catch(() => null);
 
@@ -123,7 +120,7 @@ module.exports = {
                 .setTitle('Certified Lawyers')
                 .setColor(0x0D47A1)
                 .setDescription(lines)
-                .addFields({ name: 'الإجمالي', value: `${lawyers.length} محامٍ`, inline: true })
+                .addFields({ name: 'Total', value: `${lawyers.length} lawyer(s)`, inline: true })
                 .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });
@@ -136,9 +133,9 @@ module.exports = {
             const _img = await db.getImage('محاماة').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين روم مهام المحامين')
+                .setTitle('Lawyer Tasks Channel Set')
                 .setColor(0x0D47A1)
-                .setDescription(`سيتم إرسال مهام المحامين في <#${channel.id}> تلقائياً`)
+                .setDescription(`Lawyer tasks will be sent to <#${channel.id}> automatically`)
                 .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed], components: [row2] });

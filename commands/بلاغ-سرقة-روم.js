@@ -16,7 +16,7 @@ module.exports = {
         const channel = interaction.options.getChannel('الروم');
         await db.setConfig('robbery_report_channel', channel.id);
         await interaction.reply({
-            content: `✅ تم تعيين روم بلاغات السرقة: <#${channel.id}>`,
+            content: `✅ Robbery reports channel set: <#${channel.id}>`,
             flags: 64
         });
     }

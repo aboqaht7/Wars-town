@@ -19,7 +19,7 @@ module.exports = {
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const role = interaction.options.getRole('الرتبة');
         const channel = interaction.options.getChannel('القناة');
@@ -33,10 +33,10 @@ module.exports = {
             .setTitle('Ministry of Commerce Configured')
             .setColor(0x1565C0)
             .addFields(
-                { name: '👔 Rank المسؤولين', value: `<@&${role.id}>`, inline: true },
-                { name: '📋 قناة الطلبات', value: `<#${channel.id}>`, inline: true },
+                { name: '👔 Admins Role',    value: `<@&${role.id}>`,  inline: true },
+                { name: '📋 Requests Channel', value: `<#${channel.id}>`, inline: true },
             )
-            .setDescription('أصحاب هذه الRank يستطيعون منح وسحب التصاريح عبر `/وزارة-التجارة`.\n\nطلبات تأسيس الشركات ستُرسل للقناة المحددة مع أزرار قبول/رفض.')
+            .setDescription('Members with this role can grant and revoke permits via `/وزارة-التجارة`.\n\nCompany founding requests will be sent to the specified channel with accept/reject buttons.')
             .setFooter({ text: 'Company System • FANTASY Bot' })
             .setTimestamp();
 

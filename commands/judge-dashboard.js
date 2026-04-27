@@ -23,7 +23,6 @@ module.exports = {
 module.exports.buildMain          = buildMain;
 module.exports.buildJudgeDashboard = buildJudgeDashboard;
 
-/* ─── اللوحة الرئيسية: قائمة كل القضاة + منيو ─── */
 async function buildMain(db) {
     const judges = await db.getJudges();
     const img    = await db.getImage('عدل');
@@ -52,7 +51,7 @@ async function buildMain(db) {
             ...judges.slice(0, 24).map(j => ({
                 label: j.judge_name,
                 value: j.discord_id,
-                description: `عرض القضايا الجارية لـ ${j.judge_name}`,
+                description: `View ongoing cases for ${j.judge_name}`,
                 emoji: '⚖️',
             })),
             resetOption('قاضي'),
@@ -64,7 +63,6 @@ async function buildMain(db) {
     };
 }
 
-/* ─── لوحة قاضٍ بعينه: قضاياه الجارية ─── */
 async function buildJudgeDashboard(db, judgeId, judgeName) {
     const cases = await db.getCasesByJudge(judgeId);
     const img   = await db.getImage('عدل');
@@ -81,7 +79,7 @@ async function buildJudgeDashboard(db, judgeId, judgeName) {
     if (!cases.length) {
         embed.setDescription('> 📭 No ongoing cases assigned to you currently');
     } else {
-        embed.setDescription(`> ⚖️ You have **${cases.length}** قضية جارية — استخدم \`/عدل\` لإصدار الأحكام`);
+        embed.setDescription(`> ⚖️ You have **${cases.length}** ongoing case(s) — use \`/عدل\` to issue verdicts`);
         embed.addFields(
             cases.slice(0, 10).map((c, i) => ({
                 name: `${i + 1}. 📁 ${c.case_number} — ${c.title}`,

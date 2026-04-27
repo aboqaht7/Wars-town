@@ -5,40 +5,35 @@ module.exports = {
 
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-            return message.reply('❌ ليس لديك صلاحية تنفيذ هذا الأمر.');
+            return message.reply('❌ You do not have permission to use this command.');
         }
 
         const target = message.mentions.members?.first();
         if (!target) {
-            return message.reply('❌ **الاستخدام:** `-فك-تايم @Member`');
+            return message.reply('❌ **Usage:** `-فك-تايم @Member`');
         }
 
         if (!target.isCommunicationDisabled()) {
-            return message.reply(`❌ <@${target.id}> ليس عليه تايم اوت حالياً.`);
+            return message.reply(`❌ <@${target.id}> is not currently timed out.`);
         }
 
         try {
-            await target.timeout(null, `فك التايم اوت By ${message.author.tag}`);
+            await target.timeout(null, `Timeout removed by ${message.author.tag}`);
         } catch (err) {
             console.error('[فك-تايم] error:', err);
-            return message.reply('❌ فشل فك التايم اوت. تأكد من أن البوت لديه الصلاحيات الكافية.');
+            return message.reply('❌ Failed to remove timeout. Make sure the bot has sufficient permissions.');
         }
-
-        const _img = await db.getImage('admin').catch(() => null);
-
 
         const embed = new EmbedBuilder()
             .setColor(0x43A047)
             .setTitle('Timeout Removed')
             .addFields(
-                { name: '👤 Member',  value: `<@${target.id}>`,         inline: true },
-                { name: '👮 By', value: `<@${message.author.id}>`, inline: true },
+                { name: '👤 Member', value: `<@${target.id}>`,         inline: true },
+                { name: '👮 By',     value: `<@${message.author.id}>`, inline: true },
             )
             .setFooter({ text: 'Timeout System • FANTASY Bot' })
             .setTimestamp();
 
-        if (_img) embed.setImage(_img);
-        if (_img) embed.setImage(_img);
         await message.channel.send({ embeds: [embed] });
         await message.delete().catch(() => {});
     }

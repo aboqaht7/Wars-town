@@ -5,7 +5,7 @@ module.exports = {
 
     async execute(message, args, db) {
         if (!message.member.permissions.has(PermissionFlagsBits.Administrator)) {
-            return message.reply('❌ هذا الأمر للمسؤولين فقط.');
+            return message.reply('❌ This command is for admins only.');
         }
 
         const _img = await db.getImage('identity').catch(() => null);
@@ -15,16 +15,16 @@ module.exports = {
             .setTitle('Confirm Full Deletion')
             .setColor(0xB71C1C)
             .setDescription(
-                '> هل أنت متأكد من **حذف جميع الهويات**؟\n\n' +
-                '⚠️ هذا الإجراء **لا يمكن التراجع عنه**.\n' +
-                'سيتم حذف جميع الهويات وتسجيل الخروج من جميع الحسابات وحذف جميع الطلبات المعلقة.'
+                '> Are you sure you want to **delete all identities**?\n\n' +
+                '⚠️ This action **cannot be undone**.\n' +
+                'All identities will be deleted, all accounts will be logged out, and all pending requests will be removed.'
             )
-            .setFooter({ text: 'بوت FANTASY • نظام الهويات' })
+            .setFooter({ text: 'FANTASY Bot • Identity System' })
             .setTimestamp();
 
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId('confirm_delete_all_identities').setLabel('تأكيد الحذف').setStyle(ButtonStyle.Danger),
-            new ButtonBuilder().setCustomId('cancel_delete_all_identities').setLabel('إلغاء').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('confirm_delete_all_identities').setLabel('Confirm Delete').setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId('cancel_delete_all_identities').setLabel('Cancel').setStyle(ButtonStyle.Secondary),
         );
 
         if (_img) embed.setImage(_img);

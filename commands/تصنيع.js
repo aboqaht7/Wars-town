@@ -4,9 +4,9 @@ const { resetRow, resetOption } = require('../utils');
 const RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
 
 const WEAPONS = [
-    { value: 'craft_sns',     label: '🔫 Pistol SNS',     description: 'يحتاج 200 من كل مورد', req: 200 },
-    { value: 'craft_vintage', label: '🔫 Pistol Vintage',  description: 'يحتاج 300 من كل مورد', req: 300 },
-    { value: 'craft_mkii',    label: '🔫 Pistol MK II',    description: 'يحتاج 500 من كل مورد', req: 500 },
+    { value: 'craft_sns',     label: '🔫 Pistol SNS',     description: 'Requires 200 of each resource', req: 200 },
+    { value: 'craft_vintage', label: '🔫 Pistol Vintage',  description: 'Requires 300 of each resource', req: 300 },
+    { value: 'craft_mkii',    label: '🔫 Pistol MK II',    description: 'Requires 500 of each resource', req: 500 },
 ];
 
 function buildEmbed() {
@@ -21,7 +21,7 @@ function buildRow() {
     return new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('craft_weapon')
-            .setPlaceholder('🔫 اختر المسدس...')
+            .setPlaceholder('🔫 Choose a pistol...')
             .addOptions([
                 ...WEAPONS.map(w => ({
                     label: w.label,

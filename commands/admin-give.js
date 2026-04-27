@@ -13,7 +13,7 @@ module.exports = {
             .setName('اموال')
             .setDescription('Add money to a player character')
             .addUserOption(o => o.setName('اللاعب').setDescription('Choose the player').setRequired(true))
-            .addIntegerOption(o => o.setName('المبلغ').setDescription('المبلغ بالريال (يمكن أن يكون سالباً لخصم أموال)').setRequired(true))
+            .addIntegerOption(o => o.setName('المبلغ').setDescription('Amount in Riyals (negative to deduct)').setRequired(true))
             .addStringOption(o => o.setName('السبب').setDescription('Reason for addition (optional)').setRequired(false))
         )
         .addSubcommand(s => s
@@ -27,11 +27,11 @@ module.exports = {
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))
-            return interaction.reply({ content: '❌ ليس لديك صلاحية.', flags: 64 });
+            return interaction.reply({ content: '❌ You do not have permission.', flags: 64 });
 
         const sub    = interaction.options.getSubcommand();
         const target = interaction.options.getUser('اللاعب');
-        const reason = interaction.options.getString('السبب') || 'لا يوجد سبب';
+        const reason = interaction.options.getString('السبب') || 'No reason provided';
 
         if (sub === 'اموال') {
             const amount   = interaction.options.getInteger('المبلغ');
@@ -40,7 +40,7 @@ module.exports = {
             const identity = await db.getActiveIdentity(target.id);
 
             if (!identity)
-                return interaction.reply({ content: `❌ **${target.username}** ليس لديه شخصية نشطة (لم يسجل دخول).`, flags: 64 });
+                return interaction.reply({ content: `❌ **${target.username}** has no active character (not logged in).`, flags: 64 });
 
             const cashBefore = Number(identity.cash);
             await db.addToCash(target.id, identity.slot, amount);
@@ -51,14 +51,14 @@ module.exports = {
                 .setColor(amount >= 0 ? 0x2E7D32 : 0xC62828)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: '👤 اللاعب',         value: `${target}`,                                           inline: true },
-                    { name: '🆔 الشخصية',         value: identity.full_name || `Slot ${identity.slot}`,        inline: true },
-                    { name: '\u200B',              value: '\u200B',                                              inline: true },
-                    { name: '💵 قبل',             value: `${cashBefore.toLocaleString()} ريال`,                inline: true },
-                    { name: amount >= 0 ? '➕ المضاف' : '➖ المخصوم',
-                                                   value: `${Math.abs(amount).toLocaleString()} ريال`,          inline: true },
-                    { name: '💵 بعد',             value: `${cashAfter.toLocaleString()} ريال`,                 inline: true },
-                    { name: '📝 Reason',           value: reason,                                                inline: false },
+                    { name: '👤 Player',                    value: `${target}`,                                          inline: true },
+                    { name: '🆔 Character',                 value: identity.full_name || `Slot ${identity.slot}`,        inline: true },
+                    { name: '\u200B',                       value: '\u200B',                                             inline: true },
+                    { name: '💵 Before',                    value: `${cashBefore.toLocaleString()} Riyals`,              inline: true },
+                    { name: amount >= 0 ? '➕ Added' : '➖ Deducted',
+                                                            value: `${Math.abs(amount).toLocaleString()} Riyals`,        inline: true },
+                    { name: '💵 After',                     value: `${cashAfter.toLocaleString()} Riyals`,               inline: true },
+                    { name: '📝 Reason',                    value: reason,                                               inline: false },
                 )
                 .setFooter({ text: `By ${interaction.user.username} • FANTASY Bot` })
                 .setTimestamp();
@@ -79,10 +79,10 @@ module.exports = {
                 .setColor(0x1565C0)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
-                    { name: '👤 اللاعب',  value: `${target}`,                    inline: true },
-                    { name: '📦 الغرض',   value: itemName,                        inline: true },
-                    { name: '🔢 الكمية',  value: String(qty),                     inline: true },
-                    { name: '📝 Reason',   value: reason,                          inline: false },
+                    { name: '👤 Player',  value: `${target}`,  inline: true },
+                    { name: '📦 Item',    value: itemName,     inline: true },
+                    { name: '🔢 Qty',     value: String(qty),  inline: true },
+                    { name: '📝 Reason',  value: reason,       inline: false },
                 )
                 .setFooter({ text: `By ${interaction.user.username} • FANTASY Bot` })
                 .setTimestamp();

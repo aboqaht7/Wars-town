@@ -16,10 +16,10 @@ module.exports = {
         const id = interaction.options.getInteger('رقم-الزر');
         const removed = await db.removePriorityButton(id);
         if (!removed)
-            return interaction.reply({ content: `❌ لا يوجد زر بالرقم ${id}.`, flags: 64 });
+            return interaction.reply({ content: `❌ No priority button found with ID ${id}.`, flags: 64 });
 
         await interaction.reply({
-            content: `🗑️ تم حذف زر الأولوية: **${removed.label}**`,
+            content: `🗑️ Priority button deleted: **${removed.label}**`,
             flags: 64
         });
     }

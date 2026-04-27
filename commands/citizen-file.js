@@ -7,11 +7,11 @@ const {
 const PAGE_SIZE = 25;
 
 const STATUS_LABEL = {
-    pending:    '⏳ معلقة',
-    accepted:   '✅ مقبولة',
-    rejected:   '❌ مرفوضة',
-    in_progress:'🔄 جارية',
-    closed:     '🔒 مغلقة',
+    pending:    '⏳ Pending',
+    accepted:   '✅ Accepted',
+    rejected:   '❌ Rejected',
+    in_progress:'🔄 In Progress',
+    closed:     '🔒 Closed',
 };
 
 function fmtDate(d) {
@@ -33,21 +33,21 @@ async function buildCitizenList(db, page = 0) {
         .setTitle('Citizen Files — CIA Intelligence')
         .setColor(0x0D1B2A)
         .setDescription(
-            `🔍 اختر مواطناً من القائمة لعرض ملفه الجنائي والقانوني.\n` +
-            `> إجمالي المواطنين النشطين: **${total}**`
+            `🔍 Choose a citizen from the list to view their criminal and legal file.\n` +
+            `> Total active citizens: **${total}**`
         )
-        .setFooter({ text: `صفحة ${page + 1} من ${totalPages} • CIA Intelligence System` })
+        .setFooter({ text: `Page ${page + 1} of ${totalPages} • CIA Intelligence System` })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     if (!slice.length) {
-        embed.setDescription('> لا يوجد مواطنون مسجلون في النظام حالياً.');
+        embed.setDescription('> No citizens registered in the system currently.');
         return { embeds: [embed], components: [] };
     }
 
     const options = slice.map(i => {
         const name = [i.character_name, i.family_name].filter(Boolean).join(' ');
-        const desc = [i.gender, i.birth_place].filter(Boolean).join(' • ') || 'لا توجد بيانات';
+        const desc = [i.gender, i.birth_place].filter(Boolean).join(' • ') || 'No data';
         return new StringSelectMenuOptionBuilder()
             .setLabel(name.slice(0, 100))
             .setDescription(desc.slice(0, 100))
@@ -58,7 +58,7 @@ async function buildCitizenList(db, page = 0) {
         new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId(`citizen_file_select:${page}`)
-                .setPlaceholder('🔍 اختر مواطناً لعرض ملفه')
+                .setPlaceholder('🔍 Choose a citizen to view their file')
                 .addOptions(options)
         ),
     ];
@@ -68,13 +68,13 @@ async function buildCitizenList(db, page = 0) {
             new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                     .setCustomId(`citizen_file_prev:${page}`)
-                    .setLabel('السابق')
+                    .setLabel('Previous')
                     .setEmoji('◀️')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page === 0),
                 new ButtonBuilder()
                     .setCustomId(`citizen_file_next:${page}`)
-                    .setLabel('التالي')
+                    .setLabel('Next')
                     .setEmoji('▶️')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page >= totalPages - 1)
@@ -95,20 +95,20 @@ async function buildCitizenEmbed(db, discordId, slot) {
 
     let desc = '';
 
-    desc += '👤 **المعلومات الشخصية**\n';
-    desc += `> الاسم الكامل: **${fullName}**\n`;
-    desc += `> الجنس: ${identity.gender || '—'}\n`;
-    desc += `> مكان الميلاد: ${identity.birth_place || '—'}\n`;
-    desc += `> تاريخ الميلاد: ${identity.birth_date ? fmtDate(identity.birth_date) : '—'}\n`;
-    desc += `> رقم IBAN: \`${identity.iban || '—'}\`\n\n`;
+    desc += '👤 **Personal Information**\n';
+    desc += `> Full Name: **${fullName}**\n`;
+    desc += `> Gender: ${identity.gender || '—'}\n`;
+    desc += `> Birth Place: ${identity.birth_place || '—'}\n`;
+    desc += `> Birth Date: ${identity.birth_date ? fmtDate(identity.birth_date) : '—'}\n`;
+    desc += `> IBAN: \`${identity.iban || '—'}\`\n\n`;
 
-    desc += '💰 **الرصيد**\n';
-    desc += `> Bankي: **${Number(identity.balance || 0).toLocaleString()} ريال**\n`;
-    desc += `> الكاش: **${Number(identity.cash || 0).toLocaleString()} ريال**\n\n`;
+    desc += '💰 **Balance**\n';
+    desc += `> Bank: **${Number(identity.balance || 0).toLocaleString()} Riyals**\n`;
+    desc += `> Cash: **${Number(identity.cash || 0).toLocaleString()} Riyals**\n\n`;
 
-    desc += `⚖️ **القضايا كمتهم (${cases.length})**\n`;
+    desc += `⚖️ **Cases as Defendant (${cases.length})**\n`;
     if (!cases.length) {
-        desc += '> لا توجد قضايا مسجلة\n';
+        desc += '> No cases on record\n';
     } else {
         for (const c of cases) {
             const st = STATUS_LABEL[c.status] || c.status;
@@ -117,9 +117,9 @@ async function buildCitizenEmbed(db, discordId, slot) {
     }
     desc += '\n';
 
-    desc += `🚨 **السوابق الجنائية (${violations.length})**\n`;
+    desc += `🚨 **Criminal Record (${violations.length})**\n`;
     if (!violations.length) {
-        desc += '> لا توجد سوابق جنائية\n';
+        desc += '> No criminal record\n';
     } else {
         for (const v of violations) {
             desc += `> ${v.reason} | ${fmtDate(v.created_at)}\n`;
@@ -127,7 +127,7 @@ async function buildCitizenEmbed(db, discordId, slot) {
     }
 
     const embed = new EmbedBuilder()
-        .setTitle(`🗂️ ملف مواطن — ${fullName}`)
+        .setTitle(`🗂️ Citizen File — ${fullName}`)
         .setColor(0x0D1B2A)
         .setDescription(desc)
         .setFooter({ text: 'CIA Intelligence System • FANTASY Bot' })
@@ -141,7 +141,7 @@ module.exports = {
     name: 'citizen-file',
     data: new SlashCommandBuilder()
         .setName('citizen-file')
-        .setDescription('عرض ملفات المواطنين الكاملة — CIA Chef فقط'),
+        .setDescription('View full citizen files — CIA Chef only'),
 
     buildCitizenList,
     buildCitizenEmbed,
@@ -149,7 +149,7 @@ module.exports = {
     async slashExecute(interaction, db) {
         const chefRoleId = await db.getConfig('cia_chef_role');
         if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId)) {
-            return interaction.reply({ content: '❌ هذا الأمر مخصص لـ **CIA Chef** فقط.', flags: 64 });
+            return interaction.reply({ content: '❌ This command is for **CIA Chef** only.', flags: 64 });
         }
 
         await interaction.deferReply();

@@ -32,16 +32,15 @@ async function buildMarketEmbed(db) {
     if (!listings.length) return null;
 
     const now = new Date();
-    const timeStr = now.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
 
     const _img = await db.getImage('سوق-مركزي').catch(() => null);
-
 
     const embed = new EmbedBuilder()
         .setColor(0x0A1628)
         .setTitle('Fantasy Town Stock Exchange')
         .setDescription(
-            `\`\`\`yaml\n🟢 السوق: مفتوح  |  🕐 آخر تحديث: ${timeStr}  |  📋 ${listings.length} شركة مدرجة\`\`\``
+            `\`\`\`yaml\n🟢 Market: Open  |  🕐 Last Update: ${timeStr}  |  📋 ${listings.length} company(s) listed\`\`\``
         );
 
     for (const s of listings) {
@@ -57,18 +56,18 @@ async function buildMarketEmbed(db) {
         const soldPct = (((s.total_shares - s.avail_shares) / s.total_shares) * 100).toFixed(0);
 
         const changeDisplay = isUp
-            ? `+${change.toFixed(2)} ريال (+${changePct}%) ${arrow}`
-            : `${change.toFixed(2)} ريال (${changePct}%) ${arrow}`;
+            ? `+${change.toFixed(2)} Riyals (+${changePct}%) ${arrow}`
+            : `${change.toFixed(2)} Riyals (${changePct}%) ${arrow}`;
 
         embed.addFields({
             name: `${isUp ? '🟢' : '🔴'} ${s.company_name}`,
             value: [
                 `\`\`\``,
-                `السعر   : ${currPrice.toFixed(2)} ريال`,
-                `التغيير : ${changeDisplay}`,
-                `المخطط  : ${chart}`,
-                `التداول : ${bar}  ${soldPct}% مُباع`,
-                `الأسهم  : ${s.avail_shares.toLocaleString()} متاح / ${s.total_shares.toLocaleString()} إجمالي`,
+                `Price   : ${currPrice.toFixed(2)} Riyals`,
+                `Change  : ${changeDisplay}`,
+                `Chart   : ${chart}`,
+                `Volume  : ${bar}  ${soldPct}% sold`,
+                `Shares  : ${s.avail_shares.toLocaleString()} avail / ${s.total_shares.toLocaleString()} total`,
                 `\`\`\``
             ].join('\n'),
             inline: false
@@ -77,7 +76,7 @@ async function buildMarketEmbed(db) {
 
     if (_img) embed.setImage(_img);
     embed
-        .setFooter({ text: 'بورصة FANTASY • الأسعار تتذبذب تلقائياً كل ساعة بناءً على العرض والطلب' })
+        .setFooter({ text: 'FANTASY Stock Exchange • Prices fluctuate automatically every hour based on supply and demand' })
         .setTimestamp();
 
     const { loadSystemBtns, makeBtn } = require('../btnConfig');
@@ -96,14 +95,14 @@ module.exports = {
     buildMarketEmbed,
     data: new SlashCommandBuilder()
         .setName('سوق-الأسهم')
-        .setDescription('عرض بورصة شركات Fantasy Town'),
+        .setDescription('View the Fantasy Town Stock Exchange'),
 
     async slashExecute(interaction, db) {
         const built = await buildMarketEmbed(db);
 
         if (!built) {
             await interaction.reply({ content: '\u200b', flags: 64 });
-            return interaction.channel.send({ content: '📭 لا توجد شركات مدرجة في البورصة حالياً.' });
+            return interaction.channel.send({ content: '📭 No companies are currently listed on the exchange.' });
         }
 
         await interaction.reply({ content: '\u200b', flags: 64 });

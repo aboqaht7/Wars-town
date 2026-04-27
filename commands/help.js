@@ -38,13 +38,13 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('FANTASY Bot — Systems Menu')
         .setColor(0xE53935)
-        .setDescription('اختر النظام من القائمة أدناه للاطلاع على تفاصيله.')
+        .setDescription('Choose a system from the menu below to view its details.')
         .setFooter({ text: 'FANTASY Bot • Comprehensive RP System' })
         .setTimestamp();
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('help_menu')
-            .setPlaceholder('اختر نظاماً للتفاصيل')
+            .setPlaceholder('Choose a system for details')
             .addOptions(OPTIONS)
     );
     if (_img) embed.setImage(_img);

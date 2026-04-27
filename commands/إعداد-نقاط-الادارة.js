@@ -4,13 +4,13 @@ module.exports = {
     name: 'إعداد-نقاط-الادارة',
     data: new SlashCommandBuilder()
         .setName('إعداد-نقاط-الادارة')
-        .setDescription('إعداد نظام نقاط Admin')
+        .setDescription('Configure the admin points system')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(sub =>
             sub.setName('مسؤولين')
-                .setDescription('تعيين Rank مسؤولي النقاط (الوحيدون القادرون على إضافة/خصم النقاط)')
+                .setDescription('Set the role for points admins (the only ones who can add/deduct points)')
                 .addRoleOption(o =>
-                    o.setName('الرتبة').setDescription('Rank مسؤولي النقاط').setRequired(true)
+                    o.setName('الرتبة').setDescription('Points admin role').setRequired(true)
                 )
         ),
 
@@ -26,8 +26,8 @@ module.exports = {
                 .setTitle('Points Admins Role Set')
                 .setColor(0x1565C0)
                 .addFields(
-                    { name: '🛡️ الRank',    value: `<@&${role.id}>`, inline: true },
-                    { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الRank يقدرون يضيفون أو يخصمون النقاط', inline: false },
+                    { name: '🛡️ Role',      value: `<@&${role.id}>`, inline: true },
+                    { name: 'ℹ️ Permission', value: 'Only members with this role can add or deduct points', inline: false },
                 )
                 .setFooter({ text: 'Admin Points System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);

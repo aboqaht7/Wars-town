@@ -26,9 +26,9 @@ module.exports = {
                 .setColor(0x1565C0)
                 .addFields(
                     { name: '👑 Owner', value: `<@${company.owner_discord_id}>`, inline: true },
-                    { name: '💰 Company Balance', value: `\`${(company.balance || 0).toLocaleString()} ريال\``, inline: true },
+                    { name: '💰 Company Balance', value: `\`${(company.balance || 0).toLocaleString()} Riyals\``, inline: true },
                     { name: '🏷️ Your Rank', value: `**${company.userRole}**`, inline: true },
-                    { name: `👥 الموظفون (${members.length})`, value: memberList, inline: false },
+                    { name: `👥 Employees (${members.length})`, value: memberList, inline: false },
                 )
                 .setFooter({ text: 'Company System • FANTASY Bot' })
                 .setTimestamp();

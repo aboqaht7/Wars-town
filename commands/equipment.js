@@ -49,7 +49,7 @@ async function buildEquipment(db) {
     const options = items.slice(0, 24).map(it => ({
         label: it.name,
         value: String(it.id),
-        description: `💰 ${Number(it.price).toLocaleString()} ريال` +
+        description: `💰 ${Number(it.price).toLocaleString()} Riyals` +
             (it.description ? ` — ${it.description.slice(0, 40)}` : ''),
     }));
 
