@@ -1,53 +1,30 @@
 const {
-    SlashCommandBuilder, EmbedBuilder,
+    SlashCommandBuilder,
+    EmbedBuilder,
     ActionRowBuilder,
     StringSelectMenuBuilder,
-    StringSelectMenuOptionBuilder
+    StringSelectMenuOptionBuilder,
 } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
 const { parseEmoji } = require('../btnConfig');
 
-module.exports = {
-    name: 'tickets',
-    buildPanel: build,
-    data: new SlashCommandBuilder()
-        .setName('tickets')
-        .setDescription('Ticket System'),
-
-    async execute(message, args, db) {
-        const payload = await build(db);
-        await message.channel.send(payload);
-    },
-
-    async slashExecute(interaction, db) {
-        if (interaction._isReset) {
-            const payload = await build(db);
-            return interaction.message.edit(payload);
-        }
-        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
-        const payload = await build(db);
-        await interaction.channel.send(payload);
-        await interaction.deleteReply().catch(() => {});
-    }
-};
-
-async function build(db) { // exported as buildPanel
+async function build(db) {
     const types = await db.getTicketTypes();
     const img   = await db.getImage('tickets').catch(() => null);
 
     const embed = new EmbedBuilder()
-        .setTitle('Ticket System')
+        .setTitle('🎫 Ticket System')
         .setColor(0x1565C0)
         .setFooter({ text: 'Ticket System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     if (!types.length) {
-        embed.setDescription('> No ticket types available. Wait for the admin.');
+        embed.setDescription('> No ticket types available yet.');
         return { embeds: [embed], components: [resetRow('tickets')] };
     }
 
-    embed.setDescription('Choose the ticket type from the menu below and a private channel will be created for you.');
+    embed.setDescription('Select the ticket type below and a private channel will be opened for you.');
 
     const options = types.slice(0, 24).map(t => {
         const opt = new StringSelectMenuOptionBuilder()
@@ -74,3 +51,27 @@ async function build(db) { // exported as buildPanel
 
     return { embeds: [embed], components: [menuRow] };
 }
+
+module.exports = {
+    name: 'tickets',
+    buildPanel: build,
+    data: new SlashCommandBuilder()
+        .setName('tickets')
+        .setDescription('Open the ticket system panel'),
+
+    async execute(message, args, db) {
+        const payload = await build(db);
+        await message.channel.send(payload);
+    },
+
+    async slashExecute(interaction, db) {
+        if (interaction._isReset) {
+            const payload = await build(db);
+            return interaction.message.edit(payload);
+        }
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
+        const payload = await build(db);
+        await interaction.channel.send(payload);
+        await interaction.deleteReply().catch(() => {});
+    },
+};
