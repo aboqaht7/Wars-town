@@ -323,7 +323,9 @@ client.on('interactionCreate', async interaction => {
             const command = commandName ? client.commands.get(commandName) : null;
             if (command?.slashExecute) {
                 try {
-                    await interaction.deferUpdate();
+                    if (!interaction.replied && !interaction.deferred) {
+                        await interaction.deferUpdate();
+                    }
                     interaction._isReset = true;
                     interaction.reply = async (data) => {
                         if (!data || data?.flags === 64 ||
@@ -332,6 +334,7 @@ client.on('interactionCreate', async interaction => {
                     };
                     await command.slashExecute(interaction, db);
                 } catch (e) {
+                    if (e?.code === 40060 || e?.code === 10062) return;
                     console.error(e);
                     try {
                         if (interaction.deferred) interaction.editReply({ content: 'An error occurred.' });
