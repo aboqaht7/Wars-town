@@ -2659,6 +2659,19 @@ client.on('interactionCreate', async interaction => {
         }
 
         if (interaction.customId === 'tickets_type_menu') {
+            if (value.startsWith('reset_')) {
+                const key = value.replace('reset_', '');
+                const command = client.commands.get(key);
+                if (command?.slashExecute) {
+                    await interaction.deferUpdate().catch(() => {});
+                    interaction.reply = async (data) => {
+                        if (!data || data?.flags === 64) return;
+                        return interaction.editReply(data);
+                    };
+                    return command.slashExecute(interaction, db);
+                }
+                return interaction.deferUpdate().catch(() => {});
+            }
             const typeId = parseInt(value);
             return handleOpenTicket(interaction, typeId);
         }
