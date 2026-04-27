@@ -256,17 +256,17 @@ async function handleOpenTicket(interaction, typeId) {
         const ticketChannel = await interaction.guild.channels.create(channelOptions);
         await db.createOpenTicket(interaction.user.id, ticketChannel.id, type.id, type.name);
 
-        const receiverLine = type.role_id ? `\n🛡️ سيستلم هذا التكت: <@&${type.role_id}>` : '';
+        const receiverLine = type.role_id ? `\n🛡️ Assigned to: <@&${type.role_id}>` : '';
         const ticketEmbed  = new EmbedBuilder()
-            .setTitle(`${type.emoji} تكت — ${type.name}`)
+            .setTitle(`${type.emoji} Ticket — ${type.name}`)
             .setColor(0x1565C0)
-            .setDescription(`مرحباً <@${interaction.user.id}>!\n\nتم فتح تكت **${type.emoji} ${type.name}** بنجاح.${receiverLine}\n\nعند الانتهاء اضغط زر **إغلاق التكت**.`)
-            .addFields({ name: '👤 صاحب التكت', value: `<@${interaction.user.id}>`, inline: true })
+            .setDescription(`Hello <@${interaction.user.id}>!\n\nYour **${type.emoji} ${type.name}** ticket has been opened successfully.${receiverLine}\n\nWhen done, press the **Close Ticket** button.`)
+            .addFields({ name: '👤 Ticket Owner', value: `<@${interaction.user.id}>`, inline: true })
             .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
 
         const closeRow = new ARB2().addComponents(
-            new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('استلام التكت').setEmoji('📋').setStyle(BS2.Secondary),
-            new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('إغلاق التكت').setEmoji('🔒').setStyle(BS2.Danger)
+            new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('Claim Ticket').setEmoji('📋').setStyle(BS2.Secondary),
+            new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('Close Ticket').setEmoji('🔒').setStyle(BS2.Danger)
         );
         const pingContent = type.role_id ? `<@${interaction.user.id}> <@&${type.role_id}>` : `<@${interaction.user.id}>`;
         await ticketChannel.send({ content: pingContent, embeds: [ticketEmbed], components: [closeRow] });
@@ -278,18 +278,19 @@ async function handleOpenTicket(interaction, typeId) {
                 const logEmbed = new EmbedBuilder()
                     .setTitle('New Ticket Opened').setColor(0x2E7D32)
                     .addFields(
-                        { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
-                        { name: '🗂️ النوع',    value: `${type.emoji} ${type.name}`,  inline: true },
-                        { name: '📌 الروم',     value: `<#${ticketChannel.id}>`,      inline: true },
+                        { name: '👤 User',    value: `<@${interaction.user.id}>`, inline: true },
+                        { name: '🗂️ Type',   value: `${type.emoji} ${type.name}`,  inline: true },
+                        { name: '📌 Channel', value: `<#${ticketChannel.id}>`,      inline: true },
                     ).setTimestamp();
                 await logCh.send({ embeds: [logEmbed] });
             }
         }
 
-        return interaction.reply({ content: `✅ تم فتح تكتك في <#${ticketChannel.id}>`, flags: 64 });
+        return interaction.reply({ content: `✅ Your ticket was opened in <#${ticketChannel.id}>`, flags: 64 });
     } catch (e) {
         console.error(e);
-        return interaction.reply({ content: '❌ حدث خطأ أثناء إنشاء التكت.', flags: 64 });
+        if (!interaction.replied && !interaction.deferred)
+            return interaction.reply({ content: '❌ An error occurred while creating the ticket.', flags: 64 }).catch(() => {});
     }
 }
 
@@ -1846,29 +1847,24 @@ client.on('interactionCreate', async interaction => {
 
         // ── استلام تكت ──────────────────────────────────────────────────────────
         if (interaction.customId.startsWith('claim_ticket_')) {
-            try {
-                const channelId = interaction.customId.replace('claim_ticket_', '');
-                const claimer   = interaction.user;
-                const { ActionRowBuilder: ARB3, ButtonBuilder: BB3, ButtonStyle: BS3 } = require('discord.js');
+            const channelId = interaction.customId.replace('claim_ticket_', '');
+            const claimer   = interaction.user;
+            const { ActionRowBuilder: ARB3, ButtonBuilder: BB3, ButtonStyle: BS3 } = require('discord.js');
 
-                const newRow = new ARB3().addComponents(
-                    new BB3()
-                        .setCustomId(`claim_ticket_${channelId}`)
-                        .setLabel(`مستلَم بواسطة: ${claimer.username}`).setEmoji('✅')
-                        .setStyle(BS3.Success)
-                        .setDisabled(true),
-                    new BB3()
-                        .setCustomId(`close_ticket_${channelId}`)
-                        .setLabel('إغلاق التكت').setEmoji('🔒')
-                        .setStyle(BS3.Danger)
-                );
+            const newRow = new ARB3().addComponents(
+                new BB3()
+                    .setCustomId(`claim_ticket_${channelId}`)
+                    .setLabel(`Claimed by: ${claimer.username}`).setEmoji('✅')
+                    .setStyle(BS3.Success)
+                    .setDisabled(true),
+                new BB3()
+                    .setCustomId(`close_ticket_${channelId}`)
+                    .setLabel('Close Ticket').setEmoji('🔒')
+                    .setStyle(BS3.Danger)
+            );
 
-                await interaction.update({ components: [newRow] });
-                await db.addStaffActivity(claimer.id, 'tickets_count');
-            } catch (e) {
-                console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ أثناء الاستلام.', flags: 64 });
-            }
+            await interaction.update({ components: [newRow] }).catch(() => {});
+            await db.addStaffActivity(claimer.id, 'tickets_count').catch(() => {});
         }
 
         // ── كشف نقاط Admin ────────────────────────────────────────────────────
@@ -2249,7 +2245,7 @@ client.on('interactionCreate', async interaction => {
                     ? interaction.member.roles.cache.has(ticketAdminRole)
                     : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 if (!hasRole) {
-                    return interaction.reply({ content: '❌ فقط مسؤولو Tickets يقدرون يغلقون التكت.', flags: 64 });
+                    return interaction.reply({ content: '❌ Only ticket admins can close tickets.', flags: 64 });
                 }
 
                 const ticketLogId = await db.getConfig('ticket_log_channel');
@@ -2260,20 +2256,21 @@ client.on('interactionCreate', async interaction => {
                             .setTitle('Ticket Closed')
                             .setColor(0xB71C1C)
                             .addFields(
-                                { name: '👤 صاحب التكت', value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
-                                { name: '🗂️ النوع',      value: ticket?.type_name || '—', inline: true },
-                                { name: '🔧 أغلقه',      value: `<@${interaction.user.id}>`, inline: true },
+                                { name: '👤 Owner',    value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
+                                { name: '🗂️ Type',    value: ticket?.type_name || '—', inline: true },
+                                { name: '🔧 Closed by', value: `<@${interaction.user.id}>`, inline: true },
                             ).setTimestamp();
                         await logCh.send({ embeds: [logEmbed] });
                     }
                 }
 
                 await db.removeOpenTicket(channelId);
-                await interaction.reply({ content: '🔒 سيتم إغلاق التكت خلال 5 ثوان...', flags: 64 });
+                await interaction.reply({ content: '🔒 Ticket will be closed in 5 seconds...', flags: 64 });
                 setTimeout(async () => { if (channel) await channel.delete().catch(() => {}); }, 5000);
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied && !interaction.deferred)
+                    return interaction.reply({ content: '❌ An error occurred.', flags: 64 }).catch(() => {});
             }
         }
 

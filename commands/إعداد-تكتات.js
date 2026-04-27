@@ -19,55 +19,56 @@ module.exports = {
     name: 'إعداد-تكتات',
     data: new SlashCommandBuilder()
         .setName('إعداد-تكتات')
-        .setDescription('إدارة Ticket System')
+        .setDescription('Manage Ticket System')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addSubcommand(sub =>
             sub.setName('إضافة-نوع')
-                .setDescription('إضافة نوع تكت جديد')
-                .addStringOption(o => o.setName('الاسم').setDescription('اسم النوع (مثال: شكوى)').setRequired(true))
-                .addStringOption(o => o.setName('الإيموجي').setDescription('إيموجي النوع (مثال: 📝)').setRequired(false))
-                .addRoleOption(o => o.setName('الرتبة').setDescription('الRank التي تستلم هذا التكت (اختياري)').setRequired(false))
+                .setDescription('Add a new ticket type')
+                .addStringOption(o => o.setName('الاسم').setDescription('Type name (e.g. Complaint)').setRequired(true))
+                .addStringOption(o => o.setName('الإيموجي').setDescription('Emoji for this type (e.g. 📝)').setRequired(false))
+                .addRoleOption(o => o.setName('الرتبة').setDescription('Role that receives this ticket (optional)').setRequired(false))
         )
         .addSubcommand(sub =>
             sub.setName('حذف-نوع')
-                .setDescription('حذف نوع تكت')
-                .addIntegerOption(o => o.setName('الرقم').setDescription('رقم النوع (من قائمة الأنواع)').setRequired(true))
+                .setDescription('Delete a ticket type')
+                .addIntegerOption(o => o.setName('الرقم').setDescription('Type ID (from the list)').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('قائمة')
-                .setDescription('عرض جميع أنواع Tickets')
+                .setDescription('List all ticket types')
         )
         .addSubcommand(sub =>
             sub.setName('فئة')
-                .setDescription('تعيين فئة الروم لإنشاء Tickets فيها')
-                .addChannelOption(o => o.setName('الفئة').setDescription('فئة الروم (Category)').setRequired(true))
+                .setDescription('Set the category channel for ticket rooms')
+                .addChannelOption(o => o.setName('الفئة').setDescription('Category channel').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('لوق')
-                .setDescription('تعيين روم تسجيل أحداث Tickets')
-                .addChannelOption(o => o.setName('الروم').setDescription('روم اللوق').setRequired(true))
+                .setDescription('Set the ticket log channel')
+                .addChannelOption(o => o.setName('الروم').setDescription('Log channel').setRequired(true))
         )
         .addSubcommand(sub =>
             sub.setName('مسؤولين')
-                .setDescription('تعيين Rank مسؤولين Tickets (الوحيدون القادرون على الإغلاق)')
-                .addRoleOption(o => o.setName('الرتبة').setDescription('Rank مسؤولي Tickets').setRequired(true))
+                .setDescription('Set the ticket admin role (only they can close tickets)')
+                .addRoleOption(o => o.setName('الرتبة').setDescription('Ticket admin role').setRequired(true))
         )
         ,
 
     async slashExecute(interaction, db) {
+        await interaction.deferReply({ flags: 64 });
         const sub = interaction.options.getSubcommand();
 
         if (sub === 'إضافة-نوع') {
-            const name   = interaction.options.getString('الاسم').trim();
+            const name     = interaction.options.getString('الاسم').trim();
             const rawEmoji = interaction.options.getString('الإيموجي')?.trim() || '🎫';
-            const emoji  = await resolveEmoji(rawEmoji, interaction.guild);
-            const role   = interaction.options.getRole('الرتبة');
-            const type   = await db.addTicketType(name, emoji, role?.id || null);
-            const fields = [
-                { name: '🆔 الرقم', value: `\`${type.id}\``, inline: true },
-                { name: '🎫 الاسم', value: `${type.emoji} ${type.name}`, inline: true },
+            const emoji    = await resolveEmoji(rawEmoji, interaction.guild);
+            const role     = interaction.options.getRole('الرتبة');
+            const type     = await db.addTicketType(name, emoji, role?.id || null);
+            const fields   = [
+                { name: '🆔 ID',   value: `\`${type.id}\``, inline: true },
+                { name: '🎫 Type', value: `${type.emoji} ${type.name}`, inline: true },
             ];
-            if (role) fields.push({ name: '🛡️ الRank المستلِمة', value: `<@&${role.id}>`, inline: true });
+            if (role) fields.push({ name: '🛡️ Assigned Role', value: `<@&${role.id}>`, inline: true });
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
@@ -77,35 +78,35 @@ module.exports = {
                 .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.deleteReply().catch(() => {});
         }
 
         if (sub === 'حذف-نوع') {
             const id      = interaction.options.getInteger('الرقم');
             const deleted = await db.removeTicketType(id);
-            if (!deleted) return interaction.reply({ content: `❌ لا يوجد نوع برقم \`${id}\`.`, flags: 64 });
+            if (!deleted) return interaction.editReply({ content: `❌ No type found with ID \`${id}\`.` });
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم حذف نوع التكت')
+                .setTitle('Ticket Type Deleted')
                 .setColor(0xB71C1C)
-                .setDescription(`تم حذف نوع **${deleted.emoji} ${deleted.name}** بنجاح.`)
+                .setDescription(`Type **${deleted.emoji} ${deleted.name}** has been deleted.`)
                 .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.deleteReply().catch(() => {});
         }
 
         if (sub === 'قائمة') {
             const types = await db.getTicketTypes();
-            const _img = await db.getImage('tickets').catch(() => null);
+            const _img  = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
                 .setTitle('Ticket Types')
                 .setColor(0x37474F)
                 .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (!types.length) {
-                embed.setDescription('> لا توجد أنواع. استخدم `/إعداد-تكتات إضافة-نوع` لإضافة نوع.');
+                embed.setDescription('> No types found. Use `/إعداد-تكتات إضافة-نوع` to add one.');
             } else {
                 embed.setDescription(
                     types.map(t =>
@@ -116,7 +117,7 @@ module.exports = {
             }
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.deleteReply().catch(() => {});
         }
 
         if (sub === 'فئة') {
@@ -125,13 +126,13 @@ module.exports = {
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين فئة Tickets')
+                .setTitle('Ticket Category Set')
                 .setColor(0x1565C0)
-                .addFields({ name: '📁 الفئة', value: `**${cat.name}**`, inline: true })
+                .addFields({ name: '📁 Category', value: `**${cat.name}**`, inline: true })
                 .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.deleteReply().catch(() => {});
         }
 
         if (sub === 'لوق') {
@@ -140,13 +141,13 @@ module.exports = {
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('تم تعيين روم لوق Tickets')
+                .setTitle('Ticket Log Channel Set')
                 .setColor(0x1565C0)
-                .addFields({ name: '📋 الروم', value: `<#${ch.id}>`, inline: true })
+                .addFields({ name: '📋 Channel', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.deleteReply().catch(() => {});
         }
 
         if (sub === 'مسؤولين') {
@@ -155,17 +156,16 @@ module.exports = {
             const _img = await db.getImage('tickets').catch(() => null);
 
             const embed = new EmbedBuilder()
-                .setTitle('Ticket Admins Role Set')
+                .setTitle('Ticket Admin Role Set')
                 .setColor(0x7B1FA2)
                 .addFields(
-                    { name: '🛡️ الRank', value: `<@&${role.id}>`, inline: true },
-                    { name: 'ℹ️ الصلاحية', value: 'فقط أصحاب هذه الRank يقدرون يغلقون Tickets', inline: false },
+                    { name: '🛡️ Role',       value: `<@&${role.id}>`, inline: true },
+                    { name: 'ℹ️ Permission', value: 'Only members with this role can close tickets.', inline: false },
                 )
                 .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
             await interaction.channel.send({ embeds: [embed] });
-            return interaction.reply({ content: '​', flags: 64 });
+            return interaction.deleteReply().catch(() => {});
         }
-
     }
 };
