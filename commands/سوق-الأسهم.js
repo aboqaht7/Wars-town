@@ -75,6 +75,7 @@ async function buildMarketEmbed(db) {
         });
     }
 
+    if (_img) embed.setImage(_img);
     embed
         .setFooter({ text: 'بورصة FANTASY • الأسعار تتذبذب تلقائياً كل ساعة بناءً على العرض والطلب' })
         .setTimestamp();
@@ -106,7 +107,6 @@ module.exports = {
         }
 
         await interaction.reply({ content: '\u200b', flags: 64 });
-        if (_img) embed.setImage(_img);
         return interaction.channel.send({ embeds: [built.embed], components: [built.row] });
     }
 };
