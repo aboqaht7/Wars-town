@@ -100,6 +100,20 @@ function patchResetInteraction(interaction) {
     };
 }
 
+// Returns a db proxy that skips login/identity checks during reset.
+// This prevents "you must be logged in" errors when clicking Reset Menu.
+function makeResetDb(db) {
+    return new Proxy(db, {
+        get(target, prop) {
+            if (prop === 'ensureUser') return async () => {};
+            if (prop === 'checkLoginAndIdentity') return async () => null;
+            if (prop === 'checkLogin') return async () => null;
+            const val = target[prop];
+            return typeof val === 'function' ? val.bind(target) : val;
+        }
+    });
+}
+
 /* ── جلسات التراكينق: targetId → { code, trackerId, channelId, guildId, timer } ── */
 const trackingSessions = new Map();
 
@@ -362,7 +376,7 @@ client.on('interactionCreate', async interaction => {
                         await interaction.deferUpdate();
                     }
                     patchResetInteraction(interaction);
-                    await command.slashExecute(interaction, db);
+                    await command.slashExecute(interaction, makeResetDb(db));
                 } catch (e) {
                     if (e?.code === 40060 || e?.code === 10062) return;
                     console.error(e);
@@ -2334,7 +2348,7 @@ client.on('interactionCreate', async interaction => {
                         await interaction.deferUpdate();
                     }
                     patchResetInteraction(interaction);
-                    await command.slashExecute(interaction, db);
+                    await command.slashExecute(interaction, makeResetDb(db));
                 } catch (e) {
                     if (e?.code === 40060 || e?.code === 10062) return;
                     console.error(e);
