@@ -265,85 +265,84 @@ async function sendToTripLog(embed) {
 
 async function handleOpenTicket(interaction, typeId) {
     try {
-        const types = await db.getTicketTypes();
-        const type  = types.find(t => t.name === String(typeId) || String(t.id) === String(typeId));
+        const { PermissionFlagsBits: PFB, ChannelType } = require('discord.js');
+
+        /* 1. تحقق من النوع */
+        const types = await db.getTicketTypes().catch(() => []);
+        const type  = types.find(t => String(t.id) === String(typeId));
         if (!type) {
-            // Panel is stale — auto-refresh it in place and notify user
-            try {
-                if (!interaction.deferred && !interaction.replied) await interaction.deferUpdate().catch(() => {});
-                const ticketCmd = client.commands.get('tickets');
-                if (ticketCmd?.sendOrUpdatePanel) {
-                    // Edit the exact message that was clicked, then register it as the active panel
-                    const freshPayload = await ticketCmd.buildPanel(db);
-                    await interaction.message.edit(freshPayload).catch(() => {});
-                    const configKey = `ticket_panel_msg_${interaction.channel.id}`;
-                    await db.setConfig(configKey, interaction.message.id).catch(() => {});
-                }
-                await interaction.followUp({ content: '⚠️ تم تحديث قائمة التكتات. يرجى الاختيار من جديد.', flags: 64 }).catch(() => {});
-            } catch (e) {
-                console.error('[TICKET] auto-refresh failed:', e);
-                interaction.reply({ content: '❌ حدث خطأ، حاول مجدداً.', flags: 64 }).catch(() => {});
-            }
-            return;
+            return interaction.reply({ content: '❌ نوع التكت غير موجود. يرجى استخدام البانل المحدّث.', flags: 64 }).catch(() => {});
         }
 
-        const defaultCategoryId = await db.getConfig('ticket_category_id').catch(() => null);
-        const categoryId        = type.category_id || defaultCategoryId;
-        const cleanName         = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;
-        const channelName       = `ticket-${cleanName}`;
+        /* 2. هل لديه تكت مفتوح بالفعل؟ */
+        const existing = await db.getUserOpenTicket(interaction.user.id).catch(() => null);
+        if (existing) {
+            return interaction.reply({ content: `⚠️ لديك تكت مفتوح بالفعل في <#${existing.channel_id}>`, flags: 64 }).catch(() => {});
+        }
 
-        const { PermissionFlagsBits: PFB, ChannelType, ActionRowBuilder: ARB2, ButtonBuilder: BB2, ButtonStyle: BS2 } = require('discord.js');
+        /* 3. أنشئ القناة */
+        const defaultCat = await db.getConfig('ticket_category_id').catch(() => null);
+        const categoryId = type.category_id || defaultCat;
+        const cleanName  = interaction.user.username.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20) || `user${interaction.user.id.slice(-4)}`;
 
-        const permOverwrites = [
-            { id: interaction.guild.id,          deny:  [PFB.ViewChannel] },
-            { id: interaction.user.id,            allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] },
-            { id: interaction.client.user.id,     allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ManageChannels] },
+        const perms = [
+            { id: interaction.guild.id,           deny:  [PFB.ViewChannel] },
+            { id: interaction.user.id,             allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory, PFB.AttachFiles] },
+            { id: interaction.client.user.id,      allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ManageChannels, PFB.ManageMessages] },
         ];
-        if (type.role_id) {
-            permOverwrites.push({ id: type.role_id, allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] });
-        }
+        if (type.role_id) perms.push({ id: type.role_id, allow: [PFB.ViewChannel, PFB.SendMessages, PFB.ReadMessageHistory] });
 
-        const channelOptions = { name: channelName, type: ChannelType.GuildText, permissionOverwrites: permOverwrites };
-        if (categoryId) channelOptions.parent = categoryId;
+        const chOpts = { name: `ticket-${cleanName}`, type: ChannelType.GuildText, permissionOverwrites: perms };
+        if (categoryId) chOpts.parent = categoryId;
 
-        const ticketChannel = await interaction.guild.channels.create(channelOptions);
-        await db.createOpenTicket(interaction.user.id, ticketChannel.id, type.id, type.name);
+        const ch = await interaction.guild.channels.create(chOpts);
+        await db.createOpenTicket(interaction.user.id, ch.id, type.id, type.name);
 
-        const receiverLine = type.role_id ? `\n🛡️ Assigned to: <@&${type.role_id}>` : '';
-        const ticketEmbed  = new EmbedBuilder()
-            .setTitle(`${type.emoji} Ticket — ${type.name}`)
+        /* 4. أرسل الرسالة داخل التكت */
+        const { ActionRowBuilder: AR, ButtonBuilder: BB, ButtonStyle: BS } = require('discord.js');
+
+        const embed = new EmbedBuilder()
+            .setTitle(`${type.emoji} تكت — ${type.name}`)
             .setColor(0x1565C0)
-            .setDescription(`Hello <@${interaction.user.id}>!\n\nYour **${type.emoji} ${type.name}** ticket has been opened successfully.${receiverLine}\n\nWhen done, press the **Close Ticket** button.`)
-            .addFields({ name: '👤 Ticket Owner', value: `<@${interaction.user.id}>`, inline: true })
-            .setFooter({ text: 'Ticket System • FANTASY Bot' }).setTimestamp();
+            .setDescription(
+                `مرحباً <@${interaction.user.id}> 👋\n\n` +
+                `تم فتح تكتك بنجاح.\n` +
+                (type.role_id ? `🛡️ سيتولى تكتك فريق <@&${type.role_id}>\n` : '') +
+                `\nعند الانتهاء اضغط على زر **إغلاق التكت**.`
+            )
+            .addFields({ name: '👤 صاحب التكت', value: `<@${interaction.user.id}>`, inline: true })
+            .setFooter({ text: 'FANTASY Bot • Ticket System' })
+            .setTimestamp();
 
-        const closeRow = new ARB2().addComponents(
-            new BB2().setCustomId(`claim_ticket_${ticketChannel.id}`).setLabel('Claim Ticket').setEmoji('📋').setStyle(BS2.Secondary),
-            new BB2().setCustomId(`close_ticket_${ticketChannel.id}`).setLabel('Close Ticket').setEmoji('🔒').setStyle(BS2.Danger)
+        const btns = new AR().addComponents(
+            new BB().setCustomId(`claim_ticket_${ch.id}`).setLabel('استلام التكت').setEmoji('📋').setStyle(BS.Secondary),
+            new BB().setCustomId(`close_ticket_${ch.id}`).setLabel('إغلاق التكت').setEmoji('🔒').setStyle(BS.Danger),
         );
-        const pingContent = type.role_id ? `<@${interaction.user.id}> <@&${type.role_id}>` : `<@${interaction.user.id}>`;
-        await ticketChannel.send({ content: pingContent, embeds: [ticketEmbed], components: [closeRow] });
 
-        const ticketLogId = await db.getConfig('ticket_log_channel');
-        if (ticketLogId) {
-            const logCh = await client.channels.fetch(ticketLogId).catch(() => null);
+        const ping = type.role_id ? `<@${interaction.user.id}> <@&${type.role_id}>` : `<@${interaction.user.id}>`;
+        await ch.send({ content: ping, embeds: [embed], components: [btns] });
+
+        /* 5. لوق */
+        const logId = await db.getConfig('ticket_log_channel').catch(() => null);
+        if (logId) {
+            const logCh = await client.channels.fetch(logId).catch(() => null);
             if (logCh) {
-                const logEmbed = new EmbedBuilder()
-                    .setTitle('New Ticket Opened').setColor(0x2E7D32)
-                    .addFields(
-                        { name: '👤 User',    value: `<@${interaction.user.id}>`, inline: true },
-                        { name: '🗂️ Type',   value: `${type.emoji} ${type.name}`,  inline: true },
-                        { name: '📌 Channel', value: `<#${ticketChannel.id}>`,      inline: true },
-                    ).setTimestamp();
-                await logCh.send({ embeds: [logEmbed] });
+                await logCh.send({ embeds: [
+                    new EmbedBuilder().setTitle('📥 تكت جديد').setColor(0x2E7D32)
+                        .addFields(
+                            { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: '🗂️ النوع',   value: `${type.emoji} ${type.name}`,  inline: true },
+                            { name: '📌 القناة',  value: `<#${ch.id}>`,                  inline: true },
+                        ).setTimestamp()
+                ] });
             }
         }
 
-        return interaction.reply({ content: `✅ Your ticket was opened in <#${ticketChannel.id}>`, flags: 64 });
+        return interaction.reply({ content: `✅ تم فتح تكتك في <#${ch.id}>`, flags: 64 });
     } catch (e) {
-        console.error(e);
+        console.error('[TICKET OPEN]', e);
         if (!interaction.replied && !interaction.deferred)
-            return interaction.reply({ content: '❌ An error occurred while creating the ticket.', flags: 64 }).catch(() => {});
+            interaction.reply({ content: '❌ حدث خطأ أثناء فتح التكت.', flags: 64 }).catch(() => {});
     }
 }
 
@@ -1896,12 +1895,12 @@ client.on('interactionCreate', async interaction => {
             const newRow = new ARB3().addComponents(
                 new BB3()
                     .setCustomId(`claim_ticket_${channelId}`)
-                    .setLabel(`Claimed by: ${claimer.username}`).setEmoji('✅')
+                    .setLabel(`تم الاستلام: ${claimer.username}`).setEmoji('✅')
                     .setStyle(BS3.Success)
                     .setDisabled(true),
                 new BB3()
                     .setCustomId(`close_ticket_${channelId}`)
-                    .setLabel('Close Ticket').setEmoji('🔒')
+                    .setLabel('إغلاق التكت').setEmoji('🔒')
                     .setStyle(BS3.Danger)
             );
 
@@ -2278,41 +2277,42 @@ client.on('interactionCreate', async interaction => {
         // ── إغلاق تكت ───────────────────────────────────────────────────────────
         if (interaction.customId.startsWith('close_ticket_')) {
             try {
-                const channelId = interaction.customId.replace('close_ticket_', '');
-                const ticket    = await db.getOpenTicketByChannel(channelId);
-                const channel   = await client.channels.fetch(channelId).catch(() => null);
+                const channelId    = interaction.customId.replace('close_ticket_', '');
+                const ticket       = await db.getOpenTicketByChannel(channelId);
+                const channel      = await client.channels.fetch(channelId).catch(() => null);
+                const adminRoleId  = await db.getConfig('ticket_admin_role').catch(() => null);
 
-                const ticketAdminRole = await db.getConfig('ticket_admin_role');
-                const hasRole = ticketAdminRole
-                    ? interaction.member.roles.cache.has(ticketAdminRole)
-                    : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-                if (!hasRole) {
-                    return interaction.reply({ content: '❌ Only ticket admins can close tickets.', flags: 64 });
+                const isOwner    = ticket?.discord_id === interaction.user.id;
+                const isAdmin    = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+                const hasRole    = adminRoleId ? interaction.member.roles.cache.has(adminRoleId) : false;
+
+                if (!isOwner && !isAdmin && !hasRole) {
+                    return interaction.reply({ content: '❌ فقط صاحب التكت أو مسؤول التكتات يمكنه إغلاق التكت.', flags: 64 });
                 }
 
-                const ticketLogId = await db.getConfig('ticket_log_channel');
-                if (ticketLogId) {
-                    const logCh = await client.channels.fetch(ticketLogId).catch(() => null);
+                // لوق الإغلاق
+                const logId = await db.getConfig('ticket_log_channel').catch(() => null);
+                if (logId) {
+                    const logCh = await client.channels.fetch(logId).catch(() => null);
                     if (logCh) {
-                        const logEmbed = new EmbedBuilder()
-                            .setTitle('Ticket Closed')
-                            .setColor(0xB71C1C)
-                            .addFields(
-                                { name: '👤 Owner',    value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
-                                { name: '🗂️ Type',    value: ticket?.type_name || '—', inline: true },
-                                { name: '🔧 Closed by', value: `<@${interaction.user.id}>`, inline: true },
-                            ).setTimestamp();
-                        await logCh.send({ embeds: [logEmbed] });
+                        await logCh.send({ embeds: [
+                            new EmbedBuilder().setTitle('🔒 تم إغلاق تكت').setColor(0xB71C1C)
+                                .addFields(
+                                    { name: '👤 المالك',    value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
+                                    { name: '🗂️ النوع',    value: ticket?.type_name || '—',               inline: true },
+                                    { name: '🔧 أغلقه',    value: `<@${interaction.user.id}>`,              inline: true },
+                                ).setTimestamp()
+                        ] });
                     }
                 }
 
                 await db.removeOpenTicket(channelId);
-                await interaction.reply({ content: '🔒 Ticket will be closed in 5 seconds...', flags: 64 });
+                await interaction.reply({ content: '🔒 سيتم إغلاق التكت خلال 5 ثوانٍ...', flags: 64 });
                 setTimeout(async () => { if (channel) await channel.delete().catch(() => {}); }, 5000);
             } catch (e) {
-                console.error(e);
+                console.error('[TICKET CLOSE]', e);
                 if (!interaction.replied && !interaction.deferred)
-                    return interaction.reply({ content: '❌ An error occurred.', flags: 64 }).catch(() => {});
+                    interaction.reply({ content: '❌ حدث خطأ.', flags: 64 }).catch(() => {});
             }
         }
 
@@ -2697,27 +2697,19 @@ client.on('interactionCreate', async interaction => {
             }
         }
 
-        if (interaction.customId === 'ticket_menu') {
-            return interaction.reply({
-                content: '⚠️ This menu is outdated. Please use the new panel `/tickets` to open a ticket.',
-                flags: 64
-            });
+        if (interaction.customId === 'ticket_menu' || interaction.customId === 'tickets_type_menu') {
+            await interaction.deferUpdate().catch(() => {});
+            const ticketCmd = client.commands.get('tickets');
+            if (ticketCmd?.buildPayload) {
+                const fresh = await ticketCmd.buildPayload(db);
+                await interaction.message.edit(fresh).catch(() => {});
+                await db.setConfig(`ticket_panel_${interaction.channel.id}`, interaction.message.id).catch(() => {});
+            }
+            await interaction.followUp({ content: '⚠️ تم تحديث البانل. يرجى الاختيار من جديد.', flags: 64 }).catch(() => {});
+            return;
         }
 
-        if (interaction.customId === 'tickets_type_menu') {
-            if (value.startsWith('reset_')) {
-                const key = value.replace('reset_', '');
-                const command = client.commands.get(key);
-                if (command?.slashExecute) {
-                    await interaction.deferUpdate().catch(() => {});
-                    interaction.reply = async (data) => {
-                        if (!data || data?.flags === 64) return;
-                        return interaction.editReply(data);
-                    };
-                    return command.slashExecute(interaction, db);
-                }
-                return interaction.deferUpdate().catch(() => {});
-            }
+        if (interaction.customId === 'open_ticket_select') {
             return handleOpenTicket(interaction, value);
         }
 

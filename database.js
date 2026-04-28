@@ -1599,7 +1599,7 @@ module.exports = {
     createCompany, adminCreateCompany, getCompanyByOwner, getCompanyByMember, getUserCompany, getCompanyById,
     getCompanyMembers, addCompanyMember, removeCompanyMember, updateCompanyMemberRole,
     depositToCompany, withdrawFromCompany, payCompanySalaries, getAllCompanies, dissolveCompany,
-    createOpenTicket, getOpenTicketByChannel, removeOpenTicket,
+    createOpenTicket, getOpenTicketByChannel, getUserOpenTicket, removeOpenTicket,
     addStaffActivity, addStaffManualPoints, getStaffActivity, getAllStaffActivity,
     cuffPlayer, uncuffPlayer, isCuffed,
     listCompanyOnMarket, delistCompany, getStockListing, getAllStockListings,
@@ -1801,6 +1801,11 @@ async function getOpenTicketByChannel(channelId) {
 
 async function removeOpenTicket(channelId) {
     await pool.query(`DELETE FROM open_tickets WHERE channel_id=$1`, [channelId]);
+}
+
+async function getUserOpenTicket(discordId) {
+    const res = await pool.query(`SELECT * FROM open_tickets WHERE discord_id=$1 ORDER BY created_at DESC LIMIT 1`, [discordId]);
+    return res.rows[0] || null;
 }
 
 /* ─── جدول نقاط الإدارة ─── */

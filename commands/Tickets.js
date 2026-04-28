@@ -4,24 +4,32 @@ const {
     ActionRowBuilder,
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
+    ButtonBuilder,
+    ButtonStyle,
 } = require('discord.js');
-const { resetRow, resetOption } = require('../utils');
 const { parseEmoji } = require('../btnConfig');
 
-async function build(db) {
-    const types = await db.getTicketTypes();
+/* ── بناء الـ Payload ─────────────────────────────────────────────────────── */
+async function buildPayload(db) {
+    const types = await db.getTicketTypes().catch(() => []);
     const img   = await db.getImage('tickets').catch(() => null);
 
     const embed = new EmbedBuilder()
-        .setTitle('🎫 Ticket System')
+        .setTitle('🎫 نظام التكتات')
         .setColor(0x1565C0)
-        .setFooter({ text: 'Ticket System • FANTASY Bot' })
+        .setFooter({ text: 'FANTASY Bot • Ticket System' })
         .setTimestamp();
     if (img) embed.setImage(img);
 
+    const resetBtn = new ButtonBuilder()
+        .setCustomId('reset_tickets')
+        .setLabel('🔄 Reset Menu')
+        .setStyle(ButtonStyle.Secondary);
+    const resetRow = new ActionRowBuilder().addComponents(resetBtn);
+
     if (!types.length) {
-        embed.setDescription('> لا توجد أنواع تكتات حالياً.');
-        return { embeds: [embed], components: [resetRow('tickets')] };
+        embed.setDescription('> لا توجد أنواع تكتات حالياً.\n> استخدم `/إعداد-تكتات إضافة-نوع` لإضافة نوع.');
+        return { embeds: [embed], components: [resetRow] };
     }
 
     embed.setDescription('اختر نوع التكت من القائمة أدناه وسيُفتح لك روم خاص.');
@@ -29,7 +37,7 @@ async function build(db) {
     const options = types.slice(0, 24).map(t => {
         const opt = new StringSelectMenuOptionBuilder()
             .setLabel(t.name || 'Ticket')
-            .setValue((t.name || String(t.id)).slice(0, 100))
+            .setValue(String(t.id))
             .setDescription(t.role_id ? 'يتولاه فريق مخصص' : 'اضغط للفتح');
         if (t.emoji) {
             const parsed = parseEmoji(t.emoji);
@@ -42,61 +50,56 @@ async function build(db) {
 
     const menuRow = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
-            .setCustomId('tickets_type_menu')
+            .setCustomId('open_ticket_select')
             .setPlaceholder('🎫 اختر نوع التكت')
-            .addOptions([...options, resetOption('tickets')])
+            .addOptions(options)
     );
 
-    return { embeds: [embed], components: [menuRow] };
+    return { embeds: [embed], components: [menuRow, resetRow] };
 }
 
-/**
- * Send or update the single panel for this channel.
- * - If a saved message ID exists and the message is still there → edit it.
- * - Otherwise → send a new message and save its ID.
- */
-async function sendOrUpdatePanel(channel, db) {
-    const configKey  = `ticket_panel_msg_${channel.id}`;
-    const savedMsgId = await db.getConfig(configKey).catch(() => null);
-    const payload    = await build(db);
+/* ── إرسال أو تعديل البانل (بانل واحد فقط لكل قناة) ─────────────────────── */
+async function sendOrUpdate(channel, db) {
+    const key      = `ticket_panel_${channel.id}`;
+    const savedId  = await db.getConfig(key).catch(() => null);
+    const payload  = await buildPayload(db);
 
-    if (savedMsgId) {
+    if (savedId) {
         try {
-            const existing = await channel.messages.fetch(savedMsgId);
-            await existing.edit(payload);
-            return existing;
-        } catch (_) {
-            // Message was deleted — fall through to send a new one
-        }
+            const msg = await channel.messages.fetch(savedId);
+            await msg.edit(payload);
+            return msg;
+        } catch (_) { /* الرسالة حُذفت — نرسل جديدة */ }
     }
 
     const msg = await channel.send(payload);
-    await db.setConfig(configKey, msg.id);
+    await db.setConfig(key, msg.id).catch(() => {});
     return msg;
 }
 
 module.exports = {
     name: 'tickets',
-    buildPanel: build,
-    sendOrUpdatePanel,
+    buildPayload,
+    sendOrUpdate,
 
     data: new SlashCommandBuilder()
         .setName('tickets')
-        .setDescription('Open the ticket system panel'),
+        .setDescription('عرض بانل التكتات'),
 
-    async execute(message, args, db) {
-        await sendOrUpdatePanel(message.channel, db);
+    async execute(message, _args, db) {
+        await sendOrUpdate(message.channel, db);
     },
 
     async slashExecute(interaction, db) {
-        // Reset button: just rebuild and edit the current message
+        // Reset button pressed on an existing panel → edit in place
         if (interaction._isReset) {
-            const payload = await build(db);
-            return interaction.message.edit(payload);
+            const payload = await buildPayload(db);
+            await interaction.message.edit(payload).catch(() => {});
+            await db.setConfig(`ticket_panel_${interaction.channel.id}`, interaction.message.id).catch(() => {});
+            return;
         }
-
         try { await interaction.deferReply({ flags: 64 }); } catch { return; }
-        await sendOrUpdatePanel(interaction.channel, db);
+        await sendOrUpdate(interaction.channel, db);
         await interaction.deleteReply().catch(() => {});
     },
 };
