@@ -1915,7 +1915,7 @@ client.on('interactionCreate', async interaction => {
             const gmc     = data.gmc_count     || 0;
             const tickets = data.tickets_count || 0;
             const manual  = data.manual_points || 0;
-            const total   = trips * 5 + gmc * 8 + tickets * 5 + manual;
+            const total   = trips * 5 + gmc * 8 + tickets * 3 + manual;
 
             const embed = new EmbedBuilder()
                 .setTitle(`📊 Points for ${interaction.user.username}`)
@@ -1923,7 +1923,7 @@ client.on('interactionCreate', async interaction => {
                 .addFields(
                     { name: '🚀 Trips Opened',        value: `${trips} trip(s) × 5 = **${trips * 5} pts**`,    inline: false },
                     { name: '👁️ GMC Supervision',     value: `${gmc} time(s) × 8 = **${gmc * 8} pts**`,       inline: false },
-                    { name: '🎫 Tickets Claimed',      value: `${tickets} ticket(s) × 5 = **${tickets * 5} pts**`, inline: false },
+                    { name: '🎫 Tickets Claimed',      value: `${tickets} ticket(s) × 3 = **${tickets * 3} pts**`, inline: false },
                     { name: '✏️ Manually Added Points', value: `**${manual} pts**`,                               inline: false },
                     { name: '─────────────────',       value: `🏆 **Total: ${total} pts**`,                     inline: false },
                 )
@@ -2282,12 +2282,11 @@ client.on('interactionCreate', async interaction => {
                 const channel      = await client.channels.fetch(channelId).catch(() => null);
                 const adminRoleId  = await db.getConfig('ticket_admin_role').catch(() => null);
 
-                const isOwner    = ticket?.discord_id === interaction.user.id;
                 const isAdmin    = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 const hasRole    = adminRoleId ? interaction.member.roles.cache.has(adminRoleId) : false;
 
-                if (!isOwner && !isAdmin && !hasRole) {
-                    return interaction.reply({ content: '❌ فقط صاحب التكت أو مسؤول التكتات يمكنه إغلاق التكت.', flags: 64 });
+                if (!isAdmin && !hasRole) {
+                    return interaction.reply({ content: '❌ فقط مسؤول التكتات يمكنه إغلاق التكت.', flags: 64 });
                 }
 
                 // لوق الإغلاق
