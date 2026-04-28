@@ -23,7 +23,8 @@ async function buildPayload(db) {
 
     const resetBtn = new ButtonBuilder()
         .setCustomId('reset_tickets')
-        .setLabel('🔄 Reset Menu')
+        .setLabel('Reset Menu')
+        .setEmoji({ id: '1479212270746599528', name: 'GL137', animated: true })
         .setStyle(ButtonStyle.Secondary);
     const resetRow = new ActionRowBuilder().addComponents(resetBtn);
 

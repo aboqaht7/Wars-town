@@ -43,7 +43,7 @@ async function build(db) {
                 { label: '📋 My Cases',           value: 'my_cases',   description: 'View all cases filed by you' },
                 { label: '👨‍⚖️ Hire a Lawyer',    value: 'hire_lawyer', description: 'Request a lawyer for your case' },
             
-                { label: '🔄 Reset Menu', value: 'reset_محاماة', description: 'Return to the main view' },
+                resetOption('محاماة'),
             ])
     );
     return { embeds: [embed], components: [menu] };

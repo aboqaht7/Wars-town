@@ -47,7 +47,7 @@ async function buildJobs(db) {
                 { label: '🪓 Woodcutting',    value: 'woodcutting', description: 'Requires: Axe' },
                 { label: '⛏️ Mining',          value: 'mining',      description: 'Requires: Mining Tools' },
             
-                { label: '🔄 Reset Menu', value: 'reset_jobs', description: 'Return to the main view' },
+                resetOption('jobs'),
             ])
     );
 

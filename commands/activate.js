@@ -37,7 +37,7 @@ module.exports = {
 
         const resetBtn = new ButtonBuilder()
             .setCustomId('reset_menu')
-            .setLabel('Reset Menu').setEmoji('🔄')
+            .setLabel('Reset Menu').setEmoji({ id: '1479212270746599528', name: 'GL137', animated: true })
             .setStyle(ButtonStyle.Secondary);
 
         const main = {

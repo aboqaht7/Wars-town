@@ -78,7 +78,7 @@ async function buildMarket(db) {
                 { label: '⛏️ Sell All Metals',  value: 'mining',      description: 'Copper • Silver • Gold • Diamond' },
                 { label: '💰 Sell All at Once', value: 'all',         description: 'Sell all job earnings at once' },
 
-                { label: '🔄 Reset Menu', value: 'reset_سوق-مركزي', description: 'Return to the main view' },
+                resetOption('سوق-مركزي'),
             ])
     );
 

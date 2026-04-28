@@ -33,7 +33,7 @@ async function build() {
                     description: 'Send a report to the ambulance team',
                 },
             
-                { label: '🔄 Reset Menu', value: 'reset_phone', description: 'Return to the main view' },
+                resetOption('phone'),
             ])
     );
 

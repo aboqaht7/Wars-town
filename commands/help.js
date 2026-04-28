@@ -1,3 +1,4 @@
+const { resetOption } = require('../utils');
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 
 const OPTIONS = [
@@ -15,7 +16,7 @@ const OPTIONS = [
     { label: '🔫 Crimes', value: 'crime' },
     { label: '🎫 Tickets', value: 'tickets' },
     { label: '🚗 Cars & Showroom', value: 'vehicles' },
-    { label: '🔄 Reset Menu', value: 'reset_help', description: 'Return to the main view' },
+    resetOption('help'),
 ];
 
 module.exports = {

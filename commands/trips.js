@@ -42,7 +42,7 @@ async function build(db) {
     const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('trip_start').setLabel('Start Trip').setStyle(ButtonStyle.Success).setEmoji('✈️'),
         new ButtonBuilder().setCustomId('trip_hurricane').setLabel('Hurricane').setStyle(ButtonStyle.Danger).setEmoji('🌪️'),
-        new ButtonBuilder().setCustomId('trip_renewal').setLabel('Renew').setStyle(ButtonStyle.Primary).setEmoji('🔄'),
+        new ButtonBuilder().setCustomId('trip_renewal').setLabel('Renew').setStyle(ButtonStyle.Primary).setEmoji({ id: '1479212270746599528', name: 'GL137', animated: true }),
         new ButtonBuilder().setCustomId('trip_alert').setLabel('Alert').setStyle(ButtonStyle.Secondary).setEmoji('📣'),
     );
 

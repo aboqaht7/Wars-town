@@ -35,7 +35,7 @@ async function build(db) {
                 { label: '💀 Decay', value: 'decay' },
                 { label: '🧙 Witch Resuscitation', value: 'witch_resuscitation' },
             
-                { label: '🔄 Reset Menu', value: 'reset_health', description: 'Return to the main view' },
+                resetOption('health'),
             ])
     );
     return { embed, menu };

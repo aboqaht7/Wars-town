@@ -36,7 +36,7 @@ async function build(db) {
                 { label: '👥 Manage Players', value: 'manage' },
                 { label: '📋 Action Log', value: 'logs' },
             
-                { label: '🔄 Reset Menu', value: 'reset_admin', description: 'Return to the main view' },
+                resetOption('admin'),
             ])
     );
     return { embed, menu };

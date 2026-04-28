@@ -41,7 +41,7 @@ async function build(db) {
                 { label: '📣 General Alert', value: 'alert' },
                 { label: '🎉 Special Event', value: 'special_event' },
             
-                { label: '🔄 Reset Menu', value: 'reset_events', description: 'Return to the main view' },
+                resetOption('events'),
             ])
     );
     return { embed, menu };

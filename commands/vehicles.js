@@ -32,7 +32,7 @@ function build(image) {
             .addOptions([
                 { label: '🚗 View My Cars', value: 'view' },
             
-                { label: '🔄 Reset Menu', value: 'reset_vehicles', description: 'Return to the main view' },
+                resetOption('vehicles'),
             ])
     );
     return { embeds: [embed], components: [menu] };

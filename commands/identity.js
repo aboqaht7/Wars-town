@@ -45,7 +45,7 @@ async function buildMain(userId, db) {
                 { label: '✅ Login', value: 'login_identity', description: 'Login with an existing character' },
                 { label: '🚪 Logout', value: 'logout_identity', description: 'Logout from the current character' },
             
-                { label: '🔄 Reset Menu', value: 'reset_identity', description: 'Return to the main view' },
+                resetOption('identity'),
             ])
     );
     return { embed, menu };

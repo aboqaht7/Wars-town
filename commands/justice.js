@@ -38,7 +38,7 @@ async function build(db) {
                 { label: '👨‍⚖️ Assign Judge',   value: 'assign_judge',  description: 'Assign a judge to an accepted case' },
                 { label: '📜 Issue Verdict',       value: 'issue_verdict', description: 'Issue the final verdict for an ongoing case' },
             
-                { label: '🔄 Reset Menu', value: 'reset_عدل', description: 'Return to the main view' },
+                resetOption('عدل'),
             ])
     );
     return { embeds: [embed], components: [menu] };
