@@ -62,28 +62,80 @@ const DEFAULTS = {
         add:      { label: 'إضافة صديق',     description: 'أضف صديق باسم حساب سناب', emoji: '➕' },
         requests: { label: 'طلبات الصداقة',  description: 'اقبل طلبات الصداقة',      emoji: '🔔' },
     },
+    health_menu: {
+        hospital_resuscitation: { label: '🏥 إنعاش المستشفى', description: 'تواصل مع طاقم المستشفى لإنعاشك' },
+        witch_resuscitation:    { label: '🧙 إنعاش الساحرة',  description: 'تواصل مع الساحرة للإنعاش' },
+        decay:                  { label: '💀 التحلل',          description: 'شخصيتك في حالة تحلل' },
+    },
+    jobs_menu: {
+        fishing:     { label: '🎣 صيد السمك',    description: 'متطلبات: صنارة صيد' },
+        woodcutting: { label: '🪓 قطع الأشجار', description: 'متطلبات: فأس' },
+        mining:      { label: '⛏️ التعدين',      description: 'متطلبات: أدوات تعدين' },
+    },
+    phone_menu: {
+        report_police:    { label: '🚨 بلاغ للشرطة', description: 'أرسل بلاغاً لفريق الشرطة' },
+        report_ambulance: { label: '🚑 بلاغ للإسعاف', description: 'أرسل بلاغاً لفريق الإسعاف' },
+    },
+    vehicles_menu: {
+        view: { label: '🚗 سياراتي', description: 'عرض سياراتك المسجلة' },
+    },
+    admin_menu: {
+        ranks:  { label: '🏅 عرض الرتب',      description: 'عرض جميع الرتب' },
+        points: { label: '⭐ نقاط الإدارة',   description: 'كشف نقاطك الإدارية' },
+        manage: { label: '👥 إدارة اللاعبين', description: 'صلاحيات الأدمن فقط' },
+        logs:   { label: '📋 سجل الأحداث',   description: 'سجل جميع الإجراءات الإدارية' },
+    },
+    events_menu: {
+        open_flight:   { label: '✈️ فتح رحلة',  description: 'افتح رحلة جديدة' },
+        hurricane:     { label: '🌪️ إعصار',     description: 'تفعيل حالة الإعصار' },
+        alert:         { label: '📣 تنبيه عام', description: 'إرسال تنبيه للجميع' },
+        special_event: { label: '🎉 حدث خاص',  description: 'فتح حدث خاص' },
+    },
+    law_menu: {
+        new_case:    { label: '📁 فتح قضية',     description: 'تقديم قضية جديدة للمحكمة' },
+        my_cases:    { label: '📋 قضاياي',       description: 'عرض جميع قضاياك' },
+        hire_lawyer: { label: '👨‍⚖️ توكيل محامٍ', description: 'طلب محامٍ لقضيتك' },
+    },
 };
 
-const MENU_SYSTEMS = new Set(['snap_menu']);
+const MENU_SYSTEMS = new Set([
+    'snap_menu', 'health_menu', 'jobs_menu',
+    'phone_menu', 'vehicles_menu', 'admin_menu',
+    'events_menu', 'law_menu',
+]);
 
 const SYSTEM_LABELS = {
-    bank:      'البنك',
-    bag:       'الحقيبة',
-    cia:       'CIA',
-    stock:     'سوق الأسهم',
-    x:         'منصة X',
-    snap:      'سناب شات (أزرار)',
-    snap_menu: 'سناب شات (منيو)',
+    bank:          'البنك',
+    bag:           'الحقيبة',
+    cia:           'CIA',
+    stock:         'سوق الأسهم',
+    x:             'منصة X',
+    snap:          'سناب شات (أزرار)',
+    snap_menu:     'سناب شات (منيو)',
+    health_menu:   'الصحة',
+    jobs_menu:     'الوظائف',
+    phone_menu:    'الهاتف',
+    vehicles_menu: 'السيارات',
+    admin_menu:    'الإدارة',
+    events_menu:   'الرحلات والأحداث',
+    law_menu:      'المحاماة',
 };
 
 const BTN_LABELS = {
-    bank:      { balance: 'عرض الأموال', deposit: 'إيداع', withdraw: 'صرف', transfer: 'تحويل' },
-    bag:       { view: 'عرض الحقيبة', use: 'استخدام غرض', transfer: 'تحويل غرض' },
-    cia:       { login: 'دخول', logout: 'خروج', active: 'كشف مباشرين', fake_id: 'هوية مزيفة' },
-    stock:     { buy: 'شراء', sell: 'بيع', portfolio: 'محفظتي' },
-    x:         { create: 'إنشاء حساب', tweet: 'تغريدة', delete: 'حذف' },
-    snap:      { create: 'إنشاء حساب' },
-    snap_menu: { send: 'إرسال سناب', inbox: 'الوارد', friends: 'أصدقائي', add: 'إضافة صديق', requests: 'طلبات الصداقة' },
+    bank:          { balance: 'عرض الأموال', deposit: 'إيداع', withdraw: 'صرف', transfer: 'تحويل' },
+    bag:           { view: 'عرض الحقيبة', use: 'استخدام غرض', transfer: 'تحويل غرض' },
+    cia:           { login: 'دخول', logout: 'خروج', active: 'كشف مباشرين', fake_id: 'هوية مزيفة' },
+    stock:         { buy: 'شراء', sell: 'بيع', portfolio: 'محفظتي' },
+    x:             { create: 'إنشاء حساب', tweet: 'تغريدة', delete: 'حذف' },
+    snap:          { create: 'إنشاء حساب' },
+    snap_menu:     { send: 'إرسال سناب', inbox: 'الوارد', friends: 'أصدقائي', add: 'إضافة صديق', requests: 'طلبات الصداقة' },
+    health_menu:   { hospital_resuscitation: 'إنعاش المستشفى', witch_resuscitation: 'إنعاش الساحرة', decay: 'التحلل' },
+    jobs_menu:     { fishing: 'صيد السمك', woodcutting: 'قطع الأشجار', mining: 'التعدين' },
+    phone_menu:    { report_police: 'بلاغ للشرطة', report_ambulance: 'بلاغ للإسعاف' },
+    vehicles_menu: { view: 'سياراتي' },
+    admin_menu:    { ranks: 'عرض الرتب', points: 'نقاط الإدارة', manage: 'إدارة اللاعبين', logs: 'سجل الأحداث' },
+    events_menu:   { open_flight: 'فتح رحلة', hurricane: 'إعصار', alert: 'تنبيه عام', special_event: 'حدث خاص' },
+    law_menu:      { new_case: 'فتح قضية', my_cases: 'قضاياي', hire_lawyer: 'توكيل محامٍ' },
 };
 
 async function loadSystemBtns(db, system) {

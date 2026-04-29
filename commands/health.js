@@ -1,42 +1,44 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow, resetOption } = require('../utils');
-
-module.exports = {
-    name: 'health',
-    data: new SlashCommandBuilder().setName('health').setDescription('Ministry of Health System'),
-    async execute(message, args, db) {
-        const { embed, menu } = await build(db);
-        message.channel.send({ embeds: [embed], components: [menu] });
-    },
-    async slashExecute(interaction, db) {
-        const { embed, menu } = await build(db);
-        const main = { embeds: [embed], components: [menu] };
-        if (interaction._isReset) return interaction.message.edit(main);
-        await interaction.channel.send(main);
-        await interaction.reply({ content: '​', flags: 64 });
-    }
-};
+const { resetOption } = require('../utils');
+const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
 
 async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Ministry of Health')
         .setColor(0x1B5E20)
-        .setDescription('Choose the medical service you need.')
+        .setDescription('اختر الخدمة الطبية التي تحتاجها.')
         .setFooter({ text: 'Health System • FANTASY Bot' })
         .setTimestamp();
-    const img = await db.getImage('health');
+    const img = await db.getImage('health').catch(() => null);
     if (img) embed.setImage(img);
+
+    const mc = await loadSystemBtns(db, 'health_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('health_menu')
-            .setPlaceholder('Choose a medical service')
+            .setPlaceholder('🏥 اختر خدمة طبية')
             .addOptions([
-                { label: '🏥 Hospital Resuscitation', value: 'hospital_resuscitation' },
-                { label: '💀 Decay', value: 'decay' },
-                { label: '🧙 Witch Resuscitation', value: 'witch_resuscitation' },
-            
+                makeMenuOption('hospital_resuscitation', mc.hospital_resuscitation),
+                makeMenuOption('witch_resuscitation',    mc.witch_resuscitation),
+                makeMenuOption('decay',                  mc.decay),
                 resetOption('health'),
             ])
     );
-    return { embed, menu };
+    return { embeds: [embed], components: [menu] };
 }
+
+module.exports = {
+    name: 'health',
+    data: new SlashCommandBuilder().setName('health').setDescription('Ministry of Health System'),
+    async execute(message, args, db) {
+        const payload = await build(db);
+        message.channel.send(payload);
+    },
+    async slashExecute(interaction, db) {
+        const payload = await build(db);
+        if (interaction._isReset) return interaction.message.edit(payload);
+        await interaction.channel.send(payload);
+        await interaction.reply({ content: '​', flags: 64 });
+    },
+    build,
+};

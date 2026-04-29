@@ -1,43 +1,43 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow, resetOption } = require('../utils');
-
-module.exports = {
-    name: 'admin',
-    data: new SlashCommandBuilder().setName('admin').setDescription('Admin System & Admin Points'),
-    async execute(message, args, db) {
-        const { embed, menu } = await build(db);
-        message.channel.send({ embeds: [embed], components: [menu] });
-    },
-    async slashExecute(interaction, db) {
-        const { embed, menu } = await build(db);
-        const main = { embeds: [embed], components: [menu] };
-        if (interaction._isReset) return interaction.message.edit(main);
-        await interaction.channel.send(main);
-        await interaction.reply({ content: '​', flags: 64 });
-    }
-};
+const { resetOption } = require('../utils');
+const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
 
 async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Admin System')
         .setColor(0xF9A825)
-        .setDescription('Admin control panel — choose from the menu below.')
+        .setDescription('لوحة تحكم الإدارة — اختر من القائمة أدناه.')
         .setFooter({ text: 'Admin System • FANTASY Bot' })
         .setTimestamp();
-    const img = await db.getImage('admin');
+    const img = await db.getImage('admin').catch(() => null);
     if (img) embed.setImage(img);
+
+    const mc = await loadSystemBtns(db, 'admin_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('admin_menu')
-            .setPlaceholder('Choose an option')
+            .setPlaceholder('اختر خياراً')
             .addOptions([
-                { label: '🏅 View Ranks', value: 'ranks' },
-                { label: '⭐ Admin Points', value: 'points' },
-                { label: '👥 Manage Players', value: 'manage' },
-                { label: '📋 Action Log', value: 'logs' },
-            
+                makeMenuOption('ranks',  mc.ranks),
+                makeMenuOption('points', mc.points),
+                makeMenuOption('manage', mc.manage),
+                makeMenuOption('logs',   mc.logs),
                 resetOption('admin'),
             ])
     );
-    return { embed, menu };
+    return { embeds: [embed], components: [menu] };
 }
+
+module.exports = {
+    name: 'admin',
+    data: new SlashCommandBuilder().setName('admin').setDescription('Admin System & Admin Points'),
+    async execute(message, args, db) {
+        message.channel.send(await build(db));
+    },
+    async slashExecute(interaction, db) {
+        const payload = await build(db);
+        if (interaction._isReset) return interaction.message.edit(payload);
+        await interaction.channel.send(payload);
+        await interaction.reply({ content: '​', flags: 64 });
+    },
+};

@@ -1,8 +1,34 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const { resetRow, resetOption } = require('../utils');
+const { resetOption } = require('../utils');
+const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
 
 const COOLDOWN_SECONDS = 10;
 const COOLDOWN_MINUTES = COOLDOWN_SECONDS / 60;
+
+async function buildJobs(db) {
+    const img = await db.getImage('jobs').catch(() => null);
+    const embed = new EmbedBuilder()
+        .setTitle('Free Jobs')
+        .setColor(0xF57F17)
+        .setDescription('> اختر وظيفتك من القائمة أدناه')
+        .setFooter({ text: `Jobs System • FANTASY Bot • ${COOLDOWN_SECONDS}s cooldown` })
+        .setTimestamp();
+    if (img) embed.setImage(img);
+
+    const mc = await loadSystemBtns(db, 'jobs_menu');
+    const menu = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
+            .setCustomId('jobs_menu')
+            .setPlaceholder('اختر وظيفتك')
+            .addOptions([
+                makeMenuOption('fishing',     mc.fishing),
+                makeMenuOption('woodcutting', mc.woodcutting),
+                makeMenuOption('mining',      mc.mining),
+                resetOption('jobs'),
+            ])
+    );
+    return { embeds: [embed], components: [menu] };
+}
 
 module.exports = {
     name: 'jobs',
@@ -11,8 +37,7 @@ module.exports = {
         await db.ensureUser(message.author.id, message.author.username);
         const err = await db.checkLoginAndIdentity(message.author.id);
         if (err) return message.reply(err);
-        const payload = await buildJobs(db);
-        message.channel.send(payload);
+        message.channel.send(await buildJobs(db));
     },
     async slashExecute(interaction, db) {
         await db.ensureUser(interaction.user.id, interaction.user.username);
@@ -26,30 +51,3 @@ module.exports = {
     buildJobs,
     COOLDOWN_MINUTES,
 };
-
-async function buildJobs(db) {
-    const img = await db.getImage('jobs');
-
-    const embed = new EmbedBuilder()
-        .setTitle('Free Jobs')
-        .setColor(0xF57F17)
-        .setDescription('> Choose your job from the menu below')
-        .setFooter({ text: `Jobs System • FANTASY Bot • ${COOLDOWN_SECONDS}s cooldown between jobs` })
-        .setTimestamp();
-    if (img) embed.setImage(img);
-
-    const menu = new ActionRowBuilder().addComponents(
-        new StringSelectMenuBuilder()
-            .setCustomId('jobs_menu')
-            .setPlaceholder('Choose your job')
-            .addOptions([
-                { label: '🎣 Fishing',      value: 'fishing',     description: 'Requires: Fishing Rod' },
-                { label: '🪓 Woodcutting',    value: 'woodcutting', description: 'Requires: Axe' },
-                { label: '⛏️ Mining',          value: 'mining',      description: 'Requires: Mining Tools' },
-            
-                resetOption('jobs'),
-            ])
-    );
-
-    return { embeds: [embed], components: [menu] };
-}

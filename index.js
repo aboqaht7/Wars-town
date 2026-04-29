@@ -211,16 +211,27 @@ const menuHandlers = {
         logs: '📋 **Action Log** — Log of all administrative actions.',
     },
     jobs_menu: {
-        fishing: '🎣 **Fishing** — Head to the fishing area and start fishing.',
-        taxi: '🚕 **Taxi** — Head to the taxi station and start working.',
-        hunting: '🦌 **Hunting** — Head to the forest and start hunting.',
-        mining: '⛏️ **Mining** — Head to the mine and start extracting minerals.',
+        fishing:     '🎣 **صيد السمك** — توجه إلى منطقة الصيد وابدأ العمل.',
+        woodcutting: '🪓 **قطع الأشجار** — توجه إلى الغابة وابدأ قطع الأشجار.',
+        mining:      '⛏️ **التعدين** — توجه إلى المنجم وابدأ استخراج المعادن.',
     },
     law_menu: {
-        new_case: '📁 **Open a Case** — Contact Admin to open a new case.',
-        view_cases: '📋 **View Cases** — Contact Admin to view your cases.',
-        hire_lawyer: '👨‍⚖️ **Hire a Lawyer** — Contact Admin to hire a lawyer.',
-        legal_process: '⚖️ **Legal Procedures** — Contact Admin for information on legal procedures.',
+        new_case:    '📁 **فتح قضية** — تواصل مع الأدمن لتقديم قضية جديدة.',
+        my_cases:    '📋 **قضاياي** — تواصل مع الأدمن لعرض قضاياك.',
+        hire_lawyer: '👨‍⚖️ **توكيل محامٍ** — تواصل مع الأدمن لتعيين محامٍ.',
+    },
+    phone_menu: {
+        report_police:    '🚨 **بلاغ للشرطة** — أرسل بلاغاً لفريق الشرطة.',
+        report_ambulance: '🚑 **بلاغ للإسعاف** — أرسل بلاغاً لفريق الإسعاف.',
+    },
+    vehicles_menu: {
+        view: '🚗 **سياراتي** — عرض سياراتك المسجلة في نظام FANTASY.',
+    },
+    events_menu: {
+        open_flight:   '✈️ **فتح رحلة** — تواصل مع الأدمن لفتح رحلة جديدة.',
+        hurricane:     '🌪️ **إعصار** — تفعيل حالة الإعصار في الخادم.',
+        alert:         '📣 **تنبيه عام** — إرسال تنبيه عام لجميع اللاعبين.',
+        special_event: '🎉 **حدث خاص** — تواصل مع الأدمن لتفعيل حدث خاص.',
     },
     market_menu: {
         fishing_rod: '🎣 **Fishing Rod** — Contact Admin to purchase a fishing rod.',
@@ -3529,6 +3540,41 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error('[STOCK SELECT ERROR]', e);
                 if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+            }
+            return;
+        }
+
+        // ── نظام الصحة (إنعاش + تحلل بتايمر) ──────────────────────────────────
+        if (interaction.customId === 'health_menu') {
+            try {
+                await db.ensureUser(interaction.user.id, interaction.user.username);
+                const loginErr = await db.checkLoginAndIdentity(interaction.user.id);
+                if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
+
+                if (value === 'hospital_resuscitation' || value === 'witch_resuscitation') {
+                    const label = value === 'hospital_resuscitation' ? '🏥 المستشفى' : '🧙 الساحرة';
+                    await interaction.reply({ content: `⏳ سيتم إنعاشك عن طريق ${label} بعد **30 ثانية**...`, flags: 64 });
+                    setTimeout(async () => {
+                        try {
+                            const reviveMsg = value === 'hospital_resuscitation'
+                                ? `${interaction.user} لقد تم إنعاشك بنجاح عن طريق المستشفى 🏥`
+                                : `${interaction.user} لقد تم إنعاشك بنجاح عن طريق الساحرة 🧙`;
+                            await interaction.channel.send(reviveMsg);
+                        } catch (e) { console.error('[HEALTH REVIVE]', e); }
+                    }, 30_000);
+                } else if (value === 'decay') {
+                    await interaction.reply({ content: `⏳ ستبدأ عملية التحلل خلال **5 دقائق**...`, flags: 64 });
+                    setTimeout(async () => {
+                        try {
+                            await interaction.channel.send(`${interaction.user} لقد تحللت بنجاح 💀`);
+                        } catch (e) { console.error('[HEALTH DECAY]', e); }
+                    }, 300_000);
+                } else {
+                    await interaction.reply({ content: '❌ خيار غير معروف.', flags: 64 });
+                }
+            } catch (e) {
+                console.error('[HEALTH MENU ERROR]', e);
+                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
             }
             return;
         }
