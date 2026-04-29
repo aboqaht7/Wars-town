@@ -6,10 +6,10 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Trips & Events')
         .setColor(0x6A1B9A)
-        .setDescription('اختر نوع الحدث الذي تريد تفعيله')
+        .setDescription('Choose the event type you want to activate')
         .addFields(
-            { name: '📍 الموقع', value: 'تواصل مع الأدمن لمعرفة موقع الحدث', inline: true },
-            { name: '⏰ الوقت', value: 'يحدده المشرف المسؤول', inline: true },
+            { name: '📍 Location', value: 'Contact the admin to find the event location', inline: true },
+            { name: '⏰ Time', value: 'Determined by the responsible supervisor', inline: true },
         )
         .setImage(await db.getImage('events').catch(() => null) || null)
         .setFooter({ text: 'Events System • FANTASY Bot' })
@@ -19,7 +19,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('events_menu')
-            .setPlaceholder('اختر نوع الحدث')
+            .setPlaceholder('Choose event type')
             .addOptions([
                 makeMenuOption('open_flight',   mc.open_flight),
                 makeMenuOption('hurricane',     mc.hurricane),
@@ -40,9 +40,10 @@ module.exports = {
         message.channel.send(await build(db));
     },
     async slashExecute(interaction, db) {
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await build(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
 };

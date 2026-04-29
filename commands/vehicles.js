@@ -7,7 +7,7 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('My Registered Cars')
         .setColor(0x37474F)
-        .setDescription('عرض سياراتك المسجلة في نظام FANTASY.')
+        .setDescription('View your registered cars in the FANTASY system.')
         .setFooter({ text: 'Vehicles System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
@@ -16,7 +16,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('vehicles_menu')
-            .setPlaceholder('اختر خياراً')
+            .setPlaceholder('Choose an option')
             .addOptions([
                 makeMenuOption('view', mc.view),
                 resetOption('vehicles'),
@@ -32,9 +32,10 @@ module.exports = {
         message.channel.send(await build(db));
     },
     async slashExecute(interaction, db) {
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await build(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
 };

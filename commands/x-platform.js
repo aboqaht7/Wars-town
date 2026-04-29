@@ -44,6 +44,7 @@ module.exports = {
         const img = await db.getImage('x_platform');
         const account = await db.getXAccount(interaction.user.id);
         await interaction.channel.send(await build(img, account, db));
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
     }
 };

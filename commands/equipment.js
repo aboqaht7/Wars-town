@@ -22,7 +22,8 @@ module.exports = {
         const payload = await buildEquipment(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
     },
 
     buildEquipment,

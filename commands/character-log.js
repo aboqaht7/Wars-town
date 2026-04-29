@@ -65,7 +65,8 @@ module.exports = {
             }
 
             await interaction.channel.send({ embeds: [pendingEmbed], components });
-            await interaction.reply({ content: '​', flags: 64 });
+            await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
         }
 
         const logEmbed = new EmbedBuilder()
@@ -92,7 +93,8 @@ module.exports = {
             await interaction.followUp({ embeds: [logEmbed] });
         } else {
             await interaction.channel.send({ embeds: [logEmbed] });
-            await interaction.reply({ content: '​', flags: 64 });
+            await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
         }
     }
 };

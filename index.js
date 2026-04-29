@@ -3552,29 +3552,29 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
 
                 if (value === 'hospital_resuscitation' || value === 'witch_resuscitation') {
-                    const label = value === 'hospital_resuscitation' ? '🏥 المستشفى' : '🧙 الساحرة';
-                    await interaction.reply({ content: `⏳ سيتم إنعاشك عن طريق ${label} بعد **30 ثانية**...`, flags: 64 });
+                    const label = value === 'hospital_resuscitation' ? '🏥 Hospital' : '🧙 Witch';
+                    await interaction.reply({ content: `⏳ You will be revived via ${label} in **30 seconds**...`, flags: 64 });
                     setTimeout(async () => {
                         try {
                             const reviveMsg = value === 'hospital_resuscitation'
-                                ? `${interaction.user} لقد تم إنعاشك بنجاح عن طريق المستشفى 🏥`
-                                : `${interaction.user} لقد تم إنعاشك بنجاح عن طريق الساحرة 🧙`;
+                                ? `${interaction.user} You have been successfully revived by the Hospital 🏥`
+                                : `${interaction.user} You have been successfully revived by the Witch 🧙`;
                             await interaction.channel.send(reviveMsg);
                         } catch (e) { console.error('[HEALTH REVIVE]', e); }
                     }, 30_000);
                 } else if (value === 'decay') {
-                    await interaction.reply({ content: `⏳ ستبدأ عملية التحلل خلال **5 دقائق**...`, flags: 64 });
+                    await interaction.reply({ content: `⏳ Decay will begin in **5 minutes**...`, flags: 64 });
                     setTimeout(async () => {
                         try {
-                            await interaction.channel.send(`${interaction.user} لقد تحللت بنجاح 💀`);
+                            await interaction.channel.send(`${interaction.user} You have successfully decayed 💀`);
                         } catch (e) { console.error('[HEALTH DECAY]', e); }
                     }, 300_000);
                 } else {
-                    await interaction.reply({ content: '❌ خيار غير معروف.', flags: 64 });
+                    await interaction.reply({ content: '❌ Unknown option.', flags: 64 });
                 }
             } catch (e) {
                 console.error('[HEALTH MENU ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ حدث خطأ.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
             }
             return;
         }

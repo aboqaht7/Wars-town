@@ -52,7 +52,8 @@ module.exports = {
         const account = await db.getSnapAccount(interaction.user.id).catch(() => null);
         const img = await db.getImage('Snapchat').catch(() => null);
         await interaction.channel.send(await buildSnap(account, img, db));
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
     },
     buildSnap,
 };

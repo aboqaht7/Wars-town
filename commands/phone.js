@@ -10,7 +10,7 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Phone')
         .setColor(0x1565C0)
-        .setDescription('> اختر الخدمة التي تريدها من القائمة أدناه')
+        .setDescription('> Choose the service you need from the menu below')
         .setFooter({ text: 'Phone System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
@@ -19,7 +19,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('phone_menu')
-            .setPlaceholder('📱 اختر خدمة')
+            .setPlaceholder('📱 Choose a service')
             .addOptions([
                 makeMenuOption('report_police',    mc.report_police),
                 makeMenuOption('report_ambulance', mc.report_ambulance),
@@ -42,9 +42,10 @@ module.exports = {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await build(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
 };

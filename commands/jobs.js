@@ -10,7 +10,7 @@ async function buildJobs(db) {
     const embed = new EmbedBuilder()
         .setTitle('Free Jobs')
         .setColor(0xF57F17)
-        .setDescription('> اختر وظيفتك من القائمة أدناه')
+        .setDescription('> Choose your job from the menu below')
         .setFooter({ text: `Jobs System • FANTASY Bot • ${COOLDOWN_SECONDS}s cooldown` })
         .setTimestamp();
     if (img) embed.setImage(img);
@@ -19,7 +19,7 @@ async function buildJobs(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('jobs_menu')
-            .setPlaceholder('اختر وظيفتك')
+            .setPlaceholder('Choose your job')
             .addOptions([
                 makeMenuOption('fishing',     mc.fishing),
                 makeMenuOption('woodcutting', mc.woodcutting),
@@ -43,10 +43,11 @@ module.exports = {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await buildJobs(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
     buildJobs,
     COOLDOWN_MINUTES,

@@ -60,6 +60,7 @@ module.exports = {
             .setTimestamp();
         if (_img) embed.setImage(_img);
         await interaction.channel.send({ embeds: [embed] });
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
     }
 };

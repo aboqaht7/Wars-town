@@ -6,7 +6,7 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Ministry of Health')
         .setColor(0x1B5E20)
-        .setDescription('اختر الخدمة الطبية التي تحتاجها.')
+        .setDescription('Choose the medical service you need.')
         .setFooter({ text: 'Health System • FANTASY Bot' })
         .setTimestamp();
     const img = await db.getImage('health').catch(() => null);
@@ -16,7 +16,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('health_menu')
-            .setPlaceholder('🏥 اختر خدمة طبية')
+            .setPlaceholder('🏥 Choose a medical service')
             .addOptions([
                 makeMenuOption('hospital_resuscitation', mc.hospital_resuscitation),
                 makeMenuOption('witch_resuscitation',    mc.witch_resuscitation),
@@ -31,14 +31,14 @@ module.exports = {
     name: 'health',
     data: new SlashCommandBuilder().setName('health').setDescription('Ministry of Health System'),
     async execute(message, args, db) {
-        const payload = await build(db);
-        message.channel.send(payload);
+        message.channel.send(await build(db));
     },
     async slashExecute(interaction, db) {
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await build(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
     build,
 };

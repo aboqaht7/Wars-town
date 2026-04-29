@@ -21,7 +21,8 @@ module.exports = {
         const img = await db.getImage('showroom');
         const { embed, components } = build(cars, img);
         await interaction.channel.send({ embeds: [embed], components });
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
     }
 };
 

@@ -20,7 +20,8 @@ module.exports = {
         const main = { embeds: [embed], components: [menu] };
         if (interaction._isReset) return interaction.message.edit(main);
         await interaction.channel.send(main);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deferReply({ flags: 64 }).catch(() => {});
+        await interaction.deleteReply().catch(() => {});
     }
 };
 

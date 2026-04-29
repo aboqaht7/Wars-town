@@ -7,7 +7,7 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Law Office')
         .setColor(0x0D47A1)
-        .setDescription('> اختر الخدمة القانونية من القائمة أدناه')
+        .setDescription('> Choose the legal service from the menu below')
         .setFooter({ text: 'Law System • FANTASY Bot' })
         .setTimestamp();
     if (img) embed.setImage(img);
@@ -16,7 +16,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('law_menu')
-            .setPlaceholder('⚖️ اختر خدمة قانونية')
+            .setPlaceholder('⚖️ Choose a legal service')
             .addOptions([
                 makeMenuOption('new_case',    mc.new_case),
                 makeMenuOption('my_cases',    mc.my_cases),
@@ -42,7 +42,8 @@ module.exports = {
         await db.ensureUser(interaction.user.id, interaction.user.username);
         const err = await db.checkLoginAndIdentity(interaction.user.id);
         if (err) return interaction.reply({ content: err, flags: 64 });
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
 };

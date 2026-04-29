@@ -6,7 +6,7 @@ async function build(db) {
     const embed = new EmbedBuilder()
         .setTitle('Admin System')
         .setColor(0xF9A825)
-        .setDescription('لوحة تحكم الإدارة — اختر من القائمة أدناه.')
+        .setDescription('Admin control panel — choose from the menu below.')
         .setFooter({ text: 'Admin System • FANTASY Bot' })
         .setTimestamp();
     const img = await db.getImage('admin').catch(() => null);
@@ -16,7 +16,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('admin_menu')
-            .setPlaceholder('اختر خياراً')
+            .setPlaceholder('Choose an option')
             .addOptions([
                 makeMenuOption('ranks',  mc.ranks),
                 makeMenuOption('points', mc.points),
@@ -35,9 +35,10 @@ module.exports = {
         message.channel.send(await build(db));
     },
     async slashExecute(interaction, db) {
+        try { await interaction.deferReply({ flags: 64 }); } catch { return; }
         const payload = await build(db);
         if (interaction._isReset) return interaction.message.edit(payload);
         await interaction.channel.send(payload);
-        await interaction.reply({ content: '​', flags: 64 });
+        await interaction.deleteReply().catch(() => {});
     },
 };
