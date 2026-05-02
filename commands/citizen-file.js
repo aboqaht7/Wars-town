@@ -32,16 +32,11 @@ async function buildCitizenList(db, page = 0) {
     const embed = new EmbedBuilder()
         .setTitle('Citizen Files — CIA Intelligence')
         .setColor(0x0D1B2A)
-        .setDescription(
-            `🔍 Choose a citizen from the list to view their criminal and legal file.\n` +
-            `> Total active citizens: **${total}**`
-        )
         .setFooter({ text: `Page ${page + 1} of ${totalPages} • CIA Intelligence System` })
         .setTimestamp();
     if (img) embed.setImage(img);
 
     if (!slice.length) {
-        embed.setDescription('> No citizens registered in the system currently.');
         return { embeds: [embed], components: [] };
     }
 

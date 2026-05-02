@@ -21,11 +21,6 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle('🎯 لوحة التراكينق — CIA')
             .setColor(0x0D1B2A)
-            .setDescription(
-                '**🎯 تراكينق** — تتبّع مواطن عادي (تبريد ساعتان لكل عميل)\n' +
-                '**👑 تراكينق للرؤساء** — تتبّع رتبة محمية (مرتان شهرياً فقط)\n\n' +
-                '> اختر الزر المناسب لفتح نافذة الإدخال.'
-            )
             .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();
 
@@ -34,6 +29,7 @@ module.exports = {
             makeBtn('tracking_president_btn', t.president),
         );
 
-        await interaction.reply({ embeds: [embed], components: [row], flags: 64 });
+        await interaction.channel.send({ embeds: [embed], components: [row] });
+        await interaction.reply({ content: '✅ تم نشر لوحة التراكينق.', flags: 64 });
     },
 };
