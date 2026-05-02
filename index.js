@@ -189,26 +189,26 @@ We wish you all the best ❣️
 
 const menuHandlers = {
     help_menu: {
-        identity: '🪪 **Identity** — Type `/identity` to view your character and IBAN.',
-        phone: '📱 **Phone** — Type `/phone` to send a police report 🚨 or ambulance report 🚑.',
-        bag: '🎒 **Bag** — Type `/bag` to view your items. To transfer an item: `-نقل [item] @user`',
-        bank: '🏦 **Bank** — Type `/bank` to view your balance and IBAN. To transfer money: `-تحويل [IBAN] [amount]`',
-        trips: '✈️ **Trips** — Type `/الرحلات` to open a trip or send an Alert.',
-        jobs: '💼 **Jobs** — Type `/jobs` to choose your job (fishing, taxi, hunting, mining).',
-        market: '🛒 **Tools Market** — Type `/market` to buy a fishing rod, axe, or mining tools.',
-        law: '⚖️ **Law** — Type `/law` to open a case or manage cases.',
-        admin: '🛡️ **Admin** — Type `/admin` to view the admin dashboard.',
-        crime: '🔫 **Crimes** — Type `/crime` to commit a crime.',
-        tickets: '🎫 **Tickets** — Type `/tickets` to open a ticket (complaint, suggestion, report).',
-        vehicles: '🚗 **Cars & Showroom**\n• `/سيارات` — Your registered cars\n• `/معارض` — View the showroom\n• `/اضافة-معرض` — Add a car to the showroom',
-        sms: '💬 **Messages**\n• `-رسالة @user [text]` — Send a message\n• `-صندوق` — View your inbox\n• `-جهات @user [name]` — Add a contact\n• `-جهات` — View contacts',
-        x_platform: '𝕏 **X Platform**\n• `-تغريد [text]` — Post a tweet\n• `/منصة-x` — View posts\n• `-حذف-تغريدة [number]` — Delete your tweet',
+        identity: 'الهوية — اكتب `/identity` لعرض شخصيتك وآيبانك.',
+        phone: 'الهاتف — اكتب `/phone` لإرسال بلاغ للشرطة أو الإسعاف.',
+        bag: 'الحقيبة — اكتب `/bag` لعرض أغراضك. لتحويل غرض: `-نقل [item] @user`',
+        bank: 'البنك — اكتب `/bank` لعرض رصيدك وآيبانك. لتحويل المال: `-تحويل [IBAN] [amount]`',
+        trips: 'الرحلات — اكتب `/الرحلات` لفتح رحلة أو إرسال تنبيه.',
+        jobs: 'الوظائف — اكتب `/jobs` لاختيار وظيفتك (صيد، تاكسي، صيد بري، تعدين).',
+        market: 'سوق الأدوات — اكتب `/market` لشراء سنارة أو فأس أو أدوات تعدين.',
+        law: 'القانون — اكتب `/law` لرفع قضية أو إدارة القضايا.',
+        admin: 'الإدارة — اكتب `/admin` لعرض لوحة الإدارة.',
+        crime: 'الجرائم — اكتب `/crime` لتنفيذ جريمة.',
+        tickets: 'التكتات — اكتب `/tickets` لفتح تكت (شكوى، اقتراح، بلاغ).',
+        vehicles: 'السيارات والمعرض:\n• `/سيارات` — سياراتك المسجلة\n• `/معارض` — عرض المعرض\n• `/اضافة-معرض` — إضافة سيارة للمعرض',
+        sms: 'الرسائل:\n• `-رسالة @user [text]` — إرسال رسالة\n• `-صندوق` — عرض صندوق الوارد\n• `-جهات @user [name]` — إضافة جهة اتصال\n• `-جهات` — عرض جهات الاتصال',
+        x_platform: 'منصة X:\n• `-تغريد [text]` — نشر تغريدة\n• `/منصة-x` — عرض المنشورات\n• `-حذف-تغريدة [number]` — حذف تغريدتك',
     },
     admin_menu: {
-        ranks: '🏅 **View Ranks** — Contact Admin to view your current rank.',
-        points: '⭐ **Admin Points** — Contact Admin to check your points.',
-        manage: '👥 **Player Management** — Admin-only permission.',
-        logs: '📋 **Action Log** — Log of all administrative actions.',
+        ranks: 'عرض الرتب — تواصل مع الإدارة لعرض رتبتك الحالية.',
+        points: 'نقاط الإدارة — تواصل مع الإدارة للاطلاع على نقاطك.',
+        manage: 'إدارة اللاعبين — صلاحيات الإدارة فقط.',
+        logs: 'سجل الأحداث — سجل جميع الإجراءات الإدارية.',
     },
     jobs_menu: {
         fishing:     '🎣 **صيد السمك** — توجه إلى منطقة الصيد وابدأ العمل.',
@@ -234,21 +234,21 @@ const menuHandlers = {
         special_event: '🎉 **حدث خاص** — تواصل مع الأدمن لتفعيل حدث خاص.',
     },
     market_menu: {
-        fishing_rod: '🎣 **Fishing Rod** — Contact Admin to purchase a fishing rod.',
-        axe: '🪓 **Axe** — Contact Admin to purchase an axe.',
-        mining_tools: '⛏️ **Mining Tools** — Contact Admin to purchase mining tools.',
-        auction: '🔨 **Auction** — Contact Admin to attend a car and property auction.',
+        fishing_rod: 'سنارة الصيد — تواصل مع الإدارة لشراء سنارة.',
+        axe: 'فأس — تواصل مع الإدارة لشراء فأس.',
+        mining_tools: 'أدوات التعدين — تواصل مع الإدارة لشراء أدوات تعدين.',
+        auction: 'المزاد — تواصل مع الإدارة للمشاركة في مزاد السيارات والعقارات.',
     },
     health_menu: {
-        hospital_resuscitation: '🏥 **Hospital Resuscitation** — Contact the hospital staff to revive you.',
-        decay: '💀 **Decay** — Your character is in decay state. Contact Admin.',
-        witch_resuscitation: '🧙 **Witch Resuscitation** — Contact the witch for a revival.',
+        hospital_resuscitation: 'إنعاش المستشفى — تواصل مع طاقم المستشفى لإنعاشك.',
+        decay: 'التحلل — شخصيتك في حالة تحلل. تواصل مع الإدارة.',
+        witch_resuscitation: 'إنعاش الساحرة — تواصل مع الساحرة للإنعاش.',
     },
     ticket_menu: {
-        complaint: '📋 **Complaint** — Write the details of your complaint and send it to management.',
-        suggestion: '💡 **Suggestion** — Write your suggestion and it will be reviewed.',
-        report: '🚨 **Report** — Write the details of the report with evidence and send it to management.',
-        inquiry: '❓ **Inquiry** — Write your inquiry and you will receive a reply.',
+        complaint: 'شكوى — اكتب تفاصيل شكواك وأرسلها للإدارة.',
+        suggestion: 'اقتراح — اكتب اقتراحك وسيتم مراجعته.',
+        report: 'بلاغ — اكتب تفاصيل البلاغ مع الأدلة وأرسله للإدارة.',
+        inquiry: 'استفسار — اكتب استفسارك وستتلقى رداً.',
     },
 };
 
@@ -395,7 +395,7 @@ client.on('interactionCreate', async interaction => {
                     if (e?.code === 40060 || e?.code === 10062) return;
                     console.error(e);
                     try {
-                        if (interaction.deferred) interaction.editReply({ content: 'An error occurred.' });
+                        if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' });
                     } catch {}
                 }
             } else {
@@ -431,14 +431,14 @@ client.on('interactionCreate', async interaction => {
 
         if (['trip_start', 'trip_hurricane', 'trip_renewal', 'trip_alert'].includes(interaction.customId)) {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({ content: '❌ This button is for admins only.', flags: 64 });
+                return interaction.reply({ content: 'هذا الزر للمشرفين فقط.', flags: 64 });
             }
 
             if (interaction.customId === 'trip_hurricane') {
                 try { await interaction.deferReply({ flags: 64 }); } catch { return; }
                 try {
                     const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                    if (!alertsChannelId) return interaction.editReply({ content: '❌ Alerts channel not configured. Use `/إعداد-رحلات` first.' });
+                    if (!alertsChannelId) return interaction.editReply({ content: 'قناة التنبيهات لم تُحدد. استخدم `/إعداد-رحلات` أولاً.' });
 
                     await db.setConfig('hurricane_active', 'true');
                     await db.setConfig('trip_open', 'false');
@@ -471,10 +471,10 @@ client.on('interactionCreate', async interaction => {
                             }
                         }
                     } catch (sendErr) { console.error('[hurricane] send error:', sendErr?.message); }
-                    return interaction.editReply({ content: '✅ Hurricane warning sent.' });
+                    return interaction.editReply({ content: 'تم إرسال تحذير الإعصار.' });
                 } catch (e) {
                     console.error('[hurricane] error:', e?.message);
-                    return interaction.editReply({ content: '❌ An error occurred.' });
+                    return interaction.editReply({ content: 'حدث خطأ.' });
                 }
             }
 
@@ -496,11 +496,11 @@ client.on('interactionCreate', async interaction => {
                 const hurricaneActive = await db.getConfig('hurricane_active');
 
                 if (hurricaneActive === 'true') {
-                    return interaction.reply({ content: '⚠️ An active Hurricane is in effect — Renew is not possible. Please open a new trip first via the **Start Trip** button.', flags: 64 });
+                    return interaction.reply({ content: 'هناك إعصار نشط — التجديد غير ممكن. افتح رحلة جديدة أولاً عبر زر بدء الرحلة.', flags: 64 });
                 }
 
                 if (tripOpen !== 'true') {
-                    return interaction.reply({ content: '❌ No trip is currently open — you must Start Trip first before Renewing.', flags: 64 });
+                    return interaction.reply({ content: 'لا توجد رحلة مفتوحة حالياً — يجب بدء الرحلة أولاً قبل التجديد.', flags: 64 });
                 }
 
                 const modal = new ModalBuilder().setCustomId('trip_renewal_modal').setTitle('Trip Renewal');
@@ -537,7 +537,7 @@ client.on('interactionCreate', async interaction => {
 
                 const hasReq = await db.hasItem(interaction.user.id, job.req);
                 if (!hasReq)
-                    return interaction.reply({ content: `❌ You need **${job.req}** in your bag to perform this job.`, flags: 64 });
+                    return interaction.reply({ content: `تحتاج **${job.req}** في حقيبتك لأداء هذه المهمة.`, flags: 64 });
 
                 const { COOLDOWN_MINUTES } = require('./commands/jobs');
                 const cooldownMs = COOLDOWN_MINUTES * 60 * 1000;
@@ -546,7 +546,7 @@ client.on('interactionCreate', async interaction => {
                     const elapsed = Date.now() - new Date(lastUsed).getTime();
                     if (elapsed < cooldownMs) {
                         const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
-                        return interaction.reply({ content: `⏳ You must wait **${remaining} seconds** before performing this job again.`, flags: 64 });
+                        return interaction.reply({ content: `انتظر **${remaining} ثانية** قبل أداء هذه المهمة مجدداً.`, flags: 64 });
                     }
                 }
 
@@ -585,7 +585,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -597,13 +597,13 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId = parseInt(interaction.customId.replace('buy_bm_', ''));
                 const item   = await db.getBlackMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
+                if (!item) return interaction.reply({ content: 'هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const cash = Number(identity.cash);
-                if (cash < item.price) return interaction.reply({ content: `❌ Insufficient cash. You need **${Number(item.price).toLocaleString('en-US')}$** and you have **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
+                if (cash < item.price) return interaction.reply({ content: `رصيدك غير كافٍ. تحتاج **${Number(item.price).toLocaleString('en-US')}$** ولديك **${cash.toLocaleString('en-US')}$**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -622,7 +622,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -634,14 +634,14 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId   = parseInt(interaction.customId.replace('buy_market_', ''));
                 const item     = await db.getMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
+                if (!item) return interaction.reply({ content: 'هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
-                    return interaction.reply({ content: `❌ Insufficient cash. You need **${Number(item.price).toLocaleString()} Riyals** and you have **${cash.toLocaleString()} Riyals**.`, flags: 64 });
+                    return interaction.reply({ content: `رصيدك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** ولديك **${cash.toLocaleString()} ريال**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -660,7 +660,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -672,14 +672,14 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId   = parseInt(interaction.customId.replace('buy_equipment_', ''));
                 const item     = await db.getEquipmentItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ This equipment is no longer available.', flags: 64 });
+                if (!item) return interaction.reply({ content: 'هذه المعدة لم تعد متاحة.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const cash = Number(identity.cash);
                 if (cash < item.price)
-                    return interaction.reply({ content: `❌ Insufficient cash. You need **${Number(item.price).toLocaleString()} Riyals** and you have **${cash.toLocaleString()} Riyals**.`, flags: 64 });
+                    return interaction.reply({ content: `رصيدك غير كافٍ. تحتاج **${Number(item.price).toLocaleString()} ريال** ولديك **${cash.toLocaleString()} ريال**.`, flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, -item.price);
                 await db.addItem(interaction.user.id, item.name, 1);
@@ -698,7 +698,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -710,15 +710,15 @@ client.on('interactionCreate', async interaction => {
 
                 const propId = parseInt(interaction.customId.replace('buy_property_', ''));
                 const prop   = await db.getPropertyById(propId);
-                if (!prop) return interaction.reply({ content: '❌ This property is no longer available.', flags: 64 });
+                if (!prop) return interaction.reply({ content: 'هذا العقار لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: '❌ Your active identity was not found.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'لم يتم العثور على هويتك الفعّالة.', flags: 64 });
 
                 const price = Number(prop.price);
                 if (Number(identity.cash) < price) {
                     return interaction.reply({
-                        content: `❌ Insufficient cash. You have \`${Number(identity.cash).toLocaleString()} Riyals\` and the property costs \`${price.toLocaleString()} Riyals\`.`,
+                        content: `رصيدك غير كافٍ. لديك \`${Number(identity.cash).toLocaleString()} ريال\` وسعر العقار \`${price.toLocaleString()} ريال\`.`,
                         flags: 64
                     });
                 }
@@ -759,16 +759,16 @@ client.on('interactionCreate', async interaction => {
                 return interaction.update({ embeds: [successEmbed], components: [] });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred during the purchase.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء الشراء.', flags: 64 });
             }
         }
 
         if (interaction.customId === 'confirm_delete_all_identities' || interaction.customId === 'cancel_delete_all_identities') {
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-                return interaction.reply({ content: '❌ This command is for admins only.', flags: 64 });
+                return interaction.reply({ content: 'هذا الأمر للمشرفين فقط.', flags: 64 });
             }
             if (interaction.customId === 'cancel_delete_all_identities') {
-                return interaction.update({ content: '❌ Operation cancelled.', embeds: [], components: [] });
+                return interaction.update({ content: 'تم إلغاء العملية.', embeds: [], components: [] });
             }
             try {
                 await db.deleteAllIdentities();
@@ -781,7 +781,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.update({ embeds: [doneEmbed], components: [] });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while deleting identities.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء حذف الهويات.', flags: 64 });
             }
         }
 
@@ -791,10 +791,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 const adminRole = await db.getConfig('identity_admin_role');
                 if (adminRole && !interaction.member.roles.cache.has(adminRole)) {
-                    return interaction.reply({ content: '❌ You do not have permission to manage player identities.', flags: 64 });
+                    return interaction.reply({ content: 'ليس لديك صلاحية لإدارة هويات اللاعبين.', flags: 64 });
                 }
                 const pending = await db.getPendingIdentity(pendingId);
-                if (!pending) return interaction.reply({ content: '❌ Request not found or already processed.', flags: 64 });
+                if (!pending) return interaction.reply({ content: 'الطلب غير موجود أو تمت معالجته بالفعل.', flags: 64 });
 
                 if (isApprove) {
                     const char = await db.createIdentityFull(pending.discord_id, pending.slot, {
@@ -879,7 +879,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error(e);
-                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'An error occurred.', flags: 64 });
+                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -892,13 +892,13 @@ client.on('interactionCreate', async interaction => {
                 const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
                 const hasMinistryRole = ministryRoleId && interaction.member.roles.cache.has(ministryRoleId);
                 if (!isAdmin && !hasMinistryRole)
-                    return interaction.reply({ content: '❌ This button is for Ministry of Commerce admins only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الزر لمسؤولي وزارة التجارة فقط.', flags: 64 });
 
                 const pending = await db.getPendingCompany(pendingId);
                 if (!pending)
-                    return interaction.reply({ content: '❌ Request not found.', flags: 64 });
+                    return interaction.reply({ content: 'الطلب غير موجود.', flags: 64 });
                 if (pending.status !== 'pending')
-                    return interaction.reply({ content: '❌ This request has already been processed.', flags: 64 });
+                    return interaction.reply({ content: 'تمت معالجة هذا الطلب بالفعل.', flags: 64 });
 
                 if (isApprove) {
                     const result = await db.createCompany(pending.company_name, pending.discord_id);
@@ -988,7 +988,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error('[COMPANY APPROVE/REJECT ERROR]', e);
-                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'An error occurred.', flags: 64 });
+                if (!interaction.replied && !interaction.deferred) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -1003,17 +1003,17 @@ client.on('interactionCreate', async interaction => {
                 // تسجيل الدخول والخروج: Rank الوزارة فقط بدون استثناء الأدمن
                 if (['ministry_login_btn', 'ministry_logout_btn'].includes(interaction.customId)) {
                     if (!hasMinistryRole)
-                        return interaction.reply({ content: '❌ Login and logout is for Ministry of Commerce staff only.', flags: 64 });
+                        return interaction.reply({ content: 'الدخول والخروج لطاقم وزارة التجارة فقط.', flags: 64 });
                 } else {
                     if (!isAdminUser && !hasMinistryRole)
-                        return interaction.reply({ content: '❌ This action is for Ministry of Commerce staff only.', flags: 64 });
+                        return interaction.reply({ content: 'هذا الإجراء لطاقم وزارة التجارة فقط.', flags: 64 });
                 }
 
                 // ─── Login ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_login_btn') {
                     const duty = await db.getMinistryDuty(interaction.user.id);
                     if (duty?.status === 'on')
-                        return interaction.reply({ content: '⚠️ You are already logged in.', flags: 64 });
+                        return interaction.reply({ content: 'أنت مسجل الدخول بالفعل.', flags: 64 });
                     await db.setMinistryDuty(interaction.user.id, 'on');
                     const ministryChId = await db.getConfig('trade_ministry_channel');
                     if (ministryChId) {
@@ -1026,14 +1026,14 @@ client.on('interactionCreate', async interaction => {
                                 .setTimestamp()]
                         });
                     }
-                    return interaction.reply({ content: '✅ You have successfully logged in.', flags: 64 });
+                    return interaction.reply({ content: 'تم تسجيل الدخول بنجاح.', flags: 64 });
                 }
 
                 // ─── Logout ───────────────────────────────────────────────
                 if (interaction.customId === 'ministry_logout_btn') {
                     const duty = await db.getMinistryDuty(interaction.user.id);
                     if (!duty || duty.status === 'off')
-                        return interaction.reply({ content: '⚠️ You are not currently logged in.', flags: 64 });
+                        return interaction.reply({ content: 'أنت لست مسجلاً بالدخول حالياً.', flags: 64 });
                     await db.setMinistryDuty(interaction.user.id, 'off');
                     const ministryChId = await db.getConfig('trade_ministry_channel');
                     if (ministryChId) {
@@ -1046,14 +1046,14 @@ client.on('interactionCreate', async interaction => {
                                 .setTimestamp()]
                         });
                     }
-                    return interaction.reply({ content: '✅ You have successfully logged out.', flags: 64 });
+                    return interaction.reply({ content: 'تم تسجيل الخروج بنجاح.', flags: 64 });
                 }
 
                 // ─── View Registered Companies ──────────────────────────────────────
                 if (interaction.customId === 'ministry_companies_btn') {
                     const companies = await db.getAllCompanies();
                     if (!companies.length)
-                        return interaction.reply({ content: '📋 No registered companies found.', flags: 64 });
+                        return interaction.reply({ content: 'لا توجد شركات مسجلة.', flags: 64 });
 
                     const list = companies.map((c, i) =>
                         `**${i + 1}.** ${c.name} — Owner: <@${c.owner_discord_id}> — Balance: \`${(c.balance || 0).toLocaleString()} Riyals\``
@@ -1071,7 +1071,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'ministry_approve_btn') {
                     const pending = await db.getAllPendingCompanies();
                     if (!pending.length)
-                        return interaction.reply({ content: '📋 No pending company requests at the moment.', flags: 64 });
+                        return interaction.reply({ content: 'لا توجد طلبات شركات معلقة حالياً.', flags: 64 });
 
                     for (const p of pending) {
                         const embed = new EmbedBuilder()
@@ -1098,7 +1098,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error('[MINISTRY BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -1112,13 +1112,13 @@ client.on('interactionCreate', async interaction => {
                     (ciaMemberRoleId && interaction.member.roles.cache.has(ciaMemberRoleId)) ||
                     (ciaChefRoleId   && interaction.member.roles.cache.has(ciaChefRoleId));
                 if (!hasCiaAccess)
-                    return interaction.reply({ content: '🔒 This button is for CIA members only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الزر لأعضاء CIA فقط.', flags: 64 });
 
                 // ─── Login ──────────────────────────────────────────────
                 if (interaction.customId === 'cia_login_btn') {
                     const duty = await db.getCiaDuty(interaction.user.id);
                     if (duty?.status === 'on')
-                        return interaction.reply({ content: '⚠️ You are already logged in.', flags: 64 });
+                        return interaction.reply({ content: 'أنت مسجل الدخول بالفعل.', flags: 64 });
                     await db.setCiaDuty(interaction.user.id, 'on');
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Login')
@@ -1132,7 +1132,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'cia_logout_btn') {
                     const duty = await db.getCiaDuty(interaction.user.id);
                     if (!duty || duty.status === 'off')
-                        return interaction.reply({ content: '⚠️ You are not currently logged in.', flags: 64 });
+                        return interaction.reply({ content: 'أنت لست مسجلاً بالدخول حالياً.', flags: 64 });
                     await db.setCiaDuty(interaction.user.id, 'off');
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Logout')
@@ -1145,7 +1145,7 @@ client.on('interactionCreate', async interaction => {
                 // ─── هوية مزيفة — فتح مودال (CIA Chef فقط) ──────────────────────
                 if (interaction.customId === 'cia_fake_id_btn') {
                     if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
-                        return interaction.reply({ content: '🔒 Creating fake IDs is for CIA Chief only.', flags: 64 });
+                        return interaction.reply({ content: 'إنشاء الهويات المزيفة للرئيس فقط.', flags: 64 });
 
                     const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                     const modal = new ModalBuilder()
@@ -1184,11 +1184,11 @@ client.on('interactionCreate', async interaction => {
                 // ─── كشف المباشرين (CIA Chef فقط) ───────────────────────────────
                 if (interaction.customId === 'cia_active_btn') {
                     if (!ciaChefRoleId || !interaction.member.roles.cache.has(ciaChefRoleId))
-                        return interaction.reply({ content: '🔒 Viewing active members is for CIA Chief only.', flags: 64 });
+                        return interaction.reply({ content: 'مشاهدة المباشرين للرئيس فقط.', flags: 64 });
 
                     const active = await db.getAllActiveCia();
                     if (!active.length)
-                        return interaction.reply({ content: '📭 No CIA members are currently active.', flags: 64 });
+                        return interaction.reply({ content: 'لا يوجد أعضاء CIA مباشرون حالياً.', flags: 64 });
 
                     let desc = '';
                     for (const row of active) {
@@ -1204,7 +1204,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error('[CIA DUTY ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -1213,14 +1213,14 @@ client.on('interactionCreate', async interaction => {
             try {
                 const ciaRoleId = await db.getConfig('cia_chef_role');
                 if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
-                    return interaction.reply({ content: '🔒 This button is for CIA members only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الزر لأعضاء CIA فقط.', flags: 64 });
 
                 await interaction.deferReply({ flags: 64 });
                 const ministryRoleId = await db.getConfig('trade_ministry_role');
                 const allIdentities = await db.getAllActiveIdentities();
 
                 if (!allIdentities.length) {
-                    return interaction.editReply({ content: '📭 No registered citizens found.' });
+                    return interaction.editReply({ content: 'لا يوجد مواطنون مسجلون.' });
                 }
 
                 const filtered = [];
@@ -1234,7 +1234,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 if (!filtered.length) {
-                    return interaction.editReply({ content: '📭 No citizens found after excluding staff.' });
+                    return interaction.editReply({ content: 'لا يوجد مواطنون بعد استثناء الطاقم.' });
                 }
 
                 const CHUNK = 10;
@@ -1261,7 +1261,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply({ embeds: embeds.slice(0, 10) });
             } catch (e) {
                 console.error('[SECURITY FILES ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
+                if (!interaction.replied) interaction.editReply({ content: 'حدث خطأ.' });
             }
             return;
         }
@@ -1270,7 +1270,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'tracking_btn') {
             const ciaRoleId = await db.getConfig('cia_chef_role');
             if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
-                return interaction.reply({ content: '🔒 This button is for CIA members only.', flags: 64 });
+                return interaction.reply({ content: 'هذا الزر لأعضاء CIA فقط.', flags: 64 });
 
             const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
             const modal = new ModalBuilder()
@@ -1294,10 +1294,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 const { isAdmin } = require('./utils');
                 if (!(await isAdmin(interaction.member, db)))
-                    return interaction.reply({ content: '❌ Admins only.', flags: 64 });
+                    return interaction.reply({ content: 'للمشرفين فقط.', flags: 64 });
 
                 const req = await db.getActivationRequest(reqId);
-                if (!req) return interaction.update({ content: '❌ Request not found or already processed.', embeds: [], components: [] });
+                if (!req) return interaction.update({ content: 'الطلب غير موجود أو تمت معالجته بالفعل.', embeds: [], components: [] });
 
                 if (isApprove) {
                     // منح Rank التفعيل وتعيين النيك نيم بـ ID سوني
@@ -1357,7 +1357,7 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error(e);
                 if (!interaction.replied && !interaction.deferred)
-                    interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                    interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -1391,7 +1391,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'bank_deposit') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (identity.frozen) return interaction.reply({ content: '❄️ Your account is frozen.', flags: 64 });
+                    if (identity.frozen) return interaction.reply({ content: 'حسابك مجمد.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_deposit_modal').setTitle('Deposit Cash to Bank');
                     modal.addComponents(new ARB().addComponents(
                         new TextInputBuilder().setCustomId('deposit_amount').setLabel('Amount to Deposit (Riyals)').setStyle(TextInputStyle.Short).setRequired(true)
@@ -1401,7 +1401,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'bank_withdraw') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (identity.frozen) return interaction.reply({ content: '❄️ Your account is frozen.', flags: 64 });
+                    if (identity.frozen) return interaction.reply({ content: 'حسابك مجمد.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_withdraw_modal').setTitle('Withdraw Cash from Bank');
                     modal.addComponents(new ARB().addComponents(
                         new TextInputBuilder().setCustomId('withdraw_amount').setLabel('Amount to Withdraw (Riyals)').setStyle(TextInputStyle.Short).setRequired(true)
@@ -1411,7 +1411,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (interaction.customId === 'bank_transfer') {
                     const identity = await db.getActiveIdentity(interaction.user.id);
-                    if (identity.frozen) return interaction.reply({ content: '❄️ Your account is frozen.', flags: 64 });
+                    if (identity.frozen) return interaction.reply({ content: 'حسابك مجمد.', flags: 64 });
                     const modal = new ModalBuilder().setCustomId('bank_transfer_modal').setTitle('Bank Transfer');
                     modal.addComponents(
                         new ARB().addComponents(new TextInputBuilder().setCustomId('transfer_iban').setLabel('Recipient IBAN (7 digits)').setStyle(TextInputStyle.Short).setMinLength(7).setMaxLength(7).setRequired(true)),
@@ -1422,7 +1422,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -1433,7 +1433,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_create') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (acc) return interaction.reply({ content: `❌ You already have an account: **${acc.snap_username}**`, flags: 64 });
+                if (acc) return interaction.reply({ content: `لديك حساب سناب مسبقاً: **${acc.snap_username}**`, flags: 64 });
                 const modal = new MSN().setCustomId('snap_create_modal').setTitle('Create Snap Account')
                     .addComponents(new ARSN().addComponents(
                         new TISN().setCustomId('snap_user').setLabel('Account Username')
@@ -1445,9 +1445,9 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_send') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account. Create one first.', flags: 64 });
+                if (!acc) return interaction.reply({ content: 'ليس لديك حساب سناب. أنشئ حساباً أولاً.', flags: 64 });
                 const friends = await db.getSnapFriends(interaction.user.id);
-                if (!friends.length) return interaction.reply({ content: '❌ You have no friends yet. Add a friend first.', flags: 64 });
+                if (!friends.length) return interaction.reply({ content: 'ليس لديك أصدقاء بعد. أضف صديقاً أولاً.', flags: 64 });
                 const options = friends.slice(0, 25).map(f => ({
                     label: f.friend_username,
                     value: f.friend_id,
@@ -1456,12 +1456,12 @@ client.on('interactionCreate', async interaction => {
                 const row = new ARSN().addComponents(
                     new SSSN().setCustomId('snap_friend_select').setPlaceholder('👻 Choose a friend to send a snap').addOptions(options)
                 );
-                return interaction.reply({ content: '📸 **Choose the friend you want to send a snap to:**', components: [row], flags: 64 });
+                return interaction.reply({ content: 'اختر الصديق الذي تريد إرسال سناب إليه:', components: [row], flags: 64 });
             }
 
             if (interaction.customId === 'snap_inbox') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
+                if (!acc) return interaction.reply({ content: 'ليس لديك حساب سناب.', flags: 64 });
                 const msgs = await db.getSnapInbox(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Snap Inbox')
@@ -1486,7 +1486,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_friends') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
+                if (!acc) return interaction.reply({ content: 'ليس لديك حساب سناب.', flags: 64 });
                 const friends = await db.getSnapFriends(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('My Snap Friends')
@@ -1517,7 +1517,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_add') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account. Create one first.', flags: 64 });
+                if (!acc) return interaction.reply({ content: 'ليس لديك حساب سناب. أنشئ حساباً أولاً.', flags: 64 });
                 const modal = new MSN().setCustomId('snap_add_modal').setTitle('Add Friend')
                     .addComponents(new ARSN().addComponents(
                         new TISN().setCustomId('friend_snap_name').setLabel('Friend\'s Snap account name')
@@ -1529,7 +1529,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'snap_requests') {
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
+                if (!acc) return interaction.reply({ content: 'ليس لديك حساب سناب.', flags: 64 });
                 const requests = await db.getPendingSnapRequests(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Incoming Friend Requests')
@@ -1560,7 +1560,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_create_account') {
                 const existing = await db.getXAccount(interaction.user.id);
-                if (existing) return interaction.reply({ content: `❌ You already have an account: **@${existing.x_username}**`, flags: 64 });
+                if (existing) return interaction.reply({ content: `لديك حساب X مسبقاً: **@${existing.x_username}**`, flags: 64 });
                 const modal = new MBX().setCustomId('x_create_modal').setTitle('Create X Account')
                     .addComponents(new ARBX().addComponents(
                         new TIBX().setCustomId('x_username').setLabel('Account Username (without @)')
@@ -1571,9 +1571,9 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_send_tweet') {
                 const xChannel = await db.getConfig('x_channel');
-                if (!xChannel) return interaction.reply({ content: '❌ Tweet channel not configured yet. Contact admins.', flags: 64 });
+                if (!xChannel) return interaction.reply({ content: 'قناة التغريدات لم تُحدد بعد. تواصل مع الإدارة.', flags: 64 });
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ You do not have an X Platform account. Create one first.', flags: 64 });
+                if (!account) return interaction.reply({ content: 'ليس لديك حساب في منصة X. أنشئ حساباً أولاً.', flags: 64 });
                 const modal = new MBX().setCustomId('x_tweet_modal').setTitle('Send Tweet')
                     .addComponents(new ARBX().addComponents(
                         new TIBX().setCustomId('tweet_content').setLabel('Tweet Content')
@@ -1584,7 +1584,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'x_delete_account') {
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
+                if (!account) return interaction.reply({ content: 'ليس لديك حساب في منصة X.', flags: 64 });
                 await db.deleteXAccount(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Account Deleted')
@@ -1628,7 +1628,7 @@ client.on('interactionCreate', async interaction => {
 
             if (interaction.customId === 'bag_use') {
                 const items = await db.getInventory(interaction.user.id);
-                if (!items.length) return interaction.reply({ content: '❌ Your bag is empty, nothing to use.', flags: 64 });
+                if (!items.length) return interaction.reply({ content: 'حقيبتك فارغة، لا يوجد شيء للاستخدام.', flags: 64 });
                 const options = items.slice(0, 25).map(i => ({
                     label: i.item_name,
                     value: `use_${i.item_name}`,
@@ -1637,7 +1637,7 @@ client.on('interactionCreate', async interaction => {
                 const row = new ARB2().addComponents(
                     new SSM2().setCustomId('bag_use_select').setPlaceholder('Choose an item to use').addOptions(options)
                 );
-                return interaction.reply({ content: '✅ **Choose the item you want to use:**', components: [row], flags: 64 });
+                return interaction.reply({ content: 'اختر الغرض الذي تريد استخدامه:', components: [row], flags: 64 });
             }
 
             if (interaction.customId === 'bag_transfer') {
@@ -1666,9 +1666,9 @@ client.on('interactionCreate', async interaction => {
                     ? interaction.customId.replace('lawyer_req_accept_', '')
                     : interaction.customId.replace('lawyer_req_reject_', '')));
                 const req = await db.getLawyerRequestById(reqId);
-                if (!req) return interaction.reply({ content: '❌ Request not found or has expired.', flags: 64 });
-                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: '❌ This request is not addressed to you.', flags: 64 });
-                if (req.status !== 'pending') return interaction.reply({ content: '❌ This request has already been processed.', flags: 64 });
+                if (!req) return interaction.reply({ content: 'الطلب غير موجود أو انتهت صلاحيته.', flags: 64 });
+                if (req.lawyer_id !== interaction.user.id) return interaction.reply({ content: 'هذا الطلب ليس موجهاً إليك.', flags: 64 });
+                if (req.status !== 'pending') return interaction.reply({ content: 'تمت معالجة هذا الطلب بالفعل.', flags: 64 });
 
                 await db.updateLawyerRequest(reqId, isAccept ? 'accepted' : 'rejected');
                 const allLawyers = await db.getLawyers();
@@ -1738,22 +1738,22 @@ client.on('interactionCreate', async interaction => {
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const newDash = await buildTasks(db, interaction.user.id, lawyer?.lawyer_name || interaction.user.username);
                 return interaction.update(newDash);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         if (interaction.customId.startsWith('lawyer_atab_')) {
             try {
                 const caseId = Number(interaction.customId.replace('lawyer_atab_', ''));
                 const c = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
                 if (c.lawyer_id !== interaction.user.id)
-                    return interaction.reply({ content: '❌ You are not the lawyer of this case.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست المحامي في هذه القضية.', flags: 64 });
 
                 const DAYS_REQUIRED = 15;
                 const assignedAt = c.lawyer_assigned_at ? new Date(c.lawyer_assigned_at).getTime() : null;
                 const daysPassed  = assignedAt ? Math.floor((Date.now() - assignedAt) / 86_400_000) : 0;
                 if (daysPassed < DAYS_REQUIRED)
-                    return interaction.reply({ content: `⏳ It is not yet time to claim fees — **${DAYS_REQUIRED - daysPassed} day(s)** remaining.`, flags: 64 });
+                    return interaction.reply({ content: `لم يحن وقت المطالبة بالأتعاب — تبقى **${DAYS_REQUIRED - daysPassed} يوم/أيام**.`, flags: 64 });
 
                 const { ATAB_FEE } = require('./commands/lawyer-tasks');
                 const result = await db.chargeLawyerFee(
@@ -1786,7 +1786,7 @@ client.on('interactionCreate', async interaction => {
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const newDash = await buildTasks(db, interaction.user.id, lawyerData?.lawyer_name || interaction.user.username);
                 return interaction.update(newDash);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── التخلي عن قضية (فتح modal) ───────────────────────────────────────
@@ -1794,9 +1794,9 @@ client.on('interactionCreate', async interaction => {
             try {
                 const caseId = Number(interaction.customId.replace('lawyer_abandon_', ''));
                 const c = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
                 if (c.lawyer_id !== interaction.user.id)
-                    return interaction.reply({ content: '❌ You are not the lawyer of this case.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست المحامي في هذه القضية.', flags: 64 });
 
                 const { ABANDON_FEE } = require('./commands/lawyer-tasks');
                 const modal = new ModalBuilder()
@@ -1814,7 +1814,7 @@ client.on('interactionCreate', async interaction => {
                     )
                 );
                 return interaction.showModal(modal);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── أزرار الأولوية ──────────────────────────────────────────────────────────
@@ -1823,16 +1823,16 @@ client.on('interactionCreate', async interaction => {
                 const btnId = parseInt(interaction.customId.replace('priority_', ''));
                 const buttons = await db.getPriorityButtons();
                 const btn = buttons.find(b => b.id === btnId);
-                if (!btn) return interaction.reply({ content: '❌ This button no longer exists.', flags: 64 });
+                if (!btn) return interaction.reply({ content: 'هذا الزر لم يعد موجوداً.', flags: 64 });
 
                 const channelId = await db.getConfig('priority_channel_id');
-                if (!channelId) return interaction.reply({ content: '❌ Priority channel has not been set yet.', flags: 64 });
+                if (!channelId) return interaction.reply({ content: 'قناة الأولوية لم تُحدد بعد.', flags: 64 });
 
                 const targetChannel = interaction.guild.channels.cache.get(channelId);
-                if (!targetChannel) return interaction.reply({ content: '❌ Priority channel not found.', flags: 64 });
+                if (!targetChannel) return interaction.reply({ content: 'قناة الأولوية غير موجودة.', flags: 64 });
 
                 await targetChannel.send(btn.priority);
-                await interaction.reply({ content: `✅ Sent successfully.`, flags: 64 });
+                await interaction.reply({ content: `تم الإرسال بنجاح.`, flags: 64 });
             } catch (e) { console.error(e); }
             return;
         }
@@ -1841,7 +1841,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'gather_resources') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 await interaction.deferUpdate();
                 const RESOURCES = [
@@ -1860,7 +1860,7 @@ client.on('interactionCreate', async interaction => {
                 await db.addItem(interaction.user.id, picked.name, amount);
 
                 await interaction.followUp({
-                    content: `🪛 You gathered **${amount}x ${picked.emoji} ${picked.name}** and added them to your bag!`,
+                    content: `جمعت **${amount}x ${picked.emoji} ${picked.name}** وأضفتها إلى حقيبتك!`,
                     flags: 64
                 });
             } catch (e) { console.error(e); }
@@ -1873,7 +1873,7 @@ client.on('interactionCreate', async interaction => {
             interaction.customId.startsWith('citizen_file_next:')) {
             const chefRoleId = await db.getConfig('cia_chef_role');
             if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId))
-                return interaction.reply({ content: '❌ Unauthorized.', flags: 64 });
+                return interaction.reply({ content: 'غير مصرح.', flags: 64 });
             try {
                 await interaction.deferUpdate();
                 const parts   = interaction.customId.split(':');
@@ -1947,7 +1947,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الإجراء للمستثمرين فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const isDeposit = interaction.customId === 'comp_deposit_btn';
                 const modal = new ModalBuilder()
@@ -1970,7 +1970,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الإجراء للمستثمرين فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_hire_modal').setTitle('Assign Employee');
                 modal.addComponents(
@@ -2000,10 +2000,10 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الإجراء للمستثمرين فقط.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مالك أي شركة.', flags: 64 });
 
                 const res = await db.payCompanySalaries(company.id);
                 if (res.error)
@@ -2027,7 +2027,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[PAY SALARIES ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred while paying salaries.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ أثناء صرف الرواتب.', flags: 64 });
             }
             return;
         }
@@ -2037,7 +2037,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الإجراء للمستثمرين فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_promote_modal').setTitle('Promote Employee');
                 modal.addComponents(
@@ -2067,7 +2067,7 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الإجراء للمستثمرين فقط.', flags: 64 });
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder().setCustomId('comp_fire_modal').setTitle('Fire Employee');
                 modal.addComponents(
@@ -2087,12 +2087,12 @@ client.on('interactionCreate', async interaction => {
                 const investorRoleId = await db.getConfig('investor_role');
                 const isAdmin = interaction.member.permissions.has(require('discord.js').PermissionFlagsBits.Administrator);
                 if (investorRoleId && !isAdmin && !interaction.member.roles.cache.has(investorRoleId))
-                    return interaction.reply({ content: '❌ This action is for **Investor** rank holders only.', flags: 64 });
+                    return interaction.reply({ content: 'هذا الإجراء للمستثمرين فقط.', flags: 64 });
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مالك أي شركة.', flags: 64 });
                 if (company.balance > 0)
-                    return interaction.reply({ content: `❌ Cannot dissolve company while it has a balance of **${company.balance.toLocaleString()} Riyals**. Withdraw the balance first.`, flags: 64 });
+                    return interaction.reply({ content: `لا يمكن حل الشركة وفيها رصيد **${company.balance.toLocaleString()} ريال**. اسحب الرصيد أولاً.`, flags: 64 });
 
                 await db.dissolveCompany(company.id);
                 const embed = new EmbedBuilder()
@@ -2103,7 +2103,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error(e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -2117,7 +2117,7 @@ client.on('interactionCreate', async interaction => {
                 if (interaction.customId === 'stock_portfolio_btn') {
                     const portfolio = await db.getUserPortfolio(interaction.user.id);
                     if (!portfolio.length)
-                        return interaction.reply({ content: '📭 Your portfolio is empty — you have no shares currently.', flags: 64 });
+                        return interaction.reply({ content: 'محفظتك فارغة — ليس لديك أسهم حالياً.', flags: 64 });
                     let totalValue = 0;
                     let desc = '';
                     for (const p of portfolio) {
@@ -2139,7 +2139,7 @@ client.on('interactionCreate', async interaction => {
                 const isBuy = interaction.customId === 'stock_buy_btn';
                 const allListings = await db.getAllStockListings();
                 if (!allListings.length)
-                    return interaction.reply({ content: '❌ No companies are currently listed on the market.', flags: 64 });
+                    return interaction.reply({ content: 'لا توجد شركات مدرجة في السوق حالياً.', flags: 64 });
 
                 const options = allListings.slice(0, 25).map(l =>
                     new StringSelectMenuOptionBuilder()
@@ -2152,13 +2152,13 @@ client.on('interactionCreate', async interaction => {
                     .setPlaceholder(isBuy ? '📈 Choose a company to buy from' : '📉 Choose a company to sell')
                     .addOptions(options);
                 return interaction.reply({
-                    content: isBuy ? '📈 **Choose the company whose shares you want to buy:**' : '📉 **Choose the company whose shares you want to sell:**',
+                    content: isBuy ? 'اختر الشركة التي تريد شراء أسهمها:' : 'اختر الشركة التي تريد بيع أسهمها:',
                     components: [new ActionRowBuilder().addComponents(selectMenu)],
                     flags: 64
                 });
             } catch (e) {
                 console.error('[STOCK BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -2167,15 +2167,15 @@ client.on('interactionCreate', async interaction => {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
-                    return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const hasPerm = await db.hasTradePermit(interaction.user.id);
                 if (!hasPerm)
-                    return interaction.reply({ content: '❌ You do not have a trade permit. Contact the **Ministry of Commerce** to obtain one.', flags: 64 });
+                    return interaction.reply({ content: 'ليس لديك رخصة تجارية. تواصل مع وزارة التجارة للحصول عليها.', flags: 64 });
 
                 const existingComp = await db.getUserCompany(interaction.user.id);
                 if (existingComp)
-                    return interaction.reply({ content: `❌ You are already associated with company **${existingComp.name}**. You cannot found another company.`, flags: 64 });
+                    return interaction.reply({ content: `أنت مرتبط بالفعل بشركة **${existingComp.name}**. لا يمكنك تأسيس شركة أخرى.`, flags: 64 });
 
                 const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
                 const modal = new ModalBuilder()
@@ -2218,7 +2218,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error('[COMPANY APPLY BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -2232,7 +2232,7 @@ client.on('interactionCreate', async interaction => {
                         new BB2().setCustomId('company_apply_btn').setLabel('Submit Establishment Request').setEmoji('📋').setStyle(BS2.Success)
                     );
                     return interaction.reply({
-                        content: '❌ You do not have a registered company. You can submit an establishment request using the button below.',
+                        content: 'ليس لديك شركة مسجلة. يمكنك تقديم طلب التأسيس بالزر أدناه.',
                         components: [applyRow],
                         flags: 64
                     });
@@ -2240,7 +2240,7 @@ client.on('interactionCreate', async interaction => {
 
                 const companies = await db.getAllCompanies();
                 if (!companies.length)
-                    return interaction.reply({ content: '📋 No registered companies found.', flags: 64 });
+                    return interaction.reply({ content: 'لا توجد شركات مسجلة.', flags: 64 });
 
                 const list = companies.map((c, i) =>
                     `**${i + 1}.** 🏢 **${c.name}** — Owner: <@${c.owner_discord_id}> — Balance: \`${(c.balance || 0).toLocaleString()} Riyals\``
@@ -2256,7 +2256,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error('[COMPANY LIST BTN ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -2268,7 +2268,7 @@ client.on('interactionCreate', async interaction => {
             const isAdmin = pointsAdminRole
                 ? interaction.member.roles.cache.has(pointsAdminRole)
                 : interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-            if (!isAdmin) return interaction.reply({ content: '❌ Only points admins can use this button.', flags: 64 });
+            if (!isAdmin) return interaction.reply({ content: 'فقط مشرفو النقاط يمكنهم استخدام هذا الزر.', flags: 64 });
 
             const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder: ARB4 } = require('discord.js');
             const modal = new ModalBuilder()
@@ -2366,7 +2366,7 @@ client.on('interactionCreate', async interaction => {
                 } catch (e) {
                     if (e?.code === 40060 || e?.code === 10062) return;
                     console.error(e);
-                    try { if (interaction.deferred) interaction.editReply({ content: '❌ An error occurred.' }); } catch {}
+                    try { if (interaction.deferred) interaction.editReply({ content: 'حدث خطأ.' }); } catch {}
                 }
             } else {
                 await interaction.deferUpdate().catch(() => {});
@@ -2400,7 +2400,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const cars = await db.getShowroom();
                 const car = cars.find(c => c.id === carId);
-                if (!car) return interaction.reply({ content: '❌ Car not found or has been sold.', flags: 64 });
+                if (!car) return interaction.reply({ content: 'السيارة غير موجودة أو تم بيعها.', flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle(`🚗 ${car.car_name}`)
                     .setColor(0xB71C1C)
@@ -2416,7 +2416,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2428,7 +2428,7 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId = parseInt(value);
                 const item   = await db.getBlackMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
+                if (!item) return interaction.reply({ content: 'هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🖤 ${item.name}`)
@@ -2447,7 +2447,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2459,7 +2459,7 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId = parseInt(value);
                 const item   = await db.getMarketItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ This item is no longer available.', flags: 64 });
+                if (!item) return interaction.reply({ content: 'هذا الغرض لم يعد متاحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const cash     = Number(identity?.cash || 0);
@@ -2485,7 +2485,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2497,7 +2497,7 @@ client.on('interactionCreate', async interaction => {
 
                 const itemId   = parseInt(value);
                 const item     = await db.getEquipmentItemById(itemId);
-                if (!item) return interaction.reply({ content: '❌ This equipment is no longer available.', flags: 64 });
+                if (!item) return interaction.reply({ content: 'هذه المعدة لم تعد متاحة.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const cash     = Number(identity?.cash || 0);
@@ -2523,7 +2523,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(buyBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2538,32 +2538,32 @@ client.on('interactionCreate', async interaction => {
                     const slotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     const slotOptions = [1, 2, 3].map(s => {
                         if (s === 3 && !slot3Open) {
-                            return { label: '🔒 Character 3', value: `create_slot_${s}`, description: 'Locked — contact admins to unlock' };
+                            return { label: 'الشخصية الثالثة', value: `create_slot_${s}`, description: 'مقفلة — تواصل مع الإدارة لفتحها' };
                         }
                         const taken = identities.find(i => i.slot === s && i.character_name);
                         return {
                             label: slotNames[s],
                             value: `create_slot_${s}`,
-                            description: taken ? '🔒 Already filled' : '🟢 Available to create',
+                            description: taken ? 'ممتلئة' : 'متاحة للإنشاء',
                         };
                     });
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_create_slot')
-                            .setPlaceholder('Choose a character slot')
+                            .setPlaceholder('اختر خانة الشخصية')
                             .addOptions(slotOptions)
                     );
-                    return interaction.reply({ content: '📋 **Choose the character you want to create an identity for:**', components: [slotRow], flags: 64 });
+                    return interaction.reply({ content: 'اختر الشخصية التي تريد إنشاء هوية لها:', components: [slotRow], flags: 64 });
                 }
 
                 if (value === 'login_identity') {
                     const tripOpen = await db.getConfig('trip_open');
                     if (tripOpen !== 'true') {
-                        return interaction.reply({ content: '❌ **Login is currently closed.**\nYou can only log in when a trip is open. Wait for an admin announcement.', flags: 64 });
+                        return interaction.reply({ content: 'تسجيل الدخول مغلق حالياً.\nيمكنك الدخول فقط عندما تكون رحلة مفتوحة. انتظر إعلان المشرف.', flags: 64 });
                     }
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const created = identities.filter(i => i.character_name);
-                    if (!created.length) return interaction.reply({ content: '❌ No created and approved characters yet. Submit an identity request first.', flags: 64 });
+                    if (!created.length) return interaction.reply({ content: 'لا توجد شخصيات مُنشأة ومعتمدة بعد. قدم طلب هوية أولاً.', flags: 64 });
                     const loginSlotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     const slotOptions = created.map(i => ({
                         label: `${loginSlotNames[i.slot]}: ${i.character_name} ${i.family_name || ''}`,
@@ -2573,15 +2573,15 @@ client.on('interactionCreate', async interaction => {
                     const slotRow = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder()
                             .setCustomId('identity_login_slot')
-                            .setPlaceholder('Choose a character to log in with')
+                            .setPlaceholder('اختر شخصية للدخول')
                             .addOptions(slotOptions)
                     );
-                    return interaction.reply({ content: '✅ **Choose the character you want to log in with:**', components: [slotRow], flags: 64 });
+                    return interaction.reply({ content: 'اختر الشخصية التي تريد الدخول بها:', components: [slotRow], flags: 64 });
                 }
 
                 if (value === 'logout_identity') {
                     const status = await db.getLoginStatus(interaction.user.id);
-                    if (!status.is_logged_in) return interaction.reply({ content: '❌ You are not currently logged in with any character.', flags: 64 });
+                    if (!status.is_logged_in) return interaction.reply({ content: 'أنت لست مسجل الدخول بأي شخصية حالياً.', flags: 64 });
                     const identities = await db.getUserIdentities(interaction.user.id);
                     const activeChar = identities.find(i => i.slot === status.active_slot);
                     const slotNamesOut = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
@@ -2601,7 +2601,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2610,12 +2610,12 @@ client.on('interactionCreate', async interaction => {
             const NAMES = ['', 'Character 1', 'Character 2', 'Character 3'];
             if (slot === 3) {
                 const unlocked = await db.isSlot3Unlocked(interaction.user.id);
-                if (!unlocked) return interaction.reply({ content: '🔒 **Character 3** is not unlocked. Contact admins to unlock it.', flags: 64 });
+                if (!unlocked) return interaction.reply({ content: 'الشخصية الثالثة غير مفعلة. تواصل مع الإدارة لفتحها.', flags: 64 });
             }
             const identities = await db.getUserIdentities(interaction.user.id);
             const taken = identities.find(i => i.slot === slot && i.character_name);
             if (taken) {
-                return interaction.reply({ content: `❌ **${NAMES[slot]}** is already filled and a new identity cannot be created in it.`, flags: 64 });
+                return interaction.reply({ content: `**${NAMES[slot]}** ممتلئة بالفعل ولا يمكن إنشاء هوية جديدة فيها.`, flags: 64 });
             }
             const slotNames = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
             const modal = new ModalBuilder()
@@ -2651,7 +2651,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const char = identities.find(i => i.slot === slot);
-                if (!char || !char.character_name) return interaction.reply({ content: '❌ This character is not approved or incomplete. Cannot log in with it.', flags: 64 });
+                if (!char || !char.character_name) return interaction.reply({ content: 'هذه الشخصية غير معتمدة أو غير مكتملة. لا يمكن الدخول بها.', flags: 64 });
                 await db.loginIdentity(interaction.user.id, slot);
                 await db.addCharacterLog(interaction.user.id, interaction.user.username, 'login', char.character_name, slot);
                 const slotNamesLogin = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
@@ -2671,7 +2671,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred during login.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء تسجيل الدخول.', flags: 64 });
             }
         }
 
@@ -2683,7 +2683,7 @@ client.on('interactionCreate', async interaction => {
 
                 const propId = parseInt(value);
                 const prop = await db.getPropertyById(propId);
-                if (!prop) return interaction.reply({ content: '❌ This property is no longer available.', flags: 64 });
+                if (!prop) return interaction.reply({ content: 'هذا العقار لم يعد متاحاً.', flags: 64 });
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🏠 ${prop.name}`)
@@ -2703,7 +2703,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2727,7 +2727,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId.startsWith('citizen_file_select:')) {
             const chefRoleId = await db.getConfig('cia_chef_role');
             if (!chefRoleId || !interaction.member.roles.cache.has(chefRoleId))
-                return interaction.reply({ content: '❌ Unauthorized.', flags: 64 });
+                return interaction.reply({ content: 'غير مصرح.', flags: 64 });
             try {
                 await interaction.deferUpdate();
                 const page = parseInt(interaction.customId.split(':')[1]) || 0;
@@ -2735,7 +2735,7 @@ client.on('interactionCreate', async interaction => {
                 const { buildCitizenEmbed } = require('./commands/citizen-file');
                 const embed = await buildCitizenEmbed(db, discordId, parseInt(slot));
                 if (!embed) {
-                    await interaction.message.edit({ content: '❌ No data found for this citizen.', embeds: [], components: [] });
+                    await interaction.message.edit({ content: 'لا توجد بيانات لهذا المواطن.', embeds: [], components: [] });
                     return;
                 }
                 const backBtn = new ActionRowBuilder().addComponents(
@@ -2760,7 +2760,7 @@ client.on('interactionCreate', async interaction => {
 
                 const robberyId = parseInt(value);
                 const rob = await db.getRobberyById(robberyId);
-                if (!rob) return interaction.reply({ content: '❌ This robbery option is no longer available.', flags: 64 });
+                if (!rob) return interaction.reply({ content: 'خيار السرقة هذا لم يعد متاحاً.', flags: 64 });
 
                 const toolsList = rob.tools.trim().toLowerCase() === 'لا يوجد' || !rob.tools.trim()
                     ? null
@@ -2830,7 +2830,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred while executing the robbery.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء تنفيذ العملية.', flags: 64 });
             }
         }
 
@@ -2840,11 +2840,11 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 { const _e = await db.checkLoginAndIdentity(interaction.user.id); if (_e) return interaction.reply({ content: _e, flags: 64 }); }
                 const acc = await db.getSnapAccount(interaction.user.id);
-                if (!acc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
+                if (!acc) return interaction.reply({ content: 'ليس لديك حساب سناب.', flags: 64 });
 
                 if (value === 'snap_send') {
                     const friends = await db.getSnapFriends(interaction.user.id);
-                    if (!friends.length) return interaction.reply({ content: '❌ You have no friends yet. Add a friend first.', flags: 64 });
+                    if (!friends.length) return interaction.reply({ content: 'ليس لديك أصدقاء بعد. أضف صديقاً أولاً.', flags: 64 });
                     const options = friends.slice(0, 25).map(f => ({
                         label: f.friend_username,
                         value: f.friend_id,
@@ -2853,7 +2853,7 @@ client.on('interactionCreate', async interaction => {
                     const row = new ARN().addComponents(
                         new SSN().setCustomId('snap_friend_select').setPlaceholder('👻 Choose a friend to send a snap to').addOptions(options)
                     );
-                    return interaction.reply({ content: '📸 **Choose the friend you want to send a snap to:**', components: [row], flags: 64 });
+                    return interaction.reply({ content: 'اختر الصديق الذي تريد إرسال سناب إليه:', components: [row], flags: 64 });
                 }
 
                 if (value === 'snap_inbox') {
@@ -2943,7 +2943,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2952,7 +2952,7 @@ client.on('interactionCreate', async interaction => {
                 const friendId  = value;
                 const myAcc     = await db.getSnapAccount(interaction.user.id);
                 const friendAcc = await db.getSnapAccount(friendId);
-                if (!friendAcc) return interaction.reply({ content: '❌ Friend account not found.', flags: 64 });
+                if (!friendAcc) return interaction.reply({ content: 'حساب الصديق غير موجود.', flags: 64 });
 
                 const msgs = await db.getSnapConversation(interaction.user.id, friendId);
 
@@ -2979,7 +2979,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], components: [row], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -2997,7 +2997,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3006,7 +3006,7 @@ client.on('interactionCreate', async interaction => {
                 const requesterId = value;
                 const requesterAcc = await db.getSnapAccount(requesterId);
                 const done = await db.acceptSnapFriend(interaction.user.id, requesterId);
-                if (!done) return interaction.reply({ content: '❌ Request not found.', flags: 64 });
+                if (!done) return interaction.reply({ content: 'الطلب غير موجود.', flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Friend Request Accepted')
                     .setColor(0xFFFC00)
@@ -3016,7 +3016,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3038,7 +3038,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: 'An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3059,7 +3059,7 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 } catch (e) {
                     console.error(e);
-                    return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                    return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
                 }
             }
         }
@@ -3082,7 +3082,7 @@ client.on('interactionCreate', async interaction => {
                     return newRow;
                 });
                 return interaction.update({ components: comps });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         if (interaction.customId.startsWith('x_retweet_')) {
@@ -3090,11 +3090,11 @@ client.on('interactionCreate', async interaction => {
                 const postId = parseInt(interaction.customId.replace('x_retweet_', ''));
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: 'ليس لديك حساب في منصة X.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
-                if (!xChannelId) return interaction.reply({ content: '❌ The tweets channel has not been configured.', flags: 64 });
+                if (!xChannelId) return interaction.reply({ content: 'قناة التغريدات لم تُحدد.', flags: 64 });
                 const orig = await db.getPostById(postId);
-                if (!orig) return interaction.reply({ content: '❌ Tweet not found.', flags: 64 });
+                if (!orig) return interaction.reply({ content: 'التغريدة غير موجودة.', flags: 64 });
                 const rt = await db.retweetPost(interaction.user.id, postId);
                 const embed = new EmbedBuilder()
                     .setAuthor({ name: `@${myAcc.x_username} 🔁 Retweet`, iconURL: interaction.user.displayAvatarURL() })
@@ -3119,8 +3119,8 @@ client.on('interactionCreate', async interaction => {
                     return newRow;
                 });
                 await interaction.update({ components: comps });
-                return interaction.followUp({ content: `✅ Retweeted in <#${xChannelId}>`, flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+                return interaction.followUp({ content: `تم إعادة التغريدة في <#${xChannelId}>`, flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         if (interaction.customId.startsWith('x_reply_')) {
@@ -3128,7 +3128,7 @@ client.on('interactionCreate', async interaction => {
                 const postId = parseInt(interaction.customId.replace('x_reply_', ''));
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: 'ليس لديك حساب في منصة X.', flags: 64 });
                 const { ModalBuilder: MBR, TextInputBuilder: TIBR, TextInputStyle: TISR, ActionRowBuilder: ARBR } = require('discord.js');
                 const modal = new MBR().setCustomId(`x_reply_modal_${postId}`).setTitle('Reply to Tweet')
                     .addComponents(new ARBR().addComponents(
@@ -3136,7 +3136,7 @@ client.on('interactionCreate', async interaction => {
                             .setStyle(TISR.Paragraph).setRequired(true).setMaxLength(280)
                     ));
                 return interaction.showModal(modal);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
 
@@ -3161,7 +3161,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (value === 'my_cases') {
                     const cases = await db.getCasesByPlaintiff(interaction.user.id);
-                    if (!cases.length) return interaction.reply({ content: '📋 No cases filed under your name.', flags: 64 });
+                    if (!cases.length) return interaction.reply({ content: 'لا توجد قضايا مسجلة باسمك.', flags: 64 });
                     const lines = cases.map(c =>
                         `**[${c.case_number}]** ${c.title}\n> vs: ${c.defendant} • Status: ${db.CASE_STATUS[c.status] || c.status}${c.lawyer_name ? ` • Lawyer: ${c.lawyer_name}` : ''}${c.judge_name ? ` • Judge: ${c.judge_name}` : ''}`
                     ).join('\n\n');
@@ -3176,17 +3176,17 @@ client.on('interactionCreate', async interaction => {
 
                 if (value === 'hire_lawyer') {
                     const lawyers = await db.getLawyers();
-                    if (!lawyers.length) return interaction.reply({ content: '❌ No certified lawyers available currently. Contact an Admin.', flags: 64 });
+                    if (!lawyers.length) return interaction.reply({ content: 'لا يوجد محامون معتمدون حالياً. تواصل مع الإدارة.', flags: 64 });
                     const cases = await db.getCasesByPlaintiff(interaction.user.id);
                     const eligible = cases.filter(c => ['pending','accepted','in_progress'].includes(c.status));
-                    if (!eligible.length) return interaction.reply({ content: '❌ No open cases filed under your name.', flags: 64 });
+                    if (!eligible.length) return interaction.reply({ content: 'لا توجد قضايا مفتوحة مسجلة باسمك.', flags: 64 });
                     const sel = new ActionRowBuilder().addComponents(
                         new StringSelectMenuBuilder().setCustomId('case_sel_lawyer').setPlaceholder('📁 First: choose the case')
                             .addOptions(eligible.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `Status: ${db.CASE_STATUS[c.status]}` })))
                     );
-                    return interaction.reply({ content: '👨‍⚖️ **Step 1:** Choose the case:', components: [sel], flags: 64 });
+                    return interaction.reply({ content: 'الخطوة الأولى: اختر القضية:', components: [sel], flags: 64 });
                 }
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── العدل ─────────────────────────────────────────────────────────────
@@ -3194,34 +3194,34 @@ client.on('interactionCreate', async interaction => {
             try {
                 const { isAdmin } = require('./utils');
                 if (!(await isAdmin(interaction.member, db)))
-                    return interaction.reply({ content: '❌ Admins only.', flags: 64 });
+                    return interaction.reply({ content: 'للمشرفين فقط.', flags: 64 });
 
                 const actionMap = {
-                    accept_case:   { statuses: ['pending'],     label: '✅ Choose the case to accept',        customId: 'case_sel_accept' },
-                    reject_case:   { statuses: ['pending'],     label: '❌ Choose the case to reject',         customId: 'case_sel_reject' },
-                    assign_judge:  { statuses: ['accepted'],    label: '👨‍⚖️ Choose the case to assign a judge', customId: 'case_sel_judge' },
-                    issue_verdict: { statuses: ['in_progress'], label: '📜 Choose the case to issue a verdict', customId: 'case_sel_verdict' },
+                    accept_case:   { statuses: ['pending'],     label: 'اختر القضية للقبول',    customId: 'case_sel_accept' },
+                    reject_case:   { statuses: ['pending'],     label: 'اختر القضية للرفض',     customId: 'case_sel_reject' },
+                    assign_judge:  { statuses: ['accepted'],    label: 'اختر القضية لتعيين قاضٍ', customId: 'case_sel_judge' },
+                    issue_verdict: { statuses: ['in_progress'], label: 'اختر القضية لإصدار الحكم', customId: 'case_sel_verdict' },
                 };
                 const cfg = actionMap[value];
                 if (!cfg) return;
 
                 let cases = [];
                 for (const st of cfg.statuses) cases.push(...await db.getCasesByStatus(st));
-                if (!cases.length) return interaction.reply({ content: '📋 No cases in this status.', flags: 64 });
+                if (!cases.length) return interaction.reply({ content: 'لا توجد قضايا في هذه الحالة.', flags: 64 });
 
                 const sel = new ActionRowBuilder().addComponents(
                     new StringSelectMenuBuilder().setCustomId(cfg.customId).setPlaceholder('Choose a case')
                         .addOptions(cases.slice(0,25).map(c => ({ label: `${c.case_number} — ${c.title}`, value: String(c.id), description: `vs: ${c.defendant} • ${db.CASE_STATUS[c.status]}` })))
                 );
                 return interaction.reply({ content: cfg.label + ':', components: [sel], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── Accept case directly ─────────────────────────────────────────────────
         if (interaction.customId === 'case_sel_accept') {
             try {
                 const c = await db.getCaseById(Number(value));
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
                 await db.acceptCase(c.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Case Accepted')
@@ -3244,7 +3244,7 @@ client.on('interactionCreate', async interaction => {
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── judge_select: show selected judge's dashboard publicly ────────────────────
@@ -3253,10 +3253,10 @@ client.on('interactionCreate', async interaction => {
                 const { buildJudgeDashboard } = require('./commands/judge-dashboard');
                 const judges = await db.getJudges();
                 const judge  = judges.find(j => j.discord_id === value);
-                if (!judge) return interaction.reply({ content: '❌ Judge not found.', flags: 64 });
+                if (!judge) return interaction.reply({ content: 'القاضي غير موجود.', flags: 64 });
                 await interaction.channel.send(await buildJudgeDashboard(db, judge.discord_id, judge.judge_name));
                 return interaction.reply({ content: '\u200b', flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── lawyer_select: show selected lawyer's dashboard publicly ──────────────────
@@ -3265,10 +3265,10 @@ client.on('interactionCreate', async interaction => {
                 const { buildDashboard } = require('./commands/lawyer-dashboard');
                 const lawyers = await db.getLawyers();
                 const lawyer  = lawyers.find(l => l.discord_id === value);
-                if (!lawyer) return interaction.reply({ content: '❌ Lawyer not found.', flags: 64 });
+                if (!lawyer) return interaction.reply({ content: 'المحامي غير موجود.', flags: 64 });
                 await interaction.channel.send(await buildDashboard(db, lawyer.discord_id, lawyer.lawyer_name));
                 return interaction.reply({ content: '\u200b', flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── lawyer_tasks_select: private tasks dashboard — owner only ──────────
@@ -3276,17 +3276,17 @@ client.on('interactionCreate', async interaction => {
             try {
                 const selectedId = value;
                 if (interaction.user.id !== selectedId)
-                    return interaction.reply({ content: '❌ You cannot access another lawyer\'s dashboard.', flags: 64 });
+                    return interaction.reply({ content: 'لا يمكنك الوصول إلى لوحة محامٍ آخر.', flags: 64 });
 
                 const lawyers = await db.getLawyers();
                 const lawyer  = lawyers.find(l => l.discord_id === selectedId);
                 if (!lawyer)
-                    return interaction.reply({ content: '❌ You are not registered as a certified lawyer.', flags: 64 });
+                    return interaction.reply({ content: 'أنت غير مسجل كمحامٍ معتمد.', flags: 64 });
 
                 const { buildTasks } = require('./commands/lawyer-tasks');
                 const dash = await buildTasks(db, lawyer.discord_id, lawyer.lawyer_name);
                 return interaction.reply({ ...dash, flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── case_sel_lawyer: after choosing the case, show lawyer list ────────
@@ -3294,13 +3294,13 @@ client.on('interactionCreate', async interaction => {
             try {
                 const caseId = value;
                 const lawyers = await db.getLawyers();
-                if (!lawyers.length) return interaction.reply({ content: '❌ No certified lawyers available.', flags: 64 });
+                if (!lawyers.length) return interaction.reply({ content: 'لا يوجد محامون معتمدون.', flags: 64 });
                 const sel = new ActionRowBuilder().addComponents(
-                    new StringSelectMenuBuilder().setCustomId(`lawyer_pick_${caseId}`).setPlaceholder('👨‍⚖️ Step 2: Choose a lawyer')
+                    new StringSelectMenuBuilder().setCustomId(`lawyer_pick_${caseId}`).setPlaceholder('الخطوة الثانية: اختر المحامي')
                         .addOptions(lawyers.slice(0,25).map(l => ({ label: l.lawyer_name, value: l.discord_id, description: `ID: ${l.discord_id}` })))
                 );
-                return interaction.reply({ content: '👨‍⚖️ **Step 2:** Choose a lawyer:', components: [sel], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+                return interaction.reply({ content: 'الخطوة الثانية: اختر المحامي:', components: [sel], flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── lawyer_pick_{caseId}: send power of attorney request to lawyer ──────────────────
@@ -3311,8 +3311,8 @@ client.on('interactionCreate', async interaction => {
                 const lawyers  = await db.getLawyers();
                 const lawyer   = lawyers.find(l => l.discord_id === lawyerId);
                 const c        = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
-                if (!lawyer) return interaction.reply({ content: '❌ Lawyer not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
+                if (!lawyer) return interaction.reply({ content: 'المحامي غير موجود.', flags: 64 });
 
                 await db.createLawyerRequest(caseId, c.case_number, c.title, interaction.user.id, c.plaintiff_name, lawyerId);
 
@@ -3342,7 +3342,7 @@ client.on('interactionCreate', async interaction => {
                     )
                     .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         if (['case_sel_reject','case_sel_judge','case_sel_verdict'].includes(interaction.customId)) {
@@ -3362,7 +3362,7 @@ client.on('interactionCreate', async interaction => {
                     )
                 ));
                 return interaction.showModal(modal);
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         if (interaction.customId === 'phone_menu') {
@@ -3386,7 +3386,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3397,7 +3397,7 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 let result;
                 if (value === 'all') {
@@ -3407,7 +3407,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 const { totalValue, sold } = result;
-                if (!sold.length) return interaction.reply({ content: '❌ You have no earnings from this category in your bag.', flags: 64 });
+                if (!sold.length) return interaction.reply({ content: 'ليس لديك أرباح من هذه الفئة في حقيبتك.', flags: 64 });
 
                 await db.addToCash(interaction.user.id, identity.slot, totalValue);
 
@@ -3428,7 +3428,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3464,7 +3464,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], components: [new ActionRowBuilder().addComponents(startBtn)], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3472,7 +3472,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId === 'craft_weapon') {
             try {
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const CRAFT_RESOURCES = ['ألمنيوم', 'حديد', 'خشب', 'أربطة', 'مسامير'];
                 const CRAFT_WEAPONS = {
@@ -3481,7 +3481,7 @@ client.on('interactionCreate', async interaction => {
                     craft_mkii:    { name: 'Pistol MK II',   req: 500 },
                 };
                 const weapon = CRAFT_WEAPONS[value];
-                if (!weapon) return interaction.reply({ content: '❌ Invalid option.', flags: 65 });
+                if (!weapon) return interaction.reply({ content: 'خيار غير صحيح.', flags: 65 });
 
                 const missing = [];
                 for (const res of CRAFT_RESOURCES) {
@@ -3491,7 +3491,7 @@ client.on('interactionCreate', async interaction => {
 
                 if (missing.length) {
                     return interaction.reply({
-                        content: `❌ **You do not have enough resources to craft ${weapon.name}**\n${missing.join('\n')}`,
+                        content: `ليس لديك موارد كافية لصنع ${weapon.name}\n${missing.join('\n')}`,
                         flags: 65,
                     });
                 }
@@ -3508,7 +3508,7 @@ client.on('interactionCreate', async interaction => {
                 );
             } catch (e) {
                 console.error(e);
-                interaction.reply({ content: '❌ An error occurred during crafting.', flags: 65 }).catch(() => {});
+                interaction.reply({ content: 'حدث خطأ أثناء التصنيع.', flags: 65 }).catch(() => {});
             }
             return;
         }
@@ -3539,7 +3539,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.showModal(modal);
             } catch (e) {
                 console.error('[STOCK SELECT ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -3552,8 +3552,8 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
 
                 if (value === 'hospital_resuscitation' || value === 'witch_resuscitation') {
-                    const label = value === 'hospital_resuscitation' ? '🏥 Hospital' : '🧙 Witch';
-                    await interaction.reply({ content: `⏳ You will be revived via ${label} in **30 seconds**...`, flags: 64 });
+                    const label = value === 'hospital_resuscitation' ? 'المستشفى' : 'الساحرة';
+                    await interaction.reply({ content: `سيتم إنعاشك عبر ${label} خلال 30 ثانية...`, flags: 64 });
                     setTimeout(async () => {
                         try {
                             const reviveMsg = value === 'hospital_resuscitation'
@@ -3563,18 +3563,18 @@ client.on('interactionCreate', async interaction => {
                         } catch (e) { console.error('[HEALTH REVIVE]', e); }
                     }, 30_000);
                 } else if (value === 'decay') {
-                    await interaction.reply({ content: `⏳ Decay will begin in **5 minutes**...`, flags: 64 });
+                    await interaction.reply({ content: `سيبدأ التحلل خلال 5 دقائق...`, flags: 64 });
                     setTimeout(async () => {
                         try {
                             await interaction.channel.send(`${interaction.user} You have successfully decayed 💀`);
                         } catch (e) { console.error('[HEALTH DECAY]', e); }
                     }, 300_000);
                 } else {
-                    await interaction.reply({ content: '❌ Unknown option.', flags: 64 });
+                    await interaction.reply({ content: 'خيار غير معروف.', flags: 64 });
                 }
             } catch (e) {
                 console.error('[HEALTH MENU ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -3582,7 +3582,7 @@ client.on('interactionCreate', async interaction => {
         const handler = menuHandlers[interaction.customId];
         if (!handler) return;
         const response = handler[value];
-        if (!response) return interaction.reply({ content: 'No information available for this option.', flags: 64 });
+        if (!response) return interaction.reply({ content: 'لا توجد معلومات لهذا الخيار.', flags: 64 });
         return interaction.reply({ content: response, flags: 64 });
     }
 
@@ -3596,18 +3596,18 @@ client.on('interactionCreate', async interaction => {
                 const targetId = raw.replace(/[<@!>]/g, '');
 
                 if (!/^\d{17,20}$/.test(targetId)) {
-                    return interaction.editReply({ content: '❌ The mention or ID is incorrect.' });
+                    return interaction.editReply({ content: 'الإشارة أو المعرف غير صحيح.' });
                 }
                 if (targetId === interaction.user.id) {
-                    return interaction.editReply({ content: '❌ You cannot track yourself.' });
+                    return interaction.editReply({ content: 'لا يمكنك تتبع نفسك.' });
                 }
                 if (trackingSessions.has(targetId)) {
-                    return interaction.editReply({ content: '⚠️ This person already has an active tracking session.' });
+                    return interaction.editReply({ content: 'هذا الشخص لديه جلسة تتبع نشطة بالفعل.' });
                 }
 
                 const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
                 if (!targetMember) {
-                    return interaction.editReply({ content: '❌ This person is not in the server.' });
+                    return interaction.editReply({ content: 'هذا الشخص ليس في السيرفر.' });
                 }
 
                 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -3669,7 +3669,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply({ embeds: [startEmbed] });
             } catch (e) {
                 console.error('[TRACKING MODAL ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
+                if (!interaction.replied) interaction.editReply({ content: 'حدث خطأ.' });
             }
             return;
         }
@@ -3685,7 +3685,7 @@ client.on('interactionCreate', async interaction => {
 
                 const durMatch = rawDur.match(/^(\d+)(m|h|d)$/);
                 if (!durMatch)
-                    return interaction.editReply({ content: '❌ Invalid duration format. Example: `30m`, `2h`, or `7d`' });
+                    return interaction.editReply({ content: 'صيغة المدة غير صحيحة. مثال: `30m` أو `2h` أو `7d`' });
                 const num  = parseInt(durMatch[1]);
                 const unit = durMatch[2];
                 const msMap = { m: 60_000, h: 3_600_000, d: 86_400_000 };
@@ -3693,11 +3693,11 @@ client.on('interactionCreate', async interaction => {
 
                 const targetId = rawTarget.replace(/[<@!>]/g, '');
                 if (!/^\d{17,20}$/.test(targetId))
-                    return interaction.editReply({ content: '❌ The mention or ID is incorrect.' });
+                    return interaction.editReply({ content: 'الإشارة أو المعرف غير صحيح.' });
 
                 const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
                 if (!targetMember)
-                    return interaction.editReply({ content: '❌ This person is not in the server.' });
+                    return interaction.editReply({ content: 'هذا الشخص ليس في السيرفر.' });
 
                 // توليد رقم هوية مزيف
                 const fakeIban = String(Math.floor(1000000 + Math.random() * 9000000));
@@ -3741,7 +3741,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.editReply({ embeds: [confirmEmbed] });
             } catch (e) {
                 console.error('[CIA FAKE ID ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
+                if (!interaction.replied) interaction.editReply({ content: 'حدث خطأ.' });
             }
             return;
         }
@@ -3762,11 +3762,11 @@ client.on('interactionCreate', async interaction => {
                 const sharesInput = interaction.fields.getTextInputValue('stock_shares').trim();
                 const shares = parseInt(sharesInput);
                 if (isNaN(shares) || shares < 1)
-                    return interaction.editReply({ content: '❌ Number of shares must be a whole number greater than 0.' });
+                    return interaction.editReply({ content: 'عدد الأسهم يجب أن يكون عدداً صحيحاً أكبر من 0.' });
 
                 const listings = await db.getAllStockListings();
                 const match = listings.find(l => l.company_id === companyId);
-                if (!match) return interaction.editReply({ content: '❌ This company is not listed on the market.' });
+                if (!match) return interaction.editReply({ content: 'هذه الشركة غير مدرجة في السوق.' });
 
                 const result = isBuy
                     ? await db.buyShares(interaction.user.id, companyId, shares, activeIdentity.slot)
@@ -3796,7 +3796,7 @@ client.on('interactionCreate', async interaction => {
                 refreshStockMarket(db).catch(() => {});
             } catch (e) {
                 console.error('[STOCK MODAL ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: '❌ An error occurred.' });
+                if (!interaction.replied) interaction.editReply({ content: 'حدث خطأ.' });
             }
             return;
         }
@@ -3848,7 +3848,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3859,7 +3859,7 @@ client.on('interactionCreate', async interaction => {
                 const targetId  = interaction.fields.getTextInputValue('target_id').trim();
                 const amount    = parseInt(interaction.fields.getTextInputValue('points_amount').trim());
 
-                if (isNaN(amount) || amount <= 0) return interaction.reply({ content: '❌ Enter a positive whole number.', flags: 64 });
+                if (isNaN(amount) || amount <= 0) return interaction.reply({ content: 'أدخل عدداً صحيحاً موجباً.', flags: 64 });
 
                 const delta = isAdd ? amount : -amount;
                 await db.addStaffManualPoints(targetId, delta);
@@ -3880,7 +3880,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ content: '​', flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while modifying points.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء تعديل النقاط.', flags: 64 });
             }
         }
 
@@ -3892,14 +3892,14 @@ client.on('interactionCreate', async interaction => {
                 const labels = { trip_start: 'Trip Start', trip_hurricane: 'Hurricane', trip_renewal: 'Renewal' };
                 if (text) {
                     await db.setConfig(`${type}_message`, text);
-                    await interaction.reply({ content: `✅ Custom **${labels[type]}** message saved.`, flags: 64 });
+                    await interaction.reply({ content: `تم حفظ رسالة **${labels[type]}** المخصصة.`, flags: 64 });
                 } else {
                     await db.setConfig(`${type}_message`, '');
-                    await interaction.reply({ content: `🔄 **${labels[type]}** message reset to default.`, flags: 64 });
+                    await interaction.reply({ content: `تمت إعادة رسالة **${labels[type]}** إلى الافتراضية.`, flags: 64 });
                 }
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3909,16 +3909,16 @@ client.on('interactionCreate', async interaction => {
                 const style = interaction.customId.replace('priority_add_modal_', '');
                 const label = interaction.fields.getTextInputValue('priority_label').trim();
                 const text  = interaction.fields.getTextInputValue('priority_text').trim();
-                if (!label || !text) return interaction.reply({ content: '❌ All fields must be filled.', flags: 64 });
+                if (!label || !text) return interaction.reply({ content: 'يجب ملء جميع الحقول.', flags: 64 });
 
                 const btn = await db.addPriorityButton(label, text, style);
                 await interaction.reply({
-                    content: `✅ Priority button **${label}** added (ID: ${btn.id})`,
+                    content: `تم إضافة زر الأولوية **${label}** (المعرف: ${btn.id})`,
                     flags: 64
                 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -3929,11 +3929,11 @@ client.on('interactionCreate', async interaction => {
 
                 const logChannelId = await db.getConfig('activation_log_channel');
                 if (!logChannelId)
-                    return interaction.reply({ content: '❌ Activation channel has not been set yet. Contact an Admin.', flags: 64 });
+                    return interaction.reply({ content: 'قناة التفعيل لم تُحدد بعد. تواصل مع الإدارة.', flags: 64 });
 
                 const logChannel = interaction.guild.channels.cache.get(logChannelId);
                 if (!logChannel)
-                    return interaction.reply({ content: '❌ Activation channel not found. Contact an Admin.', flags: 64 });
+                    return interaction.reply({ content: 'قناة التفعيل غير موجودة. تواصل مع الإدارة.', flags: 64 });
 
                 const req = await db.createActivationRequest(
                     interaction.user.id,
@@ -3968,12 +3968,12 @@ client.on('interactionCreate', async interaction => {
                 });
 
                 return interaction.reply({
-                    content: `✅ **Your activation request has been submitted successfully!**\n> 🎮 **Sony ID:** \`${sonyId}\`\n> Wait for admin approval.`,
+                    content: `تم إرسال طلب التفعيل بنجاح!\nمعرف سوني: \`${sonyId}\`\nانتظر موافقة المشرف.`,
                     flags: 64
                 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while submitting the request.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
         }
 
@@ -3982,7 +3982,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const identity = await db.getActiveIdentity(interaction.user.id);
-                if (!identity) return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                if (!identity) return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const title      = interaction.fields.getTextInputValue('case_title').trim();
                 const defendant  = interaction.fields.getTextInputValue('case_defendant').trim();
@@ -4015,7 +4015,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred while filing the case.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ أثناء رفع القضية.', flags: 64 }); }
         }
 
         // ── تأكيد التخلي عن القضية ────────────────────────────────────────────
@@ -4024,9 +4024,9 @@ client.on('interactionCreate', async interaction => {
                 const caseId = Number(interaction.customId.replace('lawyer_abandon_modal_', ''));
                 const reason = interaction.fields.getTextInputValue('abandon_reason').trim();
                 const c = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
                 if (c.lawyer_id !== interaction.user.id)
-                    return interaction.reply({ content: '❌ You are not the lawyer for this case.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست المحامي في هذه القضية.', flags: 64 });
 
                 const { ABANDON_FEE } = require('./commands/lawyer-tasks');
                 const result = await db.abandonCase(caseId, interaction.user.id, c.plaintiff_id, ABANDON_FEE);
@@ -4053,8 +4053,8 @@ client.on('interactionCreate', async interaction => {
                     await plaintiffUser.send({ embeds: [dmEmbed] });
                 } catch (_) {}
 
-                await interaction.reply({ content: `✅ Withdrawn from case **${c.case_number}** and **${ABANDON_FEE.toLocaleString()} Riyals** have been deducted from your balance as compensation for the client.`, flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+                await interaction.reply({ content: `تم الانسحاب من القضية **${c.case_number}** وخُصم **${ABANDON_FEE.toLocaleString()} ريال** من رصيدك تعويضاً للموكل.`, flags: 64 });
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── رفض قضية ─────────────────────────────────────────────────────────
@@ -4063,7 +4063,7 @@ client.on('interactionCreate', async interaction => {
                 const caseId = Number(interaction.customId.replace('case_reject_modal_', ''));
                 const reason = interaction.fields.getTextInputValue('reason').trim();
                 const c      = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
 
                 await db.rejectCase(caseId, reason, interaction.user.id);
 
@@ -4091,7 +4091,7 @@ client.on('interactionCreate', async interaction => {
                     await plaintiff.send({ embeds: [dmEmbed] });
                 } catch (_) {}
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── توكيل قاضي ───────────────────────────────────────────────────────
@@ -4100,7 +4100,7 @@ client.on('interactionCreate', async interaction => {
                 const caseId    = Number(interaction.customId.replace('case_judge_modal_', ''));
                 const judgeText = interaction.fields.getTextInputValue('judge_mention').trim();
                 const c         = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
 
                 const mentionMatch = judgeText.match(/^<@!?(\d+)>$/);
                 const judgeId   = mentionMatch ? mentionMatch[1] : null;
@@ -4121,7 +4121,7 @@ client.on('interactionCreate', async interaction => {
                     .setFooter({ text: `Assigned by: ${interaction.user.username} • FANTASY Bot` })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── إصدار حكم ────────────────────────────────────────────────────────
@@ -4130,7 +4130,7 @@ client.on('interactionCreate', async interaction => {
                 const caseId  = Number(interaction.customId.replace('case_verdict_modal_', ''));
                 const verdict = interaction.fields.getTextInputValue('verdict').trim();
                 const c       = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
 
                 await db.issueVerdict(caseId, verdict, interaction.user.id);
 
@@ -4169,7 +4169,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         // ── توكيل محامي (طلب) ────────────────────────────────────────────────
@@ -4179,7 +4179,7 @@ client.on('interactionCreate', async interaction => {
                 const lawyerName = interaction.fields.getTextInputValue('lawyer_name').trim();
                 const reason     = interaction.fields.getTextInputValue('lawyer_reason').trim();
                 const c          = await db.getCaseById(caseId);
-                if (!c) return interaction.reply({ content: '❌ Case not found.', flags: 64 });
+                if (!c) return interaction.reply({ content: 'القضية غير موجودة.', flags: 64 });
 
                 await db.assignLawyer(caseId, null, lawyerName);
 
@@ -4203,7 +4203,7 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 return interaction.reply({ embeds: [embed], flags: 64 });
-            } catch (e) { console.error(e); return interaction.reply({ content: '❌ An error occurred.', flags: 64 }); }
+            } catch (e) { console.error(e); return interaction.reply({ content: 'حدث خطأ.', flags: 64 }); }
         }
 
         if (interaction.customId === 'report_police_modal' || interaction.customId === 'report_ambulance_modal') {
@@ -4213,7 +4213,7 @@ client.on('interactionCreate', async interaction => {
                 const details    = interaction.fields.getTextInputValue('report_details').trim();
                 const configKey  = isPolice ? 'police_reports_channel' : 'ambulance_reports_channel';
                 const channelId  = await db.getConfig(configKey);
-                if (!channelId) return interaction.reply({ content: `❌ Reports channel has not been set. Contact an Admin.`, flags: 64 });
+                if (!channelId) return interaction.reply({ content: `قناة البلاغات لم تُحدد. تواصل مع الإدارة.`, flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 const charName = identity ? (identity.character_name || interaction.user.username) : interaction.user.username;
@@ -4234,10 +4234,10 @@ client.on('interactionCreate', async interaction => {
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
 
-                return interaction.reply({ content: `✅ ${isPolice ? 'Police report' : 'Ambulance report'} submitted successfully.`, flags: 64 });
+                return interaction.reply({ content: `تم إرسال البلاغ بنجاح.`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -4248,7 +4248,7 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const amount = parseInt(interaction.fields.getTextInputValue('deposit_amount').replace(/,/g, ''));
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ Invalid amount.', flags: 64 });
+                    return interaction.reply({ content: 'المبلغ غير صحيح.', flags: 64 });
                 const result = await db.depositCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
@@ -4263,7 +4263,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -4274,7 +4274,7 @@ client.on('interactionCreate', async interaction => {
                 if (loginErr) return interaction.reply({ content: loginErr, flags: 64 });
                 const amount = parseInt(interaction.fields.getTextInputValue('withdraw_amount').replace(/,/g, ''));
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ Invalid amount.', flags: 64 });
+                    return interaction.reply({ content: 'المبلغ غير صحيح.', flags: 64 });
                 const result = await db.withdrawCash(interaction.user.id, amount);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
@@ -4289,7 +4289,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -4303,7 +4303,7 @@ client.on('interactionCreate', async interaction => {
                 const note    = interaction.fields.getTextInputValue('transfer_note').trim() || null;
                 const amount  = parseInt(rawAmt);
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ Invalid amount. Enter a positive number.', flags: 64 });
+                    return interaction.reply({ content: 'المبلغ غير صحيح. أدخل عدداً موجباً.', flags: 64 });
 
                 const result = await db.transferMoney(interaction.user.id, toIban, amount, note);
                 if (!result.success)
@@ -4328,7 +4328,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred during the transfer.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء التحويل.', flags: 64 });
             }
         }
 
@@ -4347,7 +4347,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while creating the account.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء إنشاء الحساب.', flags: 64 });
             }
         }
 
@@ -4355,7 +4355,7 @@ client.on('interactionCreate', async interaction => {
             try {
                 const snapUsername = interaction.fields.getTextInputValue('snap_user').trim();
                 if (!/^[\w\u0600-\u06FF]{3,20}$/.test(snapUsername))
-                    return interaction.reply({ content: '❌ Account name must be 3-20 characters with no spaces.', flags: 64 });
+                    return interaction.reply({ content: 'اسم الحساب يجب أن يكون 3-20 حرفاً بدون مسافات.', flags: 64 });
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const result = await db.createSnapAccount(interaction.user.id, snapUsername);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
@@ -4365,7 +4365,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply(await buildSnap(account, img, db));
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -4373,10 +4373,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 const friendName = interaction.fields.getTextInputValue('friend_snap_name').trim();
                 const myAcc = await db.getSnapAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ You do not have a Snap account.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: 'ليس لديك حساب سناب.', flags: 64 });
                 const friendAcc = await db.getSnapAccountByUsername(friendName);
-                if (!friendAcc) return interaction.reply({ content: `❌ No account found with the name **${friendName}**.`, flags: 64 });
-                if (friendAcc.discord_id === interaction.user.id) return interaction.reply({ content: '❌ You cannot add yourself.', flags: 64 });
+                if (!friendAcc) return interaction.reply({ content: `لا يوجد حساب باسم **${friendName}**.`, flags: 64 });
+                if (friendAcc.discord_id === interaction.user.id) return interaction.reply({ content: 'لا يمكنك إضافة نفسك.', flags: 64 });
                 const result = await db.addSnapFriend(interaction.user.id, friendAcc.discord_id);
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 // notify via DM
@@ -4399,7 +4399,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -4409,7 +4409,7 @@ client.on('interactionCreate', async interaction => {
                 const content = interaction.fields.getTextInputValue('snap_content').trim();
                 const myAcc = await db.getSnapAccount(interaction.user.id);
                 const receiverAcc = await db.getSnapAccount(receiverId);
-                if (!myAcc || !receiverAcc) return interaction.reply({ content: '❌ Account not found.', flags: 64 });
+                if (!myAcc || !receiverAcc) return interaction.reply({ content: 'الحساب غير موجود.', flags: 64 });
                 await db.sendSnap(interaction.user.id, receiverId, content);
                 // DM notification
                 try {
@@ -4431,7 +4431,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] , flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while sending the snap.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء إرسال السناب.', flags: 64 });
             }
         }
 
@@ -4440,18 +4440,18 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const content = interaction.fields.getTextInputValue('tweet_content').trim();
                 const account = await db.getXAccount(interaction.user.id);
-                if (!account) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
+                if (!account) return interaction.reply({ content: 'ليس لديك حساب في منصة X.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
-                if (!xChannelId) return interaction.reply({ content: '❌ The tweets channel has not been set. Contact the admins.', flags: 64 });
+                if (!xChannelId) return interaction.reply({ content: 'قناة التغريدات لم تُحدد. تواصل مع الإدارة.', flags: 64 });
                 const post = await db.postTweet(interaction.user.id, content);
                 const { buildTweetMessage } = require('./commands/tweet');
                 const { embed: tweetEmbed, row: tweetRow } = buildTweetMessage(post, interaction.user.displayAvatarURL());
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [tweetEmbed], components: [tweetRow] });
-                return interaction.reply({ content: `✅ Your tweet has been posted in <#${xChannelId}>`, flags: 64 });
+                return interaction.reply({ content: `تم نشر تغريدتك في <#${xChannelId}>`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while posting the tweet.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء نشر التغريدة.', flags: 64 });
             }
         }
 
@@ -4461,11 +4461,11 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const content = interaction.fields.getTextInputValue('reply_content').trim();
                 const myAcc = await db.getXAccount(interaction.user.id);
-                if (!myAcc) return interaction.reply({ content: '❌ You do not have an X Platform account.', flags: 64 });
+                if (!myAcc) return interaction.reply({ content: 'ليس لديك حساب في منصة X.', flags: 64 });
                 const xChannelId = await db.getConfig('x_channel');
-                if (!xChannelId) return interaction.reply({ content: '❌ The tweets channel has not been set.', flags: 64 });
+                if (!xChannelId) return interaction.reply({ content: 'قناة التغريدات لم تُحدد.', flags: 64 });
                 const orig = await db.getPostById(postId);
-                if (!orig) return interaction.reply({ content: '❌ Original tweet not found.', flags: 64 });
+                if (!orig) return interaction.reply({ content: 'التغريدة الأصلية غير موجودة.', flags: 64 });
                 const reply = await db.replyPost(interaction.user.id, postId, content);
                 const embed = new EmbedBuilder()
                     .setAuthor({ name: `@${myAcc.x_username}`, iconURL: interaction.user.displayAvatarURL() })
@@ -4479,10 +4479,10 @@ client.on('interactionCreate', async interaction => {
                     .setTimestamp();
                 const xChannel = interaction.guild?.channels?.cache.get(xChannelId);
                 if (xChannel) await xChannel.send({ embeds: [embed] });
-                return interaction.reply({ content: `✅ Your reply has been posted in <#${xChannelId}>`, flags: 64 });
+                return interaction.reply({ content: `تم نشر ردك في <#${xChannelId}>`, flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while posting the reply.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء نشر الرد.', flags: 64 });
             }
         }
 
@@ -4492,10 +4492,10 @@ client.on('interactionCreate', async interaction => {
                 const itemName = interaction.fields.getTextInputValue('transfer_item_name').trim();
                 const toIban   = interaction.fields.getTextInputValue('transfer_iban').trim();
                 const receiver = await db.getIdentityByIban(toIban);
-                if (!receiver) return interaction.reply({ content: '❌ No user found with this IBAN.', flags: 64 });
-                if (receiver.discord_id === interaction.user.id) return interaction.reply({ content: '❌ You cannot transfer an item to yourself.', flags: 64 });
+                if (!receiver) return interaction.reply({ content: 'لا يوجد مستخدم بهذا الآيبان.', flags: 64 });
+                if (receiver.discord_id === interaction.user.id) return interaction.reply({ content: 'لا يمكنك تحويل غرض لنفسك.', flags: 64 });
                 const result = await db.transferItem(interaction.user.id, receiver.discord_id, itemName);
-                if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'Item not found in your bag or quantity is zero.'}`, flags: 64 });
+                if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'الغرض غير موجود في حقيبتك أو الكمية صفر.'}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Item Transferred Successfully')
                     .setColor(0x6A1B9A)
@@ -4509,7 +4509,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed], flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred during the transfer.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء التحويل.', flags: 64 });
             }
         }
 
@@ -4521,7 +4521,7 @@ client.on('interactionCreate', async interaction => {
             }
             try {
                 const startChannelId = await db.getConfig('trips_start_channel');
-                if (!startChannelId) return interaction.editReply({ content: '❌ Trip start channel has not been set. Use `/إعداد-رحلات` first.' });
+                if (!startChannelId) return interaction.editReply({ content: 'قناة بداية الرحلة لم تُحدد. استخدم `/إعداد-رحلات` أولاً.' });
 
                 const hostId     = interaction.fields.getTextInputValue('trip_host_id').trim()   || '—';
                 const deputy     = interaction.fields.getTextInputValue('trip_deputy').trim()     || '—';
@@ -4577,10 +4577,10 @@ client.on('interactionCreate', async interaction => {
                     console.error('[trip_start] channel send error:', sendErr?.message);
                 }
                 await db.addStaffActivity(interaction.user.id, 'trips_count');
-                return interaction.editReply({ content: sent ? '✅ Trip start notification sent.' : '⚠️ Trip opened but message could not be sent — check the bot\'s permissions in the channel.' });
+                return interaction.editReply({ content: sent ? 'تم إرسال إشعار بداية الرحلة.' : 'فُتحت الرحلة لكن تعذر إرسال الرسالة — تحقق من صلاحيات البوت في القناة.' });
             } catch (e) {
                 console.error('[trip_start_modal] error:', e?.message, e);
-                return interaction.editReply({ content: '❌ An error occurred: ' + (e?.message || e) });
+                return interaction.editReply({ content: 'حدث خطأ: ' + (e?.message || e) });
             }
         }
 
@@ -4592,7 +4592,7 @@ client.on('interactionCreate', async interaction => {
             }
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.editReply({ content: '❌ Alerts channel has not been set. Use `/إعداد-رحلات` first.' });
+                if (!alertsChannelId) return interaction.editReply({ content: 'قناة التنبيهات لم تُحدد. استخدم `/إعداد-رحلات` أولاً.' });
 
                 const hostId = interaction.fields.getTextInputValue('renewal_host_id').trim() || '—';
 
@@ -4632,17 +4632,17 @@ client.on('interactionCreate', async interaction => {
                 } catch (sendErr) {
                     console.error('[trip_renewal] channel send error:', sendErr?.message);
                 }
-                return interaction.editReply({ content: sent ? '✅ Renewal notification sent.' : '⚠️ Renewal recorded but message could not be sent — check the bot\'s permissions in the channel.' });
+                return interaction.editReply({ content: sent ? 'تم إرسال إشعار التجديد.' : 'تم تسجيل التجديد لكن تعذر إرسال الرسالة — تحقق من صلاحيات البوت في القناة.' });
             } catch (e) {
                 console.error('[trip_renewal_modal] error:', e?.message, e);
-                return interaction.editReply({ content: '❌ An error occurred: ' + (e?.message || e) });
+                return interaction.editReply({ content: 'حدث خطأ: ' + (e?.message || e) });
             }
         }
 
         if (interaction.customId === 'trip_alert_modal') {
             try {
                 const alertsChannelId = await db.getConfig('trips_alerts_channel');
-                if (!alertsChannelId) return interaction.reply({ content: '❌ Alerts channel has not been set. Use `/إعداد-رحلات` first.', flags: 64 });
+                if (!alertsChannelId) return interaction.reply({ content: 'قناة التنبيهات لم تُحدد. استخدم `/إعداد-رحلات` أولاً.', flags: 64 });
 
                 const alertText = interaction.fields.getTextInputValue('alert_text').trim();
 
@@ -4659,10 +4659,10 @@ client.on('interactionCreate', async interaction => {
                     if (ch) await ch.send({ embeds: [embed] });
                 } catch {}
                 sendToTripLog(embed);
-                return interaction.reply({ content: '✅ Alert sent.', flags: 64 });
+                return interaction.reply({ content: 'تم إرسال التنبيه.', flags: 64 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
         }
 
@@ -4675,11 +4675,11 @@ client.on('interactionCreate', async interaction => {
 
                 const panicChannelId = await db.getConfig('panic_channel');
                 if (!panicChannelId)
-                    return interaction.reply({ content: '❌ Panic channel has not been set up. Contact an Admin.', flags: 64 });
+                    return interaction.reply({ content: 'قناة البانيك لم تُحدد. تواصل مع الإدارة.', flags: 64 });
 
                 const ch = await client.channels.fetch(panicChannelId).catch(() => null);
                 if (!ch)
-                    return interaction.reply({ content: '❌ Channel not found or the bot does not have access to it.', flags: 64 });
+                    return interaction.reply({ content: 'القناة غير موجودة أو البوت لا يملك صلاحية الوصول إليها.', flags: 64 });
 
                 const embed = new EmbedBuilder()
                     .setTitle('Panic — Distress Call')
@@ -4694,10 +4694,10 @@ client.on('interactionCreate', async interaction => {
                     .setTimestamp();
 
                 await ch.send({ content: '@here', embeds: [embed] });
-                return interaction.reply({ content: '✅ Your location has been sent, help is on the way!', flags: 64 });
+                return interaction.reply({ content: 'تم إرسال موقعك، المساعدة في الطريق!', flags: 64 });
             } catch (e) {
                 console.error('[PANIC ERROR]', e);
-                return interaction.reply({ content: '❌ An error occurred while sending the location.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء إرسال الموقع.', flags: 64 });
             }
         }
 
@@ -4712,7 +4712,7 @@ client.on('interactionCreate', async interaction => {
                 await db.ensureUser(interaction.user.id, interaction.user.username);
                 const identities = await db.getUserIdentities(interaction.user.id);
                 const slotTaken = identities.find(i => i.slot === slot && i.character_name);
-                if (slotTaken) return interaction.reply({ content: '❌ This slot is already occupied. Choose another slot.', flags: 64 });
+                if (slotTaken) return interaction.reply({ content: 'هذه الخانة محجوزة بالفعل. اختر خانة أخرى.', flags: 64 });
 
                 const pending = await db.createPendingIdentity({
                     discordId: interaction.user.id,
@@ -4767,12 +4767,12 @@ client.on('interactionCreate', async interaction => {
                 sendToCharLog(pendingLogEmbed);
 
                 return interaction.reply({
-                    content: `⏳ **Your identity request \`#${pending.id}\` has been submitted for review.**\nYou will receive a response when it is approved or rejected.`,
+                    content: `تم إرسال طلب هويتك رقم \`#${pending.id}\` للمراجعة.\nستتلقى رداً عند الموافقة أو الرفض.`,
                     flags: 64
                 });
             } catch (e) {
                 console.error(e);
-                return interaction.reply({ content: '❌ An error occurred while submitting the request.', flags: 64 });
+                return interaction.reply({ content: 'حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
         }
 
@@ -4782,15 +4782,15 @@ client.on('interactionCreate', async interaction => {
                 const amountStr = interaction.fields.getTextInputValue('amount').trim();
                 const amount = parseInt(amountStr);
                 if (isNaN(amount) || amount <= 0)
-                    return interaction.reply({ content: '❌ Invalid amount. Enter a whole number.', flags: 64 });
+                    return interaction.reply({ content: 'المبلغ غير صحيح. أدخل عدداً صحيحاً.', flags: 64 });
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
-                    return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const company = await db.getUserCompany(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ You are not linked to any company.', flags: 64 });
+                    return interaction.reply({ content: 'أنت غير مرتبط بأي شركة.', flags: 64 });
 
                 if (isDeposit) {
                     const result = await db.depositToCompany(company.id, interaction.user.id, identity.slot, amount);
@@ -4807,7 +4807,7 @@ client.on('interactionCreate', async interaction => {
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 } else {
                     if (company.userRole !== 'مالك' && company.userRole !== 'مدير')
-                        return interaction.reply({ content: '❌ Only the owner and manager can withdraw funds.', flags: 64 });
+                        return interaction.reply({ content: 'فقط المالك والمدير يمكنهما السحب.', flags: 64 });
                     const result = await db.withdrawFromCompany(company.id, interaction.user.id, identity.slot, amount);
                     if (result.error) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                     const updated = await db.getCompanyById(company.id);
@@ -4823,7 +4823,7 @@ client.on('interactionCreate', async interaction => {
                 }
             } catch (e) {
                 console.error('[COMP DEPOSIT/WITHDRAW ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ.', flags: 64 });
             }
             return;
         }
@@ -4836,20 +4836,20 @@ client.on('interactionCreate', async interaction => {
                 const salary  = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
-                    return interaction.reply({ content: '❌ Invalid rank. Enter: مدير, محاسب, or موظف.', flags: 64 });
+                    return interaction.reply({ content: 'الرتبة غير صحيحة. أدخل: مدير، محاسب، أو موظف.', flags: 64 });
                 if (isNaN(salary) || salary < 0)
-                    return interaction.reply({ content: '❌ Invalid salary. Enter a whole number.', flags: 64 });
+                    return interaction.reply({ content: 'الراتب غير صحيح. أدخل عدداً صحيحاً.', flags: 64 });
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مالك أي شركة.', flags: 64 });
 
                 if (userId === interaction.user.id)
-                    return interaction.reply({ content: '❌ You cannot assign yourself.', flags: 64 });
+                    return interaction.reply({ content: 'لا يمكنك تعيين نفسك.', flags: 64 });
 
                 const existing = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
                 if (existing)
-                    return interaction.reply({ content: '❌ This player is already an employee. Use the **Promote Employee** button to update their rank and salary.', flags: 64 });
+                    return interaction.reply({ content: 'هذا اللاعب موظف بالفعل. استخدم زر ترقية الموظف لتحديث رتبته وراتبه.', flags: 64 });
 
                 const res = await db.addCompanyMember(company.id, userId, role, salary);
                 if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
@@ -4864,7 +4864,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP HIRE ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred. Make sure the player ID is correct.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ. تأكد من صحة معرف اللاعب.', flags: 64 });
             }
             return;
         }
@@ -4877,17 +4877,17 @@ client.on('interactionCreate', async interaction => {
                 const salary    = parseInt(salaryStr);
 
                 if (!['مدير', 'محاسب', 'موظف'].includes(role))
-                    return interaction.reply({ content: '❌ Invalid rank. Enter: مدير, محاسب, or موظف.', flags: 64 });
+                    return interaction.reply({ content: 'الرتبة غير صحيحة. أدخل: مدير، محاسب، أو موظف.', flags: 64 });
                 if (isNaN(salary) || salary < 0)
-                    return interaction.reply({ content: '❌ Invalid salary. Enter a whole number.', flags: 64 });
+                    return interaction.reply({ content: 'الراتب غير صحيح. أدخل عدداً صحيحاً.', flags: 64 });
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مالك أي شركة.', flags: 64 });
 
                 const member = (await db.getCompanyMembers(company.id)).find(m => m.discord_id === userId);
                 if (!member)
-                    return interaction.reply({ content: '❌ This player is not an employee of your company.', flags: 64 });
+                    return interaction.reply({ content: 'هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
 
                 await db.updateCompanyMemberRole(company.id, userId, role, salary);
 
@@ -4902,7 +4902,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP PROMOTE ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred. Make sure the player ID is correct.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ. تأكد من صحة معرف اللاعب.', flags: 64 });
             }
             return;
         }
@@ -4913,14 +4913,14 @@ client.on('interactionCreate', async interaction => {
 
                 const company = await db.getCompanyByOwner(interaction.user.id);
                 if (!company)
-                    return interaction.reply({ content: '❌ You are not the owner of any company.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مالك أي شركة.', flags: 64 });
 
                 if (userId === interaction.user.id)
-                    return interaction.reply({ content: '❌ You cannot fire yourself.', flags: 64 });
+                    return interaction.reply({ content: 'لا يمكنك فصل نفسك.', flags: 64 });
 
                 const removed = await db.removeCompanyMember(company.id, userId);
                 if (!removed)
-                    return interaction.reply({ content: '❌ This player is not an employee of your company.', flags: 64 });
+                    return interaction.reply({ content: 'هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
 
                 const embed = new EmbedBuilder().setTitle('Employee Fired').setColor(0xB71C1C)
                     .addFields(
@@ -4930,7 +4930,7 @@ client.on('interactionCreate', async interaction => {
                 return interaction.reply({ embeds: [embed] });
             } catch (e) {
                 console.error('[COMP FIRE ERROR]', e);
-                if (!interaction.replied) interaction.reply({ content: '❌ An error occurred. Make sure the player ID is correct.', flags: 64 });
+                if (!interaction.replied) interaction.reply({ content: 'حدث خطأ. تأكد من صحة معرف اللاعب.', flags: 64 });
             }
             return;
         }
@@ -4945,19 +4945,19 @@ client.on('interactionCreate', async interaction => {
 
                 const identity = await db.getActiveIdentity(interaction.user.id);
                 if (!identity)
-                    return interaction.reply({ content: 'You are not logged in. Please log in first.', flags: 64 });
+                    return interaction.reply({ content: 'أنت لست مسجل الدخول. سجل الدخول أولاً.', flags: 64 });
 
                 const hasPerm = await db.hasTradePermit(interaction.user.id);
                 if (!hasPerm)
-                    return interaction.reply({ content: '❌ Your trade permit has expired or been revoked. Contact the **Ministry of Commerce**.', flags: 64 });
+                    return interaction.reply({ content: 'رخصة التجارة انتهت صلاحيتها أو سُحبت. تواصل مع وزارة التجارة.', flags: 64 });
 
                 const existingComp = await db.getUserCompany(interaction.user.id);
                 if (existingComp)
-                    return interaction.reply({ content: `❌ You are already linked to company **${existingComp.name}**.`, flags: 64 });
+                    return interaction.reply({ content: `أنت مرتبط بالفعل بشركة **${existingComp.name}**.`, flags: 64 });
 
                 const ministryChId = await db.getConfig('trade_ministry_channel');
                 if (!ministryChId)
-                    return interaction.reply({ content: '❌ Ministry of Commerce channel has not been set yet. Contact an Admin.', flags: 64 });
+                    return interaction.reply({ content: 'قناة وزارة التجارة لم تُحدد بعد. تواصل مع الإدارة.', flags: 64 });
 
                 const pending = await db.createPendingCompany({
                     discordId: interaction.user.id,
@@ -4970,7 +4970,7 @@ client.on('interactionCreate', async interaction => {
                 });
 
                 await interaction.reply({
-                    content: `⏳ **Your company founding request for «${compName}» (Request \`#${pending.id}\`) has been sent to the Ministry of Commerce.**\nYou will receive a response when it is approved or rejected.`,
+                    content: `تم إرسال طلب تأسيس شركة «${compName}» (طلب رقم \`#${pending.id}\`) إلى وزارة التجارة.\nستتلقى رداً عند الموافقة أو الرفض.`,
                     flags: 64
                 });
 
@@ -5004,7 +5004,7 @@ client.on('interactionCreate', async interaction => {
             } catch (e) {
                 console.error('[COMPANY MODAL ERROR]', e);
                 if (!interaction.replied)
-                    return interaction.reply({ content: '❌ An error occurred while submitting the request.', flags: 64 });
+                    return interaction.reply({ content: 'حدث خطأ أثناء إرسال الطلب.', flags: 64 });
             }
             return;
         }
@@ -5031,7 +5031,7 @@ client.on('interactionCreate', async interaction => {
     } catch (error) {
         console.error(`[SLASH ERROR] /${interaction.commandName}:`, error?.message || error);
         if (!interaction.replied && !interaction.deferred) {
-            interaction.reply({ content: '❌ An error occurred while executing the command!', flags: 64 }).catch(() => {});
+            interaction.reply({ content: 'حدث خطأ أثناء تنفيذ الأمر!', flags: 64 }).catch(() => {});
         }
     }
 });
@@ -5087,7 +5087,7 @@ client.on('messageCreate', async message => {
         await command.execute(message, args, db);
     } catch (error) {
         console.error(`[CMD ERROR] ${commandName}:`, error?.message || error);
-        message.reply('❌ An error occurred while executing the command!');
+        message.reply('حدث خطأ أثناء تنفيذ الأمر!');
     }
 });
 
