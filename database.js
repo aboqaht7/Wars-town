@@ -425,7 +425,7 @@ async function getCitizenData(discordId, slot) {
             [`%${fullName}%`]
         ),
         query(
-            `SELECT reason, created_at FROM violations WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10`,
+            `SELECT reason, created_at FROM bands WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10`,
             [discordId]
         ),
     ]);
@@ -1586,7 +1586,6 @@ module.exports = {
     getLawyers, addLawyer, removeLawyer,
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,
-    addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
     addBand, removeBand, getExpiredBands, getBandByUserId,
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
@@ -1667,48 +1666,6 @@ async function getItemQty(discordId, itemName) {
         [discordId, itemName]
     );
     return res.rows[0] ? Number(res.rows[0].quantity) : 0;
-}
-
-/* ─── جدول المخالفات ─── */
-async function initViolationsTable() {
-    await pool.query(`
-        CREATE TABLE IF NOT EXISTS violations (
-            id          SERIAL PRIMARY KEY,
-            user_id     TEXT NOT NULL,
-            admin_id    TEXT NOT NULL,
-            reason      TEXT NOT NULL,
-            expires_at  TIMESTAMP NOT NULL,
-            saved_roles TEXT NOT NULL DEFAULT '[]',
-            created_at  TIMESTAMP DEFAULT NOW()
-        );
-    `);
-    // إضافة العمود إن لم يكن موجوداً في جداول قديمة
-    await pool.query(`ALTER TABLE violations ADD COLUMN IF NOT EXISTS saved_roles TEXT NOT NULL DEFAULT '[]';`);
-}
-initViolationsTable().catch(console.error);
-
-async function addViolation(userId, adminId, reason, expiresAt, savedRoles = []) {
-    // احذف المخالفة القديمة إن وُجدت أولاً
-    await pool.query(`DELETE FROM violations WHERE user_id=$1`, [userId]);
-    await pool.query(
-        `INSERT INTO violations (user_id, admin_id, reason, expires_at, saved_roles)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [userId, adminId, reason, expiresAt, JSON.stringify(savedRoles)]
-    );
-}
-
-async function removeViolation(userId) {
-    await pool.query(`DELETE FROM violations WHERE user_id = $1`, [userId]);
-}
-
-async function getExpiredViolations() {
-    const res = await pool.query(`SELECT * FROM violations WHERE expires_at <= NOW()`);
-    return res.rows;
-}
-
-async function getViolationByUserId(userId) {
-    const res = await pool.query(`SELECT * FROM violations WHERE user_id = $1 LIMIT 1`, [userId]);
-    return res.rows[0] || null;
 }
 
 /* ─── جدول الباندات ─── */

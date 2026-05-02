@@ -5028,6 +5028,36 @@ client.on('interactionCreate', async interaction => {
         if (interaction.commandName === 'سوق-الأسهم' && result?.id) {
             stockMarketMsg = result;
         }
+
+        // ── لوق تلقائي لكل أوامر الإعدادات الإدارية ─────────────────────
+        const cmdName = interaction.commandName || '';
+        const isConfigCmd = cmdName.startsWith('تعيين-') || cmdName.startsWith('إعداد-')
+            || cmdName === 'عرض-لوقات' || cmdName === 'نسخة-احتياطية';
+        // نتجاهل /تعيين-لوق نفسه و/عرض-لوقات لمنع الضوضاء
+        if (isConfigCmd && cmdName !== 'تعيين-لوق' && cmdName !== 'عرض-لوقات') {
+            try {
+                const { logEvent } = require('./loggers');
+                const opts = (interaction.options?.data || []).map(o => {
+                    let v = o.value;
+                    if (o.channel) v = `<#${o.channel.id}>`;
+                    else if (o.role) v = `<@&${o.role.id}>`;
+                    else if (o.user) v = `<@${o.user.id}>`;
+                    return `**${o.name}:** ${v}`;
+                }).join('\n') || '_بدون خيارات_';
+                const logEmbed = new EmbedBuilder()
+                    .setTitle('لوق: تنفيذ أمر إعدادات')
+                    .setColor(0x546E7A)
+                    .addFields(
+                        { name: 'الأمر',  value: `/${cmdName}`,            inline: true },
+                        { name: 'المنفذ', value: `${interaction.user}`,    inline: true },
+                        { name: 'القناة', value: `<#${interaction.channelId}>`, inline: true },
+                        { name: 'الخيارات', value: opts.slice(0, 1000),    inline: false },
+                    )
+                    .setFooter({ text: 'نظام اللوقات • FANTASY Bot' })
+                    .setTimestamp();
+                logEvent(client, db, 'config', logEmbed);
+            } catch (_) {}
+        }
     } catch (error) {
         console.error(`[SLASH ERROR] /${interaction.commandName}:`, error?.message || error);
         if (!interaction.replied && !interaction.deferred) {
@@ -5176,6 +5206,22 @@ setInterval(async () => {
 
                 await db.removeBand(b.user_id);
 
+                // لوق رفع الباند التلقائي
+                try {
+                    const { logEvent } = require('./loggers');
+                    const logEmbed = new EmbedBuilder()
+                        .setTitle('لوق: انتهاء باند تلقائي')
+                        .setColor(0x2E7D32)
+                        .addFields(
+                            { name: 'اللاعب',    value: `<@${b.user_id}> (\`${b.user_id}\`)`, inline: true },
+                            { name: 'السبب',     value: b.reason || 'لم يُحدد', inline: true },
+                            { name: 'المنفذ الأصلي', value: `<@${b.admin_id}>`, inline: true },
+                        )
+                        .setFooter({ text: 'نظام الباند • FANTASY Bot' })
+                        .setTimestamp();
+                    logEvent(client, db, 'band', logEmbed);
+                } catch (_) {}
+
                 // إشعار اللاعب
                 try {
                     const user = await client.users.fetch(b.user_id);
@@ -5187,6 +5233,36 @@ setInterval(async () => {
         }
     } catch (e) { console.error('band interval error:', e); }
 }, 60_000);
+
+// ── نسخة احتياطية يومية تلقائية للداتابيس (الساعة 03:00 توقيت الخادم) ───
+let _lastAutoBackupDate = null;
+function scheduleNextDailyBackup() {
+    const now = new Date();
+    const next = new Date(now);
+    next.setHours(3, 0, 0, 0);
+    if (next <= now) next.setDate(next.getDate() + 1);
+    const ms = next - now;
+    setTimeout(async () => {
+        const todayKey = `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()}`;
+        if (_lastAutoBackupDate !== todayKey) {
+            try {
+                const { sendBackupToChannel } = require('./backup');
+                const res = await sendBackupToChannel(client, db, { auto: true, silent: true });
+                if (res?.filePath) {
+                    _lastAutoBackupDate = todayKey;
+                    console.log('✅ تم إنشاء النسخة الاحتياطية اليومية');
+                } else {
+                    console.warn('⚠️ تم تخطي النسخة الاحتياطية: روم النسخ الاحتياطية غير معيّن.');
+                }
+            } catch (e) {
+                console.error('❌ خطأ في النسخة الاحتياطية اليومية:', e?.message || e);
+            }
+        }
+        scheduleNextDailyBackup();
+    }, ms);
+    console.log(`⏰ النسخة الاحتياطية القادمة: ${next.toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' })}`);
+}
+scheduleNextDailyBackup();
 
 // ── Health check server for deployment ──────────────────────────────────
 const http = require('http');

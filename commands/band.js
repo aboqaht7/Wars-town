@@ -3,6 +3,7 @@ module.exports = {
     async execute(message, args, db) {
         const { isAdmin } = require('../utils');
         const { EmbedBuilder } = require('discord.js');
+        const { logEvent } = require('../loggers');
 
         // ── صلاحيات ──────────────────────────────────────────────────────
         const permRoleId = await db.getConfig('ban_role_id');
@@ -85,6 +86,12 @@ module.exports = {
 
         if (_img) embed.setImage(_img);
         await message.channel.send({ embeds: [embed] });
+
+        // ── لوق العملية في روم الباند ────────────────────────────────────
+        const logEmbed = EmbedBuilder.from(embed)
+            .setTitle('لوق: تنفيذ باند')
+            .addFields({ name: 'القناة', value: `<#${message.channel.id}>`, inline: true });
+        logEvent(message.client, db, 'band', logEmbed);
 
         // ── إشعار اللاعب ──────────────────────────────────────────────────
         try {

@@ -2,6 +2,8 @@ module.exports = {
     name: 'فك-باند',
     async execute(message, args, db) {
         const { isAdmin } = require('../utils');
+        const { EmbedBuilder } = require('discord.js');
+        const { logEvent } = require('../loggers');
 
         // ── صلاحيات ──────────────────────────────────────────────────────
         const permRoleId = await db.getConfig('ban_role_id');
@@ -53,6 +55,20 @@ module.exports = {
             `تم فك الباند عن ${target} وأُعيدت جميع رتبه (${restoredCount} رتبة)\n` +
             `> **بواسطة:** ${message.author}`
         );
+
+        // ── لوق العملية في روم الباند ────────────────────────────────────
+        const logEmbed = new EmbedBuilder()
+            .setTitle('لوق: فك باند يدوي')
+            .setColor(0x2E7D32)
+            .addFields(
+                { name: 'المنفذ',         value: `${message.author}`, inline: true },
+                { name: 'اللاعب',          value: `${target}`,         inline: true },
+                { name: 'الرتب المُعادة',  value: String(restoredCount), inline: true },
+                { name: 'القناة',          value: `<#${message.channel.id}>`, inline: true },
+            )
+            .setFooter({ text: 'نظام الباند • FANTASY Bot' })
+            .setTimestamp();
+        logEvent(message.client, db, 'band', logEmbed);
 
         // ── إشعار اللاعب ──────────────────────────────────────────────────
         try {
