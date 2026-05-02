@@ -1,19 +1,11 @@
-const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder } = require('discord.js');
+const { loadSystemBtns, makeBtn } = require('../btnConfig');
 
 module.exports = {
     name: 'تراكينق',
     data: new SlashCommandBuilder()
         .setName('تراكينق')
-        .setDescription('بدء عملية تراكينق على هدف (لأعضاء CIA فقط)')
-        .addStringOption(o =>
-            o.setName('النوع')
-             .setDescription('نوع التراكينق')
-             .setRequired(false)
-             .addChoices(
-                 { name: 'عادي (لمواطن)',     value: 'normal'    },
-                 { name: 'للرؤساء (محدود)', value: 'president' },
-             )
-        ),
+        .setDescription('عرض لوحة التراكينق (لأعضاء CIA فقط)'),
 
     async slashExecute(interaction, db) {
         const ciaRoleId = await db.getConfig('cia_chef_role');
@@ -24,22 +16,24 @@ module.exports = {
             return interaction.reply({ content: '❌ هذا الأمر لأعضاء CIA فقط.', flags: 64 });
         }
 
-        const type = interaction.options.getString('النوع') || 'normal';
-        const modalId = type === 'president' ? 'tracking_president_modal' : 'tracking_modal';
-        const title   = type === 'president' ? 'تراكينق للرؤساء'        : 'تراكينق';
+        const t = await loadSystemBtns(db, 'cia_tracking');
 
-        const modal = new ModalBuilder()
-            .setCustomId(modalId)
-            .setTitle(title);
+        const embed = new EmbedBuilder()
+            .setTitle('🎯 لوحة التراكينق — CIA')
+            .setColor(0x0D1B2A)
+            .setDescription(
+                '**🎯 تراكينق** — تتبّع مواطن عادي (تبريد ساعتان لكل عميل)\n' +
+                '**👑 تراكينق للرؤساء** — تتبّع رتبة محمية (مرتان شهرياً فقط)\n\n' +
+                '> اختر الزر المناسب لفتح نافذة الإدخال.'
+            )
+            .setFooter({ text: 'CIA • FANTASY Bot' })
+            .setTimestamp();
 
-        const input = new TextInputBuilder()
-            .setCustomId('tracking_target')
-            .setLabel('منشن أو معرّف الهدف')
-            .setStyle(TextInputStyle.Short)
-            .setPlaceholder('@username أو 123456789')
-            .setRequired(true);
+        const row = new ActionRowBuilder().addComponents(
+            makeBtn('tracking_btn',           t.normal),
+            makeBtn('tracking_president_btn', t.president),
+        );
 
-        modal.addComponents(new ActionRowBuilder().addComponents(input));
-        await interaction.showModal(modal);
+        await interaction.reply({ embeds: [embed], components: [row], flags: 64 });
     },
 };
