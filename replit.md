@@ -37,15 +37,30 @@ commands/             # All bot commands (125+ files, prefix + slash)
 
 ## Audit Log System
 - Helper: `loggers.js` exports `logEvent(client, db, type, embed)` and `LOG_TYPES`.
-- Channels are stored as PostgreSQL config keys: `band_log_channel`, `config_log_channel`, `backup_log_channel`, `general_log_channel` (used as fallback).
+- Channels are stored as PostgreSQL config keys: `band_log_channel`, `config_log_channel`, `backup_log_channel`, `tracking_log_channel`, `general_log_channel` (used as fallback).
 - Slash commands:
-  - `/تعيين-لوق` — set the channel for a given log type (band / config / backup / general)
+  - `/تعيين-لوق` — set the channel for a given log type (band / config / backup / tracking / general)
   - `/عرض-لوقات` — display all currently configured log channels
 - Existing per-system log channels still in use: `trip_log_channel`, `identity_log_channel`, `character_log_channel`, `activation_log_channel`, `ticket_log_channel`.
 - Auto-logged events:
   - All band/unban operations (manual + auto-expiry)
   - All 7 perma-ban commands
   - Every `/تعيين-*` and `/إعداد-*` slash command (logged via dispatcher wrapper in `index.js`)
+
+## CIA Tracking System (تراكينق)
+- **Two button types** + slash command + customizable via `/تخصيص-زر`:
+  - `tracking_btn` (عادي) — 2-hour cooldown per agent, blocked on protected roles
+  - `tracking_president_btn` (للرؤساء) — 2 uses per agent per 30 days, only allowed on protected roles
+  - `/تراكينق [النوع]` — slash command alternative (opens same modal)
+- **Code system**: random Arabic word from `trackingHelpers.js` (~64 words), letters split with spaces (e.g. `م ج ت ه د`); target sends back joined (`مجتهد`). Matcher in `trackingHelpers.matchesCode()` normalizes spaces, diacritics, and alef/yaa variants.
+- **Protected roles** (رؤساء الحكومة): stored as JSON array in config key `tracking_protected_roles`. Managed via:
+  - `/رتب-محمية-تراكينق اضافة | ازاله | عرض | مسح` (Admin only)
+- **Database**: `tracking_logs` table (id, agent_id, target_id, type, code_word, result, created_at) with helpers `addTrackingLog`, `getLastTrackingByAgent`, `getPresidentTrackingCountThisMonth`, `updateTrackingLogResult`, `getTrackingProtectedRoles`, `setTrackingProtectedRoles`.
+- **Sessions** (in-memory `trackingSessions` Map in `index.js`): `{ codeWord, trackerId, channelId, guildId, timer, type, logId }`.
+- **Timeout**: 20s. On timeout → log `success`. On DM cancel with correct word → log `canceled`.
+- **Logging**: every start/success/cancel sends an embed via `logEvent(client, db, 'tracking', ...)` to `tracking_log_channel`.
+- **Button customization**: system key `cia_tracking` with btn keys `normal` and `president` registered in `btnConfig.js` (DEFAULTS, SYSTEM_LABELS, BTN_LABELS).
+- **Panel**: rendered as row3 in `commands/CIA.js`.
 
 ## Database Backup
 - Helper: `backup.js` uses `pg_dump` (PostgreSQL 16) to create SQL dumps in `/tmp/fantasy_backups/`.

@@ -137,6 +137,10 @@ const DEFAULTS = {
         craft_vintage: { label: 'صناعة Vintage', description: 'مسدس Vintage — يتطلب 300 من كل مادة' },
         craft_mkii:    { label: 'صناعة MK II',   description: 'مسدس MK II — يتطلب 500 من كل مادة' },
     },
+    cia_tracking: {
+        normal:    { label: 'تراكينق',           emoji: '🎯', style: 'danger'  },
+        president: { label: 'تراكينق للرؤساء', emoji: '👑', style: 'primary' },
+    },
 };
 
 const MENU_SYSTEMS = new Set([
@@ -168,6 +172,7 @@ const SYSTEM_LABELS = {
     justice_menu:    'العدالة',
     activation_menu: 'التفعيل',
     craft_weapon:    'تصنيع السلاح',
+    cia_tracking:    'تراكينق CIA',
 };
 
 const BTN_LABELS = {
@@ -191,6 +196,7 @@ const BTN_LABELS = {
     justice_menu:    { accept_case: 'قبول القضية', reject_case: 'رفض القضية', assign_judge: 'تعيين القاضي', issue_verdict: 'إصدار الحكم' },
     activation_menu: { activate_now: 'تفعيل الحساب' },
     craft_weapon:    { craft_sns: 'صناعة SNS', craft_vintage: 'صناعة Vintage', craft_mkii: 'صناعة MK II' },
+    cia_tracking:    { normal: 'تراكينق', president: 'تراكينق للرؤساء' },
 };
 
 async function loadSystemBtns(db, system) {

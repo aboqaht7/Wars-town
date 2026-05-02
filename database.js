@@ -1604,6 +1604,8 @@ module.exports = {
     cuffPlayer, uncuffPlayer, isCuffed,
     listCompanyOnMarket, delistCompany, getStockListing, getAllStockListings,
     buyShares, sellShares, getUserPortfolio, getStockHistory, applyRandomFluctuation,
+    addTrackingLog, getLastTrackingByAgent, getPresidentTrackingCountThisMonth,
+    updateTrackingLogResult, getTrackingProtectedRoles, setTrackingProtectedRoles,
 };
 
 /* ─── نظام الكلبشة ─────────────────────────────────────────────────────── */
@@ -2319,4 +2321,63 @@ async function applyRandomFluctuation() {
         await pool.query(`UPDATE stock_listings SET current_price=$1 WHERE id=$2`, [newPrice, s.id]);
         await pool.query(`INSERT INTO stock_history (company_id, price, change_amt) VALUES ($1,$2,$3)`, [s.company_id, newPrice, change]);
     }
+}
+
+/* ─── نظام التراكينق ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS tracking_logs (
+            id          SERIAL PRIMARY KEY,
+            agent_id    TEXT NOT NULL,
+            target_id   TEXT NOT NULL,
+            type        TEXT NOT NULL,
+            code_word   TEXT NOT NULL,
+            result      TEXT NOT NULL,
+            created_at  TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_tracking_agent_time ON tracking_logs (agent_id, created_at DESC)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_tracking_type_time ON tracking_logs (type, created_at DESC)`);
+})().catch(console.error);
+
+async function addTrackingLog(agentId, targetId, type, codeWord, result) {
+    const res = await pool.query(
+        `INSERT INTO tracking_logs (agent_id, target_id, type, code_word, result)
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [agentId, targetId, type, codeWord, result]
+    );
+    return res.rows[0];
+}
+
+async function getLastTrackingByAgent(agentId, type = null) {
+    let q = `SELECT * FROM tracking_logs WHERE agent_id=$1`;
+    const params = [agentId];
+    if (type) { q += ` AND type=$2`; params.push(type); }
+    q += ` ORDER BY created_at DESC LIMIT 1`;
+    const res = await pool.query(q, params);
+    return res.rows[0] || null;
+}
+
+async function getPresidentTrackingCountThisMonth(agentId) {
+    const res = await pool.query(
+        `SELECT COUNT(*)::int AS cnt FROM tracking_logs
+         WHERE agent_id=$1 AND type='president'
+           AND created_at > NOW() - INTERVAL '30 days'`,
+        [agentId]
+    );
+    return res.rows[0]?.cnt || 0;
+}
+
+async function updateTrackingLogResult(id, result) {
+    await pool.query(`UPDATE tracking_logs SET result=$2 WHERE id=$1`, [id, result]);
+}
+
+async function getTrackingProtectedRoles() {
+    const raw = await getConfig('tracking_protected_roles');
+    if (!raw) return [];
+    try { return JSON.parse(raw); } catch (_) { return []; }
+}
+
+async function setTrackingProtectedRoles(roleIds) {
+    await setConfig('tracking_protected_roles', JSON.stringify(roleIds));
 }

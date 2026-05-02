@@ -114,8 +114,10 @@ function makeResetDb(db) {
     });
 }
 
-/* ── جلسات التراكينق: targetId → { code, trackerId, channelId, guildId, timer } ── */
+/* ── جلسات التراكينق: targetId → { codeWord, trackerId, channelId, guildId, timer, type, logId } ── */
 const trackingSessions = new Map();
+/* ── أقفال العميل لمنع السباق: مفتاح "agentId|type" أثناء معالجة الإنشاء ── */
+const trackingAgentLocks = new Set();
 
 client.once('clientReady', async () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
@@ -1266,21 +1268,24 @@ client.on('interactionCreate', async interaction => {
             return;
         }
 
-        // ── تراكينق — فتح مودال ──────────────────────────────────────────────────
-        if (interaction.customId === 'tracking_btn') {
+        // ── تراكينق — فتح مودال (عادي + للرؤساء) ───────────────────────────────
+        if (interaction.customId === 'tracking_btn' || interaction.customId === 'tracking_president_btn') {
             const ciaRoleId = await db.getConfig('cia_chef_role');
-            if (ciaRoleId && !interaction.member.roles.cache.has(ciaRoleId))
-                return interaction.reply({ content: 'هذا الزر لأعضاء CIA فقط.', flags: 64 });
+            if (!ciaRoleId)
+                return interaction.reply({ content: '⚠️ لم يتم تعيين رتبة CIA بعد. على الأدمن استخدام `/تعيين-رتبة-cia` أولاً.', flags: 64 });
+            if (!interaction.member.roles.cache.has(ciaRoleId))
+                return interaction.reply({ content: '❌ هذا الزر لأعضاء CIA فقط.', flags: 64 });
 
+            const isPresident = interaction.customId === 'tracking_president_btn';
             const { ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
             const modal = new ModalBuilder()
-                .setCustomId('tracking_modal')
-                .setTitle('Tracking');
+                .setCustomId(isPresident ? 'tracking_president_modal' : 'tracking_modal')
+                .setTitle(isPresident ? 'تراكينق للرؤساء' : 'تراكينق');
             const input = new TextInputBuilder()
                 .setCustomId('tracking_target')
-                .setLabel('Mention or ID of the target')
+                .setLabel('منشن أو معرّف الهدف')
                 .setStyle(TextInputStyle.Short)
-                .setPlaceholder('@username or 123456789')
+                .setPlaceholder('@username أو 123456789')
                 .setRequired(true);
             modal.addComponents(new ActionRowBuilder().addComponents(input));
             await interaction.showModal(modal);
@@ -3588,39 +3593,122 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isModalSubmit()) {
 
-        // ── تراكينق ─────────────────────────────────────────────────────────
-        if (interaction.customId === 'tracking_modal') {
+        // ── تراكينق (عادي + للرؤساء) ─────────────────────────────────────────
+        if (interaction.customId === 'tracking_modal' || interaction.customId === 'tracking_president_modal') {
+            const isPresident = interaction.customId === 'tracking_president_modal';
+            const trackingType = isPresident ? 'president' : 'normal';
+            const agentLockKey = `${interaction.user.id}|${trackingType}`;
+            let lockedAgent = false;
+            let reservedTargetId = null;
             try {
                 await interaction.deferReply({ flags: 64 });
+
+                // قفل العميل لمنع نقرات متزامنة من نفس الشخص
+                if (trackingAgentLocks.has(agentLockKey)) {
+                    return interaction.editReply({ content: '⏳ لديك عملية تراكينق قيد المعالجة بالفعل، انتظر لحظة.' });
+                }
+                trackingAgentLocks.add(agentLockKey);
+                lockedAgent = true;
+
+                // فشل مغلق: لا يُسمح إذا لم تُعيَّن رتبة CIA
+                const ciaRoleId = await db.getConfig('cia_chef_role');
+                if (!ciaRoleId) {
+                    return interaction.editReply({ content: '⚠️ لم يتم تعيين رتبة CIA بعد. على الأدمن استخدام `/تعيين-رتبة-cia` أولاً.' });
+                }
+                if (!interaction.member.roles.cache.has(ciaRoleId)) {
+                    return interaction.editReply({ content: '❌ هذا الأمر لأعضاء CIA فقط.' });
+                }
+
+                const {
+                    pickCodeWord, formatSpaced, formatRemaining,
+                    TRACKING_COOLDOWN_MS, PRESIDENT_MONTHLY_LIMIT, TRACKING_TIMEOUT_MS,
+                } = require('./trackingHelpers');
+                const { logEvent } = require('./loggers');
+
                 const raw = interaction.fields.getTextInputValue('tracking_target').trim();
                 const targetId = raw.replace(/[<@!>]/g, '');
 
                 if (!/^\d{17,20}$/.test(targetId)) {
-                    return interaction.editReply({ content: 'الإشارة أو المعرف غير صحيح.' });
+                    return interaction.editReply({ content: '❌ الإشارة أو المعرّف غير صحيح.' });
                 }
                 if (targetId === interaction.user.id) {
-                    return interaction.editReply({ content: 'لا يمكنك تتبع نفسك.' });
+                    return interaction.editReply({ content: '❌ لا يمكنك تتبّع نفسك.' });
                 }
+
+                // حجز الجلسة فوراً لمنع سباق على نفس الهدف
                 if (trackingSessions.has(targetId)) {
-                    return interaction.editReply({ content: 'هذا الشخص لديه جلسة تتبع نشطة بالفعل.' });
+                    return interaction.editReply({ content: '⚠️ هذا الشخص لديه جلسة تراكينق نشطة بالفعل.' });
                 }
+                trackingSessions.set(targetId, {
+                    _reserving: true,
+                    trackerId: interaction.user.id,
+                    type: trackingType,
+                });
+                reservedTargetId = targetId;
 
                 const targetMember = await interaction.guild.members.fetch(targetId).catch(() => null);
                 if (!targetMember) {
-                    return interaction.editReply({ content: 'هذا الشخص ليس في السيرفر.' });
+                    return interaction.editReply({ content: '❌ هذا الشخص ليس في السيرفر.' });
                 }
 
-                const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-                let code = '';
-                for (let i = 0; i < 6; i++) code += CHARS[Math.floor(Math.random() * CHARS.length)];
+                // التحقق من الرتب المحمية
+                const protectedRoles = await db.getTrackingProtectedRoles();
+                const targetIsProtected = protectedRoles.some(rid => targetMember.roles.cache.has(rid));
+
+                if (isPresident) {
+                    if (protectedRoles.length === 0) {
+                        return interaction.editReply({ content: '⚠️ لم يتم تحديد أي رتب محمية بعد. على الأدمن استخدام `/رتب-محمية-تراكينق اضافة` أولاً.' });
+                    }
+                    if (!targetIsProtected) {
+                        return interaction.editReply({ content: '❌ هذا الزر مخصص لتتبّع رؤساء الحكومة فقط (الرتب المحمية). للمواطن العادي استخدم زر التراكينق العادي.' });
+                    }
+                    const usedCount = await db.getPresidentTrackingCountThisMonth(interaction.user.id);
+                    if (usedCount >= PRESIDENT_MONTHLY_LIMIT) {
+                        return interaction.editReply({
+                            content: `⛔ استنفدت حد التراكينق للرؤساء (${PRESIDENT_MONTHLY_LIMIT} مرات في الشهر). حاول بعد انتهاء آخر 30 يوماً من آخر استخدام.`,
+                        });
+                    }
+                } else {
+                    if (targetIsProtected) {
+                        return interaction.editReply({ content: '🛡️ هذا الشخص يحمل رتبة محمية (رئيس حكومة). استخدم زر **تراكينق للرؤساء** بدلاً منه.' });
+                    }
+                    const last = await db.getLastTrackingByAgent(interaction.user.id, 'normal');
+                    if (last) {
+                        const elapsed = Date.now() - new Date(last.created_at).getTime();
+                        if (elapsed < TRACKING_COOLDOWN_MS) {
+                            const remaining = TRACKING_COOLDOWN_MS - elapsed;
+                            return interaction.editReply({
+                                content: `⏳ التراكينق العادي على تبريد. انتظر **${formatRemaining(remaining)}** قبل المحاولة مرة أخرى.`,
+                            });
+                        }
+                    }
+                }
+
+                const codeWord = pickCodeWord();
+                const spacedCode = formatSpaced(codeWord);
+
+                // حفظ السجل في قاعدة البيانات قبل أي عمليات بطيئة (يقفل التبريد/الحد الشهري)
+                const logRow = await db.addTrackingLog(
+                    interaction.user.id, targetId, trackingType, codeWord, 'in_progress'
+                ).catch(e => { console.error('[tracking log insert]', e); return null; });
+
+                // تحقق دفاعي بعد الإدراج: نتحقق من تجاوز الحد بسبب سباق محتمل
+                if (isPresident && logRow) {
+                    const recheckCount = await db.getPresidentTrackingCountThisMonth(interaction.user.id);
+                    if (recheckCount > PRESIDENT_MONTHLY_LIMIT) {
+                        await db.updateTrackingLogResult(logRow.id, 'aborted_race').catch(() => {});
+                        return interaction.editReply({ content: '⛔ تجاوز الحد الشهري بسبب طلب متزامن آخر. الجلسة لم تُنشأ.' });
+                    }
+                }
 
                 let dmSent = true;
                 try {
                     await targetMember.send(
-                        `⚠️ **Security Alert — You are being tracked!**\n\n` +
-                        `A tracking operation has been detected on you from the server **${interaction.guild.name}**.\n\n` +
-                        `To cancel the tracking, send this code here within **20 seconds**:\n\n` +
-                        `\`\`\`${code}\`\`\``
+                        `⚠️ **تنبيه أمني — أنت تحت التراكينق!**\n\n` +
+                        `تم رصد عملية تتبّع عليك من سيرفر **${interaction.guild.name}**.\n\n` +
+                        `لإلغاء التراكينق، أرسل هذه الكلمة مجموعة (بدون مسافات) هنا خلال **20 ثانية**:\n\n` +
+                        `\`\`\`${spacedCode}\`\`\`\n` +
+                        `_(أعد إرسالها بدون مسافات لإلغاء التراكينق)_`
                     );
                 } catch (_) {
                     dmSent = false;
@@ -3628,48 +3716,92 @@ client.on('interactionCreate', async interaction => {
 
                 const timer = setTimeout(async () => {
                     if (!trackingSessions.has(targetId)) return;
+                    const session = trackingSessions.get(targetId);
                     trackingSessions.delete(targetId);
+                    if (logRow) await db.updateTrackingLogResult(logRow.id, 'success').catch(() => {});
+
                     try {
-                        const trackerUser = await client.users.fetch(interaction.user.id);
                         const ch = await client.channels.fetch(interaction.channelId).catch(() => null);
-                        if (ch) {
-                            const doneEmbed = new EmbedBuilder()
-                                .setTitle('Tracking Complete')
-                                .setColor(0x43A047)
-                                .setDescription(
-                                    `✅ Successfully tracked ${targetMember} for 20 seconds.\n` +
-                                    `👤 Target: **${targetMember.displayName}**\n` +
-                                    `🔑 Code: \`${code}\``
-                                )
-                                .setTimestamp();
-                            ch.send({ content: `<@${interaction.user.id}>`, embeds: [doneEmbed] }).catch(() => {});
-                        }
+                        const doneEmbed = new EmbedBuilder()
+                            .setTitle(isPresident ? '✅ تراكينق رئيس مكتمل' : '✅ تراكينق مكتمل')
+                            .setColor(0x43A047)
+                            .setDescription(
+                                `🎯 تمّ تتبّع ${targetMember} بنجاح خلال 20 ثانية.\n` +
+                                `👤 الهدف: **${targetMember.displayName}**\n` +
+                                `🧩 الكلمة: \`${codeWord}\``
+                            )
+                            .setTimestamp();
+                        if (ch) ch.send({ content: `<@${session.trackerId}>`, embeds: [doneEmbed] }).catch(() => {});
+
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle(isPresident ? '👑 تراكينق رئيس — نجح' : '🎯 تراكينق — نجح')
+                            .setColor(0x2E7D32)
+                            .addFields(
+                                { name: 'العميل',  value: `<@${session.trackerId}>`, inline: true },
+                                { name: 'الهدف',   value: `<@${targetId}>`,           inline: true },
+                                { name: 'النوع',   value: isPresident ? 'رؤساء' : 'عادي', inline: true },
+                                { name: 'الكلمة',  value: `\`${codeWord}\``,         inline: true },
+                                { name: 'النتيجة', value: 'نجح (لم يلغِ الهدف)',  inline: true },
+                            )
+                            .setTimestamp();
+                        logEvent(client, db, 'tracking', logEmbed);
                     } catch (_) {}
-                }, 20_000);
+                }, TRACKING_TIMEOUT_MS);
 
                 trackingSessions.set(targetId, {
-                    code,
+                    codeWord,
                     trackerId: interaction.user.id,
                     channelId: interaction.channelId,
                     guildId: interaction.guildId,
-                    timer
+                    timer,
+                    type: trackingType,
+                    logId: logRow?.id || null,
                 });
 
+                const remainingPresUses = isPresident
+                    ? (PRESIDENT_MONTHLY_LIMIT - (await db.getPresidentTrackingCountThisMonth(interaction.user.id)))
+                    : null;
+
                 const startEmbed = new EmbedBuilder()
-                    .setTitle('Tracking Started')
-                    .setColor(0xE53935)
+                    .setTitle(isPresident ? '👑 بدء تراكينق رئيس' : '🎯 بدء التراكينق')
+                    .setColor(isPresident ? 0x6A1B9A : 0xE53935)
                     .setDescription(
-                        `🎯 Now tracking ${targetMember} for **20 seconds**\n` +
+                        `🎯 جارٍ تتبّع ${targetMember} لمدة **20 ثانية**\n` +
                         (dmSent
-                            ? `📨 The cancellation code has been sent to their DMs`
-                            : `⚠️ The bot could not send a DM to the person (DMs are closed)`)
+                            ? `📨 تم إرسال كود الإلغاء إلى الخاص بالهدف.`
+                            : `⚠️ تعذّر إرسال رسالة خاصة للهدف (الخاص مغلق).`) +
+                        (isPresident ? `\n\n👑 المتبقي لك هذا الشهر: **${remainingPresUses}** من ${PRESIDENT_MONTHLY_LIMIT}` : '')
                     )
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [startEmbed] });
+
+                // لوق "بدء" التراكينق
+                try {
+                    const startLogEmbed = new EmbedBuilder()
+                        .setTitle(isPresident ? '👑 بدء تراكينق رئيس' : '🎯 بدء تراكينق')
+                        .setColor(0x1565C0)
+                        .addFields(
+                            { name: 'العميل', value: `<@${interaction.user.id}>`, inline: true },
+                            { name: 'الهدف',  value: `<@${targetId}>`,             inline: true },
+                            { name: 'النوع',  value: isPresident ? 'رؤساء' : 'عادي', inline: true },
+                            { name: 'القناة', value: `<#${interaction.channelId}>`, inline: true },
+                            { name: 'الكلمة', value: `\`${codeWord}\``,             inline: true },
+                            { name: 'DM',     value: dmSent ? '✅' : '❌',           inline: true },
+                        )
+                        .setTimestamp();
+                    logEvent(client, db, 'tracking', startLogEmbed);
+                } catch (_) {}
             } catch (e) {
                 console.error('[TRACKING MODAL ERROR]', e);
-                if (!interaction.replied) interaction.editReply({ content: 'حدث خطأ.' });
+                try { if (!interaction.replied) interaction.editReply({ content: '❌ حدث خطأ أثناء بدء التراكينق.' }); } catch (_) {}
+            } finally {
+                // تنظيف القفل والحجز إذا لم يكتمل الإنشاء
+                if (lockedAgent) trackingAgentLocks.delete(agentLockKey);
+                if (reservedTargetId) {
+                    const sess = trackingSessions.get(reservedTargetId);
+                    if (sess && sess._reserving) trackingSessions.delete(reservedTargetId);
+                }
             }
             return;
         }
@@ -5070,26 +5202,49 @@ client.on('messageCreate', async message => {
     // ── معالجة كود إلغاء التراكينق عبر DM ──────────────────────────────────
     if (!message.guild && !message.author.bot) {
         const session = trackingSessions.get(message.author.id);
-        if (session && message.content.trim().toUpperCase() === session.code) {
-            clearTimeout(session.timer);
-            trackingSessions.delete(message.author.id);
-            try {
-                await message.author.send('✅ **Tracking has been canceled successfully!** You entered the correct code.');
-            } catch (_) {}
-            try {
-                const ch = await client.channels.fetch(session.channelId).catch(() => null);
-                if (ch) {
-                    const cancelEmbed = new EmbedBuilder()
-                        .setTitle('Tracking Canceled')
-                        .setColor(0xFF8F00)
-                        .setDescription(
-                            `🚫 <@${message.author.id}> canceled the tracking by entering the correct code.\n` +
-                            `🔑 Code used: \`${session.code}\``
+        if (session) {
+            const { matchesCode } = require('./trackingHelpers');
+            if (matchesCode(message.content, session.codeWord)) {
+                clearTimeout(session.timer);
+                trackingSessions.delete(message.author.id);
+                if (session.logId) await db.updateTrackingLogResult(session.logId, 'canceled').catch(() => {});
+
+                try {
+                    await message.author.send('✅ **تم إلغاء التراكينق بنجاح!** أدخلت الكلمة الصحيحة.');
+                } catch (_) {}
+                try {
+                    const ch = await client.channels.fetch(session.channelId).catch(() => null);
+                    if (ch) {
+                        const isPresident = session.type === 'president';
+                        const cancelEmbed = new EmbedBuilder()
+                            .setTitle(isPresident ? '🚫 تم إلغاء تراكينق رئيس' : '🚫 تم إلغاء التراكينق')
+                            .setColor(0xFF8F00)
+                            .setDescription(
+                                `🛡️ <@${message.author.id}> ألغى التراكينق بإدخال الكلمة الصحيحة.\n` +
+                                `🧩 الكلمة المستخدمة: \`${session.codeWord}\``
+                            )
+                            .setTimestamp();
+                        ch.send({ content: `<@${session.trackerId}>`, embeds: [cancelEmbed] }).catch(() => {});
+                    }
+                } catch (_) {}
+
+                try {
+                    const { logEvent } = require('./loggers');
+                    const isPresident = session.type === 'president';
+                    const logEmbed = new EmbedBuilder()
+                        .setTitle(isPresident ? '👑 تراكينق رئيس — أُلغي' : '🎯 تراكينق — أُلغي')
+                        .setColor(0xEF6C00)
+                        .addFields(
+                            { name: 'العميل',  value: `<@${session.trackerId}>`,    inline: true },
+                            { name: 'الهدف',   value: `<@${message.author.id}>`,    inline: true },
+                            { name: 'النوع',   value: isPresident ? 'رؤساء' : 'عادي', inline: true },
+                            { name: 'الكلمة',  value: `\`${session.codeWord}\``,    inline: true },
+                            { name: 'النتيجة', value: 'أُلغي (الهدف أدخل الكلمة)', inline: true },
                         )
                         .setTimestamp();
-                    ch.send({ content: `<@${session.trackerId}>`, embeds: [cancelEmbed] }).catch(() => {});
-                }
-            } catch (_) {}
+                    logEvent(client, db, 'tracking', logEmbed);
+                } catch (_) {}
+            }
         }
         return;
     }

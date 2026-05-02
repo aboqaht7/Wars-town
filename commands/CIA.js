@@ -13,18 +13,21 @@ module.exports = {
         .setDescription('CIA System — Login, Logout & Active Members'),
     async slashExecute(interaction, db) {
         const c = await loadSystemBtns(db, 'cia');
+        const t = await loadSystemBtns(db, 'cia_tracking');
 
         const _img = await db.getImage('admin').catch(() => null);
 
         const embed = new EmbedBuilder()
-            .setTitle('CIA — Intelligence Agency')
+            .setTitle('CIA — وكالة الاستخبارات')
             .setColor(0x0D1B2A)
             .setDescription(
-                '**🟢 Login** — Log your attendance as a CIA member\n' +
-                '**🔴 Logout** — Log your departure\n' +
-                '**👥 Active List** — View active CIA members (Chef only)\n' +
-                '**🪪 Fake ID** — Issue a fake identity to someone (Chef only)\n\n' +
-                '> Buttons available to CIA members only'
+                '**🟢 تسجيل دخول** — سجّل حضورك كعضو CIA\n' +
+                '**🔴 تسجيل خروج** — سجّل مغادرتك\n' +
+                '**👥 كشف المباشرين** — عرض أعضاء CIA النشطين (للرئيس فقط)\n' +
+                '**🪪 هوية مزيفة** — إصدار هوية مزيفة (للرئيس فقط)\n' +
+                '**🎯 تراكينق** — تتبع مواطن (تبريد ساعتان)\n' +
+                '**👑 تراكينق للرؤساء** — تتبع رتب محمية (مرتان شهرياً فقط)\n\n' +
+                '> الأزرار متاحة لأعضاء CIA فقط'
             )
             .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();
@@ -39,9 +42,14 @@ module.exports = {
             makeBtn('cia_fake_id_btn', c.fake_id),
         );
 
+        const row3 = new ActionRowBuilder().addComponents(
+            makeBtn('tracking_btn',           t.normal),
+            makeBtn('tracking_president_btn', t.president),
+        );
+
         if (_img) embed.setImage(_img);
 
-        const payload = { embeds: [embed], components: [row1, row2] };
+        const payload = { embeds: [embed], components: [row1, row2, row3] };
 
         if (interaction._isReset) {
             return interaction.message.edit(payload);

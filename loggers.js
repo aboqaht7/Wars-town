@@ -16,6 +16,7 @@ const LOG_TYPES = {
     band:               { key: 'band_log_channel',     label: 'لوق الباند والطرد' },
     config:             { key: 'config_log_channel',   label: 'لوق إعدادات الإدارة' },
     backup:             { key: 'backup_log_channel',   label: 'لوق النسخ الاحتياطية' },
+    tracking:           { key: 'tracking_log_channel', label: 'لوق التراكينق (CIA)' },
     general:            { key: 'general_log_channel',  label: 'لوق عام (احتياطي)' },
 };
 

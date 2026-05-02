@@ -15,6 +15,7 @@ module.exports = {
                     { name: 'باند والطرد', value: 'band' },
                     { name: 'إعدادات الإدارة', value: 'config' },
                     { name: 'نسخ احتياطية', value: 'backup' },
+                    { name: 'تراكينق CIA', value: 'tracking' },
                     { name: 'عام (احتياطي)', value: 'general' },
                 )
         )
