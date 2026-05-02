@@ -19,7 +19,7 @@ module.exports = {
         const t = await loadSystemBtns(db, 'cia_tracking');
 
         const embed = new EmbedBuilder()
-            .setTitle('🎯 لوحة التراكينق — CIA')
+            .setTitle('لوحة التراكينق — CIA')
             .setColor(0x0D1B2A)
             .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();
