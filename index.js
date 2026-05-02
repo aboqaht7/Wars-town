@@ -1229,7 +1229,7 @@ client.on('interactionCreate', async interaction => {
                         const member = await interaction.guild.members.fetch(id.discord_id).catch(() => null);
                         if (member && member.roles.cache.has(ministryRoleId)) continue;
                     }
-                    const violation = await db.getViolationByUserId(id.discord_id);
+                    const violation = await db.getBandByUserId(id.discord_id);
                     filtered.push({ ...id, violation });
                 }
 
@@ -5141,60 +5141,6 @@ process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', 
 process.on('uncaughtException',  (err) => console.error('Uncaught exception:', err));
 process.on('SIGTERM', () => { console.log('SIGTERM received — exiting.'); process.exit(0); });
 process.on('SIGINT',  () => { console.log('SIGINT received — exiting.');  process.exit(0); });
-
-// ── فحص دوري كل دقيقة لرفع المخالفات المنتهية ──────────────────────────
-setInterval(async () => {
-    try {
-        const expired = await db.getExpiredViolations();
-        if (!expired.length) return;
-
-        const banRoleId        = await db.getConfig('violation_role_id');
-        const activationRoleId = await db.getConfig('activation_role_id');
-        const identityRoleId   = await db.getConfig('identity_role');
-
-        for (const v of expired) {
-            try {
-                const guild = client.guilds.cache.first();
-                if (!guild) continue;
-                const member = await guild.members.fetch(v.user_id).catch(() => null);
-
-                if (member) {
-                    // جمع الرتب المراد إعادتها
-                    const rolesToRestore = new Set();
-
-                    try {
-                        const saved = JSON.parse(v.saved_roles || '[]');
-                        saved.forEach(id => rolesToRestore.add(id));
-                    } catch (_) {}
-
-                    if (activationRoleId) rolesToRestore.add(activationRoleId);
-                    if (identityRoleId)   rolesToRestore.add(identityRoleId);
-                    if (banRoleId)        rolesToRestore.delete(banRoleId);
-
-                    // إزالة Rank الباند
-                    if (banRoleId) {
-                        const banRole = guild.roles.cache.get(banRoleId);
-                        if (banRole) await member.roles.remove(banRole).catch(() => {});
-                    }
-
-                    // إعادة الرتب السابقة
-                    for (const roleId of rolesToRestore) {
-                        const role = guild.roles.cache.get(roleId);
-                        if (role) await member.roles.add(role).catch(() => {});
-                    }
-                }
-
-                await db.removeViolation(v.user_id);
-
-                // إشعار اللاعب
-                try {
-                    const user = await client.users.fetch(v.user_id);
-                    await user.send(`✅ **Your violation in server ${guild?.name || 'the server'} has expired — the ban has been lifted and all your roles have been restored automatically.**`);
-                } catch (_) {}
-            } catch (e) { console.error('violation cleanup error:', e); }
-        }
-    } catch (e) { console.error('violation interval error:', e); }
-}, 60_000);
 
 // ── فحص دوري كل دقيقة لرفع الباندات المنتهية ────────────────────────────
 setInterval(async () => {
