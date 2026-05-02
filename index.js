@@ -5196,6 +5196,52 @@ setInterval(async () => {
     } catch (e) { console.error('violation interval error:', e); }
 }, 60_000);
 
+// ── فحص دوري كل دقيقة لرفع الباندات المنتهية ────────────────────────────
+setInterval(async () => {
+    try {
+        const expired = await db.getExpiredBands();
+        if (!expired.length) return;
+
+        const bandRoleId = await db.getConfig('violation_role_id');
+
+        for (const b of expired) {
+            try {
+                const guild = client.guilds.cache.first();
+                if (!guild) continue;
+                const member = await guild.members.fetch(b.user_id).catch(() => null);
+
+                if (member) {
+                    // إزالة رتبة الباند
+                    if (bandRoleId) {
+                        const bandRole = guild.roles.cache.get(bandRoleId);
+                        if (bandRole) await member.roles.remove(bandRole).catch(() => {});
+                    }
+
+                    // إعادة الرتب المحفوظة
+                    try {
+                        const saved = JSON.parse(b.saved_roles || '[]');
+                        for (const roleId of saved) {
+                            if (roleId === bandRoleId) continue;
+                            const role = guild.roles.cache.get(roleId);
+                            if (role) await member.roles.add(role).catch(() => {});
+                        }
+                    } catch (_) {}
+                }
+
+                await db.removeBand(b.user_id);
+
+                // إشعار اللاعب
+                try {
+                    const user = await client.users.fetch(b.user_id);
+                    await user.send(
+                        `انتهت مدة الباند في سيرفر **${guild?.name || 'السيرفر'}** — تم رفع الباند وإعادة جميع رتبك تلقائياً.`
+                    );
+                } catch (_) {}
+            } catch (e) { console.error('band cleanup error:', e); }
+        }
+    } catch (e) { console.error('band interval error:', e); }
+}, 60_000);
+
 // ── Health check server for deployment ──────────────────────────────────
 const http = require('http');
 http.createServer((req, res) => {

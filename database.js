@@ -1587,6 +1587,7 @@ module.exports = {
     createLawyerRequest, getLawyerRequests, getLawyerRequestById, updateLawyerRequest,
     getJudges, addJudge, removeJudge, getJudgeById,
     addViolation, removeViolation, getExpiredViolations, getViolationByUserId,
+    addBand, removeBand, getExpiredBands, getBandByUserId,
     createActivationRequest, getActivationRequest, deleteActivationRequest,
     getLastGathered, setLastGathered, getItemQty,
     setMinistryDuty, getMinistryDuty,
@@ -1707,6 +1708,45 @@ async function getExpiredViolations() {
 
 async function getViolationByUserId(userId) {
     const res = await pool.query(`SELECT * FROM violations WHERE user_id = $1 LIMIT 1`, [userId]);
+    return res.rows[0] || null;
+}
+
+/* ─── جدول الباندات ─── */
+async function initBandsTable() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS bands (
+            id          SERIAL PRIMARY KEY,
+            user_id     TEXT NOT NULL UNIQUE,
+            admin_id    TEXT NOT NULL,
+            reason      TEXT NOT NULL,
+            expires_at  TIMESTAMPTZ NOT NULL,
+            saved_roles TEXT NOT NULL DEFAULT '[]',
+            created_at  TIMESTAMPTZ DEFAULT NOW()
+        );
+    `);
+}
+initBandsTable().catch(console.error);
+
+async function addBand(userId, adminId, reason, expiresAt, savedRoles = []) {
+    await pool.query(`DELETE FROM bands WHERE user_id=$1`, [userId]);
+    await pool.query(
+        `INSERT INTO bands (user_id, admin_id, reason, expires_at, saved_roles)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [userId, adminId, reason, expiresAt, JSON.stringify(savedRoles)]
+    );
+}
+
+async function removeBand(userId) {
+    await pool.query(`DELETE FROM bands WHERE user_id=$1`, [userId]);
+}
+
+async function getExpiredBands() {
+    const res = await pool.query(`SELECT * FROM bands WHERE expires_at <= NOW()`);
+    return res.rows;
+}
+
+async function getBandByUserId(userId) {
+    const res = await pool.query(`SELECT * FROM bands WHERE user_id=$1 LIMIT 1`, [userId]);
     return res.rows[0] || null;
 }
 
