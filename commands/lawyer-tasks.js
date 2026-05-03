@@ -4,6 +4,7 @@ const {
     StringSelectMenuBuilder,
 } = require('discord.js');
 const { resetRow } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 const RETAINER_FEE  = 5000;
 const ATAB_FEE      = 10000;
@@ -40,16 +41,10 @@ module.exports.ABANDON_FEE  = ABANDON_FEE;
 async function buildMain(db) {
     const allLawyers = await db.getLawyers();
     const img = await db.getImage('محاماة');
+    const cfg = await loadEmbedCfg(db, 'lawyer_tasks');
 
-    const embed = new EmbedBuilder()
-        .setTitle('Lawyers Tasks')
-        .setColor(0x0D47A1)
-        .setDescription(
-            '> Choose your name from the list below to access your personal tasks board.\n' +
-            '> No lawyer can access another lawyer\'s board.'
-        )
-        .setFooter({ text: 'Law System • FANTASY Bot' })
-        .setTimestamp();
+    const embed = new EmbedBuilder().setColor(0x0D47A1).setTimestamp();
+    applyEmbed(embed, cfg);
 
     if (img) embed.setThumbnail(img);
 
@@ -60,7 +55,7 @@ async function buildMain(db) {
 
     const menu = new StringSelectMenuBuilder()
         .setCustomId('lawyer_tasks_select')
-        .setPlaceholder('Choose your name...')
+        .setPlaceholder(cfg.placeholder || 'Choose your name...')
         .addOptions(allLawyers.map(l => ({
             label: l.lawyer_name,
             value: l.discord_id,

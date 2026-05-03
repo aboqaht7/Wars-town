@@ -27,13 +27,13 @@ module.exports = {
         .addSubcommand(s => s
             .setName('تعديل')
             .setDescription('تعديل نص في امبد موجود في البوت')
-            .addStringOption(o => o.setName('امبد').setDescription('اختر الامبد').setRequired(true).addChoices(...EMBED_CHOICES))
+            .addStringOption(o => o.setName('امبد').setDescription('اختر الامبد').setRequired(true).setAutocomplete(true))
             .addStringOption(o => o.setName('حقل').setDescription('الحقل (عنوان/وصف/تذييل/سيلكت منيو)').setRequired(true).setAutocomplete(true))
             .addStringOption(o => o.setName('نص').setDescription('النص الجديد').setRequired(true).setMaxLength(2000)))
         .addSubcommand(s => s
             .setName('ارجاع')
             .setDescription('إرجاع حقل لقيمته الافتراضية')
-            .addStringOption(o => o.setName('امبد').setDescription('اختر الامبد').setRequired(true).addChoices(...EMBED_CHOICES))
+            .addStringOption(o => o.setName('امبد').setDescription('اختر الامبد').setRequired(true).setAutocomplete(true))
             .addStringOption(o => o.setName('حقل').setDescription('الحقل').setRequired(true).setAutocomplete(true)))
         .addSubcommand(s => s
             .setName('ارسال')
@@ -49,14 +49,27 @@ module.exports = {
             .setDescription('عرض جميع التخصيصات الحالية')),
 
     async autocomplete(interaction) {
-        const embedKey = interaction.options.getString('امبد');
-        const focused  = interaction.options.getFocused().toLowerCase();
-        if (!embedKey || !EMBED_DEFAULTS[embedKey]) return interaction.respond([]);
-        const fields = Object.keys(EMBED_DEFAULTS[embedKey]);
-        const choices = fields
-            .filter(f => f.toLowerCase().includes(focused) || (FIELD_LABELS[f] || '').includes(focused))
-            .map(f => ({ name: FIELD_LABELS[f] || f, value: f }));
-        return interaction.respond(choices.slice(0, 25));
+        const focusedOpt = interaction.options.getFocused(true);
+        const focused = (focusedOpt.value || '').toLowerCase();
+
+        if (focusedOpt.name === 'امبد') {
+            const choices = EMBED_CHOICES
+                .filter(c => c.value.toLowerCase().includes(focused) || (c.name || '').toLowerCase().includes(focused))
+                .slice(0, 25);
+            return interaction.respond(choices);
+        }
+
+        if (focusedOpt.name === 'حقل') {
+            const embedKey = interaction.options.getString('امبد');
+            if (!embedKey || !EMBED_DEFAULTS[embedKey]) return interaction.respond([]);
+            const fields = Object.keys(EMBED_DEFAULTS[embedKey]);
+            const choices = fields
+                .filter(f => f.toLowerCase().includes(focused) || (FIELD_LABELS[f] || '').includes(focused))
+                .map(f => ({ name: FIELD_LABELS[f] || f, value: f }));
+            return interaction.respond(choices.slice(0, 25));
+        }
+
+        return interaction.respond([]);
     },
 
     async slashExecute(interaction, db) {

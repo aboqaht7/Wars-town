@@ -1,14 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
-    const embed = new EmbedBuilder()
-        .setTitle('Ministry of Health')
-        .setColor(0x1B5E20)
-        .setDescription('Choose the medical service you need.')
-        .setFooter({ text: 'Health System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'health');
+    const embed = new EmbedBuilder().setColor(0x1B5E20).setTimestamp();
+    applyEmbed(embed, cfg);
     const img = await db.getImage('health').catch(() => null);
     if (img) embed.setImage(img);
 
@@ -16,7 +14,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('health_menu')
-            .setPlaceholder('🏥 Choose a medical service')
+            .setPlaceholder(cfg.placeholder || '🏥 Choose a medical service')
             .addOptions([
                 makeMenuOption('hospital_resuscitation', mc.hospital_resuscitation),
                 makeMenuOption('witch_resuscitation',    mc.witch_resuscitation),

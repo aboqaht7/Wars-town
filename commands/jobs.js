@@ -1,25 +1,24 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 const COOLDOWN_SECONDS = 10;
 const COOLDOWN_MINUTES = COOLDOWN_SECONDS / 60;
 
 async function buildJobs(db) {
     const img = await db.getImage('jobs').catch(() => null);
-    const embed = new EmbedBuilder()
-        .setTitle('Free Jobs')
-        .setColor(0xF57F17)
-        .setDescription('> Choose your job from the menu below')
-        .setFooter({ text: `Jobs System • FANTASY Bot • ${COOLDOWN_SECONDS}s cooldown` })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'jobs');
+    const embed = new EmbedBuilder().setColor(0xF57F17).setTimestamp();
+    applyEmbed(embed, cfg);
+    embed.setFooter({ text: `${cfg.footer || 'Jobs System • FANTASY Bot'} • ${COOLDOWN_SECONDS}s cooldown` });
     if (img) embed.setImage(img);
 
     const mc = await loadSystemBtns(db, 'jobs_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('jobs_menu')
-            .setPlaceholder('Choose your job')
+            .setPlaceholder(cfg.placeholder || 'Choose your job')
             .addOptions([
                 makeMenuOption('fishing',     mc.fishing),
                 makeMenuOption('woodcutting', mc.woodcutting),

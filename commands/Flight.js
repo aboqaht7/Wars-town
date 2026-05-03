@@ -1,25 +1,23 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
-    const embed = new EmbedBuilder()
-        .setTitle('Trips & Events')
-        .setColor(0x6A1B9A)
-        .setDescription('Choose the event type you want to activate')
+    const cfg = await loadEmbedCfg(db, 'flight');
+    const embed = new EmbedBuilder().setColor(0x6A1B9A).setTimestamp()
         .addFields(
             { name: '📍 Location', value: 'Contact the admin to find the event location', inline: true },
             { name: '⏰ Time', value: 'Determined by the responsible supervisor', inline: true },
         )
-        .setImage(await db.getImage('events').catch(() => null) || null)
-        .setFooter({ text: 'Events System • FANTASY Bot' })
-        .setTimestamp();
+        .setImage(await db.getImage('events').catch(() => null) || null);
+    applyEmbed(embed, cfg);
 
     const mc = await loadSystemBtns(db, 'events_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('events_menu')
-            .setPlaceholder('Choose event type')
+            .setPlaceholder(cfg.placeholder || 'Choose event type')
             .addOptions([
                 makeMenuOption('open_flight',   mc.open_flight),
                 makeMenuOption('hurricane',     mc.hurricane),

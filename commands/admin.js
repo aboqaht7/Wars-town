@@ -1,14 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
-    const embed = new EmbedBuilder()
-        .setTitle('Admin System')
-        .setColor(0xF9A825)
-        .setDescription('Admin control panel — choose from the menu below.')
-        .setFooter({ text: 'Admin System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'admin');
+    const embed = new EmbedBuilder().setColor(0xF9A825).setTimestamp();
+    applyEmbed(embed, cfg);
     const img = await db.getImage('admin').catch(() => null);
     if (img) embed.setImage(img);
 
@@ -16,7 +14,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('admin_menu')
-            .setPlaceholder('Choose an option')
+            .setPlaceholder(cfg.placeholder || 'Choose an option')
             .addOptions([
                 makeMenuOption('ranks',  mc.ranks),
                 makeMenuOption('points', mc.points),

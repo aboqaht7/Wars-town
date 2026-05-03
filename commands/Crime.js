@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'crime',
@@ -25,14 +26,10 @@ module.exports = {
 
 async function build(db) {
     const robberies = await db.getRobberies();
-    const embed = new EmbedBuilder()
-        .setTitle('Robbery System')
-        .setColor(0xB71C1C)
-        .setDescription(robberies.length
-            ? 'Choose the robbery you want to execute from the list.'
-            : '> No robberies available right now. Wait for the admin.')
-        .setFooter({ text: 'Robbery System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'crime');
+    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    applyEmbed(embed, cfg);
+    if (!robberies.length) embed.setDescription('> No robberies available right now. Wait for the admin.');
     const img = await db.getImage('crime');
     if (img) embed.setImage(img);
 
@@ -48,7 +45,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('robbery_menu')
-            .setPlaceholder('⛓️ Choose a robbery')
+            .setPlaceholder(cfg.placeholder || '⛓️ Choose a robbery')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu] };

@@ -4,22 +4,20 @@ const {
 } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
     const img = await db.getImage('phone').catch(() => null);
-    const embed = new EmbedBuilder()
-        .setTitle('Phone')
-        .setColor(0x1565C0)
-        .setDescription('> Choose the service you need from the menu below')
-        .setFooter({ text: 'Phone System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'phone');
+    const embed = new EmbedBuilder().setColor(0x1565C0).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     const mc = await loadSystemBtns(db, 'phone_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('phone_menu')
-            .setPlaceholder('📱 Choose a service')
+            .setPlaceholder(cfg.placeholder || '📱 Choose a service')
             .addOptions([
                 makeMenuOption('report_police',    mc.report_police),
                 makeMenuOption('report_ambulance', mc.report_ambulance),

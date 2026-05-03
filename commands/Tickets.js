@@ -8,17 +8,16 @@ const {
     ButtonStyle,
 } = require('discord.js');
 const { parseEmoji } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 /* ── بناء الـ Payload ─────────────────────────────────────────────────────── */
 async function buildPayload(db) {
     const types = await db.getTicketTypes().catch(() => []);
     const img   = await db.getImage('tickets').catch(() => null);
+    const cfg   = await loadEmbedCfg(db, 'tickets');
 
-    const embed = new EmbedBuilder()
-        .setTitle('🎫 نظام التكتات')
-        .setColor(0x1565C0)
-        .setFooter({ text: 'FANTASY Bot • Ticket System' })
-        .setTimestamp();
+    const embed = new EmbedBuilder().setColor(0x1565C0).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     const resetBtn = new ButtonBuilder()
@@ -32,8 +31,6 @@ async function buildPayload(db) {
         embed.setDescription('> لا توجد أنواع تكتات حالياً.\n> استخدم `/إعداد-تكتات إضافة-نوع` لإضافة نوع.');
         return { embeds: [embed], components: [resetRow] };
     }
-
-    embed.setDescription('اختر نوع التكت من القائمة أدناه وسيُفتح لك روم خاص.');
 
     const options = types.slice(0, 24).map(t => {
         const opt = new StringSelectMenuOptionBuilder()
@@ -52,7 +49,7 @@ async function buildPayload(db) {
     const menuRow = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('open_ticket_select')
-            .setPlaceholder('🎫 اختر نوع التكت')
+            .setPlaceholder(cfg.placeholder || '🎫 اختر نوع التكت')
             .addOptions(options)
     );
 

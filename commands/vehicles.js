@@ -1,22 +1,20 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
     const img = await db.getImage('vehicles').catch(() => null);
-    const embed = new EmbedBuilder()
-        .setTitle('My Registered Cars')
-        .setColor(0x37474F)
-        .setDescription('View your registered cars in the FANTASY system.')
-        .setFooter({ text: 'Vehicles System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'vehicles');
+    const embed = new EmbedBuilder().setColor(0x37474F).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     const mc = await loadSystemBtns(db, 'vehicles_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('vehicles_menu')
-            .setPlaceholder('Choose an option')
+            .setPlaceholder(cfg.placeholder || 'Choose an option')
             .addOptions([
                 makeMenuOption('view', mc.view),
                 resetOption('vehicles'),

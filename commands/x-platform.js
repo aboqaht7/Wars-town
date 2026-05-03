@@ -4,17 +4,18 @@ const {
 } = require('discord.js');
 const { resetRow } = require('../utils');
 const { loadSystemBtns, makeBtn } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(image, account, db) {
     const c = await loadSystemBtns(db, 'x');
-    const embed = new EmbedBuilder()
-        .setTitle('𝕏 Platform')
-        .setColor(0x000000)
-        .setDescription(account
+    const cfg = await loadEmbedCfg(db, 'x_platform');
+    const embed = new EmbedBuilder().setColor(0x000000).setTimestamp();
+    applyEmbed(embed, cfg);
+    if (!cfg.description) {
+        embed.setDescription(account
             ? `Welcome **@${account.x_username}** — choose what you want to do.`
-            : 'Create your X platform account and start tweeting.')
-        .setFooter({ text: 'X Platform • FANTASY Bot' })
-        .setTimestamp();
+            : 'Create your X platform account and start tweeting.');
+    }
     if (image) embed.setImage(image);
 
     const row = new ActionRowBuilder().addComponents(

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'market',
@@ -32,15 +33,11 @@ module.exports = {
 async function buildMarket(db) {
     const items = await db.getMarketItems();
     const img   = await db.getImage('market');
+    const cfg   = await loadEmbedCfg(db, 'market');
 
-    const embed = new EmbedBuilder()
-        .setTitle('Store')
-        .setColor(0xBF360C)
-        .setDescription(items.length
-            ? 'Choose the item you want to buy from the list.'
-            : '> No items available right now. Wait for the admin.')
-        .setFooter({ text: 'Store System • FANTASY Bot' })
-        .setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xBF360C).setTimestamp();
+    applyEmbed(embed, cfg);
+    if (!items.length) embed.setDescription('> No items available right now. Wait for the admin.');
     if (img) embed.setImage(img);
 
     if (!items.length) return { embeds: [embed], components: [resetRow('market')] };
@@ -55,7 +52,7 @@ async function buildMarket(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('market_item_select')
-            .setPlaceholder('🛒 Choose an item')
+            .setPlaceholder(cfg.placeholder || '🛒 Choose an item')
             .addOptions(options)
     );
 

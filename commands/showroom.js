@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'معارض',
@@ -10,7 +11,7 @@ module.exports = {
         if (err) return message.reply(err);
         const cars = await db.getShowroom();
         const img = await db.getImage('showroom');
-        const { embed, components } = build(cars, img);
+        const { embed, components } = await build(cars, img, db);
         message.channel.send({ embeds: [embed], components });
     },
     async slashExecute(interaction, db) {
@@ -19,22 +20,22 @@ module.exports = {
         if (err) return interaction.reply({ content: err, flags: 64 });
         const cars = await db.getShowroom();
         const img = await db.getImage('showroom');
-        const { embed, components } = build(cars, img);
+        const { embed, components } = await build(cars, img, db);
         await interaction.channel.send({ embeds: [embed], components });
         await interaction.deferReply({ flags: 64 }).catch(() => {});
         await interaction.deleteReply().catch(() => {});
     }
 };
 
-function build(cars, image) {
-    const embed = new EmbedBuilder()
-        .setTitle('Car Showroom')
-        .setColor(0xB71C1C)
-        .setDescription(cars.length
+async function build(cars, image, db) {
+    const cfg = await loadEmbedCfg(db, 'showroom');
+    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    applyEmbed(embed, cfg);
+    if (!cfg.description) {
+        embed.setDescription(cars.length
             ? `**${cars.length}** cars available — choose from the menu to view details.`
-            : '> No cars available in the showroom right now')
-        .setFooter({ text: 'Showroom System • FANTASY Bot' })
-        .setTimestamp();
+            : '> No cars available in the showroom right now');
+    }
     if (image) embed.setImage(image);
 
     const components = cars.length ? [] : [resetRow('showroom')];
@@ -48,7 +49,7 @@ function build(cars, image) {
         components.push(new ActionRowBuilder().addComponents(
             new StringSelectMenuBuilder()
                 .setCustomId('showroom_menu')
-                .setPlaceholder('Choose a car to inquire about')
+                .setPlaceholder(cfg.placeholder || 'Choose a car to inquire about')
                 .addOptions(options)
         ));
     }

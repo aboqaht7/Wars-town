@@ -4,14 +4,12 @@ const {
 } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeBtn, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function buildSnap(account, image, db) {
-    const embed = new EmbedBuilder()
-        .setTitle('Snapchat')
-        .setColor(0xFFFC00)
-        .setDescription('Send snaps and connect with your friends.')
-        .setFooter({ text: 'Snapchat • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'snap');
+    const embed = new EmbedBuilder().setColor(0xFFFC00).setTimestamp();
+    applyEmbed(embed, cfg);
     if (image) embed.setImage(image);
 
     if (!account) {
@@ -26,7 +24,7 @@ async function buildSnap(account, image, db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('snap_menu')
-            .setPlaceholder('👻 Choose from the menu')
+            .setPlaceholder(cfg.placeholder || '👻 Choose from the menu')
             .addOptions([
                 makeMenuOption('snap_send',     mc.send),
                 makeMenuOption('snap_inbox',    mc.inbox),

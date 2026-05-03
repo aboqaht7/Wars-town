@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const { resetRow } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'الرحلات',
@@ -24,18 +25,9 @@ module.exports = {
 };
 
 async function build(db) {
-    const embed = new EmbedBuilder()
-        .setTitle('Trip System')
-        .setColor(0xB71C1C)
-        .setDescription(
-            '> Choose the required action from the buttons below.\n\n' +
-            '✈️ **Start Trip** — Open a new trip and send the notification\n' +
-            '🌪️ **Hurricane** — End the trip and send the hurricane warning\n' +
-            '🔄 **Renew** — Renew a trip with the host ID\n' +
-            '📣 **Alert** — Send a custom alert to the alerts channel'
-        )
-        .setFooter({ text: 'Trip System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'trips');
+    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    applyEmbed(embed, cfg);
 
     const img = await db.getImage('الرحلات');
     if (img) embed.setImage(img);

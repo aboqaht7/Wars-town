@@ -4,15 +4,13 @@ const {
 } = require('discord.js');
 const { resetRow } = require('../utils');
 const { loadSystemBtns, makeBtn } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(image, db) {
     const c = await loadSystemBtns(db, 'bag');
-    const embed = new EmbedBuilder()
-        .setTitle('Inventory')
-        .setColor(0xE65100)
-        .setDescription('Select what you want to do with your bag.')
-        .setFooter({ text: 'Bag System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'bag');
+    const embed = new EmbedBuilder().setColor(0xE65100).setTimestamp();
+    applyEmbed(embed, cfg);
     if (image) embed.setImage(image);
 
     const row = new ActionRowBuilder().addComponents(

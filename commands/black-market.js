@@ -1,17 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const db = require('../database');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build() {
     const items = await db.getBlackMarketItems();
-    const embed = new EmbedBuilder()
-        .setTitle('Black Market')
-        .setColor(0xB71C1C)
-        .setDescription(items.length
-            ? 'Choose the item you want to buy from the list.'
-            : '> No items available right now. Wait for the admin.')
-        .setFooter({ text: 'Black Market • FANTASY Bot' })
-        .setTimestamp();
+    const cfg   = await loadEmbedCfg(db, 'black_market');
+    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    applyEmbed(embed, cfg);
+    if (!items.length) embed.setDescription('> No items available right now. Wait for the admin.');
 
     const img = await db.getImage('بلاك ماركت');
     if (img) embed.setImage(img);
@@ -28,7 +25,7 @@ async function build() {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('black_market_menu')
-            .setPlaceholder('🔫 Choose an item')
+            .setPlaceholder(cfg.placeholder || '🔫 Choose an item')
             .addOptions(options)
     );
     return { embeds: [embed], components: [menu] };

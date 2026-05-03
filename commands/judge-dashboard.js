@@ -3,6 +3,7 @@ const {
     ButtonBuilder, ButtonStyle, StringSelectMenuBuilder
 } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'قاضي',
@@ -26,12 +27,11 @@ module.exports.buildJudgeDashboard = buildJudgeDashboard;
 async function buildMain(db) {
     const judges = await db.getJudges();
     const img    = await db.getImage('عدل');
+    const cfg    = await loadEmbedCfg(db, 'judge_dashboard');
 
-    const embed = new EmbedBuilder()
-        .setTitle('Certified Judges')
-        .setColor(0x4A148C)
-        .setFooter({ text: 'Justice System • FANTASY Bot' })
-        .setTimestamp();
+    const embed = new EmbedBuilder().setColor(0x4A148C).setTimestamp();
+    applyEmbed(embed, cfg);
+    const hasCustomDesc = !!cfg.description;
 
     if (img) embed.setThumbnail(img);
 
@@ -40,13 +40,15 @@ async function buildMain(db) {
         return { embeds: [embed], components: [resetRow('قاضي')] };
     }
 
-    embed.setDescription(
-        judges.map((j, i) => `**${i + 1}.** ${j.judge_name} — <@${j.discord_id}>`).join('\n')
-    );
+    if (!hasCustomDesc) {
+        embed.setDescription(
+            judges.map((j, i) => `**${i + 1}.** ${j.judge_name} — <@${j.discord_id}>`).join('\n')
+        );
+    }
 
     const menu = new StringSelectMenuBuilder()
         .setCustomId('judge_select')
-        .setPlaceholder('🏛️ Choose a judge to view their cases')
+        .setPlaceholder(cfg.placeholder || '🏛️ Choose a judge to view their cases')
         .addOptions([
             ...judges.slice(0, 24).map(j => ({
                 label: j.judge_name,

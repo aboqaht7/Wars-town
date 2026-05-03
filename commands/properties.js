@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'properties',
@@ -27,14 +28,10 @@ module.exports = {
 
 async function build(db) {
     const props = await db.getProperties();
-    const embed = new EmbedBuilder()
-        .setTitle('Real Estate Gallery')
-        .setColor(0xB71C1C)
-        .setDescription(props.length
-            ? 'Choose the property you want to inquire about or purchase from the list.'
-            : '> No properties available right now. Wait for the admin.')
-        .setFooter({ text: 'Properties System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'properties');
+    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    applyEmbed(embed, cfg);
+    if (!props.length) embed.setDescription('> No properties available right now. Wait for the admin.');
     const img = await db.getImage('properties');
     if (img) embed.setImage(img);
 
@@ -49,7 +46,7 @@ async function build(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('properties_menu')
-            .setPlaceholder('🏠 Choose a property')
+            .setPlaceholder(cfg.placeholder || '🏠 Choose a property')
             .addOptions([...options, resetOption('properties')])
     );
     return { embeds: [embed], components: [menu] };

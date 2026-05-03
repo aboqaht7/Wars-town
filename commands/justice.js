@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow, resetOption, isAdmin } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'عدل',
@@ -21,18 +22,15 @@ module.exports = {
 
 async function build(db) {
     const img = await db.getImage('عدل');
-    const embed = new EmbedBuilder()
-        .setTitle('Justice System')
-        .setColor(0x4A148C)
-        .setDescription('> Manage filed cases — choose an action from the menu')
-        .setFooter({ text: 'Justice System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'justice');
+    const embed = new EmbedBuilder().setColor(0x4A148C).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('justice_menu')
-            .setPlaceholder('🏛️ Choose an action')
+            .setPlaceholder(cfg.placeholder || '🏛️ Choose an action')
             .addOptions([
                 { label: '✅ Accept Case',       value: 'accept_case',   description: 'Accept a pending case' },
                 { label: '❌ Reject Case',        value: 'reject_case',   description: 'Reject a case with reason' },

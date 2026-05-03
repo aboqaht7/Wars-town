@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'معدات',
@@ -32,20 +33,16 @@ module.exports = {
 async function buildEquipment(db) {
     const items = await db.getEquipmentItems();
     const img   = await db.getImage('معدات');
+    const cfg   = await loadEmbedCfg(db, 'equipment');
 
-    const embed = new EmbedBuilder()
-        .setTitle('Equipment Store')
-        .setColor(0x4527A0)
-        .setFooter({ text: 'Equipment Store • FANTASY Bot' })
-        .setTimestamp();
+    const embed = new EmbedBuilder().setColor(0x4527A0).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     if (!items.length) {
         embed.setDescription('> No equipment available right now. Wait for the admin.');
         return { embeds: [embed], components: [resetRow('معدات')] };
     }
-
-    embed.setDescription('Choose equipment from the list below.');
 
     const options = items.slice(0, 24).map(it => ({
         label: it.name,
@@ -57,7 +54,7 @@ async function buildEquipment(db) {
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('equipment_item_select')
-            .setPlaceholder('🔨 Choose equipment')
+            .setPlaceholder(cfg.placeholder || '🔨 Choose equipment')
             .addOptions([...options, resetOption('معدات')])
     );
 

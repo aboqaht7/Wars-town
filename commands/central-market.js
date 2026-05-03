@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetRow, resetOption } = require('../utils');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'سوق-مركزي',
@@ -33,11 +34,10 @@ async function buildMarket(db) {
 
     const fmt = (name) => `${(prices[name] || 0).toLocaleString()} Riyals`;
 
-    const embed = new EmbedBuilder()
-        .setTitle('Central Market')
-        .setColor(0x00796B)
-        .setDescription('> Choose the category you want to sell from the menu\n> Prices refresh automatically every hour\n\u200B')
-        .addFields(
+    const cfg = await loadEmbedCfg(db, 'central_market');
+    const embed = new EmbedBuilder().setColor(0x00796B).setTimestamp();
+    applyEmbed(embed, cfg);
+    embed.addFields(
             {
                 name: '🎣 Fish',
                 value: [
@@ -63,16 +63,14 @@ async function buildMarket(db) {
                 ].join('\n'),
                 inline: true,
             },
-        )
-        .setFooter({ text: 'Central Market • FANTASY Bot' })
-        .setTimestamp();
+        );
 
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('central_market_sell')
-            .setPlaceholder('🏪 Choose what to sell')
+            .setPlaceholder(cfg.placeholder || '🏪 Choose what to sell')
             .addOptions([
                 { label: '🎣 Sell All Fish',    value: 'fishing',     description: 'Shrimp • Salmon • Grouper • Whale' },
                 { label: '🪓 Sell All Wood',    value: 'woodcutting', description: 'Timber' },

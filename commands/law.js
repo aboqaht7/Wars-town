@@ -1,22 +1,20 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { resetOption } = require('../utils');
 const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
     const img = await db.getImage('محاماة').catch(() => null);
-    const embed = new EmbedBuilder()
-        .setTitle('Law Office')
-        .setColor(0x0D47A1)
-        .setDescription('> Choose the legal service from the menu below')
-        .setFooter({ text: 'Law System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'law');
+    const embed = new EmbedBuilder().setColor(0x0D47A1).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     const mc = await loadSystemBtns(db, 'law_menu');
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('law_menu')
-            .setPlaceholder('⚖️ Choose a legal service')
+            .setPlaceholder(cfg.placeholder || '⚖️ Choose a legal service')
             .addOptions([
                 makeMenuOption('new_case',    mc.new_case),
                 makeMenuOption('my_cases',    mc.my_cases),
