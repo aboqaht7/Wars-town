@@ -29,7 +29,6 @@ module.exports = {
             makeBtn('tracking_president_btn', t.president),
         );
 
-        await interaction.channel.send({ embeds: [embed], components: [row] });
-        await interaction.reply({ content: '✅ تم نشر لوحة التراكينق.', flags: 64 });
+        await interaction.reply({ embeds: [embed], components: [row] });
     },
 };
