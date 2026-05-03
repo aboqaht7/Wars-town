@@ -725,8 +725,38 @@ client.on('interactionCreate', async interaction => {
                     });
                 }
 
-                // deduct from cash
-                await db.addToCash(interaction.user.id, identity.slot, -price);
+                // 1) persist ownership FIRST (so a DB failure doesn't charge the user)
+                let ownerRow;
+                try {
+                    ownerRow = await db.addPropertyOwner({
+                        discordId:    interaction.user.id,
+                        slot:         identity.slot,
+                        propertyId:   prop.id,
+                        propertyName: prop.name,
+                        price,
+                        roleId:       null,
+                    });
+                } catch (e) {
+                    console.error('[addPropertyOwner]', e?.message);
+                    return interaction.reply({ content: 'تعذّر تسجيل ملكية العقار. لم يتم خصم أي مبلغ.', flags: 64 });
+                }
+
+                // 2) deduct cash; if this fails, roll back ownership row
+                try {
+                    await db.addToCash(interaction.user.id, identity.slot, -price);
+                } catch (e) {
+                    console.error('[buy_property addToCash]', e?.message);
+                    await db.removePropertyOwner(ownerRow.id).catch(() => {});
+                    return interaction.reply({ content: 'تعذّر إتمام الدفع. تم إلغاء العملية.', flags: 64 });
+                }
+
+                // 3) create/assign owner role (best-effort, non-blocking on perms)
+                let ownerRoleId = null;
+                try {
+                    const { ensureOwnerRole } = require('./utils');
+                    ownerRoleId = await ensureOwnerRole(interaction.guild, interaction.member, prop.name);
+                    if (ownerRoleId) await db.setPropertyOwnerRole(ownerRow.id, ownerRoleId).catch(() => {});
+                } catch (_) {}
 
                 // DM the buyer with property details
                 const dmEmbed = new EmbedBuilder()
@@ -735,6 +765,7 @@ client.on('interactionCreate', async interaction => {
                     .addFields(
                         { name: '🏠 Property Name', value: prop.name, inline: true },
                         { name: '💰 Amount Paid',   value: `\`${price.toLocaleString()} Riyals\``, inline: true },
+                        { name: '🎖️ Ownership Role', value: ownerRoleId ? `<@&${ownerRoleId}>` : '—', inline: true },
                     )
                     .setDescription('> Congratulations! Your property was successfully purchased. Keep this message as your ownership document.')
                     .setFooter({ text: 'Properties System • FANTASY Bot' })

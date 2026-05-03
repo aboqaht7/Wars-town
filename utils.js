@@ -1,5 +1,43 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
+/**
+ * إنشاء (أو إعادة استخدام) رتبة "Owner [name]" وإسنادها للعضو.
+ * - إذا وُجدت رتبة بنفس الاسم في السيرفر: تُستعمل بدل إنشاء جديدة.
+ * - تعود مع `role.id` أو `null` عند الفشل (صلاحيات/خطأ شبكة).
+ */
+async function ensureOwnerRole(guild, member, name) {
+    if (!guild || !member || !name) return null;
+    try {
+        const safeName = String(name).slice(0, 80);
+        const roleName = `Owner ${safeName}`;
+        let role = guild.roles.cache.find(r => r.name === roleName);
+        if (!role) {
+            role = await guild.roles.create({
+                name: roleName,
+                color: 0xE53935,
+                reason: `Ownership role for ${member.user?.tag || member.id}`,
+                mentionable: false,
+            });
+        }
+        if (!member.roles.cache.has(role.id)) {
+            await member.roles.add(role).catch(() => {});
+        }
+        return role.id;
+    } catch (e) {
+        console.error('[ensureOwnerRole] failed:', e?.message);
+        return null;
+    }
+}
+
+async function deleteOwnerRole(guild, roleId) {
+    if (!guild || !roleId) return;
+    try {
+        const role = guild.roles.cache.get(roleId) || await guild.roles.fetch(roleId).catch(() => null);
+        if (role) await role.delete('Ownership ended').catch(() => {});
+    } catch (_) {}
+}
+
+
 function resetRow(key) {
     return new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -21,4 +59,4 @@ async function isAdmin(member, db) {
     return false;
 }
 
-module.exports = { resetRow, resetOption, isAdmin };
+module.exports = { resetRow, resetOption, isAdmin, ensureOwnerRole, deleteOwnerRole };

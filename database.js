@@ -442,7 +442,7 @@ async function getCitizenData(discordId, slot) {
 
     const fullName = [identity.character_name, identity.family_name].filter(Boolean).join(' ');
 
-    const [casesRes, violRes] = await Promise.all([
+    const [casesRes, violRes, propsRes, vehRes] = await Promise.all([
         query(
             `SELECT case_number, title, status, verdict, created_at
              FROM cases
@@ -454,9 +454,25 @@ async function getCitizenData(discordId, slot) {
             `SELECT reason, created_at FROM bands WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10`,
             [discordId]
         ),
+        query(
+            `SELECT property_name, price, purchased_at
+             FROM property_owners WHERE discord_id=$1 AND slot=$2
+             ORDER BY purchased_at ASC`,
+            [discordId, slot]
+        ),
+        query(
+            `SELECT car_name, plate, added_at FROM vehicles WHERE discord_id=$1 ORDER BY added_at ASC`,
+            [discordId]
+        ),
     ]);
 
-    return { identity, cases: casesRes.rows, violations: violRes.rows };
+    return {
+        identity,
+        cases: casesRes.rows,
+        violations: violRes.rows,
+        properties: propsRes.rows,
+        vehicles: vehRes.rows,
+    };
 }
 
 async function createXAccount(discordId, xUsername) {
@@ -631,7 +647,7 @@ async function removeShowroomCar(id) {
 
 async function getVehicles(discordId) {
     const res = await query(
-        'SELECT car_name, plate, added_at FROM vehicles WHERE discord_id = $1 ORDER BY added_at',
+        'SELECT car_name, plate, added_at, role_id FROM vehicles WHERE discord_id = $1 ORDER BY added_at',
         [discordId]
     );
     return res.rows;
@@ -664,8 +680,59 @@ async function initPropertiesTable() {
             image_url TEXT
         )
     `);
+    await query(`
+        CREATE TABLE IF NOT EXISTS property_owners (
+            id SERIAL PRIMARY KEY,
+            discord_id VARCHAR NOT NULL,
+            slot INT NOT NULL DEFAULT 1,
+            property_id INT,
+            property_name TEXT NOT NULL,
+            price BIGINT,
+            role_id VARCHAR,
+            purchased_at TIMESTAMP DEFAULT NOW()
+        )
+    `);
+    await query(`CREATE INDEX IF NOT EXISTS idx_property_owners_discord ON property_owners(discord_id, slot)`);
+    await query(`ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS role_id VARCHAR`).catch(() => {});
+    await query(`ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS slot INT DEFAULT 1`).catch(() => {});
 }
 initPropertiesTable().catch(console.error);
+
+async function addPropertyOwner({ discordId, slot, propertyId, propertyName, price, roleId }) {
+    const res = await query(
+        `INSERT INTO property_owners (discord_id, slot, property_id, property_name, price, role_id)
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+        [discordId, slot || 1, propertyId || null, propertyName, price || 0, roleId || null]
+    );
+    return res.rows[0];
+}
+
+async function setPropertyOwnerRole(ownerId, roleId) {
+    await query('UPDATE property_owners SET role_id = $1 WHERE id = $2', [roleId, ownerId]);
+}
+
+async function getUserProperties(discordId, slot) {
+    const params = [discordId];
+    let sql = 'SELECT * FROM property_owners WHERE discord_id = $1';
+    if (slot != null) { sql += ' AND slot = $2'; params.push(slot); }
+    sql += ' ORDER BY purchased_at ASC';
+    const res = await query(sql, params);
+    return res.rows;
+}
+
+async function removePropertyOwner(ownerId) {
+    const res = await query('DELETE FROM property_owners WHERE id = $1 RETURNING *', [ownerId]);
+    return res.rows[0] || null;
+}
+
+async function setVehicleRoleId(plate, roleId) {
+    await query('UPDATE vehicles SET role_id = $1 WHERE plate = $2', [roleId, plate]);
+}
+
+async function getVehicleByPlate(plate) {
+    const res = await query('SELECT * FROM vehicles WHERE plate = $1', [plate]);
+    return res.rows[0] || null;
+}
 
 async function initAdminRanksTable() {
     await query(`
@@ -1597,7 +1664,8 @@ module.exports = {
     postTweet, getXTimeline, likePost, deletePost, getPostById, retweetPost, replyPost,
     sendMessage, getMessages, markMessagesRead, getUnreadCount, addContact, getContacts,
     getShowroom, addShowroomCar, removeShowroomCar,
-    getVehicles, addVehicle, removeVehicle,
+    getVehicles, addVehicle, removeVehicle, setVehicleRoleId, getVehicleByPlate,
+    addPropertyOwner, setPropertyOwnerRole, getUserProperties, removePropertyOwner,
     ensureIdentity, setActiveSlot, getActiveSlot, getActiveIdentity, getIdentityByIban, getAllActiveIdentities, getCitizenData,
     transferMoney, transferItem, useItem, getTransactions, depositCash, withdrawCash,
     adminAddMoney, adminRemoveMoney, freezeAccount, unfreezeAccount, getIdentitiesByDiscordId,

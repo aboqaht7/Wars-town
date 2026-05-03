@@ -84,7 +84,7 @@ async function buildCitizenEmbed(db, discordId, slot) {
     const data = await db.getCitizenData(discordId, slot);
     if (!data) return null;
 
-    const { identity, cases, violations } = data;
+    const { identity, cases, violations, properties = [], vehicles = [] } = data;
     const fullName = [identity.character_name, identity.family_name].filter(Boolean).join(' ');
     const img = await db.getImage('citizen_file').catch(() => null);
 
@@ -100,6 +100,27 @@ async function buildCitizenEmbed(db, discordId, slot) {
     desc += '💰 **Balance**\n';
     desc += `> Bank: **${Number(identity.balance || 0).toLocaleString()} Riyals**\n`;
     desc += `> Cash: **${Number(identity.cash || 0).toLocaleString()} Riyals**\n\n`;
+
+    desc += `🏠 **Properties Owned (${properties.length})**\n`;
+    if (!properties.length) {
+        desc += '> No properties owned\n';
+    } else {
+        for (const p of properties) {
+            const price = Number(p.price || 0).toLocaleString();
+            desc += `> ${p.property_name} — \`${price} Riyals\` • ${fmtDate(p.purchased_at)}\n`;
+        }
+    }
+    desc += '\n';
+
+    desc += `🚗 **Vehicles Owned (${vehicles.length})**\n`;
+    if (!vehicles.length) {
+        desc += '> No vehicles owned\n';
+    } else {
+        for (const v of vehicles) {
+            desc += `> ${v.car_name} — \`${v.plate}\` • ${fmtDate(v.added_at)}\n`;
+        }
+    }
+    desc += '\n';
 
     desc += `⚖️ **Cases as Defendant (${cases.length})**\n`;
     if (!cases.length) {
