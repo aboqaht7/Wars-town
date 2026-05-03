@@ -303,6 +303,32 @@ async function setBtnCfg(system, btnKey, cfg) {
     );
 }
 
+/* ── Embed config (نصوص الامبدات القابلة للتخصيص) ──────────────────────── */
+async function getEmbedCfg(key, field) {
+    const res = await query(
+        'SELECT value FROM server_config WHERE key=$1',
+        [`embedcfg:${key}:${field}`]
+    );
+    return res.rows[0] ? res.rows[0].value : null;
+}
+async function setEmbedCfg(key, field, value) {
+    await query(
+        `INSERT INTO server_config (key, value) VALUES ($1, $2)
+         ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
+        [`embedcfg:${key}:${field}`, value]
+    );
+}
+async function clearEmbedCfg(key, field) {
+    await query('DELETE FROM server_config WHERE key=$1', [`embedcfg:${key}:${field}`]);
+}
+async function getAllEmbedCfgs() {
+    const res = await query("SELECT key, value FROM server_config WHERE key LIKE 'embedcfg:%'");
+    return res.rows.map(r => {
+        const parts = r.key.split(':');
+        return { key: parts[1], field: parts[2], value: r.value };
+    });
+}
+
 async function logoutAllUsers() {
     await query('UPDATE users SET is_logged_in=FALSE');
 }
@@ -1549,7 +1575,9 @@ module.exports = {
     query, ensureUser, generateIban,
     unlockSlot3, isSlot3Unlocked,
     updateIban,
-    getConfig, setConfig, getBtnCfg, setBtnCfg, logoutAllUsers, addCharacterLog, getCharacterLogs,
+    getConfig, setConfig, getBtnCfg, setBtnCfg,
+    getEmbedCfg, setEmbedCfg, clearEmbedCfg, getAllEmbedCfgs,
+    logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
     createIdentityFull, loginIdentity, logoutIdentity, getLoginStatus, getUserIdentities,
     setAdminRank, getAdminRank, removeAdminRank, getAllAdminRanks, updateAdminPoints,

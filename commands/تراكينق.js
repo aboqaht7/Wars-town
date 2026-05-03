@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder } = require('discord.js');
 const { loadSystemBtns, makeBtn } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 module.exports = {
     name: 'تراكينق',
@@ -16,13 +17,11 @@ module.exports = {
             return interaction.reply({ content: '❌ هذا الأمر لأعضاء CIA فقط.', flags: 64 });
         }
 
-        const t = await loadSystemBtns(db, 'cia_tracking');
+        const t   = await loadSystemBtns(db, 'cia_tracking');
+        const cfg = await loadEmbedCfg(db, 'tracking');
 
-        const embed = new EmbedBuilder()
-            .setTitle('لوحة التراكينق — CIA')
-            .setColor(0x0D1B2A)
-            .setFooter({ text: 'CIA • FANTASY Bot' })
-            .setTimestamp();
+        const embed = new EmbedBuilder().setColor(0x0D1B2A).setTimestamp();
+        applyEmbed(embed, cfg);
 
         const row = new ActionRowBuilder().addComponents(
             makeBtn('tracking_btn',           t.normal),

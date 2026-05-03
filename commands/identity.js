@@ -28,19 +28,17 @@ module.exports = {
 const SLOT_NAMES = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
 
 async function buildMain(userId, db) {
+    const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
     const img = await db.getImage('identity');
-    const embed = new EmbedBuilder()
-        .setTitle('Identity System')
-        .setColor(0x4A148C)
-        .setDescription('Create your identity and log in to start your journey in the world of FANTASY.')
-        .setFooter({ text: 'Identity System • FANTASY Bot' })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'identity');
+    const embed = new EmbedBuilder().setColor(0x4A148C).setTimestamp();
+    applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('identity_menu')
-            .setPlaceholder('Choose an option')
+            .setPlaceholder(cfg.placeholder || 'Choose an option')
             .addOptions([
                 { label: '✏️ Create Identity', value: 'create_identity', description: 'Create a new character in an empty slot' },
                 { label: '✅ Login', value: 'login_identity', description: 'Login with an existing character' },

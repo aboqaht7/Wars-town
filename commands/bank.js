@@ -14,12 +14,10 @@ async function bankMenu(imageUrl, db) {
         makeBtn('bank_withdraw', c.withdraw),
         makeBtn('bank_transfer', c.transfer),
     );
-    const embed = new EmbedBuilder()
-        .setTitle('FANTASY Bank')
-        .setColor(0x1565C0)
-        .setDescription('Welcome to the bank. Choose the service you need.')
-        .setFooter({ text: 'Bank System • FANTASY Bot' })
-        .setTimestamp();
+    const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
+    const cfg = await loadEmbedCfg(db, 'bank');
+    const embed = new EmbedBuilder().setColor(0x1565C0).setTimestamp();
+    applyEmbed(embed, cfg);
     if (imageUrl) embed.setImage(imageUrl);
     return { embeds: [embed], components: [row] };
 }

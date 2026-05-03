@@ -4,6 +4,7 @@ const {
     ActionRowBuilder,
 } = require('discord.js');
 const { loadSystemBtns, makeBtn } = require('../btnConfig');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 const { resetRow } = require('../utils');
 
 module.exports = {
@@ -15,12 +16,10 @@ module.exports = {
         const c = await loadSystemBtns(db, 'cia');
 
         const _img = await db.getImage('admin').catch(() => null);
+        const cfg  = await loadEmbedCfg(db, 'cia');
 
-        const embed = new EmbedBuilder()
-            .setTitle('CIA — وكالة الاستخبارات')
-            .setColor(0x0D1B2A)
-            .setFooter({ text: 'CIA • FANTASY Bot' })
-            .setTimestamp();
+        const embed = new EmbedBuilder().setColor(0x0D1B2A).setTimestamp();
+        applyEmbed(embed, cfg);
 
         const row1 = new ActionRowBuilder().addComponents(
             makeBtn('cia_login_btn',  c.login),

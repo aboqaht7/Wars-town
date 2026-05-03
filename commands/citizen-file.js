@@ -3,6 +3,7 @@ const {
     StringSelectMenuBuilder, StringSelectMenuOptionBuilder,
     ButtonBuilder, ButtonStyle,
 } = require('discord.js');
+const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 const PAGE_SIZE = 25;
 
@@ -29,11 +30,10 @@ async function buildCitizenList(db, page = 0) {
 
     const img = await db.getImage('citizen_file').catch(() => null);
 
-    const embed = new EmbedBuilder()
-        .setTitle('Citizen Files — CIA Intelligence')
-        .setColor(0x0D1B2A)
-        .setFooter({ text: `Page ${page + 1} of ${totalPages} • CIA Intelligence System` })
-        .setTimestamp();
+    const cfg = await loadEmbedCfg(db, 'citizen_file_list');
+    const embed = new EmbedBuilder().setColor(0x0D1B2A).setTimestamp();
+    applyEmbed(embed, cfg);
+    embed.setFooter({ text: `Page ${page + 1} of ${totalPages} • ${cfg.footer || 'CIA Intelligence System'}` });
     if (img) embed.setImage(img);
 
     if (!slice.length) {

@@ -35,18 +35,16 @@ module.exports = {
 };
 
 async function build(db) {
+    const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
     const _img = await db.getImage('admin').catch(() => null);
+    const cfg  = await loadEmbedCfg(db, 'help');
 
-    const embed = new EmbedBuilder()
-        .setTitle('FANTASY Bot — Systems Menu')
-        .setColor(0xE53935)
-        .setDescription('Choose a system from the menu below to view its details.')
-        .setFooter({ text: 'FANTASY Bot • Comprehensive RP System' })
-        .setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
+    applyEmbed(embed, cfg);
     const menu = new ActionRowBuilder().addComponents(
         new StringSelectMenuBuilder()
             .setCustomId('help_menu')
-            .setPlaceholder('Choose a system for details')
+            .setPlaceholder(cfg.placeholder || 'Choose a system for details')
             .addOptions(OPTIONS)
     );
     if (_img) embed.setImage(_img);
