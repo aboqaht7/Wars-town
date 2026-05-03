@@ -34,7 +34,7 @@ async function buildMarketEmbed(db) {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-    const _img = await db.getImage('سوق-مركزي').catch(() => null);
+    const _img = await db.getImage('سوق-الاسهم').catch(() => null) || await db.getImage('سوق-مركزي').catch(() => null);
 
     const embed = new EmbedBuilder()
         .setColor(0x0A1628)

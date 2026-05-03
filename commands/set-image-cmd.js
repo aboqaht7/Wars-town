@@ -4,28 +4,34 @@ const db = require('../database');
 const resetButton = new ButtonBuilder().setCustomId('reset_menu').setLabel('Reset Menu').setEmoji({ id: '1479212270746599528', name: 'GL137', animated: true }).setStyle(ButtonStyle.Secondary);
 
 const SYSTEMS = [
-    { name: 'Identity',        value: 'identity'    },
-    { name: 'Bank',            value: 'bank'        },
-    { name: 'Bag',             value: 'bag'         },
-    { name: 'Phone',           value: 'phone'       },
-    { name: 'Snapchat',        value: 'Snapchat'    },
-    { name: 'Crimes',          value: 'crime'       },
-    { name: 'Properties',      value: 'properties'  },
-    { name: 'Black Market',    value: 'بلاك ماركت'  },
-    { name: 'Trips',           value: 'الرحلات'     },
-    { name: 'Police',          value: 'police'      },
-    { name: 'Health',          value: 'health'      },
-    { name: 'Jobs',            value: 'jobs'        },
-    { name: 'Law',             value: 'law'         },
-    { name: 'Admin',           value: 'admin'       },
-    { name: 'Store',           value: 'market'      },
-    { name: 'Equipment',       value: 'معدات'       },
-    { name: 'Central Market',  value: 'سوق-مركزي'  },
-    { name: 'Lawyers',         value: 'محاماة'      },
-    { name: 'Justice',         value: 'عدل'         },
-    { name: 'Showroom',        value: 'showroom'    },
-    { name: 'Vehicles',        value: 'vehicles'    },
-    { name: 'X Platform',      value: 'x_platform'  },
+    { name: 'Identity — الهوية',                value: 'identity'      },
+    { name: 'Bank — البنك',                     value: 'bank'          },
+    { name: 'Bag — الحقيبة',                    value: 'bag'           },
+    { name: 'Phone — الجوال',                   value: 'phone'         },
+    { name: 'Snapchat — سناب شات',              value: 'Snapchat'      },
+    { name: 'Crimes — الجرائم',                 value: 'crime'         },
+    { name: 'Properties — العقارات',            value: 'properties'    },
+    { name: 'Black Market — السوق السوداء',     value: 'بلاك ماركت'    },
+    { name: 'Trips — الرحلات',                  value: 'الرحلات'       },
+    { name: 'Events / Flight — الأحداث',        value: 'events'        },
+    { name: 'Health — الصحة',                   value: 'health'        },
+    { name: 'Jobs — الوظائف',                   value: 'jobs'          },
+    { name: 'Law — مكتب المحاماة',              value: 'law'           },
+    { name: 'Lawyers — المحامون',               value: 'محاماة'        },
+    { name: 'Justice / Judges — العدالة',       value: 'عدل'           },
+    { name: 'Admin / Police — الإدارة',         value: 'admin'         },
+    { name: 'Store / Market — السوق',           value: 'market'        },
+    { name: 'Equipment — المعدات',              value: 'معدات'         },
+    { name: 'Central Market — السوق المركزي',   value: 'سوق-مركزي'    },
+    { name: 'Showroom — معرض السيارات',         value: 'showroom'      },
+    { name: 'Vehicles — السيارات',              value: 'vehicles'      },
+    { name: 'X Platform — منصة X',              value: 'x_platform'    },
+    { name: 'Tickets — التكتات',                value: 'tickets'       },
+    { name: 'Citizen File — ملف المواطن',       value: 'citizen_file'  },
+    { name: 'Admin Points — نقاط الإدارة',      value: 'نقاط-الادارة' },
+    { name: 'CIA — الاستخبارات',                value: 'cia'           },
+    { name: 'Help — قائمة المساعدة',            value: 'help'          },
+    { name: 'Stock Market — سوق الأسهم',        value: 'سوق-الاسهم'   },
 ];
 
 module.exports = {
@@ -37,13 +43,24 @@ module.exports = {
             .setName('النظام')
             .setDescription('Choose the system')
             .setRequired(true)
-            .addChoices(...SYSTEMS)
+            .setAutocomplete(true)
         )
         .addStringOption(o => o
             .setName('الرابط')
             .setDescription('Direct image URL (must end with .jpg, .png, etc.)')
             .setRequired(true)
         ),
+
+    async autocomplete(interaction) {
+        const focused = (interaction.options.getFocused() || '').toLowerCase();
+        const choices = SYSTEMS
+            .filter(s => !focused
+                || s.name.toLowerCase().includes(focused)
+                || s.value.toLowerCase().includes(focused))
+            .slice(0, 25)
+            .map(s => ({ name: s.name, value: s.value }));
+        return interaction.respond(choices);
+    },
 
     async slashExecute(interaction) {
         if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator))

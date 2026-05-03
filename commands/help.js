@@ -36,7 +36,7 @@ module.exports = {
 
 async function build(db) {
     const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
-    const _img = await db.getImage('admin').catch(() => null);
+    const _img = await db.getImage('help').catch(() => null) || await db.getImage('admin').catch(() => null);
     const cfg  = await loadEmbedCfg(db, 'help');
 
     const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();

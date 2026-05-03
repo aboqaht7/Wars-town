@@ -4,7 +4,7 @@ const { loadSystemBtns, makeMenuOption } = require('../btnConfig');
 const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
-    const img = await db.getImage('محاماة').catch(() => null);
+    const img = await db.getImage('law').catch(() => null) || await db.getImage('محاماة').catch(() => null);
     const cfg = await loadEmbedCfg(db, 'law');
     const embed = new EmbedBuilder().setColor(0x0D47A1).setTimestamp();
     applyEmbed(embed, cfg);

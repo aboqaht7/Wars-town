@@ -15,7 +15,7 @@ module.exports = {
     async slashExecute(interaction, db) {
         const c = await loadSystemBtns(db, 'cia');
 
-        const _img = await db.getImage('admin').catch(() => null);
+        const _img = await db.getImage('cia').catch(() => null) || await db.getImage('admin').catch(() => null);
         const cfg  = await loadEmbedCfg(db, 'cia');
 
         const embed = new EmbedBuilder().setColor(0x0D1B2A).setTimestamp();
