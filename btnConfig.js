@@ -172,7 +172,7 @@ const SYSTEM_LABELS = {
     justice_menu:    'العدالة',
     activation_menu: 'التفعيل',
     craft_weapon:    'تصنيع السلاح',
-    cia_tracking:    'تراكينق CIA',
+    cia_tracking:    'تراكينق',
 };
 
 const BTN_LABELS = {
