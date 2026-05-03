@@ -57,7 +57,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Added to Store')
-                .setColor(0xBF360C)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',          value: String(item.id),                                inline: true },
                     { name: 'Name',        value: item.name,                                      inline: true },
@@ -100,7 +100,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Item Updated')
-                .setColor(0xBF360C)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',          value: String(item.id),                               inline: true },
                     { name: 'Name',        value: item.name,                                     inline: true },
@@ -119,7 +119,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Store List')
-                .setColor(0xBF360C)
+                .setColor(0xE53935)
                 .setFooter({ text: 'Store Admin • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
                 embed.setDescription('No items added yet.');

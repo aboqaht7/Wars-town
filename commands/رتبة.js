@@ -25,7 +25,7 @@ module.exports = {
         if (member.roles.cache.has(role.id)) {
             await member.roles.remove(role);
             const embed = new EmbedBuilder()
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .setDescription(`🔴 Role **${role.name}** has been removed from <@${member.id}>.`)
                 .setFooter({ text: `By: ${message.author.username}` })
                 .setTimestamp();
@@ -33,7 +33,7 @@ module.exports = {
         } else {
             await member.roles.add(role);
             const embed = new EmbedBuilder()
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .setDescription(`✅ Role **${role.name}** has been given to <@${member.id}>.`)
                 .setFooter({ text: `By: ${message.author.username}` })
                 .setTimestamp();

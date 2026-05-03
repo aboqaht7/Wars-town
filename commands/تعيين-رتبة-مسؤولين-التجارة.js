@@ -31,7 +31,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Ministry of Commerce Configured')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👔 Admins Role',    value: `<@&${role.id}>`,  inline: true },
                 { name: '📋 Requests Channel', value: `<#${channel.id}>`, inline: true },

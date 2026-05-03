@@ -21,7 +21,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Identity Log Channel Set')
-            .setColor(0x7B1FA2)
+            .setColor(0xE53935)
             .addFields(
                 { name: '📋 Selected Channel', value: `<#${channel.id}>`, inline: true },
                 { name: 'ℹ️ Logged automatically', value: '🪪 All identity creation requests appear here with Accept/Reject buttons', inline: false },

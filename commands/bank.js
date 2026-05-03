@@ -16,7 +16,7 @@ async function bankMenu(imageUrl, db) {
     );
     const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
     const cfg = await loadEmbedCfg(db, 'bank');
-    const embed = new EmbedBuilder().setColor(0x1565C0).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (imageUrl) embed.setImage(imageUrl);
     return { embeds: [embed], components: [row] };

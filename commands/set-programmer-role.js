@@ -18,7 +18,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Programmer Role Set')
-            .setColor(0x6A1B9A)
+            .setColor(0xE53935)
             .setDescription(`أصحاب Rank <@&${role.id}> يمتلكون الآن صلاحية الوصول لجميع الأوامر الإدارية.`)
             .setFooter({ text: 'إعدادات البوت • FANTASY' }).setTimestamp();
         if (_img) embed.setImage(_img);

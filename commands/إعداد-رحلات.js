@@ -52,7 +52,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Trip Start Channel Set')
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .addFields({ name: '📢 Channel', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'Trip System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
@@ -67,7 +67,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Trip Alerts Channel Set')
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .addFields({ name: '📢 Channel', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'Trip System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
@@ -102,7 +102,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Trip System Settings')
-                .setColor(0x37474F)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '📢 Start Channel',      value: startCh  ? `<#${startCh}>`  : '❌ Not set', inline: true },
                     { name: '📢 Alerts Channel',     value: alertsCh ? `<#${alertsCh}>` : '❌ Not set', inline: true },

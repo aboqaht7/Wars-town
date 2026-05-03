@@ -43,7 +43,7 @@ module.exports = {
             const row = await db.addProperty(name, price, imageUrl);
             const embed = new EmbedBuilder()
                 .setTitle('Property Added')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🔖 ID',     value: `\`${row.id}\``, inline: true },
                     { name: '🏠 Name',   value: name, inline: true },
@@ -65,7 +65,7 @@ module.exports = {
             await db.updatePropertyImage(id, imageUrl);
             const embed = new EmbedBuilder()
                 .setTitle('Property Image Updated')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🏠 Property',   value: prop.name, inline: true },
                     { name: '🖼️ New Image', value: `[Link](${imageUrl})`, inline: false },
@@ -84,7 +84,7 @@ module.exports = {
             await db.deleteProperty(id);
             const embed = new EmbedBuilder()
                 .setTitle('Property Deleted')
-                .setColor(0x757575)
+                .setColor(0xE53935)
                 .setDescription(`Property **${prop.name}** has been deleted successfully.`)
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
@@ -96,7 +96,7 @@ module.exports = {
             await db.deleteAllProperties();
             const embed = new EmbedBuilder()
                 .setTitle('All Properties Deleted')
-                .setColor(0x757575)
+                .setColor(0xE53935)
                 .setDescription('> All properties have been removed from the list.')
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
@@ -108,7 +108,7 @@ module.exports = {
             const props = await db.getProperties();
             const embed = new EmbedBuilder()
                 .setTitle('Properties List')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .setFooter({ text: `${props.length} property(s) • FANTASY Bot` })
                 .setTimestamp();
             if (!props.length) {

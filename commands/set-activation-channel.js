@@ -22,7 +22,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Activation Channel Set')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .addFields(
                 { name: '📢 القناة', value: `<#${channel.id}>`, inline: true },
             )

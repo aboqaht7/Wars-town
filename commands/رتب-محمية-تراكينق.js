@@ -36,7 +36,7 @@ module.exports = {
             const list = current.map(id => `<@&${id}>`).join('\n');
             const embed = new EmbedBuilder()
                 .setTitle('الرتب المحمية من التراكينق')
-                .setColor(0x6A1B9A)
+                .setColor(0xE53935)
                 .setDescription(list)
                 .setFooter({ text: `العدد: ${current.length}` })
                 .setTimestamp();

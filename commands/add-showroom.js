@@ -27,7 +27,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Car Added to Showroom')
-            .setColor(0x2E7D32)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🚗 Car name', value: `\`${carName}\``, inline: true },
                 { name: '💰 السعر',       value: `\`${price.toLocaleString()} ريال\``, inline: true },

@@ -27,7 +27,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Handcuffed')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .setDescription(`Successfully handcuffed <@${target.id}>.\n⚠️ The handcuffed player cannot perform any actions.`)
             .addFields(
                 { name: '👮 Executed By', value: `<@${message.author.id}>`, inline: true },

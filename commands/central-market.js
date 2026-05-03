@@ -35,7 +35,7 @@ async function buildMarket(db) {
     const fmt = (name) => `${(prices[name] || 0).toLocaleString()} Riyals`;
 
     const cfg = await loadEmbedCfg(db, 'central_market');
-    const embed = new EmbedBuilder().setColor(0x00796B).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     embed.addFields(
             {

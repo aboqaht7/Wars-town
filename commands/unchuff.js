@@ -16,7 +16,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Handcuffs Removed')
-            .setColor(0x2E7D32)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👮 Executed By', value: `<@${message.author.id}>`, inline: true },
                 { name: '🎯 Player',      value: `<@${target.id}>`,         inline: true },

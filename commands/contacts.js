@@ -14,7 +14,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Contact Added')
-                .setColor(0x00838F)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '👤 Contact', value: `${target}`, inline: true },
                     { name: '🏷️ Saved Name', value: `\`${nickname}\``, inline: true },
@@ -31,7 +31,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Contacts')
-            .setColor(0x00838F)
+            .setColor(0xE53935)
             .setDescription(contacts.length
                 ? contacts.map(c => `• ${c.nickname || c.username} — \`<@${c.contact_id}>\``).join('\n')
                 : '> No contacts. Use `-contacts @user [name]` to add one')

@@ -15,7 +15,7 @@ module.exports = {
         if (!items.length) {
             const emptyEmbed = new EmbedBuilder()
                 .setTitle('Inspect Handcuffed Player')
-                .setColor(0xFF6F00)
+                .setColor(0xE53935)
                 .setDescription(`**${target.displayName}** has been searched — Bag is empty!`)
                 .addFields(
                     { name: '👮 Officer',    value: `${message.author}`, inline: true },
@@ -42,7 +42,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Inspect & Rob Handcuffed Player')
-            .setColor(0xFF6F00)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👮 Officer',       value: `${message.author}`, inline: true },
                 { name: '🎯 Inspected',     value: `${target}`, inline: true },

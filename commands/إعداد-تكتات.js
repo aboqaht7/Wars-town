@@ -101,7 +101,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('✅ Ticket Type Added')
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🆔 ID',    value: `\`${type.id}\``,               inline: true },
                     { name: '🎫 Type',  value: `${type.emoji} ${type.name}`,   inline: true },
@@ -124,7 +124,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('🗑️ Ticket Type Deleted')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .setDescription(`Type **${deleted.emoji} ${deleted.name}** (ID: \`${deleted.id}\`) has been deleted.`)
                 .setFooter({ text: 'Ticket System • FANTASY Bot' })
                 .setTimestamp();
@@ -141,7 +141,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('🎫 Ticket System — Current Setup')
-                .setColor(0x37474F)
+                .setColor(0xE53935)
                 .setFooter({ text: 'Ticket System • FANTASY Bot' })
                 .setTimestamp();
 
@@ -176,7 +176,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('✅ Default Ticket Category Set')
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .setDescription(`New tickets will open inside **${cat.name}** by default.\n\nYou can override this per type using \`/إعداد-تكتات إضافة-نوع\`.`)
                 .setFooter({ text: 'Ticket System • FANTASY Bot' })
                 .setTimestamp();
@@ -191,7 +191,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('✅ Ticket Log Channel Set')
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .addFields({ name: '📋 Channel', value: `<#${ch.id}>`, inline: true })
                 .setFooter({ text: 'Ticket System • FANTASY Bot' })
                 .setTimestamp();
@@ -206,7 +206,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('✅ Ticket Admin Role Set')
-                .setColor(0x7B1FA2)
+                .setColor(0xE53935)
                 .setDescription(`Members with <@&${role.id}> can now **claim** and **close** tickets.`)
                 .setFooter({ text: 'Ticket System • FANTASY Bot' })
                 .setTimestamp();

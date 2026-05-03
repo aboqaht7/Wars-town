@@ -23,7 +23,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Judges Role Set')
-            .setColor(0x4A148C)
+            .setColor(0xE53935)
             .setDescription('أعضاء هذه الRank سيظهرون عند توكيل قاضٍ لقضية.')
             .addFields(
                 { name: '⚖️ الRank',        value: `<@&${role.id}>`, inline: true },

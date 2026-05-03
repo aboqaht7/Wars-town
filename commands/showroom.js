@@ -29,7 +29,7 @@ module.exports = {
 
 async function build(cars, image, db) {
     const cfg = await loadEmbedCfg(db, 'showroom');
-    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (!cfg.description) {
         embed.setDescription(cars.length

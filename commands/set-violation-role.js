@@ -22,7 +22,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Ban Role Set')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .setDescription('This role will be automatically assigned when `-مخالف` is issued, and removed when the duration expires or `-فك-مخالف` is executed.')
             .addFields(
                 { name: '🚫 Role',    value: `<@&${role.id}>`, inline: true },

@@ -31,7 +31,7 @@ async function buildMain(userId, db) {
     const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
     const img = await db.getImage('identity');
     const cfg = await loadEmbedCfg(db, 'identity');
-    const embed = new EmbedBuilder().setColor(0x4A148C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 

@@ -39,7 +39,7 @@ module.exports = {
         if (pending.length > 0) {
             const pendingEmbed = new EmbedBuilder()
                 .setTitle('⏳ Pending Identity Requests')
-                .setColor(0xF57F17)
+                .setColor(0xE53935)
                 .setFooter({ text: `${pending.length} request(s) awaiting review` })
                 .setTimestamp();
 
@@ -71,7 +71,7 @@ module.exports = {
 
         const logEmbed = new EmbedBuilder()
             .setTitle('Character Log')
-            .setColor(0x37474F)
+            .setColor(0xE53935)
             .setFooter({ text: `FANTASY Bot • Last ${limit} entries` })
             .setTimestamp();
 

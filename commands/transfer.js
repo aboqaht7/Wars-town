@@ -20,7 +20,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Transfer Successful')
-            .setColor(0x2E7D32)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👤 Sender',                   value: `${message.author} — Slot ${result.sender.slot}`, inline: true },
                 { name: '🏦 Recipient IBAN',           value: `\`${iban}\``, inline: true },

@@ -18,7 +18,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Message Sent')
-            .setColor(0x00838F)
+            .setColor(0xE53935)
             .addFields(
                 { name: '📤 Sender',    value: `${message.author}`, inline: true },
                 { name: '📥 Recipient', value: `${target}`,         inline: true },
@@ -31,7 +31,7 @@ module.exports = {
 
         const notif = new EmbedBuilder()
             .setTitle('New Message Received!')
-            .setColor(0x00838F)
+            .setColor(0xE53935)
             .addFields(
                 { name: '📤 From',     value: `${message.author}`, inline: true },
                 { name: '💬 Message', value: `> ${content}`,       inline: false },

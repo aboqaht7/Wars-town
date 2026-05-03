@@ -56,7 +56,7 @@ async function handleDelete(channel, targetId, targetUsername, slot, db, interac
 
     const embed = new EmbedBuilder()
         .setTitle('Identity Deleted')
-        .setColor(0x757575)
+        .setColor(0xE53935)
         .addFields(
             { name: '👤 Player',      value: `<@${targetId}>`, inline: true },
             { name: '🔢 Slot',        value: `\`${slot}\``, inline: true },

@@ -135,7 +135,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('✅ ' + (isMenu ? 'Menu Option Updated' : 'Button Updated'))
-            .setColor(0x00C853)
+            .setColor(0xE53935)
             .addFields(...fields)
             .setFooter({ text: 'Changes take effect immediately on next command use' })
             .setTimestamp();

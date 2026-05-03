@@ -13,7 +13,7 @@ function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Crafting System')
         .setDescription('Press the button below to gather random resources added directly to your bag.')
-        .setColor(0x2ecc71)
+        .setColor(0xE53935)
         .setFooter({ text: 'Crafting System • FANTASY Bot' });
 }
 

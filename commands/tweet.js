@@ -24,7 +24,7 @@ async function buildTweetMessage(post, avatarURL, db) {
 
     const embed = new EmbedBuilder()
         .setAuthor({ name: `@${post.x_username}`, iconURL: avatarURL || undefined })
-        .setColor(0x000000)
+        .setColor(0xE53935)
         .setDescription(post.content)
         .addFields(
             { name: '🆔 Post ID', value: `\`#${post.id}\``, inline: true },

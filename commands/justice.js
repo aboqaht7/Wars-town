@@ -23,7 +23,7 @@ module.exports = {
 async function build(db) {
     const img = await db.getImage('عدل');
     const cfg = await loadEmbedCfg(db, 'justice');
-    const embed = new EmbedBuilder().setColor(0x4A148C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 

@@ -39,7 +39,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Robbery Added')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🔖 ID',              value: `\`${row.id}\``, inline: true },
                     { name: '💰 Name',             value: name, inline: true },
@@ -62,7 +62,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Robbery Deleted')
-                .setColor(0x757575)
+                .setColor(0xE53935)
                 .setDescription(`Robbery **${rob.name}** has been deleted successfully.`)
                 .setFooter({ text: 'Robbery System • FANTASY Bot' })
                 .setTimestamp();
@@ -77,7 +77,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Robbery List')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .setFooter({ text: `${robberies.length} robbery(s) • FANTASY Bot` })
                 .setTimestamp();
             if (!robberies.length) {

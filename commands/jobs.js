@@ -9,7 +9,7 @@ const COOLDOWN_MINUTES = COOLDOWN_SECONDS / 60;
 async function buildJobs(db) {
     const img = await db.getImage('jobs').catch(() => null);
     const cfg = await loadEmbedCfg(db, 'jobs');
-    const embed = new EmbedBuilder().setColor(0xF57F17).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     embed.setFooter({ text: `${cfg.footer || 'Jobs System • FANTASY Bot'} • ${COOLDOWN_SECONDS}s cooldown` });
     if (img) embed.setImage(img);

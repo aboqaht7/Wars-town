@@ -35,7 +35,7 @@ async function buildMarket(db) {
     const img   = await db.getImage('market');
     const cfg   = await loadEmbedCfg(db, 'market');
 
-    const embed = new EmbedBuilder().setColor(0xBF360C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (!items.length) embed.setDescription('> No items available right now. Wait for the admin.');
     if (img) embed.setImage(img);

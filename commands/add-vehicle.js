@@ -24,7 +24,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Car Registered')
-            .setColor(0x37474F)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👤 Owner',        value: `${target}`,           inline: true },
                 { name: '🚗 Car Name',     value: `\`${carName}\``,      inline: true },
@@ -49,7 +49,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Car Registered')
-            .setColor(0x37474F)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👤 Owner',    value: `<@${target.id}>`,       inline: true },
                 { name: '🚗 Car Name', value: `\`${carName}\``,         inline: true },

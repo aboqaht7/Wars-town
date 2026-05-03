@@ -131,7 +131,7 @@ module.exports = {
                 const n = parseInt(colorRaw, 16);
                 if (!isNaN(n)) embed.setColor(n);
             } else {
-                embed.setColor(0x1565C0);
+                embed.setColor(0xE53935);
             }
             if (image) {
                 try { embed.setImage(image); } catch (_) {}
@@ -167,7 +167,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setTitle('📋 التخصيصات الحالية للامبدات')
                 .setDescription(lines.join('\n').slice(0, 4000))
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .setTimestamp();
             return interaction.reply({ embeds: [embed], flags: 64 });
         }

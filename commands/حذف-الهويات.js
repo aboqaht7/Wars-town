@@ -13,7 +13,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Confirm Full Deletion')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .setDescription(
                 '> Are you sure you want to **delete all identities**?\n\n' +
                 '⚠️ This action **cannot be undone**.\n' +

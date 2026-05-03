@@ -53,7 +53,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Item Added')
-                .setColor(0x1a1a2e)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',    value: String(item.id),                              inline: true },
                     { name: 'Name',  value: item.name,                                    inline: true },
@@ -90,7 +90,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Item Updated')
-                .setColor(0x1a1a2e)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',    value: String(item.id),                              inline: true },
                     { name: 'Name',  value: item.name,                                    inline: true },
@@ -109,7 +109,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Black Market List')
-                .setColor(0x1a1a2e)
+                .setColor(0xE53935)
                 .setFooter({ text: 'Black Market Admin • FANTASY Bot' })
                 .setTimestamp();
             if (!items.length) {

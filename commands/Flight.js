@@ -5,7 +5,7 @@ const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function build(db) {
     const cfg = await loadEmbedCfg(db, 'flight');
-    const embed = new EmbedBuilder().setColor(0x6A1B9A).setTimestamp()
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp()
         .addFields(
             { name: '📍 Location', value: 'Contact the admin to find the event location', inline: true },
             { name: '⏰ Time', value: 'Determined by the responsible supervisor', inline: true },

@@ -62,7 +62,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Added')
-                .setColor(0x1B5E20)
+                .setColor(0xE53935)
                 .setDescription(roleStatus || null)
                 .addFields(
                     { name: '👤 Member', value: `<@${user.id}>`, inline: true },
@@ -101,7 +101,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Removed')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 Member', value: `<@${user.id}>`, inline: true })
                 .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
@@ -118,7 +118,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Certified Lawyers')
-                .setColor(0x0D47A1)
+                .setColor(0xE53935)
                 .setDescription(lines)
                 .addFields({ name: 'Total', value: `${lawyers.length} lawyer(s)`, inline: true })
                 .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
@@ -134,7 +134,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Lawyer Tasks Channel Set')
-                .setColor(0x0D47A1)
+                .setColor(0xE53935)
                 .setDescription(`Lawyer tasks will be sent to <#${channel.id}> automatically`)
                 .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);

@@ -25,7 +25,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('طرد نهائي (بنعال-ابو-قحط)')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .addFields(
                 { name: 'المنفذ', value: `${message.author}`, inline: true },
                 { name: 'اللاعب', value: `${username} (\`${target.id}\`)`, inline: true },

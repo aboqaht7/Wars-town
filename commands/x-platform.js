@@ -9,7 +9,7 @@ const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 async function build(image, account, db) {
     const c = await loadSystemBtns(db, 'x');
     const cfg = await loadEmbedCfg(db, 'x_platform');
-    const embed = new EmbedBuilder().setColor(0x000000).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (!cfg.description) {
         embed.setDescription(account

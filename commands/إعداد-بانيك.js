@@ -24,7 +24,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Panic Room Configured')
-            .setColor(0x1B5E20)
+            .setColor(0xE53935)
             .setDescription(`Distress calls will be sent to <#${channel.id}>`)
             .setFooter({ text: 'Panic Setup • FANTASY Bot' })
             .setTimestamp();

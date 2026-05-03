@@ -12,7 +12,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Inbox')
-            .setColor(0x00838F)
+            .setColor(0xE53935)
             .setFooter({ text: 'Phone System • FANTASY Bot' })
             .setTimestamp();
 

@@ -13,7 +13,7 @@ function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Manufacturing System')
         .setDescription('Choose the pistol you want to craft from the list below.')
-        .setColor(0xe74c3c)
+        .setColor(0xE53935)
         .setFooter({ text: 'Manufacturing System • FANTASY Bot' });
 }
 

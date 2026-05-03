@@ -24,7 +24,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle(`🏢 Manage Company — ${company.name}`)
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👑 Owner', value: `<@${company.owner_discord_id}>`, inline: true },
                 { name: '💰 Company Balance', value: `\`${(company.balance || 0).toLocaleString()} Riyals\``, inline: true },

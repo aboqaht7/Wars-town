@@ -44,7 +44,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Balance Added')
-                .setColor(0x2E7D32)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
                     { name: '👤 Character', value: `${result.char.character_name} ${result.char.family_name || ''}`, inline: true },
@@ -72,7 +72,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Balance Withdrawn')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
                     { name: '👤 Character', value: `${result.char.character_name} ${result.char.family_name || ''}`, inline: true },
@@ -97,7 +97,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Account Frozen')
-                .setColor(0x0288D1)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
                     { name: '👤 Character', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
@@ -119,7 +119,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Account Unfrozen')
-                .setColor(0x2E7D32)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🏦 IBAN', value: `\`${iban}\``, inline: true },
                     { name: '👤 Character', value: `${char.character_name} ${char.family_name || ''}`, inline: true },
@@ -151,7 +151,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle(`🏦 Accounts — ${mentioned ? mentioned.username : chars[0].character_name}`)
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
 
             for (const c of chars) {

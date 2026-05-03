@@ -27,7 +27,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Property Updated')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🔖 ID',      value: `\`${updated.id}\``, inline: true },
                 { name: '🏠 Name',    value: updated.name, inline: true },

@@ -7,7 +7,7 @@ module.exports = {
         await db.addStaffActivity(message.author.id, 'gmc_count');
 
         const embed = new EmbedBuilder()
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription(`✅ Well done <@${message.author.id}>!\n**8 points** added for supervision.`)
             .setFooter({ text: 'Admin Points System • FANTASY Bot' })
             .setTimestamp();

@@ -24,7 +24,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Points Admins Role Set')
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🛡️ Role',      value: `<@&${role.id}>`, inline: true },
                     { name: 'ℹ️ Permission', value: 'Only members with this role can add or deduct points', inline: false },

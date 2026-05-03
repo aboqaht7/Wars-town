@@ -9,7 +9,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Defamation Executed')
-            .setColor(0x6A1B9A)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👮 Executed By', value: `${message.author}`, inline: true },
                 { name: '🎯 Target', value: `${target}`, inline: true },

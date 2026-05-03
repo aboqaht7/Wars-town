@@ -55,7 +55,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Robbery Committed')
-            .setColor(0x37474F)
+            .setColor(0xE53935)
             .setDescription(`<@${message.author.id}> has robbed <@${target.id}>`)
             .addFields(
                 { name: '💰 Stolen', value: `${cashLine}\n${itemsLine}`, inline: false },

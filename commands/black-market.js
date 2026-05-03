@@ -6,7 +6,7 @@ const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 async function build() {
     const items = await db.getBlackMarketItems();
     const cfg   = await loadEmbedCfg(db, 'black_market');
-    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (!items.length) embed.setDescription('> No items available right now. Wait for the admin.');
 

@@ -38,7 +38,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('IBAN Updated')
-            .setColor(0x1B5E20)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👤 Player',   value: `<@${target.id}>`, inline: true },
                 { name: '📌 Slot',     value: SLOT_NAMES[slot],   inline: true },
@@ -71,7 +71,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('IBAN Updated')
-            .setColor(0x1B5E20)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👤 Player',   value: `<@${target.id}>`, inline: true },
                 { name: '📌 Slot',     value: SLOT_NAMES[slot],   inline: true },

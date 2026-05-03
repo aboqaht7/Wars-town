@@ -27,7 +27,7 @@ module.exports = {
 async function build(db) {
     const robberies = await db.getRobberies();
     const cfg = await loadEmbedCfg(db, 'crime');
-    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (!robberies.length) embed.setDescription('> No robberies available right now. Wait for the admin.');
     const img = await db.getImage('crime');

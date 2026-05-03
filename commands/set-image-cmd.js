@@ -77,7 +77,7 @@ module.exports = {
         const systemLabel = SYSTEMS.find(s => s.value === system)?.name || system;
         const embed = new EmbedBuilder()
             .setTitle(`✅ Image Updated — ${systemLabel}`)
-            .setColor(0x1B5E20)
+            .setColor(0xE53935)
             .setDescription('New image saved successfully.')
             .setImage(url)
             .setFooter({ text: 'Image Management • FANTASY Bot' })

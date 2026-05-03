@@ -18,7 +18,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Panic — Distress Call')
-            .setColor(0xD32F2F)
+            .setColor(0xE53935)
             .setDescription(
                 '**Are you in danger?**\n\n' +
                 'Press the button below, enter your location, and the distress request will immediately reach the relevant authorities.\n\n' +

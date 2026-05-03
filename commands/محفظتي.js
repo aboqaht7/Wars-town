@@ -27,7 +27,7 @@ module.exports = {
         const _img = await db.getImage('market').catch(() => null);
 
         const embed = new EmbedBuilder()
-            .setColor(0x0A1628)
+            .setColor(0xE53935)
             .setTitle('Your Investment Portfolio')
             .setDescription(`\`\`\`yaml\n👤 ${identity.name}  |  🪪 ${identity.iban}\`\`\``);
 

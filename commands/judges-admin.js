@@ -57,7 +57,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Judge Added')
-                .setColor(0x4A148C)
+                .setColor(0xE53935)
                 .setDescription(roleStatus || null)
                 .addFields(
                     { name: '👤 Member', value: `<@${user.id}>`, inline: true },
@@ -93,7 +93,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Judge Removed')
-                .setColor(0xB71C1C)
+                .setColor(0xE53935)
                 .setDescription(roleStatus || null)
                 .addFields({ name: '👤 Member', value: `<@${user.id}>`, inline: true })
                 .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();
@@ -110,7 +110,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Certified Judges')
-                .setColor(0x4A148C)
+                .setColor(0xE53935)
                 .setDescription(lines)
                 .addFields({ name: 'Total', value: `${judges.length} judge(s)`, inline: true })
                 .setFooter({ text: 'Justice System • FANTASY Bot' }).setTimestamp();

@@ -24,7 +24,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Investor Role Set')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription(`Role **${role.name}** is now the Investor role.\n\nMembers with this role can use \`/إدارة-شركة\` to manage their companies.`)
             .setFooter({ text: 'Company System • FANTASY Bot' })
             .setTimestamp();

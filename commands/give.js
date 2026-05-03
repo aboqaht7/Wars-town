@@ -25,7 +25,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Item Transferred')
-            .setColor(0xE65100)
+            .setColor(0xE53935)
             .addFields(
                 { name: '👤 Sender', value: `${message.author}`, inline: true },
                 { name: '🎯 Recipient', value: `${target}`, inline: true },

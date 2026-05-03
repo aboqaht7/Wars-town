@@ -31,7 +31,7 @@ async function buildCitizenList(db, page = 0) {
     const img = await db.getImage('citizen_file').catch(() => null);
 
     const cfg = await loadEmbedCfg(db, 'citizen_file_list');
-    const embed = new EmbedBuilder().setColor(0x0D1B2A).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     embed.setFooter({ text: `Page ${page + 1} of ${totalPages} • ${cfg.footer || 'CIA Intelligence System'}` });
     if (img) embed.setImage(img);
@@ -123,7 +123,7 @@ async function buildCitizenEmbed(db, discordId, slot) {
 
     const embed = new EmbedBuilder()
         .setTitle(`🗂️ Citizen File — ${fullName}`)
-        .setColor(0x0D1B2A)
+        .setColor(0xE53935)
         .setDescription(desc)
         .setFooter({ text: 'CIA Intelligence System • FANTASY Bot' })
         .setTimestamp();

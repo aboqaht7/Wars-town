@@ -7,7 +7,7 @@ module.exports = {
         await db.addStaffManualPoints(message.author.id, 3);
 
         const embed = new EmbedBuilder()
-            .setColor(0x2E7D32)
+            .setColor(0xE53935)
             .setDescription(`✅ Well done <@${message.author.id}>!\n**3 points** have been added for attending the trip.`)
             .setFooter({ text: 'Admin Points System • FANTASY Bot' })
             .setTimestamp();

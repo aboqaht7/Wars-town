@@ -9,7 +9,7 @@ const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 async function build(db) {
     const img = await db.getImage('phone').catch(() => null);
     const cfg = await loadEmbedCfg(db, 'phone');
-    const embed = new EmbedBuilder().setColor(0x1565C0).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 

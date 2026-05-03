@@ -21,7 +21,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Trip Log Channel Set')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .addFields(
                 { name: '📋 Selected Channel', value: `<#${channel.id}>`, inline: true },
                 { name: 'ℹ️ Logged automatically', value: '✈️ Start Trip • 🌪️ Hurricane\n🔄 Renew Trip • 📢 Alert', inline: false },

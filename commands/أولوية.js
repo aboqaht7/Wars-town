@@ -6,7 +6,7 @@ function buildEmbed() {
     return new EmbedBuilder()
         .setTitle('Priority System')
         .setDescription('Choose your priority level by pressing the appropriate button.')
-        .setColor(0xF57C00)
+        .setColor(0xE53935)
         .setFooter({ text: 'Priority System • FANTASY Bot' })
         .setTimestamp();
 }

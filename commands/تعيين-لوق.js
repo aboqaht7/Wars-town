@@ -35,7 +35,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('تم تعيين روم اللوق')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .addFields(
                 { name: 'النوع',  value: meta.label,        inline: true },
                 { name: 'الروم',  value: `<#${channel.id}>`, inline: true },

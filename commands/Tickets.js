@@ -16,7 +16,7 @@ async function buildPayload(db) {
     const img   = await db.getImage('tickets').catch(() => null);
     const cfg   = await loadEmbedCfg(db, 'tickets');
 
-    const embed = new EmbedBuilder().setColor(0x1565C0).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 

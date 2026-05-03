@@ -11,7 +11,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Tweet Deleted')
-            .setColor(0x000000)
+            .setColor(0xE53935)
             .addFields({ name: '🆔 رقم المنشور', value: `\`#${id}\``, inline: true })
             .setFooter({ text: 'X Platform • FANTASY Bot' })
             .setTimestamp();

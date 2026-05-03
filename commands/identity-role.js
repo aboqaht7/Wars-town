@@ -17,7 +17,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Identity Role Set')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription(`Everyone whose identity is accepted will receive rank ${role} automatically.`)
             .setFooter({ text: 'Identity System • FANTASY Bot' })
             .setTimestamp();

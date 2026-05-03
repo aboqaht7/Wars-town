@@ -32,7 +32,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Setup Complete')
-                .setColor(0x1B5E20)
+                .setColor(0xE53935)
                 .setDescription(`Police reports channel: <#${channel.id}>`)
                 .setFooter({ text: 'Reports Setup • FANTASY Bot' })
                 .setTimestamp();
@@ -47,7 +47,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Setup Complete')
-                .setColor(0x1B5E20)
+                .setColor(0xE53935)
                 .setDescription(`Ambulance reports channel: <#${channel.id}>`)
                 .setFooter({ text: 'Reports Setup • FANTASY Bot' })
                 .setTimestamp();

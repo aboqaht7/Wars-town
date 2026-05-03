@@ -22,7 +22,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Activation Role Set')
-            .setColor(0x2E7D32)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🎖️ الRank',       value: `<@&${role.id}>`, inline: true },
                 { name: '🆔 معرّف الRank', value: role.id,          inline: true },

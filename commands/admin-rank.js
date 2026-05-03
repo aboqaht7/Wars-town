@@ -70,7 +70,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Rank Added')
-                .setColor(0x5865F2)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'Name',  value: name,          inline: true },
                     { name: 'Order', value: `${position}`,  inline: true },
@@ -88,7 +88,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Rank Deleted')
-                .setColor(0x888888)
+                .setColor(0xE53935)
                 .setDescription(`Rank **${deleted.name}** has been deleted.`)
                 .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
                 .setTimestamp();
@@ -102,7 +102,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Available Rank Types')
-                .setColor(0x5865F2)
+                .setColor(0xE53935)
                 .setDescription(ranks.map((r, i) => `\`${i + 1}\` **${r.name}**`).join('\n'))
                 .addFields({ name: 'Total', value: `${ranks.length} rank(s)`, inline: true })
                 .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })
@@ -120,7 +120,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Assign Admin Rank')
-                .setColor(0x5865F2)
+                .setColor(0xE53935)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
                     { name: 'Member',       value: `<@${target.id}>`,          inline: true },
@@ -143,7 +143,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Remove Admin Rank')
-                .setColor(0x888888)
+                .setColor(0xE53935)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
                     { name: 'Member',      value: `<@${target.id}>`,          inline: true },
@@ -191,7 +191,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Admin Card')
-                .setColor(0x5865F2)
+                .setColor(0xE53935)
                 .setThumbnail(target.displayAvatarURL())
                 .addFields(
                     { name: 'Member',        value: `<@${target.id}>`,                                                  inline: true },
@@ -222,7 +222,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Admin List')
-                .setColor(0x5865F2)
+                .setColor(0xE53935)
                 .setDescription(lines.join('\n'))
                 .addFields({ name: 'Total', value: `${all.length} admin(s)`, inline: true })
                 .setFooter({ text: 'Admin Ranks System • FANTASY Bot' })

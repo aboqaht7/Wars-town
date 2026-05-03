@@ -16,7 +16,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Tweets Channel Set')
-            .setColor(0x000000)
+            .setColor(0xE53935)
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> automatically.`)
             .setFooter({ text: 'X Platform • FANTASY Bot' })
             .setTimestamp();
@@ -30,7 +30,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Tweets Channel Set')
-            .setColor(0x000000)
+            .setColor(0xE53935)
             .setDescription(`ستُنشر جميع التغريدات في <#${channel.id}> automatically.`)
             .setFooter({ text: 'X Platform • FANTASY Bot' })
             .setTimestamp();

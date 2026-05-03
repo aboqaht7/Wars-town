@@ -39,7 +39,7 @@ async function buildPanel(db) {
 
     const embed = new EmbedBuilder()
         .setTitle('Admin Points Dashboard')
-        .setColor(0x1565C0)
+        .setColor(0xE53935)
         .addFields(
             {
                 name: '🏆 Staff Leaderboard',

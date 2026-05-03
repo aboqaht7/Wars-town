@@ -316,7 +316,7 @@ async function handleOpenTicket(interaction, typeId) {
 
         const embed = new EmbedBuilder()
             .setTitle(`${type.emoji} تكت — ${type.name}`)
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription(
                 `مرحباً <@${interaction.user.id}> 👋\n\n` +
                 `تم فتح تكتك بنجاح.\n` +
@@ -341,7 +341,7 @@ async function handleOpenTicket(interaction, typeId) {
             const logCh = await client.channels.fetch(logId).catch(() => null);
             if (logCh) {
                 await logCh.send({ embeds: [
-                    new EmbedBuilder().setTitle('📥 تكت جديد').setColor(0x2E7D32)
+                    new EmbedBuilder().setTitle('📥 تكت جديد').setColor(0xE53935)
                         .addFields(
                             { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
                             { name: '🗂️ النوع',   value: `${type.emoji} ${type.name}`,  inline: true },
@@ -454,7 +454,7 @@ client.on('interactionCreate', async interaction => {
                             if (customMsg) {
                                 const hurricaneEmbed = new EmbedBuilder()
                                     .setTitle('Warning — Hurricane!')
-                                    .setColor(0xB71C1C)
+                                    .setColor(0xE53935)
                                     .setDescription(customMsg)
                                     .setFooter({ text: 'Trip System • FANTASY Bot' })
                                     .setTimestamp();
@@ -463,7 +463,7 @@ client.on('interactionCreate', async interaction => {
                             } else {
                                 const hurricaneEmbed = new EmbedBuilder()
                                     .setTitle('Warning — Hurricane!')
-                                    .setColor(0xB71C1C)
+                                    .setColor(0xE53935)
                                     .setDescription('⚠️ **The Hurricane event has been activated!**\n\n🚪 **All players** have been logged out automatically.\n✈️ **Login is suspended** until a new trip is opened.')
                                     .addFields({ name: '🔧 Activated by', value: `<@${interaction.user.id}>`, inline: true })
                                     .setFooter({ text: 'Trip System • FANTASY Bot' })
@@ -612,7 +612,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
-                    .setColor(0x1a1a2e)
+                    .setColor(0xE53935)
                     .setDescription(`**${item.name}** was successfully purchased and added to your bag.`)
                     .addFields(
                         { name: '🛒 Item',             value: item.name,                                                    inline: true },
@@ -650,7 +650,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
-                    .setColor(0xBF360C)
+                    .setColor(0xE53935)
                     .setDescription(`**${item.name}** was successfully purchased and added to your bag.`)
                     .addFields(
                         { name: '🛒 Item',             value: item.name,                                            inline: true },
@@ -688,7 +688,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
-                    .setColor(0x4527A0)
+                    .setColor(0xE53935)
                     .setDescription(`**${item.name}** was successfully purchased and added to your bag.`)
                     .addFields(
                         { name: '🔨 Equipment',         value: item.name,                                            inline: true },
@@ -731,7 +731,7 @@ client.on('interactionCreate', async interaction => {
                 // DM the buyer with property details
                 const dmEmbed = new EmbedBuilder()
                     .setTitle(`🏠 Property Purchased — ${prop.name}`)
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🏠 Property Name', value: prop.name, inline: true },
                         { name: '💰 Amount Paid',   value: `\`${price.toLocaleString()} Riyals\``, inline: true },
@@ -750,7 +750,7 @@ client.on('interactionCreate', async interaction => {
 
                 const successEmbed = new EmbedBuilder()
                     .setTitle('Purchase Complete')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🏠 Property',     value: prop.name, inline: true },
                         { name: '💰 Amount Paid',  value: `\`${price.toLocaleString()} Riyals\``, inline: true },
@@ -776,7 +776,7 @@ client.on('interactionCreate', async interaction => {
                 await db.deleteAllIdentities();
                 const doneEmbed = new EmbedBuilder()
                     .setTitle('All Identities Deleted')
-                    .setColor(0x757575)
+                    .setColor(0xE53935)
                     .setDescription('> All identities and pending requests have been successfully deleted, and all accounts have been logged out.')
                     .setFooter({ text: 'FANTASY Bot • Identity System' })
                     .setTimestamp();
@@ -808,7 +808,7 @@ client.on('interactionCreate', async interaction => {
 
                     const resultEmbed = new EmbedBuilder()
                         .setTitle('Identity Request Accepted')
-                        .setColor(0x2E7D32)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 User',      value: `<@${pending.discord_id}>`, inline: true },
                             { name: '📋 Character', value: `Character ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
@@ -832,7 +832,7 @@ client.on('interactionCreate', async interaction => {
                         const slotNamesApprove = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                         const approveDmEmbed = new EmbedBuilder()
                             .setTitle('Your Identity Request Accepted!')
-                            .setColor(0x2E7D32)
+                            .setColor(0xE53935)
                             .setDescription('Congratulations! Your identity has been approved. You can now log in.')
                             .addFields(
                                 { name: '📌 Character',   value: slotNamesApprove[pending.slot] || `Character ${pending.slot}`, inline: true },
@@ -852,7 +852,7 @@ client.on('interactionCreate', async interaction => {
 
                     const resultEmbed = new EmbedBuilder()
                         .setTitle('Identity Request Rejected')
-                        .setColor(0xB71C1C)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 User',        value: `<@${pending.discord_id}>`, inline: true },
                             { name: '📋 Character',   value: `Character ${pending.slot}: **${pending.char_name} ${pending.family_name}**`, inline: true },
@@ -867,7 +867,7 @@ client.on('interactionCreate', async interaction => {
                         const slotNamesReject = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Identity Request Rejected')
-                            .setColor(0xB71C1C)
+                            .setColor(0xE53935)
                             .setDescription('Unfortunately, your identity creation request has been rejected. You can try again or contact Admin.')
                             .addFields(
                                 { name: '📌 Character',       value: slotNamesReject[pending.slot] || `Character ${pending.slot}`, inline: true },
@@ -908,7 +908,7 @@ client.on('interactionCreate', async interaction => {
                         await db.updatePendingCompanyStatus(pendingId, 'rejected', interaction.user.id);
                         const failEmbed = new EmbedBuilder()
                             .setTitle('Company Establishment Failed')
-                            .setColor(0xB71C1C)
+                            .setColor(0xE53935)
                             .setDescription(`Reason: ${result.error}`)
                             .addFields(
                                 { name: '👤 Applicant', value: `<@${pending.discord_id}>`, inline: true },
@@ -945,7 +945,7 @@ client.on('interactionCreate', async interaction => {
 
                     const approveEmbed = new EmbedBuilder()
                         .setTitle('Establishment Request Accepted')
-                        .setColor(0x1B5E20)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 Applicant',    value: `<@${pending.discord_id}>`, inline: true },
                             { name: '🏢 Company',      value: `**${pending.company_name}**`, inline: true },
@@ -959,7 +959,7 @@ client.on('interactionCreate', async interaction => {
                         const user = await client.users.fetch(pending.discord_id);
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Company Establishment Approved!')
-                            .setColor(0x1B5E20)
+                            .setColor(0xE53935)
                             .setDescription(`Congratulations, you are now one of Fantasy Town's traders, and we wish you success! 🎉\n\nCompany **${pending.company_name}** has been successfully established. You can now manage it via \`/شركة\`.`)
                             .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
@@ -969,7 +969,7 @@ client.on('interactionCreate', async interaction => {
 
                     const rejectEmbed = new EmbedBuilder()
                         .setTitle('Establishment Request Rejected')
-                        .setColor(0xB71C1C)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 Applicant',    value: `<@${pending.discord_id}>`, inline: true },
                             { name: '🏢 Company',      value: pending.company_name, inline: true },
@@ -982,7 +982,7 @@ client.on('interactionCreate', async interaction => {
                         const user = await client.users.fetch(pending.discord_id);
                         const dmEmbed = new EmbedBuilder()
                             .setTitle('Your Company Establishment Request Rejected')
-                            .setColor(0xB71C1C)
+                            .setColor(0xE53935)
                             .setDescription(`Unfortunately, the establishment request for company **${pending.company_name}** has been rejected.\nYou can contact the Ministry of Commerce for more details.`)
                             .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' }).setTimestamp();
                         await user.send({ embeds: [dmEmbed] });
@@ -1023,7 +1023,7 @@ client.on('interactionCreate', async interaction => {
                         if (ch) await ch.send({
                             embeds: [new EmbedBuilder()
                                 .setTitle('Login — Ministry of Commerce')
-                                .setColor(0x1B5E20)
+                                .setColor(0xE53935)
                                 .addFields({ name: '👤 Staff', value: `<@${interaction.user.id}>`, inline: true })
                                 .setTimestamp()]
                         });
@@ -1043,7 +1043,7 @@ client.on('interactionCreate', async interaction => {
                         if (ch) await ch.send({
                             embeds: [new EmbedBuilder()
                                 .setTitle('Logout — Ministry of Commerce')
-                                .setColor(0xB71C1C)
+                                .setColor(0xE53935)
                                 .addFields({ name: '👤 Staff', value: `<@${interaction.user.id}>`, inline: true })
                                 .setTimestamp()]
                         });
@@ -1063,7 +1063,7 @@ client.on('interactionCreate', async interaction => {
 
                     const embed = new EmbedBuilder()
                         .setTitle(`🏢 Registered Companies (${companies.length})`)
-                        .setColor(0x1565C0)
+                        .setColor(0xE53935)
                         .setDescription(list)
                         .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' })
                         .setTimestamp();
@@ -1078,7 +1078,7 @@ client.on('interactionCreate', async interaction => {
                     for (const p of pending) {
                         const embed = new EmbedBuilder()
                             .setTitle(`📋 Company Establishment Request #${p.id}`)
-                            .setColor(0xF57F17)
+                            .setColor(0xE53935)
                             .addFields(
                                 { name: '👤 Applicant',         value: `<@${p.discord_id}>`, inline: true },
                                 { name: '🏢 Company Name',      value: p.company_name, inline: true },
@@ -1124,7 +1124,7 @@ client.on('interactionCreate', async interaction => {
                     await db.setCiaDuty(interaction.user.id, 'on');
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Login')
-                        .setColor(0x1B5E20)
+                        .setColor(0xE53935)
                         .addFields({ name: '🕵️ Member', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
@@ -1138,7 +1138,7 @@ client.on('interactionCreate', async interaction => {
                     await db.setCiaDuty(interaction.user.id, 'off');
                     const embed = new EmbedBuilder()
                         .setTitle('CIA — Logout')
-                        .setColor(0xB71C1C)
+                        .setColor(0xE53935)
                         .addFields({ name: '🕵️ Member', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
@@ -1199,7 +1199,7 @@ client.on('interactionCreate', async interaction => {
                     }
                     const embed = new EmbedBuilder()
                         .setTitle(`👥 CIA — Currently Active (${active.length})`)
-                        .setColor(0x0D1B2A)
+                        .setColor(0xE53935)
                         .setDescription(desc)
                         .setTimestamp();
                     return interaction.reply({ embeds: [embed], flags: 64 });
@@ -1245,7 +1245,7 @@ client.on('interactionCreate', async interaction => {
                     const slice = filtered.slice(i, i + CHUNK);
                     const embed = new EmbedBuilder()
                         .setTitle(`📋 Citizen Files — ${i + 1} to ${Math.min(i + CHUNK, filtered.length)} of ${filtered.length}`)
-                        .setColor(0x1A237E)
+                        .setColor(0xE53935)
                         .setTimestamp();
 
                     let desc = '';
@@ -1317,7 +1317,7 @@ client.on('interactionCreate', async interaction => {
 
                     const approveEmbed = new EmbedBuilder()
                         .setTitle('Activation Request Accepted')
-                        .setColor(0x2E7D32)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 Player',      value: `<@${req.user_id}>`,  inline: true },
                             { name: '🎮 Sony ID',     value: `\`${req.sony_id}\``, inline: true },
@@ -1339,7 +1339,7 @@ client.on('interactionCreate', async interaction => {
                 } else {
                     const rejectEmbed = new EmbedBuilder()
                         .setTitle('Activation Request Rejected')
-                        .setColor(0xB71C1C)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 Player',      value: `<@${req.user_id}>`,         inline: true },
                             { name: '🎮 Sony ID',     value: `\`${req.sony_id}\``,         inline: true },
@@ -1379,7 +1379,7 @@ client.on('interactionCreate', async interaction => {
                     const SLOT_NAMES_B = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                     const embed = new EmbedBuilder()
                         .setTitle('Money Display')
-                        .setColor(0x1565C0)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 Name',         value: `${identity.character_name || '—'} ${identity.family_name || ''}`, inline: true },
                             { name: '📌 Character',    value: SLOT_NAMES_B[identity.slot] || `Character ${identity.slot}`, inline: true },
@@ -1470,7 +1470,7 @@ client.on('interactionCreate', async interaction => {
                 const msgs = await db.getSnapInbox(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Snap Inbox')
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 if (!msgs.length) {
@@ -1495,7 +1495,7 @@ client.on('interactionCreate', async interaction => {
                 const friends = await db.getSnapFriends(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('My Snap Friends')
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setFooter({ text: `${friends.length} friend(s) • Snapchat • FANTASY Bot` })
                     .setTimestamp();
                 if (!friends.length) {
@@ -1538,7 +1538,7 @@ client.on('interactionCreate', async interaction => {
                 const requests = await db.getPendingSnapRequests(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Incoming Friend Requests')
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
                 if (!requests.length) {
@@ -1593,7 +1593,7 @@ client.on('interactionCreate', async interaction => {
                 await db.deleteXAccount(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Account Deleted')
-                    .setColor(0xB71C1C)
+                    .setColor(0xE53935)
                     .setDescription(`Account **@${account.x_username}** and all its tweets have been permanently deleted.`)
                     .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
@@ -1610,7 +1610,7 @@ client.on('interactionCreate', async interaction => {
                 const items = await db.getInventory(interaction.user.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Your Inventory')
-                    .setColor(0xE65100)
+                    .setColor(0xE53935)
                     .setFooter({ text: `Total Items: ${items.length} • Bag System • FANTASY Bot` })
                     .setTimestamp();
 
@@ -1696,7 +1696,7 @@ client.on('interactionCreate', async interaction => {
                         const lawyerUser = await interaction.client.users.fetch(interaction.user.id);
                         const caseEmbed = new EmbedBuilder()
                             .setTitle('New Case Details')
-                            .setColor(0x0D47A1)
+                            .setColor(0xE53935)
                             .setDescription('You have accepted this case. Here are the client and case details:')
                             .addFields(
                                 { name: '🔢 Case Number',   value: fullCase?.case_number || req.case_number, inline: true },
@@ -1775,7 +1775,7 @@ client.on('interactionCreate', async interaction => {
                     const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder()
                         .setTitle('Legal Fees Deducted')
-                        .setColor(0xE65100)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '🔢 Case Number',    value: c.case_number,              inline: true },
                             { name: '📌 Title',          value: c.title,                   inline: true },
@@ -1935,7 +1935,7 @@ client.on('interactionCreate', async interaction => {
 
             const embed = new EmbedBuilder()
                 .setTitle(`📊 Points for ${interaction.user.username}`)
-                .setColor(0x1565C0)
+                .setColor(0xE53935)
                 .addFields(
                     { name: '🚀 Trips Opened',        value: `${trips} trip(s) × 5 = **${trips * 5} pts**`,    inline: false },
                     { name: '👁️ GMC Supervision',     value: `${gmc} time(s) × 8 = **${gmc * 8} pts**`,       inline: false },
@@ -2020,7 +2020,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Salaries Deposited')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .setDescription(`**${res.total.toLocaleString()} Riyals** deducted from the company balance and deposited into employee accounts.`)
                     .addFields(
                         { name: `👥 Employees (${res.members.length})`, value: salaryLines, inline: false },
@@ -2102,7 +2102,7 @@ client.on('interactionCreate', async interaction => {
                 await db.dissolveCompany(company.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Company Dissolved')
-                    .setColor(0xB71C1C)
+                    .setColor(0xE53935)
                     .setDescription(`Company **${company.name}** has been permanently dissolved and all its records closed.`)
                     .setFooter({ text: 'Company System • FANTASY Bot' }).setTimestamp();
                 return interaction.reply({ embeds: [embed] });
@@ -2133,7 +2133,7 @@ client.on('interactionCreate', async interaction => {
                     }
                     const embed = new EmbedBuilder()
                         .setTitle('Your Investment Portfolio')
-                        .setColor(0x1B5E20)
+                        .setColor(0xE53935)
                         .setDescription(desc)
                         .addFields({ name: '💰 Total Value', value: `\`${totalValue.toLocaleString(undefined,{maximumFractionDigits:0})} Riyals\`` })
                         .setFooter({ text: 'Stock Market • FANTASY Bot' }).setTimestamp();
@@ -2253,7 +2253,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Registered Companies List')
-                    .setColor(0x1565C0)
+                    .setColor(0xE53935)
                     .setDescription(list)
                     .setFooter({ text: `Company System • ${companies.length} company/companies` })
                     .setTimestamp();
@@ -2311,7 +2311,7 @@ client.on('interactionCreate', async interaction => {
                     const logCh = await client.channels.fetch(logId).catch(() => null);
                     if (logCh) {
                         await logCh.send({ embeds: [
-                            new EmbedBuilder().setTitle('🔒 تم إغلاق تكت').setColor(0xB71C1C)
+                            new EmbedBuilder().setTitle('🔒 تم إغلاق تكت').setColor(0xE53935)
                                 .addFields(
                                     { name: '👤 المالك',    value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
                                     { name: '🗂️ النوع',    value: ticket?.type_name || '—',               inline: true },
@@ -2408,7 +2408,7 @@ client.on('interactionCreate', async interaction => {
                 if (!car) return interaction.reply({ content: 'السيارة غير موجودة أو تم بيعها.', flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle(`🚗 ${car.car_name}`)
-                    .setColor(0xB71C1C)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🏷️ Type',   value: car.car_type ? `\`${car.car_type}\`` : '`Not specified`', inline: true },
                         { name: '🎨 Color',  value: car.color ? `\`${car.color}\`` : '`Not specified`', inline: true },
@@ -2437,7 +2437,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🖤 ${item.name}`)
-                    .setColor(0x1a1a2e)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '💰 Price', value: `**${Number(item.price).toLocaleString('en-US')}$**`, inline: true },
                     )
@@ -2471,7 +2471,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🛒 ${item.name}`)
-                    .setColor(0xBF360C)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '💰 Price',        value: `**${Number(item.price).toLocaleString()} Riyals**`, inline: true },
                         { name: '💵 Your Cash',    value: `${cash.toLocaleString()} Riyals`,                   inline: true },
@@ -2509,7 +2509,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🔨 ${item.name}`)
-                    .setColor(0x4527A0)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '💰 Price',     value: `**${Number(item.price).toLocaleString()} Riyals**`, inline: true },
                         { name: '💵 Your Cash', value: `${cash.toLocaleString()} Riyals`,                   inline: true },
@@ -2594,7 +2594,7 @@ client.on('interactionCreate', async interaction => {
                     await db.addCharacterLog(interaction.user.id, interaction.user.username, 'logout', activeChar?.character_name || null, status.active_slot);
                     const embedOut = new EmbedBuilder()
                         .setTitle('Logout')
-                        .setColor(0x757575)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '👤 User',      value: `<@${interaction.user.id}>`, inline: true },
                             { name: '🪪 Character', value: `${slotNamesOut[status.active_slot] || `Character ${status.active_slot}`}: **${activeChar?.character_name || '—'} ${activeChar?.family_name || ''}**`, inline: true },
@@ -2662,7 +2662,7 @@ client.on('interactionCreate', async interaction => {
                 const slotNamesLogin = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const embed = new EmbedBuilder()
                     .setTitle(`✅ Login — ${slotNamesLogin[slot]}`)
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '👤 Name',            value: `${char.character_name} ${char.family_name || ''}`, inline: true },
                         { name: '⚧ Gender',           value: char.gender || '—', inline: true },
@@ -2692,7 +2692,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`🏠 ${prop.name}`)
-                    .setColor(0xB71C1C)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '💰 Price', value: `\`${Number(prop.price).toLocaleString()} Riyals\``, inline: true },
                     )
@@ -2784,7 +2784,7 @@ client.on('interactionCreate', async interaction => {
                 if (missing.length) {
                     const embed = new EmbedBuilder()
                         .setTitle('Missing Tools')
-                        .setColor(0xB71C1C)
+                        .setColor(0xE53935)
                         .setDescription(`You do not have the required tools to execute **${rob.name}**:`)
                         .addFields({ name: '🛠️ Missing Tools', value: missing.map(t => `• \`${t}\``).join('\n'), inline: false })
                         .setFooter({ text: 'Robbery System • FANTASY Bot' })
@@ -2824,7 +2824,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Robbery Successful!')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔫 Robbery Type',   value: rob.name, inline: true },
                         { name: '💵 Amount Stolen',   value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
@@ -2865,7 +2865,7 @@ client.on('interactionCreate', async interaction => {
                     const msgs = await db.getSnapInbox(interaction.user.id);
                     const embed = new EmbedBuilder()
                         .setTitle('Snap Inbox')
-                        .setColor(0xFFFC00)
+                        .setColor(0xE53935)
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     if (!msgs.length) {
@@ -2887,7 +2887,7 @@ client.on('interactionCreate', async interaction => {
                     const friends = await db.getSnapFriends(interaction.user.id);
                     const embed = new EmbedBuilder()
                         .setTitle('My Snap Friends')
-                        .setColor(0xFFFC00)
+                        .setColor(0xE53935)
                         .setFooter({ text: `${friends.length} friend(s) • Snapchat • FANTASY Bot` })
                         .setTimestamp();
                     if (!friends.length) {
@@ -2928,7 +2928,7 @@ client.on('interactionCreate', async interaction => {
                     const requests = await db.getPendingSnapRequests(interaction.user.id);
                     const embed = new EmbedBuilder()
                         .setTitle('Incoming Friend Requests')
-                        .setColor(0xFFFC00)
+                        .setColor(0xE53935)
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
                     if (!requests.length) {
@@ -2963,7 +2963,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`💬 Your conversation with @${friendAcc.snap_username}`)
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
 
@@ -3014,7 +3014,7 @@ client.on('interactionCreate', async interaction => {
                 if (!done) return interaction.reply({ content: 'الطلب غير موجود.', flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Friend Request Accepted')
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setDescription(`You are now friends with **${requesterAcc?.snap_username || requesterId}** 👻`)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
@@ -3033,7 +3033,7 @@ client.on('interactionCreate', async interaction => {
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Item Used')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🎒 Item',               value: `**${itemName}**`, inline: true },
                         { name: '📦 Remaining Quantity', value: `\`${result.remainingQty}\``, inline: true },
@@ -3054,7 +3054,7 @@ client.on('interactionCreate', async interaction => {
                     const cars = await db.getVehicles(interaction.user.id);
                     const embed = new EmbedBuilder()
                         .setTitle('My Registered Cars')
-                        .setColor(0x37474F)
+                        .setColor(0xE53935)
                         .setDescription(cars.length
                             ? cars.map(c => `🚗 **${c.car_name}** — Plate: \`${c.plate}\``).join('\n')
                             : '> No registered cars yet')
@@ -3103,7 +3103,7 @@ client.on('interactionCreate', async interaction => {
                 const rt = await db.retweetPost(interaction.user.id, postId);
                 const embed = new EmbedBuilder()
                     .setAuthor({ name: `@${myAcc.x_username} 🔁 Retweet`, iconURL: interaction.user.displayAvatarURL() })
-                    .setColor(0x1DA1F2)
+                    .setColor(0xE53935)
                     .setDescription(orig.content)
                     .addFields(
                         { name: '↩️ Retweeted from', value: `@${orig.x_username}`, inline: true },
@@ -3172,7 +3172,7 @@ client.on('interactionCreate', async interaction => {
                     ).join('\n\n');
                     const embed = new EmbedBuilder()
                         .setTitle('My Cases')
-                        .setColor(0x0D47A1)
+                        .setColor(0xE53935)
                         .setDescription(lines.slice(0, 4000))
                         .setFooter({ text: `Total Cases: ${cases.length} • FANTASY Bot` })
                         .setTimestamp();
@@ -3230,7 +3230,7 @@ client.on('interactionCreate', async interaction => {
                 await db.acceptCase(c.id);
                 const embed = new EmbedBuilder()
                     .setTitle('Case Accepted')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '📁 Case Number', value: c.case_number,          inline: true },
                         { name: '📌 Title',       value: c.title,                 inline: true },
@@ -3243,7 +3243,7 @@ client.on('interactionCreate', async interaction => {
                 // DM the plaintiff
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('Your Case Has Been Accepted').setColor(0x2E7D32)
+                    const dmEmbed = new EmbedBuilder().setTitle('Your Case Has Been Accepted').setColor(0xE53935)
                         .setDescription(`**${c.case_number} — ${c.title}**\n\nYour case has been accepted and will be processed soon.`)
                         .setFooter({ text: 'Law System • FANTASY Bot' }).setTimestamp();
                     await plaintiff.send({ embeds: [dmEmbed] });
@@ -3326,7 +3326,7 @@ client.on('interactionCreate', async interaction => {
                     const lawyerUser = await interaction.client.users.fetch(lawyerId);
                     const dmEmbed = new EmbedBuilder()
                         .setTitle('New Power of Attorney Request')
-                        .setColor(0x0D47A1)
+                        .setColor(0xE53935)
                         .setDescription('> You have a new power of attorney request — use `/محامي` to accept or reject')
                         .addFields(
                             { name: '🔢 Case Number', value: c.case_number,    inline: true },
@@ -3339,7 +3339,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Power of Attorney Sent')
-                    .setColor(0x0D47A1)
+                    .setColor(0xE53935)
                     .setDescription(`> The power of attorney request has been sent to **${lawyer.lawyer_name}**\nThey will be notified via DM and can accept or reject via \`/محامي\``)
                     .addFields(
                         { name: '🔢 Case Number', value: c.case_number, inline: true },
@@ -3423,7 +3423,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle(`✅ Sale Completed — ${catLabel[value] || ''}`)
-                    .setColor(0x00796B)
+                    .setColor(0xE53935)
                     .setDescription(lines)
                     .addFields(
                         { name: '💵 Total Collected', value: `**${totalValue.toLocaleString()} Riyals**`, inline: false },
@@ -3724,7 +3724,7 @@ client.on('interactionCreate', async interaction => {
                         const ch = await client.channels.fetch(interaction.channelId).catch(() => null);
                         const doneEmbed = new EmbedBuilder()
                             .setTitle(isPresident ? '✅ تراكينق رئيس مكتمل' : '✅ تراكينق مكتمل')
-                            .setColor(0x43A047)
+                            .setColor(0xE53935)
                             .setDescription(
                                 `🎯 تمّ تتبّع ${targetMember} بنجاح خلال 20 ثانية.\n` +
                                 `👤 الهدف: **${targetMember.displayName}**\n` +
@@ -3735,7 +3735,7 @@ client.on('interactionCreate', async interaction => {
 
                         const logEmbed = new EmbedBuilder()
                             .setTitle(isPresident ? '👑 تراكينق رئيس — نجح' : '🎯 تراكينق — نجح')
-                            .setColor(0x2E7D32)
+                            .setColor(0xE53935)
                             .addFields(
                                 { name: 'العميل',  value: `<@${session.trackerId}>`, inline: true },
                                 { name: 'الهدف',   value: `<@${targetId}>`,           inline: true },
@@ -3780,7 +3780,7 @@ client.on('interactionCreate', async interaction => {
                 try {
                     const startLogEmbed = new EmbedBuilder()
                         .setTitle(isPresident ? '👑 بدء تراكينق رئيس' : '🎯 بدء تراكينق')
-                        .setColor(0x1565C0)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: 'العميل', value: `<@${interaction.user.id}>`, inline: true },
                             { name: 'الهدف',  value: `<@${targetId}>`,             inline: true },
@@ -3842,7 +3842,7 @@ client.on('interactionCreate', async interaction => {
                 // إرسال الهوية للشخص عبر DM
                 const dmEmbed = new EmbedBuilder()
                     .setTitle('Fake ID — Top Secret')
-                    .setColor(0x0D1B2A)
+                    .setColor(0xE53935)
                     .setDescription('You have been provided with a fake ID by the CIA. Do not share this information with anyone.')
                     .addFields(
                         { name: '👤 Fake Name', value: fakeName, inline: true },
@@ -3859,7 +3859,7 @@ client.on('interactionCreate', async interaction => {
                 // تأكيد للمصدر
                 const confirmEmbed = new EmbedBuilder()
                     .setTitle('Fake ID Issued')
-                    .setColor(0x1B5E20)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🎯 Target',    value: `<@${targetId}>`, inline: true },
                         { name: '👤 Fake Name', value: fakeName, inline: true },
@@ -3953,7 +3953,7 @@ client.on('interactionCreate', async interaction => {
                     if (ch) {
                         const reportEmbed = new EmbedBuilder()
                             .setTitle('Robbery Report')
-                            .setColor(0xD32F2F)
+                            .setColor(0xE53935)
                             .addFields(
                                 { name: '👤 Suspect',      value: `<@${interaction.user.id}>`, inline: true },
                                 { name: '🏷️ Name',         value: displayName, inline: true },
@@ -3969,7 +3969,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Robbery Successful!')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔫 Robbery Type',      value: robName, inline: true },
                         { name: '💵 Amount Stolen',      value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
@@ -4075,7 +4075,7 @@ client.on('interactionCreate', async interaction => {
 
                 const reqEmbed = new EmbedBuilder()
                     .setTitle('New Activation Request')
-                    .setColor(0x1565C0)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '👤 Player',       value: `<@${interaction.user.id}> (${interaction.user.username})`, inline: false },
                         { name: '🎮 Sony ID (PSN)', value: `\`${sonyId}\``, inline: true },
@@ -4126,7 +4126,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Case Filed')
-                    .setColor(0x0D47A1)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔢 Case Number', value: newCase.case_number,             inline: true },
                         { name: '📌 Title',        value: title,                           inline: true },
@@ -4171,7 +4171,7 @@ client.on('interactionCreate', async interaction => {
                     const plaintiffUser = await interaction.client.users.fetch(c.plaintiff_id);
                     const dmEmbed = new EmbedBuilder()
                         .setTitle('Lawyer Withdrew from Your Case')
-                        .setColor(0xB71C1C)
+                        .setColor(0xE53935)
                         .setDescription(`Lawyer **${c.lawyer_name}** has withdrawn from representing you in the case.`)
                         .addFields(
                             { name: '🔢 Case Number',  value: c.case_number, inline: true },
@@ -4201,7 +4201,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Case Rejected')
-                    .setColor(0xB71C1C)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔢 Case Number',      value: c.case_number,           inline: true },
                         { name: '📌 Title',             value: c.title,                 inline: true },
@@ -4214,7 +4214,7 @@ client.on('interactionCreate', async interaction => {
                 // DM the plaintiff about rejection
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('Your Case Has Been Rejected').setColor(0xB71C1C)
+                    const dmEmbed = new EmbedBuilder().setTitle('Your Case Has Been Rejected').setColor(0xE53935)
                         .addFields(
                             { name: '🔢 Case Number',      value: c.case_number, inline: true },
                             { name: '📌 Title',             value: c.title,       inline: true },
@@ -4242,7 +4242,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Judge Assigned')
-                    .setColor(0x4A148C)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔢 Case Number', value: c.case_number,                                inline: true },
                         { name: '📌 Title',        value: c.title,                                     inline: true },
@@ -4268,7 +4268,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Verdict Issued')
-                    .setColor(0x1B5E20)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔢 Case Number', value: c.case_number,                   inline: true },
                         { name: '📌 Title',        value: c.title,                         inline: true },
@@ -4284,7 +4284,7 @@ client.on('interactionCreate', async interaction => {
                 // DM the plaintiff with the verdict
                 try {
                     const plaintiff = await interaction.client.users.fetch(c.plaintiff_id);
-                    const dmEmbed = new EmbedBuilder().setTitle('A Verdict Has Been Issued in Your Case').setColor(0x1B5E20)
+                    const dmEmbed = new EmbedBuilder().setTitle('A Verdict Has Been Issued in Your Case').setColor(0xE53935)
                         .addFields(
                             { name: '🔢 Case Number', value: c.case_number,                   inline: true },
                             { name: '📌 Title',        value: c.title,                         inline: true },
@@ -4317,7 +4317,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Lawyer Power of Attorney Request')
-                    .setColor(0xE65100)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🔢 Case Number',           value: c.case_number,          inline: true },
                         { name: '📌 Title',                  value: c.title,                inline: true },
@@ -4385,7 +4385,7 @@ client.on('interactionCreate', async interaction => {
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Cash Deposited to Bank')
-                    .setColor(0x2E7D32)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '💵 Cash Deposited', value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
                         { name: '🏦 New Bank Balance', value: `\`${(Number(result.sender.balance) + amount).toLocaleString()} Riyals\``, inline: true },
@@ -4411,7 +4411,7 @@ client.on('interactionCreate', async interaction => {
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Cash Withdrawn from Bank')
-                    .setColor(0xB71C1C)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '💵 Cash Withdrawn',  value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
                         { name: '🏦 New Bank Balance', value: `\`${(Number(result.sender.balance) - amount).toLocaleString()} Riyals\``, inline: true },
@@ -4444,7 +4444,7 @@ client.on('interactionCreate', async interaction => {
                 const SLOT_NAMES = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const embed = new EmbedBuilder()
                     .setTitle('Transfer Successful')
-                    .setColor(0x1565C0)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '👤 Sender',               value: `${result.sender.character_name} ${result.sender.family_name || ''} (${SLOT_NAMES[result.sender.slot] || `Character ${result.sender.slot}`})`, inline: false },
                         { name: '🏦 Your IBAN',            value: `\`${result.sender.iban}\``, inline: true },
@@ -4472,7 +4472,7 @@ client.on('interactionCreate', async interaction => {
                 if (!result.success) return interaction.reply({ content: `❌ ${result.error}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('X Account Created')
-                    .setColor(0x000000)
+                    .setColor(0xE53935)
                     .addFields({ name: '👤 Account Name', value: `**@${xUsername}**`, inline: true })
                     .setFooter({ text: 'X Platform • FANTASY Bot' })
                     .setTimestamp();
@@ -4516,7 +4516,7 @@ client.on('interactionCreate', async interaction => {
                     const targetUser = await client.users.fetch(friendAcc.discord_id);
                     const notif = new EmbedBuilder()
                         .setTitle('New Snap Friend Request!')
-                        .setColor(0xFFFC00)
+                        .setColor(0xE53935)
                         .setDescription(`**@${myAcc.snap_username}** wants to add you as a friend on Snapchat!\nUse the **Requests button 🔔** to accept the request.`)
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
@@ -4524,7 +4524,7 @@ client.on('interactionCreate', async interaction => {
                 } catch (_) {}
                 const embed = new EmbedBuilder()
                     .setTitle('Friend Request Sent')
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setDescription(`Friend request sent to **@${friendAcc.snap_username}** 👻\nThey will be notified and need to accept.`)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
@@ -4548,7 +4548,7 @@ client.on('interactionCreate', async interaction => {
                     const targetUser = await client.users.fetch(receiverId);
                     const notif = new EmbedBuilder()
                         .setTitle('New Snap Received!')
-                        .setColor(0xFFFC00)
+                        .setColor(0xE53935)
                         .setDescription(`**@${myAcc.snap_username}** sent you a snap!\nOpen Snapchat to view it 👻`)
                         .setFooter({ text: 'Snapchat • FANTASY Bot' })
                         .setTimestamp();
@@ -4556,7 +4556,7 @@ client.on('interactionCreate', async interaction => {
                 } catch (_) {}
                 const embed = new EmbedBuilder()
                     .setTitle('Snap Sent!')
-                    .setColor(0xFFFC00)
+                    .setColor(0xE53935)
                     .setDescription(`Snap sent to **@${receiverAcc.snap_username}** successfully 👻`)
                     .setFooter({ text: 'Snapchat • FANTASY Bot' })
                     .setTimestamp();
@@ -4601,7 +4601,7 @@ client.on('interactionCreate', async interaction => {
                 const reply = await db.replyPost(interaction.user.id, postId, content);
                 const embed = new EmbedBuilder()
                     .setAuthor({ name: `@${myAcc.x_username}`, iconURL: interaction.user.displayAvatarURL() })
-                    .setColor(0x17BF63)
+                    .setColor(0xE53935)
                     .setDescription(content)
                     .addFields(
                         { name: '↩️ In reply to', value: `@${orig.x_username} • #${postId}`, inline: true },
@@ -4630,7 +4630,7 @@ client.on('interactionCreate', async interaction => {
                 if (!result || result.success === false) return interaction.reply({ content: `❌ ${result?.error || 'الغرض غير موجود في حقيبتك أو الكمية صفر.'}`, flags: 64 });
                 const embed = new EmbedBuilder()
                     .setTitle('Item Transferred Successfully')
-                    .setColor(0x6A1B9A)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '🎒 Item',           value: `**${itemName}**`, inline: true },
                         { name: '📨 Recipient',       value: `${receiver.character_name} ${receiver.family_name || ''}`, inline: true },
@@ -4678,7 +4678,7 @@ client.on('interactionCreate', async interaction => {
                                 .replace(/\{منظم\}/g,   `<@${interaction.user.id}>`);
                             const embed = new EmbedBuilder()
                                 .setTitle('Start New Trip!')
-                                .setColor(0x2E7D32)
+                                .setColor(0xE53935)
                                 .setDescription(filled)
                                 .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
@@ -4688,7 +4688,7 @@ client.on('interactionCreate', async interaction => {
                         } else {
                             const embed = new EmbedBuilder()
                                 .setTitle('Start New Trip!')
-                                .setColor(0x2E7D32)
+                                .setColor(0xE53935)
                                 .setDescription('🎉 **A new trip has been opened! All players can now log in.**')
                                 .addFields(
                                     { name: '🎤 Host',        value: `\`${hostId}\``, inline: true },
@@ -4739,7 +4739,7 @@ client.on('interactionCreate', async interaction => {
                                 .replace(/\{منظم\}/g,  `<@${interaction.user.id}>`);
                             const embed = new EmbedBuilder()
                                 .setTitle('Trip Renewal')
-                                .setColor(0x1565C0)
+                                .setColor(0xE53935)
                                 .setDescription(filled)
                                 .setFooter({ text: 'Trip System • FANTASY Bot' })
                                 .setTimestamp();
@@ -4748,7 +4748,7 @@ client.on('interactionCreate', async interaction => {
                         } else {
                             const embed = new EmbedBuilder()
                                 .setTitle('Trip Renewal')
-                                .setColor(0x1565C0)
+                                .setColor(0xE53935)
                                 .setDescription('🔄 **Trip has been renewed!**')
                                 .addFields(
                                     { name: '🎤 Host ID',    value: `\`${hostId}\``, inline: true },
@@ -4780,7 +4780,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Alert')
-                    .setColor(0xF57F17)
+                    .setColor(0xE53935)
                     .setDescription(alertText)
                     .addFields({ name: '🔧 Sent by', value: `<@${interaction.user.id}>`, inline: true })
                     .setFooter({ text: 'Trip System • FANTASY Bot' })
@@ -4815,7 +4815,7 @@ client.on('interactionCreate', async interaction => {
 
                 const embed = new EmbedBuilder()
                     .setTitle('Panic — Distress Call')
-                    .setColor(0xD32F2F)
+                    .setColor(0xE53935)
                     .setThumbnail(interaction.user.displayAvatarURL())
                     .addFields(
                         { name: '👤 Caller',   value: `<@${interaction.user.id}>`, inline: true },
@@ -4861,7 +4861,7 @@ client.on('interactionCreate', async interaction => {
                         if (logChannel) {
                             const logEmbed = new EmbedBuilder()
                                 .setTitle('New Identity Request — Pending Review')
-                                .setColor(0xF57F17)
+                                .setColor(0xE53935)
                                 .setThumbnail(interaction.user.displayAvatarURL())
                                 .addFields(
                                     { name: '👤 User',           value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
@@ -4887,7 +4887,7 @@ client.on('interactionCreate', async interaction => {
                 const pendingNamesLog = { 1: 'Character 1', 2: 'Character 2', 3: 'Character 3' };
                 const pendingLogEmbed = new EmbedBuilder()
                     .setTitle('⏳ New Identity Request')
-                    .setColor(0xF57F17)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: '👤 User',       value: `<@${interaction.user.id}>`, inline: true },
                         { name: '📌 Slot',       value: pendingNamesLog[slot], inline: true },
@@ -4930,7 +4930,7 @@ client.on('interactionCreate', async interaction => {
                     const updated = await db.getCompanyById(company.id);
                     const embed = new EmbedBuilder()
                         .setTitle('Deposited to Company Account')
-                        .setColor(0x1B5E20)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '🏢 Company',         value: company.name, inline: true },
                             { name: '💵 Amount',           value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
@@ -4945,7 +4945,7 @@ client.on('interactionCreate', async interaction => {
                     const updated = await db.getCompanyById(company.id);
                     const embed = new EmbedBuilder()
                         .setTitle('Withdrawn from Company Account')
-                        .setColor(0xF57F17)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: '🏢 Company',        value: company.name, inline: true },
                             { name: '💵 Amount',          value: `\`${amount.toLocaleString()} Riyals\``, inline: true },
@@ -4986,7 +4986,7 @@ client.on('interactionCreate', async interaction => {
                 const res = await db.addCompanyMember(company.id, userId, role, salary);
                 if (res.error) return interaction.reply({ content: `❌ ${res.error}`, flags: 64 });
 
-                const embed = new EmbedBuilder().setTitle('Employee Assigned').setColor(0x1B5E20)
+                const embed = new EmbedBuilder().setTitle('Employee Assigned').setColor(0xE53935)
                     .addFields(
                         { name: '👤 Employee', value: `<@${userId}>`, inline: true },
                         { name: '🏷️ Rank',     value: `**${role}**`, inline: true },
@@ -5023,7 +5023,7 @@ client.on('interactionCreate', async interaction => {
 
                 await db.updateCompanyMemberRole(company.id, userId, role, salary);
 
-                const embed = new EmbedBuilder().setTitle('Employee Promoted').setColor(0x6A1B9A)
+                const embed = new EmbedBuilder().setTitle('Employee Promoted').setColor(0xE53935)
                     .addFields(
                         { name: '👤 Employee',   value: `<@${userId}>`, inline: true },
                         { name: '🏷️ Old Rank',   value: `**${member.role}**`, inline: true },
@@ -5054,7 +5054,7 @@ client.on('interactionCreate', async interaction => {
                 if (!removed)
                     return interaction.reply({ content: 'هذا اللاعب ليس موظفاً في شركتك.', flags: 64 });
 
-                const embed = new EmbedBuilder().setTitle('Employee Fired').setColor(0xB71C1C)
+                const embed = new EmbedBuilder().setTitle('Employee Fired').setColor(0xE53935)
                     .addFields(
                         { name: '👤 Employee', value: `<@${userId}>`, inline: true },
                         { name: '🏢 Company',  value: company.name, inline: true },
@@ -5111,7 +5111,7 @@ client.on('interactionCreate', async interaction => {
                     if (ministryCh) {
                         const appEmbed = new EmbedBuilder()
                             .setTitle(`📋 Company Founding Request — #${pending.id}`)
-                            .setColor(0xF57F17)
+                            .setColor(0xE53935)
                             .setThumbnail(interaction.user.displayAvatarURL())
                             .addFields(
                                 { name: '👤 Applicant',         value: `<@${interaction.user.id}> — \`${interaction.user.username}\``, inline: false },
@@ -5178,7 +5178,7 @@ client.on('interactionCreate', async interaction => {
                 }).join('\n') || '_بدون خيارات_';
                 const logEmbed = new EmbedBuilder()
                     .setTitle('لوق: تنفيذ أمر إعدادات')
-                    .setColor(0x546E7A)
+                    .setColor(0xE53935)
                     .addFields(
                         { name: 'الأمر',  value: `/${cmdName}`,            inline: true },
                         { name: 'المنفذ', value: `${interaction.user}`,    inline: true },
@@ -5218,7 +5218,7 @@ client.on('messageCreate', async message => {
                         const isPresident = session.type === 'president';
                         const cancelEmbed = new EmbedBuilder()
                             .setTitle(isPresident ? '🚫 تم إلغاء تراكينق رئيس' : '🚫 تم إلغاء التراكينق')
-                            .setColor(0xFF8F00)
+                            .setColor(0xE53935)
                             .setDescription(
                                 `🛡️ <@${message.author.id}> ألغى التراكينق بإدخال الكلمة الصحيحة.\n` +
                                 `🧩 الكلمة المستخدمة: \`${session.codeWord}\``
@@ -5233,7 +5233,7 @@ client.on('messageCreate', async message => {
                     const isPresident = session.type === 'president';
                     const logEmbed = new EmbedBuilder()
                         .setTitle(isPresident ? '👑 تراكينق رئيس — أُلغي' : '🎯 تراكينق — أُلغي')
-                        .setColor(0xEF6C00)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: 'العميل',  value: `<@${session.trackerId}>`,    inline: true },
                             { name: 'الهدف',   value: `<@${message.author.id}>`,    inline: true },
@@ -5366,7 +5366,7 @@ setInterval(async () => {
                     const { logEvent } = require('./loggers');
                     const logEmbed = new EmbedBuilder()
                         .setTitle('لوق: انتهاء باند تلقائي')
-                        .setColor(0x2E7D32)
+                        .setColor(0xE53935)
                         .addFields(
                             { name: 'اللاعب',    value: `<@${b.user_id}> (\`${b.user_id}\`)`, inline: true },
                             { name: 'السبب',     value: b.reason || 'لم يُحدد', inline: true },

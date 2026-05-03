@@ -29,7 +29,7 @@ module.exports = {
 async function build(db) {
     const props = await db.getProperties();
     const cfg = await loadEmbedCfg(db, 'properties');
-    const embed = new EmbedBuilder().setColor(0xB71C1C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (!props.length) embed.setDescription('> No properties available right now. Wait for the admin.');
     const img = await db.getImage('properties');

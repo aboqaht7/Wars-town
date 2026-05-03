@@ -70,7 +70,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Company Listed in Stock Market')
-            .setColor(0x1B5E20)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🏢 Company',        value: `**${company.name}**`, inline: true },
                 { name: '📋 Status',         value: wasCreated ? '🆕 Created and listed' : '✅ Listed from system', inline: true },

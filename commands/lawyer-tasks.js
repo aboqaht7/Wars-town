@@ -43,7 +43,7 @@ async function buildMain(db) {
     const img = await db.getImage('محاماة');
     const cfg = await loadEmbedCfg(db, 'lawyer_tasks');
 
-    const embed = new EmbedBuilder().setColor(0x0D47A1).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
 
     if (img) embed.setThumbnail(img);
@@ -77,7 +77,7 @@ async function buildPrivate(db, lawyerId, lawyerName) {
 
     const embed = new EmbedBuilder()
         .setTitle('My Tasks Board')
-        .setColor(0x0D47A1)
+        .setColor(0xE53935)
         .setFooter({ text: `Retainer Fee: ${RETAINER_FEE.toLocaleString()} Riyals • Law System • FANTASY Bot` })
         .setTimestamp();
 

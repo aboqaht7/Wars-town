@@ -8,7 +8,7 @@ const { loadEmbedCfg, applyEmbed } = require('../embedConfig');
 
 async function buildSnap(account, image, db) {
     const cfg = await loadEmbedCfg(db, 'snap');
-    const embed = new EmbedBuilder().setColor(0xFFFC00).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (image) embed.setImage(image);
 

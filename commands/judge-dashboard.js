@@ -29,7 +29,7 @@ async function buildMain(db) {
     const img    = await db.getImage('عدل');
     const cfg    = await loadEmbedCfg(db, 'judge_dashboard');
 
-    const embed = new EmbedBuilder().setColor(0x4A148C).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     const hasCustomDesc = !!cfg.description;
 
@@ -71,7 +71,7 @@ async function buildJudgeDashboard(db, judgeId, judgeName) {
 
     const embed = new EmbedBuilder()
         .setTitle('Judge Dashboard')
-        .setColor(0x4A148C)
+        .setColor(0xE53935)
         .setAuthor({ name: `Judge: ${judgeName}` })
         .setFooter({ text: 'Justice System • FANTASY Bot' })
         .setTimestamp();

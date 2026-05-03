@@ -24,7 +24,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('CIA Role Set')
-            .setColor(0x0D1B2A)
+            .setColor(0xE53935)
             .setDescription(`Role **${role.name}** is now the CIA Chef role.\n\nMembers with this role can use the \`/cia\` dashboard buttons.`)
             .setFooter({ text: 'CIA • FANTASY Bot' })
             .setTimestamp();

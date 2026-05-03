@@ -47,7 +47,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Company Removed from Stock Market')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🏢 Company',    value: `**${match.company_name}**`, inline: true },
                 { name: '💰 Last Price', value: `\`${parseFloat(match.current_price).toFixed(2)} Riyals\``, inline: true },

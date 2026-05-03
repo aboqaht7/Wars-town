@@ -35,7 +35,7 @@ async function buildEquipment(db) {
     const img   = await db.getImage('معدات');
     const cfg   = await loadEmbedCfg(db, 'equipment');
 
-    const embed = new EmbedBuilder().setColor(0x4527A0).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     if (img) embed.setImage(img);
 

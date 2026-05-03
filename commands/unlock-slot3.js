@@ -21,7 +21,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Character Slot 3 Unlocked')
-            .setColor(0x6A1B9A)
+            .setColor(0xE53935)
             .setDescription(`**Character Slot 3** has been unlocked for <@${target.id}>`)
             .addFields(
                 { name: '👤 Player',  value: `<@${target.id}> — \`${target.username}\``, inline: true },

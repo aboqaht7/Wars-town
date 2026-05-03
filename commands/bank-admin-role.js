@@ -17,7 +17,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Bank Admins Role Set')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🛡️ الRank المسؤولة', value: `<@&${role.id}> — \`${role.name}\``, inline: true },
                 { name: 'ℹ️ الصلاحيات', value: 'إضافة رصيد • سحب رصيد • تجميد حسابات • فك تجميد • عرض أي حساب', inline: false },

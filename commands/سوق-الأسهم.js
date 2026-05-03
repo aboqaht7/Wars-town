@@ -37,7 +37,7 @@ async function buildMarketEmbed(db) {
     const _img = await db.getImage('سوق-الاسهم').catch(() => null) || await db.getImage('سوق-مركزي').catch(() => null);
 
     const embed = new EmbedBuilder()
-        .setColor(0x0A1628)
+        .setColor(0xE53935)
         .setTitle('Fantasy Town Stock Exchange')
         .setDescription(
             `\`\`\`yaml\n🟢 Market: Open  |  🕐 Last Update: ${timeStr}  |  📋 ${listings.length} company(s) listed\`\`\``

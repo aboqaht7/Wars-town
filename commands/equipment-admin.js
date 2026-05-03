@@ -61,7 +61,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Equipment Added')
-                .setColor(0x4527A0)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',          value: String(item.id),                               inline: true },
                     { name: 'Name',        value: item.name,                                     inline: true },
@@ -93,7 +93,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
-                .setColor(0x4527A0)
+                .setColor(0xE53935)
                 .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
                 embed.setDescription('No equipment added yet.');
@@ -141,7 +141,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Equipment Added')
-                .setColor(0x4527A0)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',          value: String(item.id),                               inline: true },
                     { name: 'Name',        value: item.name,                                     inline: true },
@@ -184,7 +184,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Equipment Updated')
-                .setColor(0x4527A0)
+                .setColor(0xE53935)
                 .addFields(
                     { name: 'ID',          value: String(item.id),                               inline: true },
                     { name: 'Name',        value: item.name,                                     inline: true },
@@ -203,7 +203,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Equipment List')
-                .setColor(0x4527A0)
+                .setColor(0xE53935)
                 .setFooter({ text: 'Equipment Admin • FANTASY Bot' }).setTimestamp();
             if (!items.length) {
                 embed.setDescription('No equipment added yet.');

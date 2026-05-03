@@ -17,7 +17,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('رومات اللوقات الحالية')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription(lines.join('\n'))
             .setFooter({ text: 'نظام اللوقات • FANTASY Bot' })
             .setTimestamp();

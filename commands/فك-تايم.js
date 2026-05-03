@@ -25,7 +25,7 @@ module.exports = {
         }
 
         const embed = new EmbedBuilder()
-            .setColor(0x43A047)
+            .setColor(0xE53935)
             .setTitle('Timeout Removed')
             .addFields(
                 { name: '👤 Member', value: `<@${target.id}>`,         inline: true },

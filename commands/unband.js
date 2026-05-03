@@ -59,7 +59,7 @@ module.exports = {
         // ── لوق العملية في روم الباند ────────────────────────────────────
         const logEmbed = new EmbedBuilder()
             .setTitle('لوق: فك باند يدوي')
-            .setColor(0x2E7D32)
+            .setColor(0xE53935)
             .addFields(
                 { name: 'المنفذ',         value: `${message.author}`, inline: true },
                 { name: 'اللاعب',          value: `${target}`,         inline: true },

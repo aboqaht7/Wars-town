@@ -22,7 +22,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('تم حذف السيارة من المعرض')
-            .setColor(0xB71C1C)
+            .setColor(0xE53935)
             .addFields(
                 { name: '🔢 رقم السيارة', value: `\`${id}\``, inline: true },
                 { name: '👤 نفذها',        value: `${interaction.user}`, inline: true },

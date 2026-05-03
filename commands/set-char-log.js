@@ -16,7 +16,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Character Log Channel Set')
-            .setColor(0x37474F)
+            .setColor(0xE53935)
             .addFields(
                 { name: '📋 القناة المحددة', value: `<#${channel.id}>`, inline: true },
                 { name: 'ℹ️ ما يُرسل تلقائياً', value: 'Login • Logout • Hurricane\nطلب هوية • قبول هوية • رفض هوية', inline: false },

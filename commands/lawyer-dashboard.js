@@ -29,7 +29,7 @@ async function buildMain(db) {
     const img     = await db.getImage('محاماة');
     const cfg     = await loadEmbedCfg(db, 'lawyer_dashboard');
 
-    const embed = new EmbedBuilder().setColor(0x0D47A1).setTimestamp();
+    const embed = new EmbedBuilder().setColor(0xE53935).setTimestamp();
     applyEmbed(embed, cfg);
     const hasCustomDesc = !!cfg.description;
 
@@ -71,7 +71,7 @@ async function buildDashboard(db, lawyerId, lawyerName) {
 
     const embed = new EmbedBuilder()
         .setTitle('Lawyer Dashboard')
-        .setColor(0x1B5E20)
+        .setColor(0xE53935)
         .setAuthor({ name: `Lawyer: ${lawyerName}` })
         .setFooter({ text: 'Law System • FANTASY Bot' })
         .setTimestamp();

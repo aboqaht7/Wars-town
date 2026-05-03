@@ -14,7 +14,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Ministry of Commerce')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription('Welcome to the Ministry of Commerce control panel. Choose one of the options below.')
             .setFooter({ text: 'Ministry of Commerce • FANTASY Bot' })
             .setTimestamp();

@@ -18,7 +18,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setTitle('Account Activation System')
-            .setColor(0x1565C0)
+            .setColor(0xE53935)
             .setDescription(
                 '**Welcome to the Activation System!**\n\n' +
                 'To activate your account in the server, follow these steps:\n\n' +
