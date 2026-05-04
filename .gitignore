@@ -1,1 +1,19 @@
+# Secrets / env
 .env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Temp / runtime
+/tmp/
+*.log
+
+# Backups / dumps
+*.bak
+*.backup
+*.dump
+*.sql.gz
+backup-*.json
+backups/
