@@ -280,6 +280,16 @@ async function isSlot3Unlocked(discordId) {
     return res.rows[0]?.unlocked_slot3 === true;
 }
 
+/* ─── جدول إعدادات السيرفر (يُستخدم لتخزين رومات اللوقات وغيرها) ─── */
+(async () => {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS server_config (
+            key   TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        );
+    `);
+})().catch(console.error);
+
 async function getConfig(key) {
     const res = await query('SELECT value FROM server_config WHERE key=$1', [key]);
     return res.rows[0]?.value || null;
