@@ -63,7 +63,7 @@ trackingHelpers.js    # CIA tracking code-word helpers
 
 ## Gotchas
 
-- **Slash commands must be registered once**: run `npm run deploy` from the Shell after first start (or after adding new commands). Without this, slash commands won't appear in Discord.
+- **Slash commands must be re-registered after any change**: run `npm run deploy` from the Shell after first start, after adding new commands, or after renaming/removing existing ones. Without this, changes to slash commands won't appear in Discord. Confirmed working as of 2026-05-06.
 - **Log channels**: configured per-server via `/تعيين-لوق` slash command after bot is running — not set via env vars.
 - **`pg_dump` backups** require PostgreSQL 16 tools to be present (included in `.replit` nix channel).
 
