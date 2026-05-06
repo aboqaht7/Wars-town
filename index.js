@@ -336,20 +336,20 @@ async function handleOpenTicket(interaction, typeId) {
         await ch.send({ content: ping, embeds: [embed], components: [btns] });
 
         /* 5. لوق */
-        const logId = await db.getConfig('ticket_log_channel').catch(() => null);
-        if (logId) {
-            const logCh = await client.channels.fetch(logId).catch(() => null);
-            if (logCh) {
-                await logCh.send({ embeds: [
-                    new EmbedBuilder().setTitle('📥 تكت جديد').setColor(0xE53935)
-                        .addFields(
-                            { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
-                            { name: '🗂️ النوع',   value: `${type.emoji} ${type.name}`,  inline: true },
-                            { name: '📌 القناة',  value: `<#${ch.id}>`,                  inline: true },
-                        ).setTimestamp()
-                ] });
-            }
-        }
+        try {
+            const { logEvent } = require('./loggers');
+            const openLogEmbed = new EmbedBuilder()
+                .setTitle('📥 تكت جديد — فُتح')
+                .setColor(0x43A047)
+                .addFields(
+                    { name: '👤 المستخدم', value: `<@${interaction.user.id}>`, inline: true },
+                    { name: '🗂️ النوع',   value: `${type.emoji} ${type.name}`,  inline: true },
+                    { name: '📌 القناة',  value: `<#${ch.id}>`,                  inline: true },
+                )
+                .setFooter({ text: 'نظام التكتات • نظام اللوقات' })
+                .setTimestamp();
+            logEvent(client, db, 'ticket', openLogEmbed);
+        } catch (e) { console.warn('[LOG ticket open]', e?.message || e); }
 
         return interaction.reply({ content: `✅ تم فتح تكتك في <#${ch.id}>`, flags: 64 });
     } catch (e) {
@@ -1158,6 +1158,19 @@ client.on('interactionCreate', async interaction => {
                         .setColor(0xE53935)
                         .addFields({ name: '🕵️ Member', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
+                    try {
+                        const { logEvent } = require('./loggers');
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle('🟢 CIA — تسجيل دخول')
+                            .setColor(0x43A047)
+                            .addFields(
+                                { name: '🕵️ العميل', value: `<@${interaction.user.id}>`, inline: true },
+                                { name: '⚙️ الإجراء', value: 'تسجيل دخول (Login)', inline: true },
+                            )
+                            .setFooter({ text: 'CIA • نظام اللوقات' })
+                            .setTimestamp();
+                        logEvent(interaction.client, db, 'tracking', logEmbed);
+                    } catch (e) { console.warn('[LOG CIA login]', e?.message || e); }
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
@@ -1172,6 +1185,19 @@ client.on('interactionCreate', async interaction => {
                         .setColor(0xE53935)
                         .addFields({ name: '🕵️ Member', value: `<@${interaction.user.id}>`, inline: true })
                         .setTimestamp();
+                    try {
+                        const { logEvent } = require('./loggers');
+                        const logEmbed = new EmbedBuilder()
+                            .setTitle('🔴 CIA — تسجيل خروج')
+                            .setColor(0xE53935)
+                            .addFields(
+                                { name: '🕵️ العميل', value: `<@${interaction.user.id}>`, inline: true },
+                                { name: '⚙️ الإجراء', value: 'تسجيل خروج (Logout)', inline: true },
+                            )
+                            .setFooter({ text: 'CIA • نظام اللوقات' })
+                            .setTimestamp();
+                        logEvent(interaction.client, db, 'tracking', logEmbed);
+                    } catch (e) { console.warn('[LOG CIA logout]', e?.message || e); }
                     return interaction.reply({ embeds: [embed], flags: 64 });
                 }
 
@@ -2337,20 +2363,20 @@ client.on('interactionCreate', async interaction => {
                 }
 
                 // لوق الإغلاق
-                const logId = await db.getConfig('ticket_log_channel').catch(() => null);
-                if (logId) {
-                    const logCh = await client.channels.fetch(logId).catch(() => null);
-                    if (logCh) {
-                        await logCh.send({ embeds: [
-                            new EmbedBuilder().setTitle('🔒 تم إغلاق تكت').setColor(0xE53935)
-                                .addFields(
-                                    { name: '👤 المالك',    value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
-                                    { name: '🗂️ النوع',    value: ticket?.type_name || '—',               inline: true },
-                                    { name: '🔧 أغلقه',    value: `<@${interaction.user.id}>`,              inline: true },
-                                ).setTimestamp()
-                        ] });
-                    }
-                }
+                try {
+                    const { logEvent } = require('./loggers');
+                    const closeLogEmbed = new EmbedBuilder()
+                        .setTitle('🔒 تكت — أُغلق')
+                        .setColor(0xE53935)
+                        .addFields(
+                            { name: '👤 المالك',    value: ticket ? `<@${ticket.discord_id}>` : '—', inline: true },
+                            { name: '🗂️ النوع',    value: ticket?.type_name || '—',               inline: true },
+                            { name: '🔧 أغلقه',    value: `<@${interaction.user.id}>`,              inline: true },
+                        )
+                        .setFooter({ text: 'نظام التكتات • نظام اللوقات' })
+                        .setTimestamp();
+                    logEvent(client, db, 'ticket', closeLogEmbed);
+                } catch (e) { console.warn('[LOG ticket close]', e?.message || e); }
 
                 await db.removeOpenTicket(channelId);
                 await interaction.reply({ content: '🔒 سيتم إغلاق التكت خلال 5 ثوانٍ...', flags: 64 });
@@ -3902,6 +3928,23 @@ client.on('interactionCreate', async interaction => {
                     .setTimestamp();
 
                 await interaction.editReply({ embeds: [confirmEmbed] });
+
+                try {
+                    const { logEvent } = require('./loggers');
+                    const fakeIdLogEmbed = new EmbedBuilder()
+                        .setTitle('🪪 CIA — هوية مزيفة صدرت')
+                        .setColor(0xE53935)
+                        .addFields(
+                            { name: '🕵️ المُصدِر',   value: `<@${interaction.user.id}>`,  inline: true },
+                            { name: '🎯 الهدف',       value: `<@${targetId}>`,              inline: true },
+                            { name: '👤 الاسم المزيف', value: fakeName,                     inline: true },
+                            { name: '⏳ تنتهي',        value: `<t:${expireTs}:R>`,           inline: true },
+                            { name: '📨 DM',           value: dmSent ? '✅ أُرسل' : '⚠️ مغلق', inline: true },
+                        )
+                        .setFooter({ text: 'CIA • نظام اللوقات' })
+                        .setTimestamp();
+                    logEvent(interaction.client, db, 'tracking', fakeIdLogEmbed);
+                } catch (e) { console.warn('[LOG CIA fake ID]', e?.message || e); }
             } catch (e) {
                 console.error('[CIA FAKE ID ERROR]', e);
                 if (!interaction.replied) interaction.editReply({ content: 'حدث خطأ.' });

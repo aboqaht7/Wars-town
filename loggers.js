@@ -17,6 +17,8 @@ const LOG_TYPES = {
     config:             { key: 'config_log_channel',   label: 'لوق إعدادات الإدارة' },
     backup:             { key: 'backup_log_channel',   label: 'لوق النسخ الاحتياطية' },
     tracking:           { key: 'tracking_log_channel', label: 'لوق التراكينق (CIA)' },
+    ticket:             { key: 'ticket_log_channel',   label: 'لوق التكتات' },
+    identity:           { key: 'identity_log_channel', label: 'لوق الهويات' },
     general:            { key: 'general_log_channel',  label: 'لوق عام (احتياطي)' },
 };
 

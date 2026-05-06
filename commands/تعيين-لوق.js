@@ -16,6 +16,8 @@ module.exports = {
                     { name: 'إعدادات الإدارة', value: 'config' },
                     { name: 'نسخ احتياطية', value: 'backup' },
                     { name: 'تراكينق CIA', value: 'tracking' },
+                    { name: 'تكتات', value: 'ticket' },
+                    { name: 'هويات', value: 'identity' },
                     { name: 'عام (احتياطي)', value: 'general' },
                 )
         )
