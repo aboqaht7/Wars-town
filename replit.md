@@ -1,84 +1,101 @@
-# RP Discord Bot (بوت RP)
+# Wars-town Discord Bot (بوت Wars-town)
 
-## Overview
-A full-featured Arabic Discord roleplay (RP) bot built with Node.js and discord.js v14. Supports both prefix commands (`-`) and slash commands.
+An Arabic Discord roleplay (RP) bot — the independent second instance of the RP bot system, running separately from the original Fantasy-bot.
 
-## Architecture
+## Run & Operate
+
+| Command | Purpose |
+|---|---|
+| `npm start` | Start the bot (runs `node index.js`) |
+| `npm run deploy` | Register / update slash commands with Discord (run once after adding commands) |
+
+### Required Secrets (all configured in this Repl)
+
+| Secret | Description | Status |
+|---|---|---|
+| `DISCORD_TOKEN` | Bot token from Discord Developer Portal | Configured |
+| `CLIENT_ID` | Discord application ID | Configured |
+| `GUILD_ID` | Target Discord server ID | Configured |
+| `DATABASE_URL` | PostgreSQL connection string | Configured (Replit managed DB) |
+| `PREFIX` | Command prefix (default `-`) | Set to `-` |
+
+> **Database**: Replit's built-in PostgreSQL is provisioned. All tables are auto-created on first start via `database.js → initializeDatabase()`. No manual schema setup needed.
+
+## Stack
+
 - **Runtime**: Node.js 20
 - **Framework**: discord.js v14
-- **Database**: PostgreSQL (via `pg` driver, `DATABASE_URL` env var)
+- **Database**: PostgreSQL (Replit managed, `pg` driver, `DATABASE_URL`)
 - **Config**: dotenv
 
-## Project Structure
+## Where things live
+
 ```
 index.js              # Main entry: gateway, intervals, dispatchers
-deploy-commands.js    # Registers slash commands with Discord
-database.js           # PostgreSQL data layer + table init
+deploy-commands.js    # Registers slash commands with Discord REST API
+database.js           # PostgreSQL data layer + all table init (initializeDatabase)
 loggers.js            # Audit log helper (logEvent + LOG_TYPES)
 backup.js             # pg_dump-based DB backup helper
 btnConfig.js          # Button configuration
 utils.js              # Shared helpers (isAdmin, etc.)
 commands/             # All bot commands (125+ files, prefix + slash)
+trackingHelpers.js    # CIA tracking code-word helpers
 ```
 
-## Ban / Band System
-- **Active table**: `bands` (PostgreSQL). Old `violations` table fully removed.
-- **Commands** (prefix `-`):
-  - `-باند @user [duration] [reason]` — temporary ban with role save
-  - `-مخالف` — alias, delegates to `-باند`
-  - `-فك-باند @user` — manual unban + role restoration
-  - `-فك-مخالف` — alias, delegates to `-فك-باند`
-  - Permanent bans: `-شقلب`, `-بنعالي`, `-تفوو`, `-بنعال-ابو-قحط`, `-بنعال-عسيري`, `-بنعال-الشريف`, `-بنعال-مشاري` (all Arabic responses + audit log)
-- **Setup slash commands**:
-  - `/تعيين-مسؤولين-رتبة-الباند` — sets the role allowed to ban
-  - `/تعيين-رتبة-مبند` — sets the role applied during a ban
-- **Auto-cleanup**: every 60s, expired bands lose the band role and have all saved roles restored. Sends Arabic DM + audit log embed.
-- Duration parser accepts: `30m`, `2h`, `1d`, `1w`, `30دقيقة`, `2ساعة`, `7يوم`, `1أسبوع`.
+## Architecture decisions
 
-## Audit Log System
-- Helper: `loggers.js` exports `logEvent(client, db, type, embed)` and `LOG_TYPES`.
-- Channels are stored as PostgreSQL config keys: `band_log_channel`, `config_log_channel`, `backup_log_channel`, `tracking_log_channel`, `general_log_channel` (used as fallback).
-- Slash commands:
-  - `/تعيين-لوق` — set the channel for a given log type (band / config / backup / tracking / general)
-  - `/عرض-لوقات` — display all currently configured log channels
-- Existing per-system log channels still in use: `trip_log_channel`, `identity_log_channel`, `character_log_channel`, `activation_log_channel`, `ticket_log_channel`.
-- Auto-logged events:
-  - All band/unban operations (manual + auto-expiry)
-  - All 7 perma-ban commands
-  - Every `/تعيين-*` and `/إعداد-*` slash command (logged via dispatcher wrapper in `index.js`)
+- All tables are created automatically via `initializeDatabase()` in `database.js` — no manual migrations needed on new instances.
+- Prefix commands use `PREFIX` env var (default `-`); slash commands need `npm run deploy` run once per instance.
+- This instance is fully independent: separate DB, separate `DISCORD_TOKEN`, separate `CLIENT_ID` — changes here do not affect the original Fantasy-bot.
+- Audit log channels are stored as PostgreSQL config keys (not env vars), configured via slash commands after first start.
+- Duration parser accepts both English (`30m`, `2h`, `1d`) and Arabic (`30دقيقة`, `2ساعة`, `7يوم`) formats.
 
-## CIA Tracking System (تراكينق)
-- **Two button types** + slash command + customizable via `/تخصيص-زر`:
-  - `tracking_btn` (عادي) — 2-hour cooldown per agent, blocked on protected roles
-  - `tracking_president_btn` (للرؤساء) — 2 uses per agent per 30 days, only allowed on protected roles
-  - `/تراكينق [النوع]` — slash command alternative (opens same modal)
-- **Code system**: random Arabic word from `trackingHelpers.js` (~64 words), letters split with spaces (e.g. `م ج ت ه د`); target sends back joined (`مجتهد`). Matcher in `trackingHelpers.matchesCode()` normalizes spaces, diacritics, and alef/yaa variants.
-- **Protected roles** (رؤساء الحكومة): stored as JSON array in config key `tracking_protected_roles`. Managed via:
-  - `/رتب-محمية-تراكينق اضافة | ازاله | عرض | مسح` (Admin only)
-- **Database**: `tracking_logs` table (id, agent_id, target_id, type, code_word, result, created_at) with helpers `addTrackingLog`, `getLastTrackingByAgent`, `getPresidentTrackingCountThisMonth`, `updateTrackingLogResult`, `getTrackingProtectedRoles`, `setTrackingProtectedRoles`.
-- **Sessions** (in-memory `trackingSessions` Map in `index.js`): `{ codeWord, trackerId, channelId, guildId, timer, type, logId }`.
-- **Timeout**: 20s. On timeout → log `success`. On DM cancel with correct word → log `canceled`.
-- **Logging**: every start/success/cancel sends an embed via `logEvent(client, db, 'tracking', ...)` to `tracking_log_channel`.
-- **Button customization**: system key `cia_tracking` with btn keys `normal` and `president` registered in `btnConfig.js` (DEFAULTS, SYSTEM_LABELS, BTN_LABELS).
-- **Panel**: rendered as row3 in `commands/CIA.js`.
+## Product
 
-## Database Backup
-- Helper: `backup.js` uses `pg_dump` (PostgreSQL 16) to create SQL dumps in `/tmp/fantasy_backups/`.
-- `/نسخة-احتياطية` — manual trigger, uploads the dump file to `backup_log_channel`.
-- Daily auto-backup at **03:00 server time** via `setTimeout`-based scheduler in `index.js`.
-- Local rotation: keeps the last 7 backup files.
+- Full Arabic RP bot: ban/unban system (bands), CIA tracking, character system, trips, tickets, identity cards, marketplace, database backups, audit logs.
+- Supports both prefix commands (`-`) and slash commands.
+- Auto-expires temporary bans, restores roles, and sends DMs in Arabic.
 
-## Required Environment Variables
-- `DISCORD_TOKEN` — Discord bot token
-- `CLIENT_ID` — Discord application ID (slash deploy)
-- `GUILD_ID` — Discord server ID (slash deploy)
-- `DATABASE_URL` — PostgreSQL connection string
-- `PREFIX` — command prefix (default `-`)
+## User preferences
 
-## How to Add a New Slash Command
-1. Create `commands/<name>.js` exporting `{ name, data: SlashCommandBuilder, slashExecute(interaction, db) }`.
-2. Run `npm run deploy` (or `node deploy-commands.js`) to register with Discord.
-3. The command is auto-loaded on next bot start.
+- Arabic UI throughout (responses, embeds, command names).
+- Command prefix is `-`.
 
-## Workflow
-- `Start application` → `npm start` → `node index.js`
+## Gotchas
+
+- **Slash commands must be registered once**: run `npm run deploy` from the Shell after first start (or after adding new commands). Without this, slash commands won't appear in Discord.
+- **Log channels**: configured per-server via `/تعيين-لوق` slash command after bot is running — not set via env vars.
+- **`pg_dump` backups** require PostgreSQL 16 tools to be present (included in `.replit` nix channel).
+
+## Verified Setup (Wars-town independent instance)
+
+The following was verified on 2026-05-06 during initial setup of this Repl:
+
+**Database**: Replit built-in PostgreSQL provisioned — `DATABASE_URL`, `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` all set as Replit managed secrets.
+
+**Secrets configured** (stored in Replit Secrets, not in git):
+- `DISCORD_TOKEN` — Wars-town bot token
+- `CLIENT_ID` — Wars-town Discord application ID
+- `GUILD_ID` — Target server ID
+- `DATABASE_URL` — Replit managed PostgreSQL connection string
+- `PREFIX` — set to `-` via shared env var
+
+**Bot startup confirmed** (`npm start` output):
+```
+✅ Logged in as FT|BOT!#0232
+✅ تم ضبط رسائل الرحلات
+```
+
+**Slash commands registered** (`npm run deploy` output):
+```
+⏳ بدأ تسجيل أوامر Slash...
+✅ تم تسجيل جميع أوامر Slash بنجاح
+```
+
+This Repl is independent from the original Fantasy-bot — different `DISCORD_TOKEN`, different database (separate Replit PostgreSQL instance), separate `GUILD_ID`.
+
+## Pointers
+
+- [discord.js v14 docs](https://discord.js.org/)
+- [Replit Secrets management](.local/skills/environment-secrets/SKILL.md)
+- [Replit Database skill](.local/skills/database/SKILL.md)
