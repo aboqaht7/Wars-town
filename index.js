@@ -5450,32 +5450,6 @@ function scheduleNextDailyBackup() {
 }
 scheduleNextDailyBackup();
 
-// ── نشر تلقائي يومي إلى GitHub (الساعة 04:00 توقيت الخادم) ─────────────
-function scheduleNextGithubPush() {
-    const now = new Date();
-    const next = new Date(now);
-    next.setHours(4, 0, 0, 0);
-    if (next <= now) next.setDate(next.getDate() + 1);
-    const ms = next - now;
-    setTimeout(async () => {
-        console.log('🔄 جاري رفع الكود إلى GitHub تلقائياً...');
-        const { exec } = require('child_process');
-        const scriptPath = require('path').join(__dirname, 'push-to-wars-town.sh');
-        exec(`bash "${scriptPath}"`, { timeout: 120_000 }, (err, stdout, stderr) => {
-            if (err) {
-                console.error('❌ فشل الرفع التلقائي إلى GitHub:', err.message);
-                if (stderr) console.error(stderr.trim());
-            } else {
-                console.log('✅ تم الرفع التلقائي إلى GitHub بنجاح');
-                if (stdout) console.log(stdout.trim());
-            }
-            scheduleNextGithubPush();
-        });
-    }, ms);
-    console.log(`⏰ الرفع التلقائي إلى GitHub القادم: ${next.toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' })}`);
-}
-scheduleNextGithubPush();
-
 // ── Health check server for deployment ──────────────────────────────────
 const http = require('http');
 http.createServer((req, res) => {
