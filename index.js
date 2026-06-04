@@ -5493,6 +5493,65 @@ function scheduleNextDailyBackup() {
 }
 scheduleNextDailyBackup();
 
+// ── رفع تلقائي يومي إلى GitHub (الساعة 04:00) ────────────────────────
+let _lastGithubPushDate = null;
+function scheduleNextGithubPush() {
+    const now  = new Date();
+    const next = new Date(now);
+    next.setHours(4, 0, 0, 0);
+    if (next <= now) next.setDate(next.getDate() + 1);
+    const ms = next - now;
+    setTimeout(async () => {
+        const todayKey = `${next.getFullYear()}-${next.getMonth() + 1}-${next.getDate()}`;
+        if (_lastGithubPushDate !== todayKey) {
+            _lastGithubPushDate = todayKey;
+            const { exec } = require('child_process');
+            const runCmd = (cmd) => new Promise((resolve, reject) => {
+                exec(cmd, { cwd: process.cwd() }, (err, _stdout, stderr) => {
+                    if (err) reject(new Error((stderr || '').trim() || err.message));
+                    else resolve();
+                });
+            });
+            try {
+                await runCmd('git add -A');
+                await runCmd('git commit -m "auto: daily snapshot" --allow-empty');
+                await runCmd('git push');
+                console.log('✅ تم رفع التغييرات إلى GitHub تلقائياً');
+            } catch (e) {
+                const errMsg = e?.message || String(e);
+                console.error('❌ فشل الرفع التلقائي إلى GitHub:', errMsg);
+                // إشعار Discord عند الفشل
+                try {
+                    const { logEvent } = require('./loggers');
+                    const failEmbed = new EmbedBuilder()
+                        .setTitle('❌ فشل الرفع التلقائي إلى GitHub')
+                        .setColor(0xB71C1C)
+                        .setDescription('حدث خطأ أثناء الرفع التلقائي اليومي إلى GitHub.')
+                        .addFields({ name: 'سبب الخطأ', value: `\`\`\`${errMsg.slice(0, 1000)}\`\`\`` })
+                        .setFooter({ text: 'نظام النسخ الاحتياطية • FANTASY Bot' })
+                        .setTimestamp();
+                    // تحقق من وجود روم مخصص أو عام، وإلا أرسل DM لمالك البوت
+                    const chId = await db.getConfig('github_push_log_channel').catch(() => null)
+                               || await db.getConfig('general_log_channel').catch(() => null);
+                    if (chId) {
+                        await logEvent(client, db, 'github_push', failEmbed);
+                    } else {
+                        try {
+                            await client.application.fetch();
+                            const owner = client.application.owner;
+                            const dmTarget = owner?.user || owner;
+                            if (dmTarget?.send) await dmTarget.send({ embeds: [failEmbed] });
+                        } catch (_) {}
+                    }
+                } catch (_) {}
+            }
+        }
+        scheduleNextGithubPush();
+    }, ms);
+    console.log(`⏰ الرفع التالي إلى GitHub: ${next.toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' })}`);
+}
+scheduleNextGithubPush();
+
 // ── Health check server for deployment ──────────────────────────────────
 const http = require('http');
 http.createServer((req, res) => {

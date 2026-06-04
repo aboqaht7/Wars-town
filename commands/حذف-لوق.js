@@ -25,6 +25,7 @@ module.exports = {
                     { name: 'ماركت ونقل',             value: 'market' },
                     { name: 'أوامر الأدمن',           value: 'admin' },
                     { name: 'عام (احتياطي)',          value: 'general' },
+                    { name: 'رفع GitHub',             value: 'github_push' },
                 )
         ),
 

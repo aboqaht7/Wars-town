@@ -26,6 +26,7 @@ const LOG_TYPES = {
     market:             { key: 'market_log_channel',   label: 'لوق الماركت والنقل' },
     admin:              { key: 'admin_log_channel',    label: 'لوق أوامر الأدمن' },
     general:            { key: 'general_log_channel',  label: 'لوق عام (احتياطي)' },
+    github_push:        { key: 'github_push_log_channel', label: 'لوق رفع GitHub' },
 };
 
 module.exports = { logEvent, LOG_TYPES };
