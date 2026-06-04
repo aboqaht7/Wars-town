@@ -301,6 +301,9 @@ async function setConfig(key, value) {
         [key, value]
     );
 }
+async function deleteConfig(key) {
+    await query('DELETE FROM server_config WHERE key=$1', [key]);
+}
 async function getBtnCfg(system, btnKey) {
     const res = await query('SELECT value FROM server_config WHERE key=$1', [`btncfg:${system}:${btnKey}`]);
     return res.rows[0] ? JSON.parse(res.rows[0].value) : null;
@@ -1652,7 +1655,7 @@ module.exports = {
     query, ensureUser, generateIban,
     unlockSlot3, isSlot3Unlocked,
     updateIban,
-    getConfig, setConfig, getBtnCfg, setBtnCfg,
+    getConfig, setConfig, deleteConfig, getBtnCfg, setBtnCfg,
     getEmbedCfg, setEmbedCfg, clearEmbedCfg, getAllEmbedCfgs,
     logoutAllUsers, addCharacterLog, getCharacterLogs,
     createPendingIdentity, getPendingIdentity, getPendingIdentities, updatePendingStatus,
