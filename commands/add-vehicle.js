@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { ensureOwnerRole } = require('../utils');
+const { logEvent } = require('../loggers');
 
 async function finalize({ guild, member, target, carName, plate, addedByMention, channel, db }) {
     await db.ensureUser(target.id, target.user?.username || target.username);
@@ -32,6 +33,7 @@ async function finalize({ guild, member, target, carName, plate, addedByMention,
         .setTimestamp();
     if (_img) embed.setImage(_img);
     await channel.send({ embeds: [embed] });
+    logEvent(guild.client, db, 'vehicle', embed).catch(() => {});
     return { ok: true };
 }
 

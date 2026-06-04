@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { logEvent } = require('../loggers');
 
 module.exports = {
     name: 'تعديل-عقار',
@@ -38,6 +39,7 @@ module.exports = {
             .setTimestamp();
         if (updated.image_url) embed.setThumbnail(updated.image_url);
         await interaction.channel.send({ embeds: [embed] });
+        logEvent(interaction.client, db, 'property', embed).catch(() => {});
         return interaction.reply({ content: '​', flags: 64 });
     }
 };

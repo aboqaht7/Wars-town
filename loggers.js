@@ -19,6 +19,12 @@ const LOG_TYPES = {
     tracking:           { key: 'tracking_log_channel', label: 'لوق التراكينق (CIA)' },
     ticket:             { key: 'ticket_log_channel',   label: 'لوق التكتات' },
     identity:           { key: 'identity_log_channel', label: 'لوق الهويات' },
+    vehicle:            { key: 'vehicle_log_channel',  label: 'لوق المركبات' },
+    bank:               { key: 'bank_log_channel',     label: 'لوق البنك والمعاملات' },
+    police:             { key: 'police_log_channel',   label: 'لوق الشرطة (كلبشة، سرقة)' },
+    property:           { key: 'property_log_channel', label: 'لوق العقارات' },
+    market:             { key: 'market_log_channel',   label: 'لوق الماركت والنقل' },
+    admin:              { key: 'admin_log_channel',    label: 'لوق أوامر الأدمن' },
     general:            { key: 'general_log_channel',  label: 'لوق عام (احتياطي)' },
 };
 

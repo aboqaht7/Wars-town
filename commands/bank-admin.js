@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { logEvent } = require('../loggers');
 
 async function getAdminRole(db) {
     return db.getConfig('bank_admin_role');
@@ -55,7 +56,9 @@ module.exports = {
                 )
                 .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
-            return message.channel.send({ embeds: [embed] });
+            message.channel.send({ embeds: [embed] });
+            logEvent(message.client, db, 'bank', embed).catch(() => {});
+            return;
         }
 
         if (sub === 'سحب') {
@@ -83,7 +86,9 @@ module.exports = {
                 )
                 .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
-            return message.channel.send({ embeds: [embed] });
+            message.channel.send({ embeds: [embed] });
+            logEvent(message.client, db, 'bank', embed).catch(() => {});
+            return;
         }
 
         if (sub === 'تجميد') {
@@ -105,7 +110,9 @@ module.exports = {
                 )
                 .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
-            return message.channel.send({ embeds: [embed] });
+            message.channel.send({ embeds: [embed] });
+            logEvent(message.client, db, 'bank', embed).catch(() => {});
+            return;
         }
 
         if (sub === 'فك-تجميد') {
@@ -127,7 +134,9 @@ module.exports = {
                 )
                 .setFooter({ text: 'Bank Admin • FANTASY Bot' }).setTimestamp();
             if (_img) embed.setImage(_img);
-            return message.channel.send({ embeds: [embed] });
+            message.channel.send({ embeds: [embed] });
+            logEvent(message.client, db, 'bank', embed).catch(() => {});
+            return;
         }
 
         if (sub === 'حساب') {

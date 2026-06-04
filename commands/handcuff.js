@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const { logEvent } = require('../loggers');
 
 module.exports = {
     name: 'كلبشة',
@@ -39,6 +40,7 @@ module.exports = {
 
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
+        logEvent(message.client, db, 'police', embed).catch(() => {});
         message.delete().catch(() => {});
     }
 };

@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const { logEvent } = require('../loggers');
 
 module.exports = {
     name: 'تلويت',
@@ -26,7 +27,9 @@ module.exports = {
                 .setFooter({ text: 'Police System • FANTASY Bot' })
                 .setTimestamp();
             if (_img) emptyEmbed.setImage(_img);
-            return message.channel.send({ embeds: [emptyEmbed] });
+            message.channel.send({ embeds: [emptyEmbed] });
+            logEvent(message.client, db, 'police', emptyEmbed).catch(() => {});
+            return;
         }
 
         const stolenList = items.map(i => `• **${i.item_name}** × \`${i.quantity}\``).join('\n');
@@ -54,5 +57,6 @@ module.exports = {
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
+        logEvent(message.client, db, 'police', embed).catch(() => {});
     }
 };

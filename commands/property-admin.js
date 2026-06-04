@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { logEvent } = require('../loggers');
 
 module.exports = {
     name: 'إدارة-عقارات',
@@ -54,6 +55,7 @@ module.exports = {
                 .setTimestamp();
             if (imageUrl) embed.setThumbnail(imageUrl);
             await interaction.channel.send({ embeds: [embed] });
+            logEvent(interaction.client, db, 'property', embed).catch(() => {});
             return interaction.reply({ content: '​', flags: 64 });
         }
 
@@ -74,6 +76,7 @@ module.exports = {
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
+            logEvent(interaction.client, db, 'property', embed).catch(() => {});
             return interaction.reply({ content: '​', flags: 64 });
         }
 
@@ -89,6 +92,7 @@ module.exports = {
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
+            logEvent(interaction.client, db, 'property', embed).catch(() => {});
             return interaction.reply({ content: '​', flags: 64 });
         }
 
@@ -101,6 +105,7 @@ module.exports = {
                 .setFooter({ text: 'Properties System • FANTASY Bot' })
                 .setTimestamp();
             await interaction.channel.send({ embeds: [embed] });
+            logEvent(interaction.client, db, 'property', embed).catch(() => {});
             return interaction.reply({ content: '​', flags: 64 });
         }
 

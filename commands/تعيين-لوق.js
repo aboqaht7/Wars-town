@@ -12,13 +12,19 @@ module.exports = {
                 .setDescription('نوع اللوق')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'باند والطرد', value: 'band' },
-                    { name: 'إعدادات الإدارة', value: 'config' },
-                    { name: 'نسخ احتياطية', value: 'backup' },
-                    { name: 'تراكينق CIA', value: 'tracking' },
-                    { name: 'تكتات', value: 'ticket' },
-                    { name: 'هويات', value: 'identity' },
-                    { name: 'عام (احتياطي)', value: 'general' },
+                    { name: 'باند والطرد',           value: 'band' },
+                    { name: 'إعدادات الإدارة',        value: 'config' },
+                    { name: 'نسخ احتياطية',           value: 'backup' },
+                    { name: 'تراكينق CIA',            value: 'tracking' },
+                    { name: 'تكتات',                  value: 'ticket' },
+                    { name: 'هويات',                  value: 'identity' },
+                    { name: 'مركبات',                 value: 'vehicle' },
+                    { name: 'بنك ومعاملات',           value: 'bank' },
+                    { name: 'شرطة (كلبشة / سرقة)',   value: 'police' },
+                    { name: 'عقارات',                 value: 'property' },
+                    { name: 'ماركت ونقل',             value: 'market' },
+                    { name: 'أوامر الأدمن',           value: 'admin' },
+                    { name: 'عام (احتياطي)',          value: 'general' },
                 )
         )
         .addChannelOption(opt =>

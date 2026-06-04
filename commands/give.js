@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const { logEvent } = require('../loggers');
 
 module.exports = {
     name: 'نقل',
@@ -35,5 +36,6 @@ module.exports = {
             .setTimestamp();
         if (_img) embed.setImage(_img);
         message.channel.send({ embeds: [embed] });
+        logEvent(message.client, db, 'market', embed).catch(() => {});
     }
 };

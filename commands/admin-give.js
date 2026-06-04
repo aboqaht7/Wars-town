@@ -64,6 +64,7 @@ module.exports = {
                 .setTimestamp();
 
             await interaction.channel.send({ embeds: [embed], components: [row] });
+            require('../loggers').logEvent(interaction.client, db, 'bank', embed).catch(() => {});
             return interaction.reply({ content: '​', flags: 64 });
         }
 
@@ -88,6 +89,7 @@ module.exports = {
                 .setTimestamp();
 
             await interaction.channel.send({ embeds: [embed], components: [row] });
+            require('../loggers').logEvent(interaction.client, db, 'admin', embed).catch(() => {});
             return interaction.reply({ content: '​', flags: 64 });
         }
     },
